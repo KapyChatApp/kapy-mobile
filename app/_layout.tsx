@@ -1,46 +1,62 @@
 import * as SecureStore from "expo-secure-store";
 import { ClerkProvider, ClerkLoaded } from "@clerk/clerk-expo";
-import { Slot } from "expo-router";
-
+import { Slot, SplashScreen, Stack } from "expo-router";
+import { useFonts } from "expo-font";
+import { useEffect } from "react";
+SplashScreen.preventAutoHideAsync();
 export default function RootLayout() {
-  const tokenCache = {
-    async getToken(key: string) {
-      try {
-        const item = await SecureStore.getItemAsync(key);
-        if (item) {
-          console.log(`${key} was used 🔐 \n`);
-        } else {
-          console.log("No values stored under key: " + key);
-        }
-        return item;
-      } catch (error) {
-        console.error("SecureStore get item error: ", error);
-        await SecureStore.deleteItemAsync(key);
-        return null;
-      }
-    },
-    async saveToken(key: string, value: string) {
-      try {
-        return SecureStore.setItemAsync(key, value);
-      } catch (err) {
-        return;
-      }
-    },
-  };
+  const [fontsLoaded, error] = useFonts({
+    "Helvetica-Bold": require("../assets/fonts/helvetica-neue-bold.ttf"),
+    "Helvetica-Bold-Italic": require("../assets/fonts/helvetica-neue-bold-italic.ttf"),
+    "Helvetica-Light": require("../assets/fonts/helvetica-neue-light.ttf"),
+    "Helvetica-Light-Italic": require("../assets/fonts/helveticaneuelightitalic.ttf"),
+    "Helvetica-Regular": require("../assets/fonts/helvetica-neue-regular.ttf"),
+    "Helvetica-Ultra-Light": require("../assets/fonts/helveticaneueultralight.ttf"),
+    "Helvetica-Ultra-Light-Italic": require("../assets/fonts/helveticaneueultralightitalic.ttf"),
+  });
 
-  const publishableKey = process.env.EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY!;
+  useEffect(() => {
+    if (error) throw error;
+    if (fontsLoaded) SplashScreen.hideAsync();
+  }, [fontsLoaded, error]);
 
-  if (!publishableKey) {
-    throw new Error(
-      "Missing Publishable Key. Please set EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY in your .env"
-    );
-  }
+  if (!fontsLoaded && !error) return null;
+  // const tokenCache = {
+  //   async getToken(key: string) {
+  //     try {
+  //       const item = await SecureStore.getItemAsync(key);
+  //       if (item) {
+  //         console.log(`${key} was used 🔐 \n`);
+  //       } else {
+  //         console.log("No values stored under key: " + key);
+  //       }
+  //       return item;
+  //     } catch (error) {
+  //       console.error("SecureStore get item error: ", error);
+  //       await SecureStore.deleteItemAsync(key);
+  //       return null;
+  //     }
+  //   },
+  //   async saveToken(key: string, value: string) {
+  //     try {
+  //       return SecureStore.setItemAsync(key, value);
+  //     } catch (err) {
+  //       return;
+  //     }
+  //   },
+  // };
+
+  // const publishableKey = process.env.EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY!;
+
+  // if (!publishableKey) {
+  //   throw new Error(
+  //     "Missing Publishable Key. Please set EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY in your .env"
+  //   );
+  // }
 
   return (
-    <ClerkProvider tokenCache={tokenCache} publishableKey={publishableKey}>
-      <ClerkLoaded>
-        <Slot />
-      </ClerkLoaded>
-    </ClerkProvider>
+    <Stack>
+      <Stack.Screen name="index" options={{ headerShown: false }} />
+    </Stack>
   );
 }
