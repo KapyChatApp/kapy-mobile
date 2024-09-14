@@ -40,6 +40,15 @@ module.exports = {
         "auth-input-y": "10px",
         "auth-input-x": "10px",
       },
+      fontFamily:{
+        'helvetica-bold':['helvetica-bold'],
+        'helvetica-bold-italic':['helvetica-bold-italic'],
+        'helvetica-light':['helvetica-light'],
+        'helvetica-light-italic':['helvetica-light-italic'],
+        'helvetica-regular':['helvetica-regular'],
+        'helvetica-ultra-light':['helvetica-ultra-light'],
+        'helvetica-ultra-light-italic':['helvetica-ultra-light-italic']
+      }
     },
   },
   plugins: [
