@@ -6,7 +6,7 @@ import { Link } from 'expo-router'
 const index = () => {
   return (
     <View className='flex-1 items-center justify-center h-full w-full'>
-        <Link href="/sign-in">Go go signin</Link>
+        <Link href="/sign-in">Start</Link>
     </View>
   )
 }
