@@ -7,7 +7,7 @@ import { GestureHandlerRootView } from "react-native-gesture-handler";
 SplashScreen.preventAutoHideAsync();
 export default function RootLayout() {
   const [fontsLoaded, error] = useFonts({
-    "Helvetica-Bold": require("../assets/fonts/helvetica-neue-bold.ttf"),
+    "Helvetica_Bold": require("../assets/fonts/helvetica-neue-bold.ttf"),
     "Helvetica-Bold-Italic": require("../assets/fonts/helvetica-neue-bold-italic.ttf"),
     "Helvetica-Light": require("../assets/fonts/helvetica-neue-light.ttf"),
     "Helvetica-Light-Italic": require("../assets/fonts/helveticaneuelightitalic.ttf"),
