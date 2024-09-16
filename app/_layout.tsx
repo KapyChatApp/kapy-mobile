@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 import * as SecureStore from "expo-secure-store";
 import { ClerkProvider, ClerkLoaded } from "@clerk/clerk-expo";
 import { Slot, SplashScreen, Stack } from "expo-router";
@@ -57,12 +57,12 @@ export default function RootLayout() {
   // }
 
   return (
-    < GestureHandlerRootView>
-        <Stack>
+    <GestureHandlerRootView>
+      <Stack>
         <Stack.Screen name="index" options={{ headerShown: false }} />
         <Stack.Screen name="(auth)" options={{ headerShown: false }} />
+        <Stack.Screen name="(home)" options={{ headerShown: false }} />
       </Stack>
-      </GestureHandlerRootView>    
-      
+    </GestureHandlerRootView>
   );
 }
