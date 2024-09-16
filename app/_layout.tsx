@@ -1,3 +1,4 @@
+import React from 'react';
 import * as SecureStore from "expo-secure-store";
 import { ClerkProvider, ClerkLoaded } from "@clerk/clerk-expo";
 import { Slot, SplashScreen, Stack } from "expo-router";
@@ -7,7 +8,7 @@ import { GestureHandlerRootView } from "react-native-gesture-handler";
 SplashScreen.preventAutoHideAsync();
 export default function RootLayout() {
   const [fontsLoaded, error] = useFonts({
-    "Helvetica_Bold": require("../assets/fonts/helvetica-neue-bold.ttf"),
+    Helvetica_Bold: require("../assets/fonts/helvetica-neue-bold.ttf"),
     "Helvetica-Bold-Italic": require("../assets/fonts/helvetica-neue-bold-italic.ttf"),
     "Helvetica-Light": require("../assets/fonts/helvetica-neue-light.ttf"),
     "Helvetica-Light-Italic": require("../assets/fonts/helveticaneuelightitalic.ttf"),
@@ -56,11 +57,12 @@ export default function RootLayout() {
   // }
 
   return (
-    <GestureHandlerRootView>
-      <Stack>
+    < GestureHandlerRootView>
+        <Stack>
         <Stack.Screen name="index" options={{ headerShown: false }} />
         <Stack.Screen name="(auth)" options={{ headerShown: false }} />
       </Stack>
-    </GestureHandlerRootView>
+      </GestureHandlerRootView>    
+      
   );
 }

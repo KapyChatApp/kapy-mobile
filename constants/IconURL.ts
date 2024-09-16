@@ -74,7 +74,7 @@ export const IconURL = {
   my_document: require("../assets/icons/my_document.png"),
   my_gallery: require("../assets/icons/my_gallery.png"),
   onthemic: require("../assets/icons/onthemic.png"),
-  open_status_writer: require("../assets/icons/open_status_writer.png"),
+  open_statuswriter: require("../assets/icons/open_statuswriter.png"),
   opencam_l: require("../assets/icons/opencam_l.png"),
   opencam_d: require("../assets/icons/opencam_d.png"),
   phonenumber_l: require("../assets/icons/phonenumber_l.png"),

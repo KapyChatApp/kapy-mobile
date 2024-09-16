@@ -2,6 +2,7 @@
   "extends": "expo/tsconfig.base",
   "compilerOptions": {
     "strict": true,
+    "jsx": "react", // Hoặc "react-jsx" nếu bạn đang sử dụng React 17+
     "paths": {
       "@/*": [
         "./*"
