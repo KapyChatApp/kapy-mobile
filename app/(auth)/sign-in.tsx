@@ -3,13 +3,13 @@ import React, { useState } from "react";
 import DataInputBig from "@/components/ui/AuthInput";
 import { IconURL } from "@/constants/IconURL";
 import SubmitButton from "@/components/ui/SubmitButton";
-import { Link } from "expo-router";
+import { Link, useRouter } from "expo-router";
 import SecretInput from "@/components/ui/SecretInput";
 import OtherSign from "@/components/ui/OtherSign";
 const SignInPage = () => {
   const [test, setTest] = useState("No Info");
   const [isPressed, setIsPressed] = useState(false);
-
+  const router = useRouter();
   return (
     <View className="wrapper flex-1 justify-center items-center flex flex-col dark:bg-darkbg">
       <Text className="text-40 color text-cardinal mb-10 font-helvetica-bold">
@@ -33,6 +33,7 @@ const SignInPage = () => {
         label="Sign in"
         onPress={() => {
           setIsPressed(!isPressed);
+           router.push({pathname:"/(home)/message"});
         }}
       ></SubmitButton>
      <OtherSign cause="Don't have any account?" solving="Sign up now" link="/sign-up"></OtherSign>
