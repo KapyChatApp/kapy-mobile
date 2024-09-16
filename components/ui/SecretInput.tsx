@@ -12,7 +12,7 @@ const SecretInput = ({ placeHolder, iconURL, onChangeText }: any) => {
         className="w-[28px] h-[28px] absolute top-[8px] left-[15px]"
       ></Image>
       <Image
-        source={require("../assets/icons/line.png")}
+        source={require("../../assets/icons/line.png")}
         className="h-[36px] w-[1px] absolute left-[52px] top-1 "
       ></Image>
       <TextInput
