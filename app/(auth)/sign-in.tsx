@@ -33,7 +33,7 @@ const SignInPage = () => {
         label="Sign in"
         onPress={() => {
           setIsPressed(!isPressed);
-           router.push({pathname:"/(home)/message"});
+           router.push("/message")
         }}
       ></SubmitButton>
      <OtherSign cause="Don't have any account?" solving="Sign up now" link="/sign-up"></OtherSign>
