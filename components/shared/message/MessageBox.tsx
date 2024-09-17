@@ -7,15 +7,34 @@ const MessageBox = () => {
   return (
     <TouchableOpacity
       activeOpacity={0.8}
-      className="flex flex-row px-[20px] py-[10px] items-center"
+      className="flex flex-row px-[20px] py-[10px] items-center w-screen"
     >
       <UserAvatar size={48}></UserAvatar>
-      <View className="flex ml-5">
-        <Text className="font-helvetica-bold text-14 -mb-[2px]">Name</Text>
-        <Text className="font-helvetica-light text-14 -mb-[2px]">
-          Current message will be like this!
+      <View className="flex ml-5 w-screen">
+        <Text
+          numberOfLines={1}
+          ellipsizeMode="tail"
+          className="font-helvetica-bold text-14 -mb-[6px]"
+        >
+          Name
         </Text>
-        <Text className="font-helvetica-light text-12">00:00</Text>
+        <Text
+          numberOfLines={1}
+          ellipsizeMode="tail"
+          className="font-helvetica-light text-14 "
+        >
+          Lorem ipsum dolor sit amet consectetur adipisicing elit. Suscipit
+          similique, fugit quisquam eum dignissimos, laboriosam maiores deserunt
+          numquam earum tempora reiciendis cupiditate necessitatibus totam
+          eligendi labore natus est repellat veniam.
+        </Text>
+        <Text
+          numberOfLines={1}
+          ellipsizeMode="tail"
+          className="font-helvetica-light text-12"
+        >
+          00:00
+        </Text>
       </View>
     </TouchableOpacity>
   );
