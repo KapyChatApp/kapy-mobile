@@ -7,7 +7,7 @@ const MessageBox = () => {
   return (
     <TouchableOpacity
       activeOpacity={0.8}
-      className="flex flex-row px-[20px] py-[10px] items-center"
+      className="flex flex-row px-[20px] py-[10px] items-center w-full"
     >
       <UserAvatar size={48}></UserAvatar>
       <View className="flex ml-5">
