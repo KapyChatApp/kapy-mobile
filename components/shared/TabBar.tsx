@@ -76,18 +76,6 @@ const TabBar = ({ state, descriptors, navigation }: BottomTabBarProps) => {
             routeName={route.name}
     
             ></TabBarButton>
-        //   <TouchableOpacity
-        //     key={route.name}
-        //     accessibilityRole="button"
-        //     accessibilityState={isFocused ? { selected: true } : {}}
-        //     accessibilityLabel={options.tabBarAccessibilityLabel}
-        //     testID={options.tabBarTestID}
-        //     onPress={onPress}
-        //     onLongPress={onLongPress}
-        //     className="justify-center items-center"
-        //   >
-        //     {icons[route.name]()}
-        //   </TouchableOpacity>
         );
       })}
     </View>
