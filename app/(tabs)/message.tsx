@@ -16,7 +16,7 @@ const message = () => {
     <SafeAreaView className="bg-white">
       <MainHeader></MainHeader>
       <Search></Search>
-      <ScrollView className="message-list bg-white mt-[14px]">
+      <ScrollView className="message-list bg-white mt-[14px] w-full">
          <MessageBox></MessageBox>
          <MessageBox></MessageBox>
          <MessageBox></MessageBox>
