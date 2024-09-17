@@ -1,25 +1,18 @@
-import { View, Text, Image } from "react-native";
-import React from "react";
+import { View, Text, Image, Dimensions } from "react-native";
+import React, { useState } from "react";
 import { Stack, Tabs } from "expo-router";
 import { IconURL } from "@/constants/IconURL";
 import TabIcon from "@/components/ui/TabIcon";
-import TabBar from "@/components/shared/TabBar";
+import TabBar from "@/components/navigator/TabBar";
+import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
+import { Drawer } from "expo-router/drawer";
+import SideBar from "@/components/navigator/SideBar";
+import { Header } from "react-native/Libraries/NewAppScreen";
+import TopBar from "@/components/navigator/TopBar";
 
 const HomeLayout = () => {
   return (
-    <>
-      <Tabs tabBar={(props)=> <TabBar {...props}></TabBar>}
-        // screenOptions={{
-        //   tabBarShowLabel: false,
-        //   tabBarStyle: {
-        //     backgroundColor: "#F57602",
-        //     height: 70,
-        //     alignItems: "center",
-        //     justifyContent: "center",
-        //   },
-        //   tabBarActiveTintColor:"#CCCCCC"
-        // }}
-      >
+      <Tabs tabBar={(props) => <TabBar {...props}></TabBar>} sceneContainerStyle={{zIndex:1}} >
         <Tabs.Screen
           name="message"
           options={{
@@ -49,7 +42,6 @@ const HomeLayout = () => {
           }}
         ></Tabs.Screen>
       </Tabs>
-    </>
   );
 };
 
