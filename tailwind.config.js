@@ -15,6 +15,7 @@ module.exports = {
         specialRelation: "#0075FF",
         whitesmoke: "#FAFAFA",
         l_input: "#565A59",
+        l_search:"#FFF2E8"
       },
       fontSize: {
         40: "40px",
