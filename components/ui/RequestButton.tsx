@@ -10,7 +10,7 @@ const RequestButton = ({ type,onPress }: any) => {
     }`}
     onPress={onPress}
   >
-    <Text className="text-white dark:text-black text-12 font-helvetica-bold">
+    <Text className="text-white text-12 font-helvetica-bold">
       Accept
     </Text>
   </TouchableOpacity>

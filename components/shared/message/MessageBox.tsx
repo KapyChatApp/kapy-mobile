@@ -14,7 +14,7 @@ const MessageBox = () => {
         <Text
           numberOfLines={1}
           ellipsizeMode="tail"
-          className="font-helvetica-bold text-14 -mb-[6px]"
+          className="font-helvetica-bold text-14"
         >
           Name
         </Text>
