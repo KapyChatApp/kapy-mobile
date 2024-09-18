@@ -23,7 +23,7 @@ const TabBar = ({ state, descriptors, navigation }: BottomTabBarProps) => {
   return (
     <View onLayout={onTabbarLayout}
       style={{ flexDirection: "row" }}
-      className="h-[70px] bg-cardinal flex flex-row items-center justify-around"
+      className="h-[56px] bg-cardinal flex flex-row items-center justify-around"
     >
         <Animated.View style={[animatedStyle,{
             position:'absolute',
