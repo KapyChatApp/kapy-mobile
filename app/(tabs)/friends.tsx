@@ -8,6 +8,7 @@ import Search from "@/components/shared/function/Search";
 import FastRequestBox from "@/components/shared/friend/FastRequestBox";
 import { ScrollView } from "react-native-gesture-handler";
 import FastRequestList from "@/components/shared/friend/FastRequestList";
+import FriendList from "@/components/shared/friend/FriendList";
 
 const friends = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -16,8 +17,7 @@ const friends = () => {
       <MainHeader></MainHeader>
       <Search></Search>
       <FastRequestList></FastRequestList>
-     
-      <ScrollView className="friends-container"></ScrollView>
+      <FriendList></FriendList>
     </SafeAreaView>
   );
 };

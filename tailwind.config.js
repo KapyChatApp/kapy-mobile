@@ -15,7 +15,7 @@ module.exports = {
         specialRelation: "#0075FF",
         whitesmoke: "#FAFAFA",
         l_input: "#565A59",
-        l_search:"#FFF2E8"
+        l_search: "#FFF2E8",
       },
       fontSize: {
         40: "40px",
@@ -23,6 +23,7 @@ module.exports = {
         16: "16px",
         14: "14px",
         12: "12px",
+        10: "10px",
       },
       width: {
         "auth-input": "345px",
@@ -41,18 +42,16 @@ module.exports = {
         "auth-input-y": "10px",
         "auth-input-x": "10px",
       },
-      fontFamily:{
-        'helvetica-bold':['helvetica-bold'],
-        'helvetica-bold-italic':['helvetica-bold-italic'],
-        'helvetica-light':['helvetica-light'],
-        'helvetica-light-italic':['helvetica-light-italic'],
-        'helvetica-regular':['helvetica-regular'],
-        'helvetica-ultra-light':['helvetica-ultra-light'],
-        'helvetica-ultra-light-italic':['helvetica-ultra-light-italic']
-      }
+      fontFamily: {
+        "helvetica-bold": ["helvetica-bold"],
+        "helvetica-bold-italic": ["helvetica-bold-italic"],
+        "helvetica-light": ["helvetica-light"],
+        "helvetica-light-italic": ["helvetica-light-italic"],
+        "helvetica-regular": ["helvetica-regular"],
+        "helvetica-ultra-light": ["helvetica-ultra-light"],
+        "helvetica-ultra-light-italic": ["helvetica-ultra-light-italic"],
+      },
     },
   },
-  plugins: [
-
-  ],
+  plugins: [],
 };

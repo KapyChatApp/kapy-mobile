@@ -8,8 +8,8 @@ import { IconURL } from "@/constants/IconURL";
 
 const FastRequestList = () => {
   return (
-    <View className="request-list-container flex mb-[16px]">
-      <View className="request-header  mx-[18px] my-[10px] flex flex-row items-center justify-between">
+    <View className="request-list-container flex">
+      <View className="request-header  mx-[18px] my-[10px]  flex flex-row items-center justify-between">
         <Text className=" font-helvetica-light text-14">Friend requests</Text>
         <Link href="/">
           <View className="flex flex-row items-center ">

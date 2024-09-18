@@ -16,7 +16,8 @@ const message = () => {
     <SafeAreaView className="bg-white">
       <MainHeader></MainHeader>
       <Search></Search>
-      <ScrollView className="message-list bg-white mt-[14px] w-full">
+      <SafeAreaView>
+      <ScrollView className="message-list bg-white w-full">
          <MessageBox></MessageBox>
          <MessageBox></MessageBox>
          <MessageBox></MessageBox>
@@ -37,6 +38,7 @@ const message = () => {
          <MessageBox></MessageBox>
          <MessageBox></MessageBox>
       </ScrollView>
+      </SafeAreaView>
     </SafeAreaView>
   );
 };
