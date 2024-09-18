@@ -16,20 +16,20 @@ const DetailRequestBox = ({ type }: any) => {
         ></Icon>
       </View>
       <View className="flex flex-row items-center">
-      <UserAvatar size={57}></UserAvatar>
-      <View className="ml-[9px]">
-        <Text className="font-helvetica-bold text-14">Name</Text>
-        <Text className="font-helvetica-light text-12">2 mutual friends</Text>
-        <Text className="font-helvetica-light text-[10px] text-cardinal">
-          Send request at 00:00
-        </Text>
-      </View>
+        <UserAvatar size={57}></UserAvatar>
+        <View className="ml-[9px]">
+          <Text className="font-helvetica-bold text-14">Name</Text>
+          <Text className="font-helvetica-light text-12">2 mutual friends</Text>
+          <Text className="font-helvetica-light text-[10px] text-cardinal">
+            Send request at 00:00
+          </Text>
+        </View>
       </View>
       <View className=" flex items-center justify-center">
         <View className="flex flex-row items-center justify-center">
-          <DenyButton label="Deny"></DenyButton>
+          <DenyButton label="Deny" width={70} height={40}></DenyButton>
           <View className="w-[4px] h-1"></View>
-          <RequestButton type={type}></RequestButton>
+          <RequestButton type={type} width={70} height={40}></RequestButton>
         </View>
         {type ? (
           <Text className="font-helvetica-light text-10 mt-[6px]">

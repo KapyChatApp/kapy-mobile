@@ -11,7 +11,7 @@ const FastRequestBox = ({ type }: any) => {
       <View className="info-container flex ml-[16px]">
         <Text className="font-helvetica-bold text-14 -mb-[3px]">Name</Text>
         <Text className="font-helvetica-light text-12 mb-[6px]">Message</Text>
-        <RequestButton type={type}></RequestButton>
+        <RequestButton type={type} width={93} height={31}></RequestButton>
       </View>
       <Image
         className="w-[18px] h-[18px] absolute top-[13px] right-[13px]"
