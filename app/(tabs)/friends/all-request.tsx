@@ -5,17 +5,26 @@ import TopBar from "@/components/navigator/TopBar";
 import Search from "@/components/shared/function/Search";
 import DetailRequestBox from "@/components/shared/friend/DetailRequestBox";
 import DetailRequestList from "@/components/shared/friend/DetailRequestList";
+import FriendFilter from "@/components/ui/FriendFilter";
+import OutsidePressHandler from "react-native-outside-press";
 
 const AllRequestPage = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const [isFilterOpen, setIsFilterOpen] = useState(false);
   return (
-    <SafeAreaProvider className="bg-white">
+    <SafeAreaView className="bg-white">
       <TopBar isOpen={isOpen} setIsOpen={setIsOpen}></TopBar>
       <Search></Search>
+      <View className="flex items-end justify-center w-screen">
+        <FriendFilter
+          isOpen={isFilterOpen}
+          setIsOpen={setIsFilterOpen}
+        ></FriendFilter>
+      </View>
       <SafeAreaView>
         <DetailRequestList></DetailRequestList>
       </SafeAreaView>
-    </SafeAreaProvider>
+    </SafeAreaView>
   );
 };
 
