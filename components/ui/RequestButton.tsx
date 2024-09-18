@@ -5,7 +5,7 @@ import { TouchableOpacity } from 'react-native-gesture-handler'
 const RequestButton = ({ type,onPress }: any) => {
   return (
     <TouchableOpacity
-    className={`flex justify-center items-center w-[93px] h-[31px] rounded-full ${
+    className={`flex justify-center items-center w-[70px] h-[40px] rounded-full ${
       type ? "bg-specialRelation" : "bg-cardinal"
     }`}
     onPress={onPress}
