@@ -23,12 +23,13 @@ const FriendFilter = ({
     <View className="relative z-20">
       <TouchableOpacity
         onPress={() => setIsOpen(!isOpen)}
-        className="flex right-[22px] top-[6px] items-center justify-center border border-border w-[90px] h-[22px] rounded-full z-20"
+        className="flex right-[22px] -top-[8px] items-center justify-center border border-border w-[90px] h-[22px] rounded-full z-20"
       >
         <Text className="text-14  font-helvetica-bold text-deny text-center">
           View by
         </Text>
       </TouchableOpacity>
+      {isOpen? (<View className="absolute w-screen h-screen"></View>):null}
       {isOpen ? (
         <View className="absolute bg-white z-10 right-[22px] top-[30px]">
           <TouchableOpacity

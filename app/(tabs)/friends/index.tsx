@@ -9,6 +9,7 @@ import FastRequestBox from "@/components/shared/friend/FastRequestBox";
 import { ScrollView } from "react-native-gesture-handler";
 import FastRequestList from "@/components/shared/friend/FastRequestList";
 import FriendList from "@/components/shared/friend/FriendList";
+import OutsidePressHandler, { EventProvider } from "react-native-outside-press";
 
 const FriendsPage = () => {
   const [isOpen, setIsOpen] = useState(false);
