@@ -7,7 +7,7 @@ import { TouchableOpacity } from "react-native-gesture-handler";
 
 const FriendBox = () => {
   return (
-    <TouchableOpacity className="flex flex-row items-center p-[14px] border border-border rounded-3xl">
+    <TouchableOpacity className="flex bg-white flex-row items-center p-[14px] border border-border rounded-3xl">
       <UserAvatar size={57}></UserAvatar>
       <View className="flex ml-[9px]">
         <Text className="font-helvetica-bold text-14 -mb-[4px]">Name</Text>

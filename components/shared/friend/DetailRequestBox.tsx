@@ -8,7 +8,7 @@ import { IconURL } from "@/constants/IconURL";
 
 const DetailRequestBox = ({ type }: any) => {
   return (
-    <View className="flex flex-row border border-border p-[14px] rounded-3xl items-center relative z-10 mt-[4px]">
+    <View className="flex flex-row border bg-whitesmoke border-border p-[14px] rounded-3xl items-center relative mt-[4px]">
       <View className="absolute -top-[14px] -left-[8px]">
         <Icon
           size={32}

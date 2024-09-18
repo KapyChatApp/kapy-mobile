@@ -15,15 +15,15 @@ const AllRequestPage = () => {
     <SafeAreaView className="bg-white">
       <TopBar isOpen={isOpen} setIsOpen={setIsOpen}></TopBar>
       <Search></Search>
-      <View className="flex items-end justify-center w-screen">
+      <SafeAreaView className="mt-[10px]">
+        <DetailRequestList></DetailRequestList>
+      </SafeAreaView>
+      <View className="flex absolute top-[130px] items-end justify-center w-screen">
         <FriendFilter
           isOpen={isFilterOpen}
           setIsOpen={setIsFilterOpen}
         ></FriendFilter>
       </View>
-      <SafeAreaView>
-        <DetailRequestList></DetailRequestList>
-      </SafeAreaView>
     </SafeAreaView>
   );
 };
