@@ -7,25 +7,19 @@ import MainHeader from "@/components/navigator/MainHeader";
 import Search from "@/components/shared/function/Search";
 import FastRequestBox from "@/components/shared/friend/FastRequestBox";
 import { ScrollView } from "react-native-gesture-handler";
+import FastRequestList from "@/components/shared/friend/FastRequestList";
+import FriendList from "@/components/shared/friend/FriendList";
 
-const friends = () => {
+const FriendsPage = () => {
   const [isOpen, setIsOpen] = useState(false);
   return (
     <SafeAreaView className="bg-white">
       <MainHeader></MainHeader>
       <Search></Search>
-      <ScrollView horizontal={true} className="request-container flex flex-row mx-[18px]">
-        <FastRequestBox type={true}></FastRequestBox>
-        <FastRequestBox type={false}></FastRequestBox>
-        <FastRequestBox type={false}></FastRequestBox>
-        <FastRequestBox type={false}></FastRequestBox>
-        <FastRequestBox type={true}></FastRequestBox>
-        <FastRequestBox type={true}></FastRequestBox>
-        <FastRequestBox type={true}></FastRequestBox>
-      </ScrollView>
-      <ScrollView className="friends-container"></ScrollView>
+      <FastRequestList></FastRequestList>
+      <FriendList></FriendList>
     </SafeAreaView>
   );
 };
 
-export default friends;
+export default FriendsPage;

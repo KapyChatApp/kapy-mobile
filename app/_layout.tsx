@@ -6,6 +6,7 @@ import { useFonts } from "expo-font";
 import { useEffect } from "react";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import MainHeader from "@/components/navigator/MainHeader";
+import { EventProvider } from "react-native-outside-press";
 SplashScreen.preventAutoHideAsync();
 export default function RootLayout() {
   const [fontsLoaded, error] = useFonts({
@@ -59,11 +60,19 @@ export default function RootLayout() {
 
   return (
     <GestureHandlerRootView>
-      <Stack>
-        <Stack.Screen name="index" options={{ headerShown: false }} />
-        <Stack.Screen name="(auth)" options={{ headerShown: false }} />
-        <Stack.Screen name="(tabs)" options={{ headerShown: false,headerTitle:(props)=><MainHeader></MainHeader> }} />
-      </Stack>
+      <EventProvider>
+        <Stack>
+          <Stack.Screen name="index" options={{ headerShown: false }} />
+          <Stack.Screen name="(auth)" options={{ headerShown: false }} />
+          <Stack.Screen
+            name="(tabs)"
+            options={{
+              headerShown: false,
+              headerTitle: (props) => <MainHeader></MainHeader>,
+            }}
+          />
+        </Stack>
+      </EventProvider>
     </GestureHandlerRootView>
   );
 }
