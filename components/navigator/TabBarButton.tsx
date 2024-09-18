@@ -34,7 +34,6 @@ const TabBarButton = ({ onPress, onLongPress, isFocused, routeName }: any) => {
     };
   });
 
-
   return (
     <Pressable
       onPress={onPress}
@@ -45,10 +44,9 @@ const TabBarButton = ({ onPress, onLongPress, isFocused, routeName }: any) => {
     >
       <Animated.View style={animatedIconStyle}>
         {TabIcons[routeName]()}
-        </Animated.View>
-    
+      </Animated.View>
     </Pressable>
-  )
+  );
 };
 
 export default TabBarButton;

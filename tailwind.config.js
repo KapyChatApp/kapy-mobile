@@ -16,6 +16,7 @@ module.exports = {
         whitesmoke: "#FAFAFA",
         l_input: "#565A59",
         l_search: "#FFF2E8",
+        deny: "#A9A9A9",
       },
       fontSize: {
         40: "40px",

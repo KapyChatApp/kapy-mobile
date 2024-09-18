@@ -10,7 +10,7 @@ import { ScrollView } from "react-native-gesture-handler";
 import FastRequestList from "@/components/shared/friend/FastRequestList";
 import FriendList from "@/components/shared/friend/FriendList";
 
-const friends = () => {
+const FriendsPage = () => {
   const [isOpen, setIsOpen] = useState(false);
   return (
     <SafeAreaView className="bg-white">
@@ -22,4 +22,4 @@ const friends = () => {
   );
 };
 
-export default friends;
+export default FriendsPage;
