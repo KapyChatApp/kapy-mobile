@@ -4,14 +4,9 @@ import { TouchableOpacity } from "react-native-gesture-handler";
 import Icon from "./Icon";
 import { IconURL } from "@/constants/IconURL";
 
-const SunMoonSwitch = ({ onToggle }: any) => {
-  const [isEnabled, setIsEnabled] = useState(false);
-  const [isDarkMode, setIsDarkMode] = useState(false);
+const SunMoonSwitch = ({ isDarkMode,setIsDarkMode }: any) => {
   const toggleSwitch = () => {
-    const newState = !isEnabled;
-    setIsEnabled(newState);
     setIsDarkMode(!isDarkMode);
-    onToggle && onToggle(newState);
   };
   return (
     <TouchableOpacity
@@ -24,10 +19,10 @@ const SunMoonSwitch = ({ onToggle }: any) => {
       <View
         style={[
           styles.circle,
-          { transform: [{ translateX: isEnabled ? 20 : 0 }] },
+          { transform: [{ translateX: isDarkMode ? 20 : 0 }] },
         ]}
       >
-        <Icon size={26} iconURL={isEnabled ? IconURL.moon : IconURL.sun}></Icon>
+        <Icon size={26} iconURL={isDarkMode ? IconURL.moon : IconURL.sun}></Icon>
       </View>
     </TouchableOpacity>
   );
