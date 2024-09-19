@@ -1,8 +1,7 @@
-import { View, Text } from "react-native";
+import { View, Text, TouchableOpacity } from "react-native";
 import React from "react";
-import { TouchableOpacity } from "react-native-gesture-handler";
 
-const RequestButton = ({ type, width, height, onPress }: any) => {
+const FriendButton = ({ type, width, height, onPress, label }: any) => {
   return (
     <TouchableOpacity
       className={`flex justify-center items-center rounded-full ${
@@ -11,9 +10,9 @@ const RequestButton = ({ type, width, height, onPress }: any) => {
       style={{ width: width, height: height }}
       onPress={onPress}
     >
-      <Text className="text-white text-12 font-helvetica-bold">Accept</Text>
+      <Text className="text-white text-12 font-helvetica-bold">{label}</Text>
     </TouchableOpacity>
   );
 };
 
-export default RequestButton;
+export default FriendButton;

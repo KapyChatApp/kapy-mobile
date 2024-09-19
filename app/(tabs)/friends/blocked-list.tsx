@@ -4,27 +4,35 @@ import { useNavigation } from "expo-router";
 import Previous from "@/components/ui/Previous";
 import { ScrollView } from "react-native-gesture-handler";
 import BlockedUserBox from "@/components/shared/friend/BlockedUserBox";
+import { SafeAreaView } from "react-native-safe-area-context";
+import Search from "@/components/shared/function/Search";
 
 const BlockedListPage = () => {
   const navigation = useNavigation();
   return (
-    <View>
-      <Previous navigation={navigation}></Previous>
-        <ScrollView className="mt-[80px]">
-            <BlockedUserBox></BlockedUserBox>
-            <BlockedUserBox></BlockedUserBox>
-            <BlockedUserBox></BlockedUserBox>
-            <BlockedUserBox></BlockedUserBox>
-            <BlockedUserBox></BlockedUserBox>
-            <BlockedUserBox></BlockedUserBox>
-            <BlockedUserBox></BlockedUserBox>
-            <BlockedUserBox></BlockedUserBox>
-            <BlockedUserBox></BlockedUserBox>
-            <BlockedUserBox></BlockedUserBox>
-            <BlockedUserBox></BlockedUserBox>
-            <BlockedUserBox></BlockedUserBox>
+    <SafeAreaView className="bg-white">
+      <Previous navigation={navigation} header="Blocked list"></Previous>
+      <View className="mt-[40px] flex" style={{ rowGap: 4 }}>
+        <Search></Search>
+        <ScrollView
+          className="flex "
+          contentContainerStyle={{ rowGap: 4 }}
+        >
+          <BlockedUserBox></BlockedUserBox>
+          <BlockedUserBox></BlockedUserBox>
+          <BlockedUserBox></BlockedUserBox>
+          <BlockedUserBox></BlockedUserBox>
+          <BlockedUserBox></BlockedUserBox>
+          <BlockedUserBox></BlockedUserBox>
+          <BlockedUserBox></BlockedUserBox>
+          <BlockedUserBox></BlockedUserBox>
+          <BlockedUserBox></BlockedUserBox>
+          <BlockedUserBox></BlockedUserBox>
+          <BlockedUserBox></BlockedUserBox>
+          <BlockedUserBox></BlockedUserBox>
         </ScrollView>
-        </View>
+      </View>
+    </SafeAreaView>
   );
 };
 
