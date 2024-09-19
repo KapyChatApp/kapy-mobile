@@ -10,7 +10,7 @@ const FriendBox = () => {
     <TouchableOpacity className="flex bg-white flex-row items-center p-[14px] border border-border rounded-3xl">
       <UserAvatar size={57}></UserAvatar>
       <View className="flex ml-[9px]">
-        <Text className="font-helvetica-bold text-14 -mb-[4px]">Name</Text>
+        <Text className="font-helvetica-bold text-14">Name</Text>
         <Text className="font-helvetica-light text-12">2 mutual friends</Text>
         <Text className="font-helvetica-light text-[10px] text-cardinal">2 min ago</Text>
       </View>

@@ -7,6 +7,7 @@ import { IconURL } from "@/constants/IconURL";
 import { Image } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Animated from "react-native-reanimated";
+import Icon from "../ui/Icon";
 
 const SideBar = ({ isOpen, setIsOpen }: any) => {
   return isOpen ? (
@@ -17,7 +18,7 @@ const SideBar = ({ isOpen, setIsOpen }: any) => {
           <Text className="font-helvetica-bold text-18 ml-4 ">Name</Text>
         </View>
         <TouchableOpacity onPress={() => setIsOpen(!isOpen)}>
-          <TabIcon iconURL={IconURL.sidebar}></TabIcon>
+          <Icon size={22} iconURL={IconURL.sidebar}></Icon>
         </TouchableOpacity>
       </Animated.View>
     </SafeAreaView>

@@ -31,7 +31,7 @@ const MessageBox = () => {
         <Text
           numberOfLines={1}
           ellipsizeMode="tail"
-          className="font-helvetica-light text-12"
+          className="font-helvetica-light text-12 text-deny"
         >
           00:00
         </Text>
