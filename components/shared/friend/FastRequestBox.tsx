@@ -6,7 +6,7 @@ import { IconURL } from "@/constants/IconURL";
 
 const FastRequestBox = ({ type }: any) => {
   return (
-    <View className="w-[209px] h-[97px] flex flex-row border border-border rounded-3xl items-center justify-center p-[13px] mr-[8px]">
+    <View className="w-[209px] h-[97px] flex flex-row border border-border rounded-3xl items-center justify-center p-[13px]">
       <UserAvatar size={70}></UserAvatar>
       <View className="info-container flex ml-[16px]">
         <Text className="font-helvetica-bold text-14 ">Name</Text>

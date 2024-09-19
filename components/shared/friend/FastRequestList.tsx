@@ -25,6 +25,7 @@ const FastRequestList = () => {
       <ScrollView
         horizontal={true}
         className="request-list flex flex-row mx-[18px]"
+        contentContainerStyle={{ columnGap: 4 }}
       >
         <FastRequestBox type={true}></FastRequestBox>
         <FastRequestBox type={false}></FastRequestBox>

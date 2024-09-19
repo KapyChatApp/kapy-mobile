@@ -10,7 +10,7 @@ const BlockedListPage = () => {
   return (
     <View>
       <Previous navigation={navigation}></Previous>
-        <ScrollView className="mt-[80px]">
+        <ScrollView className="mt-[80px] flex " contentContainerStyle={{rowGap:4}} >
             <BlockedUserBox></BlockedUserBox>
             <BlockedUserBox></BlockedUserBox>
             <BlockedUserBox></BlockedUserBox>
