@@ -8,6 +8,7 @@ const FriendLayout = ({ children }: any) => {
     <Stack initialRouteName="index">
       <Stack.Screen name="index" options={{ headerShown: false }} />
       <Stack.Screen name="all-request" options={{ headerShown: false }} />
+      <Stack.Screen name="blocked-list" options={{ headerShown: false }} />
     </Stack>
   );
 };
