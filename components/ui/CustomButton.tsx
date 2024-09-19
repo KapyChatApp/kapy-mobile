@@ -1,7 +1,7 @@
 import { View, Text, TouchableOpacity } from "react-native";
 import React from "react";
 
-const FriendButton = ({ type, width, height, onPress, label }: any) => {
+const CustomButton = ({ type, width, height, onPress, label }: any) => {
   return (
     <TouchableOpacity
       className={`flex justify-center items-center rounded-full ${
@@ -15,4 +15,4 @@ const FriendButton = ({ type, width, height, onPress, label }: any) => {
   );
 };
 
-export default FriendButton;
+export default CustomButton;
