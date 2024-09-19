@@ -1,7 +1,7 @@
 import { View, Text } from "react-native";
 import React, { useState } from "react";
 import TopBar from "./TopBar";
-import SideBar from "./SideBar";
+import SideBar from "../Sidebar/SideBar";
 
 const MainHeader = () => {
   const [isOpen, setIsOpen] = useState(false);

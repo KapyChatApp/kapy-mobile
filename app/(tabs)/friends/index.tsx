@@ -1,9 +1,9 @@
 import { View, Text } from "react-native";
 import React, { useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
-import SideBar from "@/components/navigator/SideBar";
-import TopBar from "@/components/navigator/TopBar";
-import MainHeader from "@/components/navigator/MainHeader";
+import SideBar from "@/components/navigator/Sidebar/SideBar";
+import TopBar from "@/components/navigator/Topbar/TopBar";
+import MainHeader from "@/components/navigator/Topbar/MainHeader";
 import Search from "@/components/shared/function/Search";
 import FastRequestBox from "@/components/shared/friend/FastRequestBox";
 import { ScrollView } from "react-native-gesture-handler";

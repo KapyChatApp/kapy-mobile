@@ -1,10 +1,10 @@
 import { View, Text, Touchable } from "react-native";
 import React from "react";
-import TabIcon from "../ui/TabIcon";
+import TabIcon from "../../ui/TabIcon";
 import { IconURL } from "@/constants/IconURL";
-import UserAvatar from "../ui/UserAvatar";
+import UserAvatar from "../../ui/UserAvatar";
 import { TouchableOpacity } from "react-native-gesture-handler";
-import Icon from "../ui/Icon";
+import Icon from "../../ui/Icon";
 
 const TopBar = ({ isOpen, setIsOpen }: any) => {
   return (

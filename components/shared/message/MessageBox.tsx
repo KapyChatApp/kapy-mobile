@@ -20,8 +20,7 @@ const MessageBox = () => {
         </Text>
         <Text
           numberOfLines={1}
-          ellipsizeMode="tail"
-          className="font-helvetica-light text-14 "
+          className="font-helvetica-light text-14 overflow-ellipsis"
         >
           Lorem ipsum dolor sit amet consectetur adipisicing elit. Suscipit
           similique, fugit quisquam eum dignissimos, laboriosam maiores deserunt

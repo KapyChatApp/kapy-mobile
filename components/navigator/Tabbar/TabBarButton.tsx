@@ -1,6 +1,6 @@
 import { View, Text, Pressable } from "react-native";
 import React, { useEffect } from "react";
-import TabIcon from "../ui/TabIcon";
+import TabIcon from "../../ui/TabIcon";
 import Animated, {
   interpolate,
   useAnimatedStyle,
