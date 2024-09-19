@@ -18,7 +18,7 @@ const SidebarLinkList = () => {
           ></SidebarItems>
           <SidebarItems
             label="Blocked list"
-            link="/blocked-list"
+            link="/friends/blocked-list"
             iconURL={IconURL.block_list_l}
           ></SidebarItems>
           <SidebarItems
