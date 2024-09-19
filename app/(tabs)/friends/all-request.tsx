@@ -8,14 +8,20 @@ import DetailRequestList from "@/components/shared/friend/DetailRequestList";
 import FriendFilter from "@/components/ui/FriendFilter";
 import OutsidePressHandler, { EventProvider } from "react-native-outside-press";
 import { setClose } from "@/utils/Toggle";
+import { useNavigation } from "expo-router";
+import Previous from "@/components/ui/Previous";
+import TopBarWithoutSideBar from "@/components/navigator/TopBarWithoutSideBar";
 
 const AllRequestPage = () => {
-  const [isOpen, setIsOpen] = useState(false);
+  const navigation = useNavigation();
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   return (
-    <OutsidePressHandler onOutsidePress={()=>setClose(isFilterOpen,setIsFilterOpen)}>
+    <OutsidePressHandler
+      onOutsidePress={() => setClose(isFilterOpen, setIsFilterOpen)}
+    >
       <SafeAreaView className="bg-white">
-        <TopBar isOpen={isOpen} setIsOpen={setIsOpen}></TopBar>
+      <Previous navigation={navigation}></Previous>
+        <TopBarWithoutSideBar></TopBarWithoutSideBar>
         <Search></Search>
         <SafeAreaView className="mt-[10px]">
           <DetailRequestList></DetailRequestList>
