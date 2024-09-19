@@ -10,7 +10,7 @@ const SubmitButton = ({ label, isPressed, onPress }: any) => {
       }`}
       onPress={onPress}
     >
-      <Text className="text-white dark:text-black text-18 font-helvetica-bold">
+      <Text className="text-white  text-18 font-helvetica-bold">
         {label}
       </Text>
     </TouchableOpacity>
