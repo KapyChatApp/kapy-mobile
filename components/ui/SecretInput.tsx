@@ -4,7 +4,7 @@ import { IconURL } from "@/constants/IconURL";
 import { TouchableOpacity } from "react-native-gesture-handler";
 
 const SecretInput = ({ placeHolder, iconURL, onChangeText }: any) => {
-  const [isShow, setIsShow] = useState(true);
+  const [isShow, setIsShow] = useState(false);
   return (
     <View className="flex flex-row">
       <Image
