@@ -2,9 +2,9 @@ import { View, Text } from "react-native";
 import React, { useState } from "react";
 import { Stack } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
-import TopBar from "@/components/navigator/TopBar";
-import SideBar from "@/components/navigator/SideBar";
-import MainHeader from "@/components/navigator/MainHeader";
+import TopBar from "@/components/navigator/Topbar/TopBar";
+import SideBar from "@/components/navigator/Sidebar/SideBar";
+import MainHeader from "@/components/navigator/Topbar/MainHeader";
 import { SearchBar } from "react-native-screens";
 import Search from "@/components/shared/function/Search";
 import MessageBox from "@/components/shared/message/MessageBox";
@@ -17,27 +17,27 @@ const message = () => {
       <MainHeader></MainHeader>
       <Search></Search>
       <SafeAreaView>
-      <ScrollView className="message-list bg-white w-full">
-         <MessageBox></MessageBox>
-         <MessageBox></MessageBox>
-         <MessageBox></MessageBox>
-         <MessageBox></MessageBox>
-         <MessageBox></MessageBox>
-         <MessageBox></MessageBox>
-         <MessageBox></MessageBox>
-         <MessageBox></MessageBox>
-         <MessageBox></MessageBox>
-         <MessageBox></MessageBox>
-         <MessageBox></MessageBox>
-         <MessageBox></MessageBox>
-         <MessageBox></MessageBox>
-         <MessageBox></MessageBox>
-         <MessageBox></MessageBox>
-         <MessageBox></MessageBox>
-         <MessageBox></MessageBox>
-         <MessageBox></MessageBox>
-         <MessageBox></MessageBox>
-      </ScrollView>
+        <ScrollView className="message-list bg-white w-full">
+          <MessageBox></MessageBox>
+          <MessageBox></MessageBox>
+          <MessageBox></MessageBox>
+          <MessageBox></MessageBox>
+          <MessageBox></MessageBox>
+          <MessageBox></MessageBox>
+          <MessageBox></MessageBox>
+          <MessageBox></MessageBox>
+          <MessageBox></MessageBox>
+          <MessageBox></MessageBox>
+          <MessageBox></MessageBox>
+          <MessageBox></MessageBox>
+          <MessageBox></MessageBox>
+          <MessageBox></MessageBox>
+          <MessageBox></MessageBox>
+          <MessageBox></MessageBox>
+          <MessageBox></MessageBox>
+          <MessageBox></MessageBox>
+          <MessageBox></MessageBox>
+        </ScrollView>
       </SafeAreaView>
     </SafeAreaView>
   );

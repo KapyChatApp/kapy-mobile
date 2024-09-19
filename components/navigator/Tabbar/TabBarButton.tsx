@@ -1,6 +1,6 @@
 import { View, Text, Pressable } from "react-native";
 import React, { useEffect } from "react";
-import TabIcon from "../ui/TabIcon";
+import TabIcon from "../../ui/TabIcon";
 import Animated, {
   interpolate,
   useAnimatedStyle,
@@ -9,13 +9,23 @@ import Animated, {
 } from "react-native-reanimated";
 import { IconURL } from "@/constants/IconURL";
 const TabIcons = {
-  message: (props: any) => <TabIcon iconURL={IconURL.message_d}></TabIcon>,
-  friends: (props: any) => <TabIcon iconURL={IconURL.friends_d}></TabIcon>,
-  livemap: (props: any) => <TabIcon iconURL={IconURL.livemap_d}></TabIcon>,
-  setting: (props: any) => <TabIcon iconURL={IconURL.setting_d}></TabIcon>,
+  message: <TabIcon iconURL={IconURL.message_d}></TabIcon>,
+  friends: <TabIcon iconURL={IconURL.friends_d}></TabIcon>,
+  livemap: <TabIcon iconURL={IconURL.livemap_d}></TabIcon>,
+  setting: <TabIcon iconURL={IconURL.setting_d}></TabIcon>,
 };
-
-const TabBarButton = ({ onPress, onLongPress, isFocused, routeName }: any) => {
+type RouteName = keyof typeof TabIcons;
+const TabBarButton = ({
+  onPress,
+  onLongPress,
+  isFocused,
+  routeName,
+}: {
+  onPress: any;
+  onLongPress: any;
+  isFocused: any;
+  routeName: RouteName;
+}) => {
   const scale = useSharedValue(1); // Giá trị ban đầu của scale là 1
 
   const handlePressIn = () => {
@@ -43,7 +53,7 @@ const TabBarButton = ({ onPress, onLongPress, isFocused, routeName }: any) => {
       className="justify-center items-center z-10"
     >
       <Animated.View style={animatedIconStyle}>
-        {TabIcons[routeName]()}
+        {TabIcons[routeName]}
       </Animated.View>
     </Pressable>
   );

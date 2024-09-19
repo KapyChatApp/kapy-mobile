@@ -5,7 +5,7 @@ import { Slot, SplashScreen, Stack } from "expo-router";
 import { useFonts } from "expo-font";
 import { useEffect } from "react";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
-import MainHeader from "@/components/navigator/MainHeader";
+import MainHeader from "@/components/navigator/Topbar/MainHeader";
 import { EventProvider } from "react-native-outside-press";
 SplashScreen.preventAutoHideAsync();
 export default function RootLayout() {
