@@ -1,8 +1,7 @@
 import { View, Text } from "react-native";
 import React from "react";
 import UserAvatar from "@/components/ui/UserAvatar";
-import RequestButton from "@/components/ui/RequestButton";
-import FriendButton from "@/components/ui/FriendButton";
+import CustomButton from "@/components/ui/CustomButton";
 
 const BlockedUserBox = () => {
   return (
@@ -11,7 +10,7 @@ const BlockedUserBox = () => {
         <UserAvatar size={57}></UserAvatar>
         <Text className="text-14 font-helvetica-bold ml-[12px]">Name</Text>
       </View>
-      <FriendButton width={76} height={31} label="Unblock"></FriendButton>
+      <CustomButton width={76} height={31} label="Unblock"></CustomButton>
     </View>
   );
 };
