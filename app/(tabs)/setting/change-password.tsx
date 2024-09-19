@@ -6,6 +6,8 @@ import BaseInput from "@/components/ui/BaseInput";
 import OtherSign from "@/components/ui/OtherSign";
 import SubmitButton from "@/components/ui/SubmitButton";
 import NoticeCard from "@/components/ui/NoticeCard";
+import SecretInput from "@/components/ui/SecretInput";
+import { IconURL } from "@/constants/IconURL";
 
 const ChangePasswordPage = () => {
   const navigation = useNavigation();
@@ -20,21 +22,9 @@ const ChangePasswordPage = () => {
     <SafeAreaView className="flex items-center" style={{ rowGap: 12 }}>
       <Previous navigation={navigation} header="Change password" />
       <View className="flex items-center mt-[60px]" style={{ rowGap: 16 }}>
-        <BaseInput
-          width={354}
-          height={43}
-          label="Enter your old password"
-        ></BaseInput>
-        <BaseInput
-          width={354}
-          height={43}
-          label="Enter your new password"
-        ></BaseInput>
-        <BaseInput
-          width={354}
-          height={43}
-          label="Re-Enter your new password"
-        ></BaseInput>
+        <SecretInput iconURL={IconURL.password_l} placeHolder="Enter your old password"/>
+        <SecretInput iconURL={IconURL.password_l} placeHolder="Enter your new password"/>
+        <SecretInput iconURL={IconURL.password_l} placeHolder="Re-Enter your new password"/>
       </View>
       <OtherSign
         cause="Forgot your password?"
