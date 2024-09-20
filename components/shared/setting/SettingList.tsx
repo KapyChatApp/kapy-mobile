@@ -19,6 +19,7 @@ const SettingList = () => {
           <View>
             {SettingAccountProps.map((item) => (
               <SettingItem
+              key={item.index}
                 index={item.index}
                 label={item.label}
                 link={item.link}
@@ -33,6 +34,7 @@ const SettingList = () => {
           <View>
             {SettingAppProps.map((item) => (
               <SettingItem
+              key={item.index}
                 index={item.index}
                 label={item.label}
                 link={item.link}
