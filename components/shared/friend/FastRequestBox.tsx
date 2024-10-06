@@ -1,8 +1,8 @@
 import { View, Text, Image } from "react-native";
-import React from "react";
-import UserAvatar from "@/components/ui/UserAvatar";
+import React from "react"
 import RequestButton from "@/components/ui/RequestButton";
 import { IconURL } from "@/constants/IconURL";
+import UserAvatar from "@/components/ui/UserAvatar";
 
 const FastRequestBox = ({ type }: any) => {
   return (

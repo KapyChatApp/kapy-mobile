@@ -1,7 +1,7 @@
 import { View, Text } from "react-native";
 import React from "react";
-import UserAvatar from "@/components/ui/UserAvatar";
 import CustomButton from "@/components/ui/CustomButton";
+import UserAvatar from "@/components/ui/UserAvatar";
 
 const BestFriendBox = () => {
   return (

@@ -1,15 +1,15 @@
 import { View, Text } from "react-native";
 import React from "react";
-import UserAvatar from "@/components/ui/UserAvatar";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import Icon from "@/components/ui/Icon";
 import { IconURL } from "@/constants/IconURL";
+import UserAvatarLink from "@/components/ui/UserAvatarLink";
 
 const SidebarHeader = ({ isOpen, setIsOpen }: any) => {
   return (
     <View className="header flex flex-row justify-between items-center px-6">
       <View className="user flex flex-row items-center">
-        <UserAvatar size={57}></UserAvatar>
+        <UserAvatarLink size={57} link="/friends/my-wall"></UserAvatarLink>
         <Text className="font-helvetica-bold text-18 ml-4 ">Name</Text>
       </View>
       <TouchableOpacity onPress={() => setIsOpen(!isOpen)}>
