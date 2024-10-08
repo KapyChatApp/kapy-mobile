@@ -1,6 +1,6 @@
 import { View, Text, TextInput, Image } from "react-native";
 import React from "react";
-import { IconInputField } from "@/types/element";
+import { IconInputField } from "@/types/ui-props";
 
 const DataInputBig = ({ iconURL, placeHolder, onChangeText }: any) => {
   return (

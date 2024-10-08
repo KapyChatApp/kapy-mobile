@@ -31,6 +31,7 @@ export const IconURL = {
   block_list_d: require("../assets/icons/block_list_d.png"),
   call: require("../assets/icons/call.png"),
   change_cam: require("../assets/icons/change_cam.png"),
+  change_image: require("../assets/icons/change_image.png"),
   chat_func_more_l: require("../assets/icons/chat_func_more_l.png"),
   chat_func_more_d: require("../assets/icons/chat_func_more_d.png"),
   close: require("../assets/icons/close.png"),
@@ -91,6 +92,7 @@ export const IconURL = {
   setting_d: require("../assets/icons/setting_d.png"),
   share: require("../assets/icons/share.png"),
   showall: require("../assets/icons/showall.png"),
+  show_more_func: require("../assets/icons/show_more_func.png"),
   sidebar: require("../assets/icons/sidebar.png"),
   sun: require("../assets/icons/sun.png"),
   think: require("../assets/icons/think.png"),
@@ -100,4 +102,3 @@ export const IconURL = {
   visit_card_d: require("../assets/icons/visit_card_d.png"),
   showlist: require("../assets/icons/showlist.png"),
 };
-
