@@ -6,6 +6,8 @@ import { TouchableOpacity } from "react-native-gesture-handler";
 import { Placement } from "react-native-popover-view/dist/Types";
 import { IconURL } from "@/constants/IconURL";
 import Icon from "./Icon";
+import OtherSign from "./OtherSign";
+import { Link } from "expo-router";
 
 const EditableField = ({
   label,
@@ -18,6 +20,8 @@ const EditableField = ({
   defaultValue,
   notice,
   onChangeText,
+  labelLink,
+  redirectLink,
 }: EditableInputFieldProps) => {
   const [isReadOnly, setIsReadOnly] = useState(defaultValue ? true : false);
   const [isPrivate, setIsPrivate] = useState(false);
@@ -59,21 +63,32 @@ const EditableField = ({
             </TouchableOpacity>
           </Popover>
         </View>
-        <Text className="font-helvetica-light text-12">{notice}</Text>
+        {redirectLink? (<View className="flex flex-row items-center gap-x-[2px]">
+          <Text className="font-helvetica-light text-10">{notice}</Text>
+          <Link href={redirectLink} className="font-helvetica-bold text-10 text-cardinal">
+            {labelLink}
+          </Link>
+        </View>):null }
+    
       </View>
       <View
         className="flex items-center flex-row  w-full"
         style={{ width: width, height: height, columnGap: 5 }}
-      >  
-          <TextInput
-            className="rounded-full border border-border font-helvetica-light text-14 px-[12px] flex-1 w-full h-full"
-            defaultValue={defaultValue}
-            readOnly={isAlwaysReadOnly ? true : isReadOnly}
-            placeholder={placeHolder}
-            onChangeText={onChangeText}
-          >
-            <Image source={moreIconURL} width={size} height={size} className="absolute right-[20px]"></Image>
-          </TextInput>
+      >
+        <TextInput
+          className="rounded-full border border-border font-helvetica-light text-14 px-[12px] flex-1 w-full h-full"
+          defaultValue={defaultValue}
+          readOnly={isAlwaysReadOnly ? true : isReadOnly}
+          placeholder={placeHolder}
+          onChangeText={onChangeText}
+        >
+          <Image
+            source={moreIconURL}
+            width={size}
+            height={size}
+            className="absolute right-[20px]"
+          ></Image>
+        </TextInput>
         {isAlwaysReadOnly ? null : (
           <TouchableOpacity onPress={() => setIsReadOnly(false)}>
             <Icon iconURL={IconURL.editable} size={18} />

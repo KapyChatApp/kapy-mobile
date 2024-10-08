@@ -5,10 +5,15 @@ import CustomButton from "@/components/ui/CustomButton";
 import Popover, { PopoverPlacement } from "react-native-popover-view";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import EditablePopover from "@/components/ui/EditablePopover";
-import { Genders } from "@/constants/UiItems";
+import { Genders, RelationShips } from "@/constants/UiItems";
+import EditableDatePicker from "@/components/ui/EditableDatePicker";
+import { IconURL } from "@/constants/IconURL";
 
 const BioEditor = () => {
   const [gender, setGender] = useState("Male");
+  const [birthday, setBirtday] = useState(new Date());
+  const [relationShip, setRelationShip] = useState("single");
+  const fieldHeight = 35;
   return (
     <View
       className="px-[16px] flex items-center justify-center"
@@ -22,7 +27,7 @@ const BioEditor = () => {
           <EditableField
             label="Firstname:"
             width="100%"
-            height={35}
+            height={fieldHeight}
             defaultValue="Recent name"
             onChangeText={(e: any) => console.log(e.target.value)}
           />
@@ -31,7 +36,7 @@ const BioEditor = () => {
           <EditableField
             label="Lastname:"
             width="100%"
-            height={35}
+            height={fieldHeight}
             defaultValue="Recent name"
             onChangeText={(e: any) => console.log(e.target.value)}
           />
@@ -45,7 +50,7 @@ const BioEditor = () => {
           <EditableField
             label="Nickname:"
             width="100%"
-            height={35}
+            height={fieldHeight}
             defaultValue="Recent name"
             onChangeText={(e: any) => console.log(e.target.value)}
           />
@@ -54,62 +59,76 @@ const BioEditor = () => {
           <EditablePopover
             label="Gender"
             width="100%"
-            height={35}
+            height={fieldHeight}
             data={gender}
             setData={setGender}
             values={Genders}
+            moreIconURL={IconURL.show_more_func} 
+            size={12}
+
           />
         </View>
       </View>
 
-      <EditableField
-        label="Label:"
+      <EditableDatePicker
+        label="Birthday"
         width="100%"
-        height={35}
+        height={fieldHeight}
+        data={birthday}
+        setData={setBirtday}
+      />
+      <EditableField
+        label="Address:"
+        width="100%"
+        height={fieldHeight}
         defaultValue="Default value"
         onChangeText={(e: any) => console.log(e.target.value)}
       />
       <EditableField
-        label="Label:"
+        label="Jobs:"
         width="100%"
-        height={35}
+        height={fieldHeight}
         defaultValue="Default value"
         onChangeText={(e: any) => console.log(e.target.value)}
       />
       <EditableField
-        label="Label:"
+        label="Hobbies:"
         width="100%"
-        height={35}
+        height={fieldHeight}
         defaultValue="Default value"
         onChangeText={(e: any) => console.log(e.target.value)}
       />
-      <EditableField
-        label="Label:"
+      <EditablePopover
+        label="RelationShip: "
         width="100%"
-        height={35}
-        defaultValue="Default value"
-        onChangeText={(e: any) => console.log(e.target.value)}
+        height={fieldHeight}
+        data={relationShip}
+        setData={setRelationShip}
+        values={RelationShips}
+        moreIconURL={IconURL.relationship}
+        size={18}
+        
       />
+
       <EditableField
-        label="Label:"
+        label="Phonenumber:"
         width="100%"
-        height={35}
-        defaultValue="Default value"
-        onChangeText={(e: any) => console.log(e.target.value)}
-      />
-      <EditableField
-        label="Label:"
-        width="100%"
-        height={35}
-        defaultValue="Default value"
+        height={fieldHeight}
+        defaultValue="098978511"
         isAlwaysReadOnly={true}
+        notice="PhoneNumber can only change in"
+        labelLink="Security"
+        redirectLink="/"
         onChangeText={(e: any) => console.log(e.target.value)}
       />
       <EditableField
-        label="Label:"
+        label="Email:"
         width="100%"
-        height={35}
-        defaultValue="Default value"
+        height={fieldHeight}
+        defaultValue="example@gmail.com"
+        notice="Email can only change in"
+        labelLink="Security"
+        redirectLink="/"
         isAlwaysReadOnly={true}
         onChangeText={(e: any) => console.log(e.target.value)}
       />

@@ -14,6 +14,8 @@ const EditablePopover = ({
   values,
   data,
   setData,
+  moreIconURL,
+  size
 }: EditablePopoverProps) => {
   const [isPrivate, setIsPrivate] = useState(false);
   return (
@@ -68,7 +70,7 @@ const EditablePopover = ({
             from={
               <TouchableOpacity className="border border-border rounded-full px-[12px]  flex flex-row items-center justify-between h-full w-full flex-1">
                 <Text className="text-14 text-border">{data}</Text>
-                <Icon iconURL={IconURL.show_more_func} size={10}></Icon>
+                <Icon iconURL={moreIconURL} size={size}></Icon>
               </TouchableOpacity>
             }
           >
