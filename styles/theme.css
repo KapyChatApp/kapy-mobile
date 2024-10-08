@@ -1,0 +1,25 @@
+/* background */
+
+.bg-light500_dark10 {
+  @apply bg-light-500 dark:bg-dark-10;
+}
+.bg-light510_dark10 {
+  @apply bg-light-510 dark:bg-dark-10;
+}
+.bg-light510_dark20 {
+  @apply bg-light-510 dark:bg-dark-20;
+}
+.bg-light340_dark330 {
+  @apply bg-light-340 dark:bg-dark-330;
+}
+.bg-light520_dark300 {
+  @apply bg-light520 dark:bg-dark-300;
+}
+.bg-light100_dark0 {
+  @apply bg-light-100 dark:bg-dark-0;
+}
+
+/* text */
+.text-light0_dark500 {
+  @apply text-light-0 dark:text-dark-500;
+}

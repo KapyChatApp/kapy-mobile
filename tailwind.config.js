@@ -4,6 +4,31 @@ module.exports = {
   theme: {
     extend: {
       colors: {
+        light: {
+          0: "#000000",
+          100: "#F57206",
+          200: "#FFAB66",
+          300: "#DBDBDB",
+          310: "#CCCCCC",
+          320: "#A9A9A9",
+          330: "#565A59",
+          340:"#F0F0F0",
+          500: "#FFFFFF",
+          510: "#FAFAFA",
+          520: "#FFF2E8",
+        },
+        dark: {
+          0: "#000000",
+          10: "#0A090D",
+          20: "#1F1F1F",
+          100: "#F57206",
+          200: "#FFAB66",
+          300: "#2B2B2B",
+          310: "#565A59",
+          320: "#A9A9A9",
+          330: "#4C4C4C",
+          500: "#FFFFFF",
+        },
         cardinal: "#F57206",
         black: "#000000",
         white: "#FFFFFF",
@@ -20,7 +45,7 @@ module.exports = {
       },
       fontSize: {
         40: "40px",
-        24:"24px",
+        24: "24px",
         18: "18px",
         16: "16px",
         14: "14px",
