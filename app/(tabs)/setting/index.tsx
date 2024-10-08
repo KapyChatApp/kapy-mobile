@@ -7,12 +7,13 @@ import SettingHeader from "@/components/shared/setting/SettingHeader";
 import { ScrollView } from "react-native-gesture-handler";
 import SettingItem from "@/components/shared/setting/SettingItem";
 import SettingList from "@/components/shared/setting/SettingList";
-
 const SettingPage = () => {
   return (
-    <SafeAreaView className="bg-white">
+    <SafeAreaView className="bg-light-500 dark:bg-dark-10">
       <SettingHeader />
-      <SafeAreaView><SettingList /></SafeAreaView>
+      <SafeAreaView>
+        <SettingList />
+      </SafeAreaView>
     </SafeAreaView>
   );
 };

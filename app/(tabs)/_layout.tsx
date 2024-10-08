@@ -4,12 +4,7 @@ import { Stack, Tabs } from "expo-router";
 import { IconURL } from "@/constants/IconURL";
 import TabIcon from "@/components/ui/TabIcon";
 import TabBar from "@/components/navigator/Tabbar/TabBar";
-import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
-import { Drawer } from "expo-router/drawer";
-import SideBar from "@/components/navigator/Sidebar/SideBar";
-import { Header } from "react-native/Libraries/NewAppScreen";
-import TopBar from "@/components/navigator/Topbar/TopBar";
-
+import "@/styles/theme.css"
 const HomeLayout = () => {
   return (
     <Tabs

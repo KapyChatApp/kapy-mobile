@@ -3,6 +3,7 @@ module.exports = {
   content: ["./app/**/*.{js,jsx,ts,tsx}", "./components/**/*.{js,jsx,ts,tsx}"],
   theme: {
     extend: {
+      'bg-light500_dark10':'bg-light-500 dark:bg-dark-10',
       colors: {
         light: {
           0: "#000000",
