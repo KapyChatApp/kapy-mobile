@@ -5,8 +5,9 @@ import { TouchableOpacity } from "react-native-gesture-handler";
 const DenyButton = ({ label, width, height, onPress }: any) => {
   return (
     <TouchableOpacity
-      className={`flex justify-center items-center w-[${width}px] h-[${height}px] rounded-full bg-deny`}
+      className={`flex justify-center items-center rounded-full bg-deny`}
       onPress={onPress}
+      style={{width:width, height:height}}
     >
       <Text className="text-white  text-12 font-helvetica-bold">{label}</Text>
     </TouchableOpacity>

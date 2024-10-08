@@ -1,10 +1,10 @@
 import { View, Text, Image } from "react-native";
 import React from "react";
-import UserAvatar from "@/components/ui/UserAvatar";
 import RequestButton from "@/components/ui/RequestButton";
 import DenyButton from "@/components/ui/DenyButton";
 import Icon from "@/components/ui/Icon";
 import { IconURL } from "@/constants/IconURL";
+import UserAvatar from "@/components/ui/UserAvatar";
 
 const DetailRequestBox = ({ type }: any) => {
   return (

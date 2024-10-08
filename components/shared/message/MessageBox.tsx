@@ -1,7 +1,7 @@
 import { View, Text } from "react-native";
 import React, { useState } from "react";
-import UserAvatar from "@/components/ui/UserAvatar";
 import { TouchableOpacity } from "react-native-gesture-handler";
+import UserAvatar from "@/components/ui/UserAvatar";
 
 const MessageBox = () => {
   return (

@@ -1,9 +1,9 @@
 import { View, Text } from "react-native";
 import React from "react";
-import UserAvatar from "@/components/ui/UserAvatar";
 import { Link } from "expo-router";
 import Icon from "@/components/ui/Icon";
 import { TouchableOpacity } from "react-native-gesture-handler";
+import UserAvatar from "@/components/ui/UserAvatar";
 
 const FriendBox = () => {
   return (
@@ -12,7 +12,9 @@ const FriendBox = () => {
       <View className="flex ml-[9px]">
         <Text className="font-helvetica-bold text-14">Name</Text>
         <Text className="font-helvetica-light text-12">2 mutual friends</Text>
-        <Text className="font-helvetica-light text-[10px] text-cardinal">2 min ago</Text>
+        <Text className="font-helvetica-light text-[10px] text-cardinal">
+          2 min ago
+        </Text>
       </View>
     </TouchableOpacity>
   );

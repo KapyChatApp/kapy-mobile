@@ -1,16 +1,18 @@
 import { View, Text, Switch, Image } from "react-native";
 import React, { useState } from "react";
-import UserAvatar from "@/components/ui/UserAvatar";
 import CustomButton from "@/components/ui/CustomButton";
 import { IconURL } from "@/constants/IconURL";
 import SunMoonSwitch from "@/components/ui/SunMoonSwitch";
+import UserAvatarLink from "@/components/ui/UserAvatarLink";
+import { useRouter } from "expo-router";
 const SettingHeader = () => {
   const [isOn, setIsOn] = useState(false);
   const [isDarkMode, setIsDarkMode] = useState();
+  const router = useRouter();
   return (
     <View className="flex flex-row items-center justify-between py-[17px] px-[19px]">
       <View className="flex flex-row">
-        <UserAvatar size={72}></UserAvatar>
+        <UserAvatarLink size={72} link="/friends/my-wall"></UserAvatarLink>
         <View className="flex ml-[12px] justify-center">
           <Text className="text-18 font-helvetica-bold">Name</Text>
           <Text className="text-16 font-helvetica-light">@linkname</Text>
@@ -22,6 +24,7 @@ const SettingHeader = () => {
           width={106}
           height={33}
           label="Update profile"
+          onPress={()=>{router.push("/setting/update-profile")}}
         ></CustomButton>
         <View className="flex flex-row items-center justify-around">
           <Text
