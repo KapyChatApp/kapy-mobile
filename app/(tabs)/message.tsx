@@ -9,15 +9,16 @@ import { SearchBar } from "react-native-screens";
 import Search from "@/components/shared/function/Search";
 import MessageBox from "@/components/shared/message/MessageBox";
 import { ScrollView } from "react-native-gesture-handler";
+import { bgLight500Dark10 } from "@/styles/theme";
 
 const message = () => {
   const [isOpen, setIsOpen] = useState(false);
   return (
-    <SafeAreaView className="bg-white">
+    <SafeAreaView className={`${bgLight500Dark10}`}>
       <MainHeader></MainHeader>
       <Search></Search>
       <SafeAreaView>
-        <ScrollView className="message-list bg-white w-full">
+        <ScrollView className="message-list w-full">
           <MessageBox></MessageBox>
           <MessageBox></MessageBox>
           <MessageBox></MessageBox>

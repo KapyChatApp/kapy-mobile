@@ -6,11 +6,12 @@ import HeadProfile from "@/components/shared/community/HeadProfile";
 import { ScrollView } from "react-native-gesture-handler";
 import Previous from "@/components/ui/Previous";
 import UserBio from "@/components/shared/community/UserBio";
+import { bgLight500Dark10 } from "@/styles/theme";
 
 const MyWallPage = () => {
   const navigation = useNavigation();
   return (
-    <SafeAreaView className="">
+    <SafeAreaView className={`${bgLight500Dark10}`}>
       <ScrollView
         className="w-screen h-screen flex "
         style={{ display: "flex", rowGap: 50 }}

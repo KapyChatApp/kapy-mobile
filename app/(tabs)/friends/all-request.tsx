@@ -11,6 +11,7 @@ import { setClose } from "@/utils/Toggle";
 import { useNavigation } from "expo-router";
 import Previous from "@/components/ui/Previous";
 import TopBarWithoutSideBar from "@/components/navigator/Topbar/TopBarWithoutSideBar";
+import { bgLight500Dark10 } from "@/styles/theme";
 
 const AllRequestPage = () => {
   const navigation = useNavigation();
@@ -19,7 +20,7 @@ const AllRequestPage = () => {
     <OutsidePressHandler
       onOutsidePress={() => setClose(isFilterOpen, setIsFilterOpen)}
     >
-      <SafeAreaView className="bg-white">
+      <SafeAreaView className={`${bgLight500Dark10}`}>
         <Previous navigation={navigation}></Previous>
         <TopBarWithoutSideBar></TopBarWithoutSideBar>
         <Search></Search>

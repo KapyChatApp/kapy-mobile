@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Children } from "react";
 import * as SecureStore from "expo-secure-store";
 import { ClerkProvider, ClerkLoaded } from "@clerk/clerk-expo";
 import { Slot, SplashScreen, Stack } from "expo-router";
@@ -7,6 +7,7 @@ import { useEffect } from "react";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import MainHeader from "@/components/navigator/Topbar/MainHeader";
 import { EventProvider } from "react-native-outside-press";
+import { ThemeProvider } from "@/context/ThemeProviders";
 SplashScreen.preventAutoHideAsync();
 export default function RootLayout() {
   const [fontsLoaded, error] = useFonts({
@@ -57,10 +58,11 @@ export default function RootLayout() {
   //     "Missing Publishable Key. Please set EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY in your .env"
   //   );
   // }
-
+  
   return (
     <GestureHandlerRootView>
       <EventProvider>
+      <ThemeProvider>
         <Stack>
           <Stack.Screen name="index" options={{ headerShown: false }} />
           <Stack.Screen name="(auth)" options={{ headerShown: false }} />
@@ -72,6 +74,7 @@ export default function RootLayout() {
             }}
           />
         </Stack>
+        </ThemeProvider>
       </EventProvider>
     </GestureHandlerRootView>
   );

@@ -5,10 +5,11 @@ import DenyButton from "@/components/ui/DenyButton";
 import Icon from "@/components/ui/Icon";
 import { IconURL } from "@/constants/IconURL";
 import UserAvatar from "@/components/ui/UserAvatar";
+import { bgLight510Dark20, textLight0Dark500 } from "@/styles/theme";
 
 const DetailRequestBox = ({ type }: any) => {
   return (
-    <View className="flex flex-row border bg-whitesmoke border-border p-[14px] rounded-3xl items-center justify-between relative mt-[4px]">
+    <View className={`flex flex-row border border-border p-[14px] rounded-3xl items-center justify-between relative mt-[4px] ${bgLight510Dark20}`}>
       <View className="absolute -top-[14px] -left-[8px] z-">
         <Icon
           size={32}
@@ -18,8 +19,8 @@ const DetailRequestBox = ({ type }: any) => {
       <View className="flex flex-row items-center">
         <UserAvatar size={57}></UserAvatar>
         <View className="ml-[9px]">
-          <Text className="font-helvetica-bold text-14">Name</Text>
-          <Text className="font-helvetica-light text-12">2 mutual friends</Text>
+          <Text className={`font-helvetica-bold text-14 ${textLight0Dark500}`}>Name</Text>
+          <Text className={`font-helvetica-light text-12 ${textLight0Dark500}`}>2 mutual friends</Text>
           <Text className="font-helvetica-light text-[10px] text-cardinal">
             Send request at 00:00
           </Text>

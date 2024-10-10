@@ -5,6 +5,7 @@ import { TouchableOpacity } from "react-native-gesture-handler";
 import Icon from "./Icon";
 import { IconURL } from "@/constants/IconURL";
 import { EditablePopoverProps } from "@/types/ui-props";
+import { textLight0Dark500 } from "@/styles/theme";
 
 const EditablePopover = ({
   label,
@@ -15,13 +16,15 @@ const EditablePopover = ({
   data,
   setData,
   moreIconURL,
-  size
+  size,
 }: EditablePopoverProps) => {
   const [isPrivate, setIsPrivate] = useState(false);
   return (
     <View className="">
       <View className="flex flex-row items-center gap-x-[4px]">
-        <Text className="font-helvetica-light text-14">{label}</Text>
+        <Text className={`font-helvetica-light text-14 ${textLight0Dark500}`}>
+          {label}
+        </Text>
         <View className="w-[68px] h-[26px]">
           <Popover
             offset={0}
@@ -66,7 +69,7 @@ const EditablePopover = ({
             backgroundStyle={{ backgroundColor: "transparent" }}
             arrowSize={{ width: 0, height: 0 }}
             placement={PopoverPlacement.BOTTOM}
-            popoverStyle={{width:120}}
+            popoverStyle={{ width: 120 }}
             from={
               <TouchableOpacity className="border border-border rounded-full px-[12px]  flex flex-row items-center justify-between h-full w-full flex-1">
                 <Text className="text-14 text-border">{data}</Text>

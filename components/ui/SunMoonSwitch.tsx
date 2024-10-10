@@ -3,26 +3,31 @@ import React, { useState } from "react";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import Icon from "./Icon";
 import { IconURL } from "@/constants/IconURL";
+import { useTheme } from "@/context/ThemeProviders";
 
-const SunMoonSwitch = ({ isDarkMode,setIsDarkMode }: any) => {
+const SunMoonSwitch = ({ isDarkTheme, toggleTheme }: any) => {
+
   const toggleSwitch = () => {
-    setIsDarkMode(!isDarkMode);
+    toggleTheme();
   };
   return (
     <TouchableOpacity
       onPress={toggleSwitch}
       style={[
         styles.containerSwitch,
-        { backgroundColor: isDarkMode ? "#FFFFFF" : "#FFAB66" },
+        { backgroundColor: isDarkTheme ? "#FFFFFF" : "#FFAB66" },
       ]}
     >
       <View
         style={[
           styles.circle,
-          { transform: [{ translateX: isDarkMode ? 20 : 0 }] },
+          { transform: [{ translateX: isDarkTheme ? 20 : 0 }] },
         ]}
       >
-        <Icon size={26} iconURL={isDarkMode ? IconURL.moon : IconURL.sun}></Icon>
+        <Icon
+          size={26}
+          iconURL={isDarkTheme ? IconURL.moon : IconURL.sun}
+        ></Icon>
       </View>
     </TouchableOpacity>
   );
