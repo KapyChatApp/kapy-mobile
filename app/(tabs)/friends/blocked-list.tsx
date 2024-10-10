@@ -6,18 +6,16 @@ import { ScrollView } from "react-native-gesture-handler";
 import BlockedUserBox from "@/components/shared/friend/BlockedUserBox";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Search from "@/components/shared/function/Search";
+import { bgLight500Dark10 } from "@/styles/theme";
 
 const BlockedListPage = () => {
   const navigation = useNavigation();
   return (
-    <SafeAreaView className="bg-white">
+    <SafeAreaView className={`${bgLight500Dark10}`}>
       <Previous navigation={navigation} header="Blocked list"></Previous>
       <View className="mt-[40px] flex" style={{ rowGap: 4 }}>
         <Search></Search>
-        <ScrollView
-          className="flex "
-          contentContainerStyle={{ rowGap: 4 }}
-        >
+        <ScrollView className="flex " contentContainerStyle={{ rowGap: 4 }}>
           <BlockedUserBox></BlockedUserBox>
           <BlockedUserBox></BlockedUserBox>
           <BlockedUserBox></BlockedUserBox>
