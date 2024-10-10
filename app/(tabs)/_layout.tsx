@@ -4,7 +4,6 @@ import { Stack, Tabs } from "expo-router";
 import { IconURL } from "@/constants/IconURL";
 import TabIcon from "@/components/ui/TabIcon";
 import TabBar from "@/components/navigator/Tabbar/TabBar";
-import "@/styles/theme.css"
 const HomeLayout = () => {
   return (
     <Tabs

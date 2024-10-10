@@ -7,9 +7,12 @@ import SettingHeader from "@/components/shared/setting/SettingHeader";
 import { ScrollView } from "react-native-gesture-handler";
 import SettingItem from "@/components/shared/setting/SettingItem";
 import SettingList from "@/components/shared/setting/SettingList";
+import { useTailwind } from "tailwind-rn";
+import { bgLight500Dark10 } from "@/styles/theme";
+
 const SettingPage = () => {
   return (
-    <SafeAreaView className="bg-light-500 dark:bg-dark-10">
+    <SafeAreaView className={`${bgLight500Dark10} bg-light-500 dark:bg-dark-10`}>
       <SettingHeader />
       <SafeAreaView>
         <SettingList />

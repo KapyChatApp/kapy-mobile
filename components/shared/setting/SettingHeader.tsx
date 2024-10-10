@@ -6,6 +6,7 @@ import SunMoonSwitch from "@/components/ui/SunMoonSwitch";
 import UserAvatarLink from "@/components/ui/UserAvatarLink";
 import { useRouter } from "expo-router";
 import { useTheme } from "@/context/ThemeProviders";
+import {textLight0Dark500 } from "@/styles/theme";
 const SettingHeader = () => {
   const [isOn, setIsOn] = useState(false);
   const router = useRouter();
@@ -14,9 +15,9 @@ const SettingHeader = () => {
     <View className="flex flex-row items-center justify-between py-[17px] px-[19px]">
       <View className="flex flex-row">
         <UserAvatarLink size={72} link="/friends/my-wall"></UserAvatarLink>
-        <View className="flex ml-[12px] justify-center">
-          <Text className="text-18 font-helvetica-bold">Name</Text>
-          <Text className="text-16 font-helvetica-light">@linkname</Text>
+        <View className={`flex ml-[12px] justify-center `}>
+          <Text className={`text-18 font-helvetica-bold text-light-0 dark:text-dark-500 ${textLight0Dark500} ` }>Name</Text>
+          <Text className={`text-16 font-helvetica-light ${textLight0Dark500}`}>@linkname</Text>
           <Text className="text-14 font-helvetica-bold text-cardinal">100</Text>
         </View>
       </View>

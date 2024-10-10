@@ -6,7 +6,7 @@ import SettingItem from "./SettingItem";
 
 const SecurityList = () => {
   return (
-    <ScrollView className="mt-[60px]">
+    <ScrollView className="mt-[60px] w-full">
       {SettingSecurityProps.map((item) => (
         <SettingItem
           label={item.label}

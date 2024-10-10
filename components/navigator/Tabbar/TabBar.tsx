@@ -15,7 +15,10 @@ import Animated, {
   withSpring,
 } from "react-native-reanimated";
 import TabBarButton from "./TabBarButton";
+import { bgLight100Dark0 } from "@/styles/theme";
+import { useTheme } from "@/context/ThemeProviders";
 const TabBar = ({ state, descriptors, navigation }: BottomTabBarProps) => {
+  const { theme } = useTheme();
   const [dimensions, setDimensions] = useState({ height: 70, width: 250 });
   const buttonWidth = dimensions.width / state.routes.length;
   const onTabbarLayout = (e: LayoutChangeEvent) => {
@@ -34,14 +37,14 @@ const TabBar = ({ state, descriptors, navigation }: BottomTabBarProps) => {
     <View
       onLayout={onTabbarLayout}
       style={{ flexDirection: "row" }}
-      className="h-[56px] bg-cardinal flex flex-row items-center justify-around"
+      className={`h-[56px]  flex flex-row items-center justify-around bg-cardinal dark:bg-black `}
     >
       <Animated.View
         style={[
           animatedStyle,
           {
             position: "absolute",
-            backgroundColor: "#F57602",
+            backgroundColor: theme === "light" ? "#F57602" : "#000000",
             borderColor: "#FFFFFF",
             borderWidth: 4,
             borderRadius: 90,
