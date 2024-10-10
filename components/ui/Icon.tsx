@@ -2,7 +2,7 @@ import { View, Text, Image } from "react-native";
 import React from "react";
 import { useTheme } from "@/context/ThemeProviders";
 
-const Icon = ({ iconURL, size }: { iconURL: any; size: number }) => {
+const Icon = ({ iconURL, size }: any) => {
   const { theme } = useTheme();
 
   const modifiedIconURL = 

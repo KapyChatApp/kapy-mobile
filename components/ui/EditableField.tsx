@@ -8,6 +8,7 @@ import { IconURL } from "@/constants/IconURL";
 import Icon from "./Icon";
 import OtherSign from "./OtherSign";
 import { Link } from "expo-router";
+import { textLight0Dark500 } from "@/styles/theme";
 
 const EditableField = ({
   label,
@@ -28,7 +29,7 @@ const EditableField = ({
   return (
     <View>
       <View className="w-full flex flex-row items-center gap-x-[4px]">
-        <Text className="font-helvetica-light text-14">{label}</Text>
+        <Text className={`font-helvetica-light text-14 ${textLight0Dark500}`}>{label}</Text>
         <View className="w-[68px] h-[26px]">
           <Popover
             offset={0}
@@ -63,20 +64,26 @@ const EditableField = ({
             </TouchableOpacity>
           </Popover>
         </View>
-        {redirectLink? (<View className="flex flex-row items-center gap-x-[2px]">
-          <Text className="font-helvetica-light text-10">{notice}</Text>
-          <Link href={redirectLink} className="font-helvetica-bold text-10 text-cardinal">
-            {labelLink}
-          </Link>
-        </View>):null }
-    
+        {redirectLink ? (
+          <View className="flex flex-row items-center gap-x-[2px]">
+            <Text className="font-helvetica-light text-10">{notice}</Text>
+            <Link
+              href={redirectLink}
+              className="font-helvetica-bold text-10 text-cardinal"
+            >
+              {labelLink}
+            </Link>
+          </View>
+        ) : null}
       </View>
       <View
         className="flex items-center flex-row  w-full"
         style={{ width: width, height: height, columnGap: 5 }}
       >
         <TextInput
-          className="rounded-full border border-border font-helvetica-light text-14 px-[12px] flex-1 w-full h-full"
+          className={`rounded-full border border-border font-helvetica-light text-14 px-[12px] flex-1 w-full h-full ${
+            isReadOnly ? "text-deny" : textLight0Dark500
+          }`}
           defaultValue={defaultValue}
           readOnly={isAlwaysReadOnly ? true : isReadOnly}
           placeholder={placeHolder}

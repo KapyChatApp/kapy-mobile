@@ -4,10 +4,13 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import HeaderProfileEditor from "@/components/shared/setting/HeaderProfileEditor";
 import BioEditor from "@/components/shared/setting/BioEditor";
 import { ScrollView } from "react-native-gesture-handler";
+import { bgLight500Dark10 } from "@/styles/theme";
+import Previous from "@/components/ui/Previous";
+import { useNavigation } from "expo-router";
 
 const UpdateProfilePage = () => {
   return (
-    <SafeAreaView>
+    <SafeAreaView className={`${bgLight500Dark10}`}>
       <ScrollView>
         <HeaderProfileEditor />
         <View className="space w-full h-[90px]"></View>

@@ -7,6 +7,7 @@ import { IconURL } from '@/constants/IconURL'
 import { EditabelDatePickerProps } from '@/types/ui-props'
 import DatePicker from 'react-native-date-picker'
 import DateTimePicker from 'react-native-ui-datepicker'
+import { textLight0Dark500 } from '@/styles/theme'
  
  const EditableDatePicker = ({
   label,
@@ -22,7 +23,7 @@ import DateTimePicker from 'react-native-ui-datepicker'
    return (
     <View>
     <View className="w-full flex flex-row items-center gap-x-[4px]">
-      <Text className="font-helvetica-light text-14">{label}</Text>
+      <Text className={`font-helvetica-light ${textLight0Dark500}`} text-14>{label}</Text>
       <View className="w-[68px] h-[26px]">
         <Popover
           offset={0}
