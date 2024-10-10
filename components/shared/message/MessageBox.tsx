@@ -2,7 +2,7 @@ import { View, Text } from "react-native";
 import React, { useState } from "react";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import UserAvatar from "@/components/ui/UserAvatar";
-import { bgLight510Dark10 } from "@/styles/theme";
+import { bgLight510Dark10, textLight0Dark500 } from "@/styles/theme";
 
 const MessageBox = () => {
   return (
@@ -15,13 +15,13 @@ const MessageBox = () => {
         <Text
           numberOfLines={1}
           ellipsizeMode="tail"
-          className="font-helvetica-bold text-14"
+          className={`font-helvetica-bold text-14 ${textLight0Dark500}`}
         >
           Name
         </Text>
         <Text
           numberOfLines={1}
-          className="font-helvetica-light text-14 overflow-ellipsis"
+          className={`font-helvetica-light text-14 overflow-ellipsis ${textLight0Dark500}`}
         >
           Lorem ipsum dolor sit amet consectetur adipisicing elit.
         </Text>

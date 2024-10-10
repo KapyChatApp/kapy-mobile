@@ -12,7 +12,7 @@ import { bgLight500Dark10 } from "@/styles/theme";
 
 const SettingPage = () => {
   return (
-    <SafeAreaView className={`${bgLight500Dark10} bg-light-500 dark:bg-dark-10`}>
+    <SafeAreaView className={`${bgLight500Dark10} bg-light-500 dark:bg-dark-10 h-full`}>
       <SettingHeader />
       <SafeAreaView>
         <SettingList />

@@ -5,10 +5,11 @@ import { IconURL } from "@/constants/IconURL";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import Icon from "../../ui/Icon";
 import UserAvatarLink from "@/components/ui/UserAvatarLink";
+import { bgLight500Dark0 } from "@/styles/theme";
 
 const TopBar = ({ isOpen, setIsOpen }: any) => {
   return (
-    <View className="wrapper flex flex-row items-center justify-between mx-[22px]">
+    <View className={`wrapper flex flex-row items-center justify-between mx-[22px] ${bgLight500Dark0}`}>
       <TouchableOpacity onPress={() => setIsOpen(!isOpen)}>
         <Icon size={22} iconURL={IconURL.sidebar}></Icon>
       </TouchableOpacity>
