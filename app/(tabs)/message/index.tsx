@@ -11,7 +11,7 @@ import MessageBox from "@/components/shared/message/MessageBox";
 import { ScrollView } from "react-native-gesture-handler";
 import { bgLight500Dark10 } from "@/styles/theme";
 
-const message = () => {
+const OutSideMessagePage = () => {
   const [isOpen, setIsOpen] = useState(false);
   return (
     <SafeAreaView className={`${bgLight500Dark10}`}>
@@ -44,4 +44,4 @@ const message = () => {
   );
 };
 
-export default message;
+export default OutSideMessagePage;
