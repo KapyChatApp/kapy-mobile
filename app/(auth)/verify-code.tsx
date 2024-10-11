@@ -29,7 +29,7 @@ const VerifyCodePage = () => {
   }, [countDown]);
   return (
     <View className="flex items-center h-full w-full">
-      <Previous navigation={navigation}></Previous>
+      <Previous navigation={navigation} isAbsolute={true}></Previous>
       <Text className="text-18 font-helvetica-light mt-[118px] w-[303px] text-center">
         We have send an verification code to your {info}
       </Text>

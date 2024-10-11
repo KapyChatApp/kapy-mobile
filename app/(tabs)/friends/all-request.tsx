@@ -21,7 +21,7 @@ const AllRequestPage = () => {
       onOutsidePress={() => setClose(isFilterOpen, setIsFilterOpen)}
     >
       <SafeAreaView className={`${bgLight500Dark10}`}>
-        <Previous navigation={navigation}></Previous>
+        <Previous navigation={navigation} isAbsolute={true}></Previous>
         <TopBarWithoutSideBar></TopBarWithoutSideBar>
         <Search></Search>
         <SafeAreaView className="mt-[10px]">

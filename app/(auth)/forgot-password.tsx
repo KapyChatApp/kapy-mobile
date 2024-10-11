@@ -17,7 +17,7 @@ const ForgotPasswordPage = () => {
   };
   return (
     <View>
-      <Previous navigation={navigation} header="Forgot password"></Previous>
+      <Previous navigation={navigation} header="Forgot password" isAbsolute={true}></Previous>
       <View className="flex items-center top-28" style={{ gap: 26 }}>
         <DataInputBig
           placeHolder="Enter your email/ phonenumber"

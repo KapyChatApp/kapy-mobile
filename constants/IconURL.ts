@@ -97,7 +97,7 @@ export const IconURL = {
   sun: require("../assets/icons/sun.png"),
   think: require("../assets/icons/think.png"),
   upgrade_plan: require("../assets/icons/upgrade_plan.png"),
-  vide_call: require("../assets/icons/video_call.png"),
+  video_call: require("../assets/icons/video_call.png"),
   visit_card_l: require("../assets/icons/visit_card_l.png"),
   visit_card_d: require("../assets/icons/visit_card_d.png"),
   showlist: require("../assets/icons/showlist.png"),

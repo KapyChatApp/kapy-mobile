@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { IconURL } from "@/constants/IconURL";
 
-const Previous = ({ navigation, header }: any) => {
+const Previous = ({ navigation, header, isAbsolute }: any) => {
   const [textWidth, setTextWidth] = useState(0);
   const handleTextLayout = (event: any) => {
     const { width } = event.nativeEvent.layout;
@@ -12,7 +12,9 @@ const Previous = ({ navigation, header }: any) => {
   return (
     <View
       pointerEvents="auto"
-      className="absolute top-[20px] left-[20px] flex flex-row items-center gap-4"
+      className={`${
+        isAbsolute ? "absolute top-[20px] left-[20px]" : ""
+      }  flex flex-row items-center gap-4`}
     >
       <TouchableOpacity onPress={() => navigation.goBack()}>
         <Image source={IconURL.previous} className="w-[40px] h-[40px]"></Image>

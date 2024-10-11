@@ -20,7 +20,7 @@ const ChangePasswordPage = () => {
   };
   return (
     <SafeAreaView className="flex items-center" style={{ rowGap: 12 }}>
-      <Previous navigation={navigation} header="Change password" />
+      <Previous navigation={navigation} header="Change password" isAbsolute={true}/>
       <View className="flex items-center mt-[60px]" style={{ rowGap: 16 }}>
         <SecretInput iconURL={IconURL.password_l} placeHolder="Enter your old password"/>
         <SecretInput iconURL={IconURL.password_l} placeHolder="Enter your new password"/>

@@ -17,7 +17,7 @@ const MyWallPage = () => {
         style={{ display: "flex", rowGap: 50 }}
       >
         <HeadProfile />
-        <Previous navigation={navigation}></Previous>
+        <Previous navigation={navigation} isAbsolute={true}></Previous>
         <UserBio></UserBio>
       </ScrollView>
     </SafeAreaView>
