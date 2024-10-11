@@ -1,5 +1,6 @@
 // Background styles
-export const bgLight500Dark0 = "bg-light-500 dark:bg-dark-0"
+export const bgLight500Dark50 = "bg-light-500 dark:bg-dark-50";
+export const bgLight500Dark0 = "bg-light-500 dark:bg-light-0";
 export const bgLight500Dark10 = "bg-light-500 dark:bg-dark-10";
 export const bgLight510Dark10 = "bg-light-510 dark:bg-dark-10";
 export const bgLight510Dark20 = "bg-light-510 dark:bg-dark-20";

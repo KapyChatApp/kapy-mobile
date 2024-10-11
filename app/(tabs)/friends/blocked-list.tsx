@@ -12,7 +12,7 @@ const BlockedListPage = () => {
   const navigation = useNavigation();
   return (
     <SafeAreaView className={`${bgLight500Dark10}`}>
-      <Previous navigation={navigation} header="Blocked list"></Previous>
+      <Previous navigation={navigation} isAbsolute={true} header="Blocked list"></Previous>
       <View className="mt-[40px] flex" style={{ rowGap: 4 }}>
         <Search></Search>
         <ScrollView className="flex " contentContainerStyle={{ rowGap: 4 }}>

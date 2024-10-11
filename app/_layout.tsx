@@ -73,6 +73,7 @@ export default function RootLayout() {
               headerTitle: (props) => <MainHeader></MainHeader>,
             }}
           />
+          <Stack.Screen name="chatbox" options={{headerShown:false}}/>
         </Stack>
         </ThemeProvider>
       </EventProvider>

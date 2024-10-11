@@ -3,12 +3,17 @@ import React, { useState } from "react";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import UserAvatar from "@/components/ui/UserAvatar";
 import { bgLight510Dark10, textLight0Dark500 } from "@/styles/theme";
-
+import { useRouter } from "expo-router";
 const MessageBox = () => {
+  const router = useRouter();
   return (
     <TouchableOpacity
       activeOpacity={0.8}
       className={`flex flex-row px-[20px] py-[10px] items-center w-screen ${bgLight510Dark10}`}
+      onPress={()=>{router.push({
+        pathname:"/chatbox/[messageId]",
+        params:{messageId:1},
+      })}}
     >
       <UserAvatar size={48}></UserAvatar>
       <View className="flex ml-5 w-screen">
