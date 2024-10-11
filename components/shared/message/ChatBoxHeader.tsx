@@ -2,7 +2,7 @@ import { View, Text, Platform } from "react-native";
 import React from "react";
 import { useNavigation } from "expo-router";
 import Previous from "@/components/ui/Previous";
-import { bgLight500Dark0, bgLight500Dark10, textLight0Dark500 } from "@/styles/theme";
+import { bgLight500Dark0, bgLight500Dark10, bgLight500Dark50, textLight0Dark500 } from "@/styles/theme";
 import UserAvatar from "@/components/ui/UserAvatar";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { IconURL } from "@/constants/IconURL";
@@ -12,7 +12,7 @@ const ChatBoxHeader = () => {
   const navigation = useNavigation();
   return (
     <View
-      className={`${bgLight500Dark10} w-full h-[82px] flex flex-row items-center justify-between px-[17px]`}
+      className={`bg-light-500 dark:bg-dark-0 w-full h-[82px] flex flex-row items-center justify-between px-[17px]`}
     >
       <View className="flex flex-row items-center">
         <Previous navigation={navigation} isAbsolute={false}></Previous>
