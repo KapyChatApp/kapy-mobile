@@ -8,6 +8,7 @@ import { GestureHandlerRootView } from "react-native-gesture-handler";
 import MainHeader from "@/components/navigator/Topbar/MainHeader";
 import { EventProvider } from "react-native-outside-press";
 import { ThemeProvider } from "@/context/ThemeProviders";
+import { ClickOutsideProvider } from "react-native-click-outside";
 SplashScreen.preventAutoHideAsync();
 export default function RootLayout() {
   const [fontsLoaded, error] = useFonts({
@@ -63,6 +64,7 @@ export default function RootLayout() {
     <GestureHandlerRootView>
       <EventProvider>
       <ThemeProvider>
+        <ClickOutsideProvider>
         <Stack>
           <Stack.Screen name="index" options={{ headerShown: false }} />
           <Stack.Screen name="(auth)" options={{ headerShown: false }} />
@@ -75,6 +77,7 @@ export default function RootLayout() {
           />
           <Stack.Screen name="chatbox" options={{headerShown:false}}/>
         </Stack>
+        </ClickOutsideProvider>
         </ThemeProvider>
       </EventProvider>
     </GestureHandlerRootView>
