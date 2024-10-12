@@ -82,6 +82,7 @@ export const IconURL = {
   phonenumber_d: require("../assets/icons/phonenumber_d.png"),
   pin_l: require("../assets/icons/pin_l.png"),
   pin_d: require("../assets/icons/pin_d.png"),
+  plus:require("../assets/icons/plus.png"),
   previous: require("../assets/icons/previous.png"),
   relationship: require("../assets/icons/relationship.png"),
   search: require("../assets/icons/search.png"),
