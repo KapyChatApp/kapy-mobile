@@ -34,6 +34,14 @@ module.exports = {
           330: "#4C4C4C",
           500: "#FFFFFF",
         },
+        ios:{
+          light:{
+            340:"#F0F0F0"
+          },
+          dark:{
+            330:"#4C4C4C"
+          }
+        },
         cardinal: "#F57206",
         black: "#000000",
         white: "#FFFFFF",
