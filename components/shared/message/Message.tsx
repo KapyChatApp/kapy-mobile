@@ -4,7 +4,7 @@ import { bgLight340Dark330, textLight0Dark500 } from "@/styles/theme";
 import { useClickOutside } from "react-native-click-outside";
 import UserAvatar from "@/components/ui/UserAvatar";
 
-const Message = ({ isSender, position }: any) => {
+const Message = ({ isSender, position, content }: any) => {
   const [isShowTime, setIsShowTime] = useState(
     position === "bottom" ? true : false
   );
@@ -12,21 +12,21 @@ const Message = ({ isSender, position }: any) => {
   const roundedValueReceiver = () => {
     switch (position) {
       case "top":
-        return "rounded-tl-3xl rounded-bl-sm rounded-tr-3xl rounded-br-3xl";
+        return "rounded-t-2xl rounded-bl-sm rounded-tr-3xl rounded-br-3xl";
       case "middle":
         return "rounded-tl-sm rounded-bl-sm rounded-tr-3xl rounded-br-3xl";
       case "bottom":
-        return "rounded-tl-sm rounded-bl-3xl rounded-tr-3xl rounded-br-3xl";
+        return "rounded-tl-sm rounded-bl-2xl rounded-tr-3xl rounded-br-3xl";
     }
   };
   const roundedValueSender = () => {
     switch (position) {
       case "top":
-        return "rounded-tl-3xl rounded-bl-3xl rounded-tr-3xl rounded-br-sm";
+        return "rounded-tl-3xl rounded-bl-3xl rounded-tr-2xl rounded-br-sm";
       case "middle":
         return "rounded-tl-3xl rounded-bl-3xl rounded-tr-sm rounded-br-sm";
       case "bottom":
-        return "rounded-tl-3xl rounded-bl-3xl rounded-tr-sm rounded-br-3xl";
+        return "rounded-tl-3xl rounded-bl-3xl rounded-tr-sm rounded-br-2xl";
     }
   };
   return (
@@ -45,17 +45,16 @@ const Message = ({ isSender, position }: any) => {
         )}
         <View
           ref={ref}
-          className={`p-[10px] ${
+          className={`p-[10px] max-w-[60%] ${
             isSender ? "bg-cardinal" : " bg-ios-light-340 dark:bg-ios-dark-330"
           } ${isSender ? roundedValueSender() : roundedValueReceiver()}`}
-          style={{ width: "65%", height: "auto" }}
         >
           <Text
             className={`${
               isSender ? "text-light-500" : textLight0Dark500
             } text-1 font-helvetica-light `}
           >
-            Lorem, ipsum dolor sit amet consectetur adipisicing elit.
+            {content}
           </Text>
         </View>
       </Pressable>
