@@ -14,8 +14,8 @@ const ChatBoxDetailHeader = () => {
   const navigation = useNavigation();
   const { theme } = useTheme();
   return (
-    <View className="flex items-center justify-center">
-      <View className="ml-[14px] mt-[22px] w-full">
+    <View className="flex items-center justify-center w-full">
+      <View className="ml-[14px] mt-[8gitpx] w-full">
         <Previous navigation={navigation} isAbsolute={false} />
       </View>
       <UserAvatar size={99} />
