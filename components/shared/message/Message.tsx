@@ -52,7 +52,7 @@ const Message = ({ isSender, position, content }: any) => {
           <Text
             className={`${
               isSender ? "text-light-500" : textLight0Dark500
-            } text-1 font-helvetica-light `}
+            } text-14 font-helvetica-light `}
           >
             {content}
           </Text>

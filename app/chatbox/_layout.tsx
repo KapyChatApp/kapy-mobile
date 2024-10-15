@@ -6,6 +6,7 @@ const  ChatBoxLayout = () => {
   return (
     <Stack>
         <Stack.Screen name="[messageId]" options={{headerShown:false}}/>
+        <Stack.Screen name="chatbox-detail" options={{headerShown:false}}/>
     </Stack>
   )
 }
