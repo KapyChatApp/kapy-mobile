@@ -86,6 +86,8 @@ export const IconURL = {
   previous: require("../assets/icons/previous.png"),
   relationship: require("../assets/icons/relationship.png"),
   search: require("../assets/icons/search.png"),
+  search_l:require("../assets/icons/search_l.png"),
+  search_d:require("../assets/icons/search_d.png"),
   security_l: require("../assets/icons/security_l.png"),
   security_d: require("../assets/icons/security_d.png"),
   send: require("../assets/icons/send.png"),

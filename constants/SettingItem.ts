@@ -1,3 +1,5 @@
+import { IconURL } from "./IconURL";
+
 export const SettingAccountProps = [
   { index: 1, label: "Change password", link: "/setting/change-password" },
   { index: 2, label: "Security", link: "/setting/security" },
