@@ -4,10 +4,12 @@ import { textLight0Dark500 } from "@/styles/theme";
 
 const UserBio = () => {
   return (
-    <View className="border border-border p-[20px] rounded-3xl top-[230px] flex justify-center gap-y-[12px]">
+    <View className="border border-border p-[20px] rounded-3xl top-[200px] flex justify-center gap-y-[12px]">
       <View className="flex flex-row w-full justify-start gap-x-[8px]">
         <View className="flex gap-y-[4px]">
-          <Text className={`font-helvetica-light text-14 ${textLight0Dark500}`}>Gender: Male</Text>
+          <Text className={`font-helvetica-light text-14 ${textLight0Dark500}`}>
+            Gender: Male
+          </Text>
           <Text className={`font-helvetica-light text-14 ${textLight0Dark500}`}>
             Birthday: 11/4/1999
           </Text>
@@ -28,7 +30,9 @@ const UserBio = () => {
         </View>
       </View>
       <View className="w-full flex gap-y-[4px]">
-        <Text className={`font-helvetica-light text-14 ${textLight0Dark500}`}>Address: Tan Binh</Text>
+        <Text className={`font-helvetica-light text-14 ${textLight0Dark500}`}>
+          Address: Tan Binh
+        </Text>
         <Text className={`font-helvetica-light text-14 ${textLight0Dark500}`}>
           Jobs: Content Creator at Kapy Studio
         </Text>

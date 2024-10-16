@@ -15,12 +15,13 @@ const MyMultimediaPage = () => {
   const { theme } = useTheme();
   return (
     <SafeAreaView className={`${bgLight500Dark10} flex-1`}>
-      <ScrollView
+      <ScrollView className="flex-1"
         contentContainerStyle={{
           display: "flex",
           rowGap: 4,
           justifyContent: "center",
         }}
+        showsVerticalScrollIndicator={false}
       >
         <View className="ml-[12px] my-[10px]">
           <Previous

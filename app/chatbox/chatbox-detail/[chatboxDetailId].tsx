@@ -23,6 +23,7 @@ const ChatBoxDetailPage = () => {
           alignItems: "center",
         padding:16,
         }}
+        showsVerticalScrollIndicator={false}
       >
         <ChatBoxDetailHeader />
         <FastMediaList label="Photos, Videos" />

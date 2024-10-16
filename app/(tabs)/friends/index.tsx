@@ -15,7 +15,7 @@ import { bgLight500Dark0, bgLight500Dark10 } from "@/styles/theme";
 const FriendsPage = () => {
   const [isOpen, setIsOpen] = useState(false);
   return (
-    <SafeAreaView className={`${bgLight500Dark10}`}>
+    <SafeAreaView className={`${bgLight500Dark10} flex-1`}>
       <MainHeader></MainHeader>
       <Search></Search>
       <FastRequestList></FastRequestList>

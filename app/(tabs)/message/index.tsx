@@ -14,32 +14,29 @@ import { bgLight500Dark10 } from "@/styles/theme";
 const OutSideMessagePage = () => {
   const [isOpen, setIsOpen] = useState(false);
   return (
-    <SafeAreaView className={`${bgLight500Dark10}`}>
+    <SafeAreaView className={`${bgLight500Dark10} flex-1`}>
       <MainHeader></MainHeader>
       <Search></Search>
-      <SafeAreaView>
-        <ScrollView className="message-list w-full">
-          <MessageBox></MessageBox>
-          <MessageBox></MessageBox>
-          <MessageBox></MessageBox>
-          <MessageBox></MessageBox>
-          <MessageBox></MessageBox>
-          <MessageBox></MessageBox>
-          <MessageBox></MessageBox>
-          <MessageBox></MessageBox>
-          <MessageBox></MessageBox>
-          <MessageBox></MessageBox>
-          <MessageBox></MessageBox>
-          <MessageBox></MessageBox>
-          <MessageBox></MessageBox>
-          <MessageBox></MessageBox>
-          <MessageBox></MessageBox>
-          <MessageBox></MessageBox>
-          <MessageBox></MessageBox>
-          <MessageBox></MessageBox>
-          <MessageBox></MessageBox>
-        </ScrollView>
-      </SafeAreaView>
+      <ScrollView className="message-list w-full flex-1">
+        <MessageBox></MessageBox>
+        <MessageBox></MessageBox>
+        <MessageBox></MessageBox>
+        <MessageBox></MessageBox>
+        <MessageBox></MessageBox>
+        <MessageBox></MessageBox>
+        <MessageBox></MessageBox>
+        <MessageBox></MessageBox>
+        <MessageBox></MessageBox>
+        <MessageBox></MessageBox>
+        <MessageBox></MessageBox>
+        <MessageBox></MessageBox>
+        <MessageBox></MessageBox>
+        <MessageBox></MessageBox>
+        <MessageBox></MessageBox>
+        <MessageBox></MessageBox>
+        <MessageBox></MessageBox>
+        <MessageBox></MessageBox>
+      </ScrollView>
     </SafeAreaView>
   );
 };

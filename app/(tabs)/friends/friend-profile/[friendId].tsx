@@ -14,7 +14,7 @@ import ReportForm from "@/components/shared/community/ReportForm";
 const FriendProfilePage = () => {
   const { friendId } = useLocalSearchParams();
   const navigation = useNavigation();
-  const isBFF = false;
+  const isBFF = true;
   const [isReportOpen, setIsReportOpen] = useState(false);
   return (
     <SafeAreaView className={`flex-1 ${bgLight500Dark10}`}>
@@ -23,10 +23,10 @@ const FriendProfilePage = () => {
         <Previous navigation={navigation} isAbsolute={true} />
         <MoreProfileOption setIsReportOpen={setIsReportOpen} />
         <UserBio />
-        <UnblockPostView />
+        {isBFF ? null : <UnblockPostView />}
         <View className="w-full h-[300px]"></View>
       </ScrollView>
-      {isReportOpen ? <ReportForm setIsOpen={setIsReportOpen}/> : null}
+      {isReportOpen ? <ReportForm setIsOpen={setIsReportOpen} /> : null}
     </SafeAreaView>
   );
 };

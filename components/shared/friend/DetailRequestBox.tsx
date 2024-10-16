@@ -9,7 +9,7 @@ import { bgLight510Dark20, textLight0Dark500 } from "@/styles/theme";
 
 const DetailRequestBox = ({ type }: any) => {
   return (
-    <View className={`flex flex-row border border-border p-[14px] rounded-3xl items-center justify-between relative mt-[4px] ${bgLight510Dark20}`}>
+    <View className={`flex flex-row border border-border p-[14px] rounded-3xl items-center justify-between relative ${bgLight510Dark20}`}>
       <View className="absolute -top-[14px] -left-[8px] z-">
         <Icon
           size={32}
