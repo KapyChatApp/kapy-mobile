@@ -23,7 +23,7 @@ const SidebarLinkList = () => {
       ></SidebarItems>
       <SidebarItems
         label="Security"
-        link="/security"
+        link="/friends/invite-group"
         iconURL={IconURL.security_l}
       ></SidebarItems>
       <SidebarItems

@@ -12,6 +12,7 @@ const FriendLayout = ({ children }: any) => {
       <Stack.Screen name="bff-list" options={{ headerShown: false }} />
       <Stack.Screen name="my-wall" options={{headerShown:false}}/>
       <Stack.Screen name="my-groups" options={{headerShown:false}}/>
+      <Stack.Screen name="invite-group" options={{headerShown:false}}/>
     </Stack>
   );
 };

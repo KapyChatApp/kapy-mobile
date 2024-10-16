@@ -9,10 +9,7 @@ const GroupBox = () => {
       <UserAvatar size={57}></UserAvatar>
       <View className="flex ml-[9px]">
         <Text className={`font-helvetica-bold text-14 ${textLight0Dark500}`}>Name</Text>
-        <Text className={`font-helvetica-light text-12 ${textLight0Dark500}`}>2 mutual friends</Text>
-        <Text className="font-helvetica-light text-[10px] text-cardinal">
-          2 min ago
-        </Text>
+        <Text className={`font-helvetica-light text-12 ${textLight0Dark500}`}>5 members</Text>
       </View>
     </TouchableOpacity>
   )
