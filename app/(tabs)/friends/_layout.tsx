@@ -10,9 +10,13 @@ const FriendLayout = ({ children }: any) => {
       <Stack.Screen name="all-request" options={{ headerShown: false }} />
       <Stack.Screen name="blocked-list" options={{ headerShown: false }} />
       <Stack.Screen name="bff-list" options={{ headerShown: false }} />
-      <Stack.Screen name="my-wall" options={{headerShown:false}}/>
-      <Stack.Screen name="my-groups" options={{headerShown:false}}/>
-      <Stack.Screen name="invite-group" options={{headerShown:false}}/>
+      <Stack.Screen name="my-wall" options={{ headerShown: false }} />
+      <Stack.Screen name="my-groups" options={{ headerShown: false }} />
+      <Stack.Screen name="invite-group" options={{ headerShown: false }} />
+      <Stack.Screen
+        name="friend-profile/[friendId]"
+        options={{ headerShown: false }}
+      />
     </Stack>
   );
 };
