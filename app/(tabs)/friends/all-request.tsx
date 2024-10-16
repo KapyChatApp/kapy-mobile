@@ -17,24 +17,18 @@ const AllRequestPage = () => {
   const navigation = useNavigation();
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   return (
-    <OutsidePressHandler
-      onOutsidePress={() => setClose(isFilterOpen, setIsFilterOpen)}
-    >
-      <SafeAreaView className={`${bgLight500Dark10}`}>
-        <Previous navigation={navigation} isAbsolute={true}></Previous>
-        <TopBarWithoutSideBar></TopBarWithoutSideBar>
-        <Search></Search>
-        <SafeAreaView className="mt-[10px]">
-          <DetailRequestList></DetailRequestList>
-        </SafeAreaView>
-        <View className="flex absolute top-[130px] items-end justify-center w-screen">
-          <FriendFilter
-            isOpen={isFilterOpen}
-            setIsOpen={setIsFilterOpen}
-          ></FriendFilter>
-        </View>
-      </SafeAreaView>
-    </OutsidePressHandler>
+    <SafeAreaView className={`${bgLight500Dark10} flex-1`}>
+      <Previous navigation={navigation} isAbsolute={true}></Previous>
+      <TopBarWithoutSideBar></TopBarWithoutSideBar>
+      <Search></Search>
+        <DetailRequestList></DetailRequestList>
+      {/* <View className="flex absolute top-[130px] items-end justify-center w-screen">
+        <FriendFilter
+          isOpen={isFilterOpen}
+          setIsOpen={setIsFilterOpen}
+        ></FriendFilter>
+      </View> */}
+    </SafeAreaView>
   );
 };
 

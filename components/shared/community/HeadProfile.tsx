@@ -8,7 +8,7 @@ import { textLight0Dark500 } from "@/styles/theme";
 const HeadProfile = () => {
   return (
     <View className="flex items-center justify-center relative">
-      <View className="w-[430px] h-[200px] bg-deny "></View>
+      <View className="w-screen h-[200px] bg-deny "></View>
       <View className=" flex items-center justify-center absolute top-[90px]">
         <UserAvatar size={176}></UserAvatar>
         <Text className="text-24 font-helvetica-bold text-cardinal mt-[4px]">Name</Text>

@@ -11,11 +11,15 @@ import { bgLight500Dark10 } from "@/styles/theme";
 const BlockedListPage = () => {
   const navigation = useNavigation();
   return (
-    <SafeAreaView className={`${bgLight500Dark10}`}>
-      <Previous navigation={navigation} isAbsolute={true} header="Blocked list"></Previous>
-      <View className="mt-[40px] flex" style={{ rowGap: 4 }}>
+    <SafeAreaView className={`${bgLight500Dark10} flex-1`}>
+      <Previous
+        navigation={navigation}
+        isAbsolute={true}
+        header="Blocked list"
+      ></Previous>
+      <View className="mt-[40px] flex flex-1" style={{ rowGap: 4 }}>
         <Search></Search>
-        <ScrollView className="flex " contentContainerStyle={{ rowGap: 4 }}>
+        <ScrollView className="flex-1 " contentContainerStyle={{ rowGap: 4 }}>
           <BlockedUserBox></BlockedUserBox>
           <BlockedUserBox></BlockedUserBox>
           <BlockedUserBox></BlockedUserBox>

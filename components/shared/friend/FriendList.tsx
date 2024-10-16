@@ -6,9 +6,9 @@ import { SafeAreaView } from "react-native-safe-area-context";
 
 const FriendList = () => {
   return (
-    <View className="flex">
+    <View className="flex flex-1">
       <Text className="font-helvetica-light mx-[20px] my-[12px]">My friends</Text>
-        <ScrollView>
+        <ScrollView className="flex-1">
           <FriendAlphabetList letter="A"></FriendAlphabetList>
           <FriendAlphabetList letter="B"></FriendAlphabetList>
           <FriendAlphabetList letter="C"></FriendAlphabetList>

@@ -10,8 +10,8 @@ import { useNavigation } from "expo-router";
 
 const UpdateProfilePage = () => {
   return (
-    <SafeAreaView className={`${bgLight500Dark10}`}>
-      <ScrollView>
+    <SafeAreaView className={`${bgLight500Dark10} flex-1`}>
+      <ScrollView className="flex-1">
         <HeaderProfileEditor />
         <View className="space w-full h-[90px]"></View>
         <BioEditor />

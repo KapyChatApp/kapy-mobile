@@ -32,7 +32,7 @@ const ReportForm = ({ setIsOpen }: any) => {
 
       <TextInput
         className={`flex-1 border border-border w-full rounded-3xl p-[16px] font-helvetica-light ${textLight0Dark500}`}
-        placeholder="Write report here..."
+        placeholder="Write report here..." 
         multiline={true}
       />
       <CustomButton width={135} height={51} label="Submit" />
