@@ -5,7 +5,7 @@ import { TouchableOpacity } from 'react-native-gesture-handler'
 import { useRouter } from 'expo-router'
 import { textLight0Dark500 } from '@/styles/theme'
 
-const DetailChatFunctionCard = ({iconURL, label, URL}:any) => {
+const FunctionCard = ({iconURL, label, URL}:any) => {
     const router = useRouter();
   return (
     <TouchableOpacity className='flex justify-center px-[40px] border border-black dark:border-white w-full h-[60px] rounded-3xl' onPress={()=>router.push(URL)}>
@@ -17,4 +17,4 @@ const DetailChatFunctionCard = ({iconURL, label, URL}:any) => {
   )
 }
 
-export default DetailChatFunctionCard
+export default FunctionCard

@@ -8,7 +8,7 @@ const SidebarLinkList = () => {
     <View className="mt-[10px]">
       <SidebarItems
         label="Groups"
-        link="/groups"
+        link="/friends/my-groups"
         iconURL={IconURL.groups_l}
       ></SidebarItems>
       <SidebarItems
@@ -23,12 +23,12 @@ const SidebarLinkList = () => {
       ></SidebarItems>
       <SidebarItems
         label="Security"
-        link="/security"
+        link="/friends/invite-group"
         iconURL={IconURL.security_l}
       ></SidebarItems>
       <SidebarItems
         label="Media"
-        link="/media"
+        link="/my-multimedia"
         iconURL={IconURL.multimedia_l}
       ></SidebarItems>
       <SidebarItems label="IO" link="/io" iconURL={IconURL.io_l}></SidebarItems>

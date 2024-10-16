@@ -19,6 +19,8 @@ export const IconURL = {
   allvideo_d: require("../assets/icons/allvideo_d.png"),
   attach_l: require("../assets/icons/attach_l.png"),
   attach_d: require("../assets/icons/attach_d.png"),
+  addmem:require("../assets/icons/addmem.png"),
+  added:require("../assets/icons/added.png"),
   bell_l: require("../assets/icons/bell_l.png"),
   bell_d: require("../assets/icons/bell_d.png"),
   bff_list_l: require("../assets/icons/bff_list_l.png"),
