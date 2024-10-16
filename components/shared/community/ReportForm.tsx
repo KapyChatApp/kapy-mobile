@@ -31,7 +31,7 @@ const ReportForm = ({ setIsOpen }: any) => {
       </View>
 
       <TextInput
-        className="flex-1 border border-border w-full rounded-3xl p-[16px]"
+        className={`flex-1 border border-border w-full rounded-3xl p-[16px] font-helvetica-light ${textLight0Dark500}`}
         placeholder="Write report here..."
         multiline={true}
       />
