@@ -76,6 +76,7 @@ export default function RootLayout() {
             }}
           />
           <Stack.Screen name="chatbox" options={{headerShown:false}}/>
+          <Stack.Screen name="(saved)/my-multimedia" options={{headerShown:false}}/>
         </Stack>
         </ClickOutsideProvider>
         </ThemeProvider>

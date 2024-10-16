@@ -28,7 +28,7 @@ const SidebarLinkList = () => {
       ></SidebarItems>
       <SidebarItems
         label="Media"
-        link="/media"
+        link="/my-multimedia"
         iconURL={IconURL.multimedia_l}
       ></SidebarItems>
       <SidebarItems label="IO" link="/io" iconURL={IconURL.io_l}></SidebarItems>
