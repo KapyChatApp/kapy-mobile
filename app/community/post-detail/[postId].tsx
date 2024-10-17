@@ -8,6 +8,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { ScrollView } from "react-native-gesture-handler";
 import Comment from "@/components/shared/community/Comment";
 import CommentTyping from "@/components/shared/community/CommentTyping";
+import { commentsData } from "@/data/CommentData";
 
 const PostDetailPage = () => {
   const { postId } = useLocalSearchParams();
@@ -27,14 +28,7 @@ const PostDetailPage = () => {
             Comments
           </Text>
           <View className="px-[10px]">
-            <Comment />
-            <Comment />
-            <Comment />
-            <Comment />
-            <Comment />
-            <Comment />
-            <Comment />
-            <Comment />
+            {commentsData.map((item, index)=> <Comment isReply={false} key={item.id} comment={item}/>)}
           </View>
         </ScrollView>
         <CommentTyping />
