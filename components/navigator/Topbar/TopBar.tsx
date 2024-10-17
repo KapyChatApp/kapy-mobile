@@ -11,7 +11,7 @@ const TopBar = ({ isOpen, setIsOpen }: any) => {
       <TouchableOpacity onPress={() => setIsOpen(!isOpen)}>
         <Icon size={22} iconURL={IconURL.sidebar}></Icon>
       </TouchableOpacity>
-      <UserAvatarLink size={47} link="/friends/my-wall"></UserAvatarLink>
+      <UserAvatarLink size={47} link="/(mine)/my-wall"></UserAvatarLink>
     </View>
   );
 };

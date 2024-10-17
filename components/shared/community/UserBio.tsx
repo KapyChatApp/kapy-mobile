@@ -1,10 +1,10 @@
-import { View, Text } from "react-native";
+import { View, Text, Platform } from "react-native";
 import React from "react";
 import { textLight0Dark500 } from "@/styles/theme";
 
 const UserBio = () => {
   return (
-    <View className="border border-border p-[20px] rounded-3xl top-[200px] flex justify-center gap-y-[12px]">
+    <View className={`border border-border p-[20px] rounded-3xl ${Platform.OS==='ios'? "top-[200px] ":"top-[220px]"} flex justify-center gap-y-[12px] mx-[20px]`}>
       <View className="flex flex-row w-full justify-start gap-x-[8px]">
         <View className="flex gap-y-[4px]">
           <Text className={`font-helvetica-light text-14 ${textLight0Dark500}`}>

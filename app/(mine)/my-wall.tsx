@@ -11,17 +11,14 @@ import { bgLight500Dark10 } from "@/styles/theme";
 const MyWallPage = () => {
   const navigation = useNavigation();
   return (
-    <SafeAreaView className={`${bgLight500Dark10} flex-1`}>
-      <ScrollView
-        className="flex flex-1"
-        contentContainerStyle={{ display: "flex", rowGap: 50, justifyContent:"center", alignItems:"center" }}
-        
-      >
-        <HeadProfile />
-        <Previous navigation={navigation} isAbsolute={true}></Previous>
-        <UserBio></UserBio>
-      </ScrollView>
-    </SafeAreaView>
+    <SafeAreaView className={`flex-1 ${bgLight500Dark10}`}>
+    <ScrollView>
+      <HeadProfile />
+      <Previous navigation={navigation} isAbsolute={true} />
+      <UserBio />
+      <View className="w-full h-[300px]"></View>
+    </ScrollView>
+  </SafeAreaView>
   );
 };
 
