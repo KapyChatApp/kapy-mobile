@@ -4,7 +4,7 @@ import { useLocalSearchParams, useNavigation } from "expo-router";
 import HeadProfile from "@/components/shared/community/HeadProfile";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { ScrollView } from "react-native-gesture-handler";
-import { bgLight500Dark10 } from "@/styles/theme";
+import { bgLight500Dark10, textLight0Dark500 } from "@/styles/theme";
 import Previous from "@/components/ui/Previous";
 import UserBio from "@/components/shared/community/UserBio";
 import UnblockPostView from "@/components/shared/community/UnblockPostView";
@@ -17,13 +17,13 @@ const FriendProfilePage = () => {
   const navigation = useNavigation();
   const isBFF = true;
   const [isReportOpen, setIsReportOpen] = useState(false);
-  const postContent =[
-    'Nội dung bài post',
-      'Lorem ipsum dolor sit amet consectetur adipisicing elit. Veniam voluptatibus maxime quam quod, itaque optio fugit repudiandae quis asperiores facere eveniet quasi perspiciatis cumque veritatis, perferendis similique placeat, voluptatum ullam?',
-      'Một bài post khác như thế này luôn',
-      'HAHAHAHAAH',
-      'HIHIHIHIHIHIHI'
-  ]
+  const postContent = [
+    "Nội dung bài post",
+    "Lorem ipsum dolor sit amet consectetur adipisicing elit. Veniam voluptatibus maxime quam quod, itaque optio fugit repudiandae quis asperiores facere eveniet quasi perspiciatis cumque veritatis, perferendis similique placeat, voluptatum ullam?",
+    "Một bài post khác như thế này luôn",
+    "HAHAHAHAAH",
+    "HIHIHIHIHIHIHI",
+  ];
   return (
     <SafeAreaView className={`flex-1 ${bgLight500Dark10}`}>
       <ScrollView>
@@ -31,12 +31,28 @@ const FriendProfilePage = () => {
         <Previous navigation={navigation} isAbsolute={true} />
         <MoreProfileOption setIsReportOpen={setIsReportOpen} />
         <UserBio />
-        {isBFF? (<View className="w-full h-[250px]"></View>):null}
         {isBFF ? (
-          <View className="flex items-center px-[12px]" style={{rowGap:50}}>
-          {postContent.map((item, index)=><SocialPost key={index} content={item} />)}
+          <View
+            className="w-full mt-[250px] px-[12px] mb-[10px]"
+            style={{ rowGap: 10 }}
+          >
+            <View className="w-full h-[0.5px] bg-border "></View>
+            <Text
+              className={`${textLight0Dark500} font-helvetica-bold w-full p-[10px] text-16`}
+            >
+              Posts
+            </Text>
           </View>
-        ) : <UnblockPostView />}
+        ) : null}
+        {isBFF ? (
+          <View className="flex items-center px-[12px]" style={{ rowGap: 50 }}>
+            {postContent.map((item, index) => (
+              <SocialPost key={index} content={item} />
+            ))}
+          </View>
+        ) : (
+          <UnblockPostView />
+        )}
         <View className="w-full h-[60px]"></View>
       </ScrollView>
       {isReportOpen ? <ReportForm setIsOpen={setIsReportOpen} /> : null}

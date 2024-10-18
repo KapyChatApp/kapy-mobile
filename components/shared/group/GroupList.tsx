@@ -6,8 +6,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 
 const GroupList = () => {
   return (
-    <SafeAreaView>
-    <View className="flex">
+    <View className="flex flex-1">
       <ScrollView>
         <GroupAlphabetList letter="A" />
         <GroupAlphabetList letter="B" />
@@ -16,7 +15,6 @@ const GroupList = () => {
         <GroupAlphabetList letter="E" />
       </ScrollView>
     </View>
-    </SafeAreaView>
   );
 };
 

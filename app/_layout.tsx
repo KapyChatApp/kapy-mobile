@@ -4,11 +4,15 @@ import { ClerkProvider, ClerkLoaded } from "@clerk/clerk-expo";
 import { Slot, SplashScreen, Stack } from "expo-router";
 import { useFonts } from "expo-font";
 import { useEffect } from "react";
-import { GestureHandlerRootView } from "react-native-gesture-handler";
+import { DrawerLayoutAndroid, GestureHandlerRootView } from "react-native-gesture-handler";
 import MainHeader from "@/components/navigator/Topbar/MainHeader";
 import { EventProvider } from "react-native-outside-press";
 import { ThemeProvider } from "@/context/ThemeProviders";
 import { ClickOutsideProvider } from "react-native-click-outside";
+import { Drawer } from 'expo-router/drawer';
+import { DrawerLayoutAndroidBase } from "react-native";
+import TopBar from "@/components/navigator/Topbar/TopBar";
+import BFFListPage from "./(tabs)/friends/bff-list";
 SplashScreen.preventAutoHideAsync();
 export default function RootLayout() {
   const [fontsLoaded, error] = useFonts({
@@ -59,7 +63,7 @@ export default function RootLayout() {
   //     "Missing Publishable Key. Please set EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY in your .env"
   //   );
   // }
-  
+
   return (
     <GestureHandlerRootView>
       <EventProvider>
