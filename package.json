@@ -22,6 +22,7 @@
     "@react-navigation/bottom-tabs": "^6.6.1",
     "@react-navigation/drawer": "^6.7.2",
     "@react-navigation/native": "^6.0.2",
+    "@rexovolt/react-native-side-menu": "^2.0.0",
     "expo": "^51.0.32",
     "expo-constants": "~16.0.2",
     "expo-font": "~12.0.10",

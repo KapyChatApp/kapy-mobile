@@ -1,24 +1,68 @@
-import { View, Text } from "react-native";
-import React, { useState } from "react";
-import UserAvatar from "../../ui/UserAvatar";
-import { TouchableOpacity } from "react-native-gesture-handler";
-import TabIcon from "../../ui/TabIcon";
-import { IconURL } from "@/constants/IconURL";
-import { Image } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
-import Animated from "react-native-reanimated";
-import Icon from "../../ui/Icon";
-import SidebarItems from "./SidebarItems";
+import React from "react";
+import { View, SafeAreaView } from "react-native";
+import Animated, {
+  useSharedValue,
+  useAnimatedStyle,
+  withTiming,
+  runOnJS,
+} from "react-native-reanimated";
+import SidebarHeader from "./SidebarHeader";
 import SidebarLinkList from "./SidebarLinkList";
 import SidebarRecents from "./SidebarRecents";
-import SidebarHeader from "./SidebarHeader";
+import { useClickOutside } from "react-native-click-outside";
 
 const SideBar = ({ isOpen, setIsOpen }: any) => {
-  return isOpen ? (
-    <SafeAreaView className="h-screen absolute w-2/3 flex z-50 bg-white">
-      <SidebarHeader isOpen={isOpen} setIsOpen={setIsOpen}></SidebarHeader>
-      <SidebarLinkList />
-      <SidebarRecents />
+  
+  const [isVisible, setIsVisible] = React.useState(isOpen);
+
+
+  const translateX = useSharedValue(isOpen ? 0 : -1000);
+
+
+  const animatedStyles = useAnimatedStyle(() => {
+    return {
+      transform: [{ translateX: withTiming(translateX.value, { duration: 500 }) }],
+    };
+  });
+
+  React.useEffect(() => {
+    if (isOpen) {
+   
+      setIsVisible(true);
+      translateX.value = 0;
+    } else {
+     
+      translateX.value = -1000;
+
+      runOnJS(hideSidebar)();
+    }
+  }, [isOpen]);
+
+  const hideSidebar = () => {
+
+    setTimeout(() => {
+      setIsVisible(false);
+    }, 10);
+  };
+
+  const ref = useClickOutside<View>(() => setIsOpen(false));
+
+  // Chỉ render sidebar khi `isVisible` là true
+  return isVisible ? (
+    <SafeAreaView
+      className={`h-screen absolute w-full flex z-50 `}
+      style={{ zIndex: 100 }}
+    >
+      <View className="bg-black opacity-70 w-screen h-screen absolute" style={{ zIndex: 10 }}></View>
+      <Animated.View
+        ref={ref}
+        style={[animatedStyles, { zIndex: 20 }]}
+        className="h-full w-2/3 bg-white dark:bg-black opacity-100 absolute pt-[24px]"
+      >
+        <SidebarHeader isOpen={isOpen} setIsOpen={setIsOpen} />
+        <SidebarLinkList />
+        <SidebarRecents />
+      </Animated.View>
     </SafeAreaView>
   ) : null;
 };

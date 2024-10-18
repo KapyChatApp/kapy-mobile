@@ -17,9 +17,7 @@ const MyGroupsPage = () => {
         <Previous navigation={navigation} header="My groups" />
       </View>
       <Search />
-      <SafeAreaView>
         <GroupList />
-      </SafeAreaView>
     </SafeAreaView>
   );
 };
