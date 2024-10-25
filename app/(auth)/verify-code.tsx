@@ -1,6 +1,7 @@
 import { View, Text, TextInput, Touchable } from "react-native";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import SubmitButton from "@/components/ui/SubmitButton";
+import React from "react";
 import { useGlobalSearchParams, useNavigation, useRouter } from "expo-router";
 import OtherSign from "@/components/ui/OtherSign";
 import { TouchableOpacity } from "react-native-gesture-handler";
