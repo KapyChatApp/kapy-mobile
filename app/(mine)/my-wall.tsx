@@ -9,6 +9,7 @@ import UserBio from "@/components/shared/community/UserBio";
 import { bgLight500Dark10 } from "@/styles/theme";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { HeadProfileProps, UserBioProps } from "@/types/user";
+import axios from "axios";
 
 const MyWallPage = () => {
   const navigation = useNavigation();
@@ -18,23 +19,19 @@ const MyWallPage = () => {
     const fetchData = async () => {
       try {
         const token = await AsyncStorage.getItem("token");
-        const response = await fetch("http://192.168.4.126:3000/api/mine/profile", {
-          method: "GET",
+      
+        const response = await axios.get(process.env.EXPO_PUBLIC_BASE_URL + "/mine/profile", {
           headers: {
             "Content-Type": "application/json",
             "Authorization": `${token}`,
           },
         });
-
-        if (!response.ok) {
-          throw new Error("Network response was not ok");
-        }
-        const result = await response.json();
-        const { firstName, lastName, nickName, description,...bio } = result; 
-        setHeaderProps({ firstName, lastName , nickName, description });
-        setBioProps(bio);
+      
+        const { firstName, lastName, nickName, bio, ..._bio } = response.data; 
+        setHeaderProps({ firstName, lastName, nickName, bio });
+        setBioProps(_bio);
       } catch (err) {
-        console.log(err)
+        console.log(err);
       }
     };
 

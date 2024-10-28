@@ -16,6 +16,7 @@ const EditableField = ({
   moreIconURL,
   size,
   isAlwaysReadOnly,
+  isMultipleLine,
   defaultValue,
   notice,
   onChangeText,
@@ -72,7 +73,7 @@ const EditableField = ({
         </View>
         {redirectLink ? (
           <View className="flex flex-row items-center gap-x-[2px]">
-            <Text className="font-helvetica-light text-10">{notice}</Text>
+            <Text className={`font-helvetica-light text-10 ${textLight0Dark500} `}>{notice}</Text>
             <Link href={redirectLink} className="font-helvetica-bold text-10 text-cardinal">
               {labelLink}
             </Link>
@@ -80,13 +81,14 @@ const EditableField = ({
         ) : null}
       </View>
       <View
-        className="flex items-center flex-row w-full"
+        className={`flex ${isMultipleLine? "":"items-center"}  flex-row w-full`}
         style={{ width: width, height: height, columnGap: 5 }}
       >
         <TextInput
-          className={`rounded-full border border-border font-helvetica-light text-14 px-[12px] flex-1 w-full h-full ${
+          className={`${isMultipleLine? "rounded-xl":"rounded-full"}  border border-border font-helvetica-light text-14 px-[12px] flex-1 w-full h-full ${
             isReadOnly ? "text-deny" : textLight0Dark500
           }`}
+          multiline={isMultipleLine}
           value={inputValue}
           readOnly={isAlwaysReadOnly ? true : isReadOnly}
           placeholder={placeHolder}

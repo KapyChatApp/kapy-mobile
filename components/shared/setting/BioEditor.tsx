@@ -11,10 +11,14 @@ import { IconURL } from "@/constants/IconURL";
 import { BioEditorProps } from "@/types/user";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
+import NoticeCard from "@/components/ui/NoticeCard";
 
 const BioEditor = (props: BioEditorProps | undefined) => {
+  const [isNoticeOpen, setIsNoticeOpen] = useState(false);
+  const [isReload, setIsReload] = useState(false);
   const [gender, setGender] = useState<boolean | undefined>(true);
-  const [birthday, setBirtday] = useState(new Date());
+  const [showGender, setShowGender] = useState<string | undefined>();
+  const [birthDay, setBirtDay] = useState<string>();
   const [relationShip, setRelationShip] = useState<string | undefined>("");
   const [firstName, setFirstName] = useState<string | undefined>("");
   const [lastName, setLastName] = useState<string | undefined>("");
@@ -22,47 +26,67 @@ const BioEditor = (props: BioEditorProps | undefined) => {
   const [job, setJob] = useState<string | undefined>("");
   const [hobbies, setHobbies] = useState<string | undefined>("");
   const [address, setAddress] = useState<string | undefined>("");
+  const [bio, setBio] = useState<string | undefined>("");
   const fieldHeight = 35;
 
   useEffect(() => {
     if (props) {
       setGender(props.gender);
+      setShowGender(props.gender ? "Male" : "Female");
       setFirstName(props.firstName);
       setLastName(props.lastName);
       setNickname(props.nickName);
       setJob(props.job);
       setHobbies(props.hobbies);
       setAddress(props.address);
+      setBio(props.bio);
+      setRelationShip(props.relationShip);
+      setBirtDay(props.birthDay);
     }
-  }, [props]);
+  }, [props, isReload]);
 
   const handleUpdateProfile = async () => {
     const profileData = {
       firstName,
       lastName,
       nickName,
-      gender:true,
+      gender: showGender === "Male" ? true : false,
       address,
       job,
       hobbies,
-      bio:"no thing",
-      relationShip: "single",
-      birthDay: new Date(1995, 6, 20),
-    }
+      bio,
+      relationShip,
+      birthDay,
+    };
 
     const token = await AsyncStorage.getItem("token");
     try {
-      const response = await axios.patch(process.env.BASE_URL + "/user/update", profileData, {
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": `${token}`,
-        },
-      });
-  
-      console.log("Profile updated successfully:", response.data); 
-    } catch (error:any) {
-      console.error("Error updating profile:", error.response ? error.response.data : error.message);
+      const response = await axios.patch(
+        process.env.EXPO_PUBLIC_BASE_URL + "/user/update",
+        profileData,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `${token}`,
+          },
+        }
+      );
+
+      if (response.data.status) {
+        setIsNoticeOpen(true);
+      }
+
+      console.log(response.data);
+    } catch (error: any) {
+      console.error(
+        "Error updating profile:",
+        error.response ? error.response.data : error.message
+      );
     }
+  };
+
+  const handleAfterUpdate = () => {
+    setIsReload(!isReload);
   };
   return (
     <View
@@ -110,8 +134,8 @@ const BioEditor = (props: BioEditorProps | undefined) => {
             label="Gender"
             width="100%"
             height={fieldHeight}
-            data={gender}
-            setData={setGender}
+            data={showGender}
+            setData={setShowGender}
             values={Genders}
             moreIconURL={IconURL.show_more_func}
             size={12}
@@ -123,8 +147,8 @@ const BioEditor = (props: BioEditorProps | undefined) => {
         label="Birthday"
         width="100%"
         height={fieldHeight}
-        data={birthday}
-        setData={setBirtday}
+        data={birthDay ? new Date(birthDay) : new Date()}
+        setData={setBirtDay}
       />
       <EditableField
         label="Address:"
@@ -180,6 +204,14 @@ const BioEditor = (props: BioEditorProps | undefined) => {
         isAlwaysReadOnly={true}
         onChangeText={(e: any) => console.log(e.target.value)}
       />
+      <EditableField
+        label="Tell everyone something about you"
+        width="100%"
+        defaultValue={bio}
+        onChangeText={setBio}
+        height={120}
+        isMultipleLine={true}
+      />
       <CustomButton
         type={false}
         label="Submit"
@@ -188,6 +220,14 @@ const BioEditor = (props: BioEditorProps | undefined) => {
         height={46}
         onPress={handleUpdateProfile}
       ></CustomButton>
+      {isNoticeOpen ? (
+        <NoticeCard
+          content="Update information successfully!"
+          isOpen={isNoticeOpen}
+          setIsOpen={setIsNoticeOpen}
+          goOn={handleAfterUpdate}
+        />
+      ) : null}
     </View>
   );
 };

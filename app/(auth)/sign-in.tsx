@@ -21,14 +21,12 @@ const SignInPage = () => {
   useEffect(() => {
     const checkToken = async () => {
       const token = await AsyncStorage.getItem("token");
-      console.log(token);
       if (!token) return;
       try {
         const res = await axios.post(
-          process.env.BASE_URL + "/auth/check-token",
+          process.env.EXPO_PUBLIC_BASE_URL + "/auth/check-token",
           { token: token }
         );
-        console.log("status", res.data.isAuthenticated);
         if (res.data.isAuthenticated) {
           navigation.dispatch(
             CommonActions.reset({
@@ -49,7 +47,7 @@ const SignInPage = () => {
   const handleSignIn = async () => {
     try {
       const param: UserLoginProps = { phoneNumber, password };
-      const loginResponse = await axios.post("http://192.168.4.126:3000/api/auth/login", param, {
+      const loginResponse = await axios.post(process.env.EXPO_PUBLIC_BASE_URL + "/auth/login", param, {
         headers: {
           "Content-Type": "application/json",
         },

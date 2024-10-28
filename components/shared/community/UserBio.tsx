@@ -10,7 +10,7 @@ const UserBio = (props:UserBioProps) => {
       <View className="flex flex-row w-full justify-start gap-x-[8px]">
         <View className="flex gap-y-[4px]">
           <Text className={`font-helvetica-light text-14 ${textLight0Dark500}`}>
-            Gender: {props.gender}
+            Gender: {props.gender? "Male":"Female"}
           </Text>
           <Text className={`font-helvetica-light text-14 ${textLight0Dark500}`}>
             Birthday: {props.birthDay ? formatDate(props.birthDay) : "N/A"}

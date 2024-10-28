@@ -58,7 +58,7 @@ const SignUpPage = () => {
     try {
       // Gửi request đăng ký
       const response = await fetch(
-        "http://192.168.4.126:3000/api/user/register",
+        process.env.EXPO_PUBLIC_BASE_URL + "/user/register",
         {
           method: "POST",
           headers: {
@@ -73,9 +73,9 @@ const SignUpPage = () => {
       }
 
       const signInParam = { phoneNumber, password };
-      // Gửi request đăng nhập (lo)
+
       const loginResponse = await fetch(
-        "http://192.168.4.126:3000/api/auth/login",
+        process.env.EXPO_PUBLIC_BASE_URL + "/auth/login",
         {
           method: "POST",
           headers: {
