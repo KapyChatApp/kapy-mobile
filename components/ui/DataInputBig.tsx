@@ -1,13 +1,15 @@
-import { View, Text, TextInput, Image } from "react-native";
+import { View, Text, TextInput, Image, Keyboard, Touchable } from "react-native";
 import React from "react";
 import { IconInputField } from "@/types/ui-props";
 import { textLight330Dark500 } from "@/styles/theme";
 import { useTheme } from "@/context/ThemeProviders";
+import { useClickOutside } from "react-native-click-outside";
+import { TouchableWithoutFeedback } from "react-native-gesture-handler";
 
 const DataInputBig = ({ iconURL, placeHolder, onChangeText }: any) => {
   const {theme} = useTheme();
   return (
-    <View>
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
       <Image
         source={iconURL}
         className="w-[28px] h-[28px] absolute top-[8px] left-[15px]"
@@ -22,7 +24,7 @@ const DataInputBig = ({ iconURL, placeHolder, onChangeText }: any) => {
         onChangeText={onChangeText}
         placeholderTextColor={theme==='light'? "#565A59":"#FFFFFF"}
       ></TextInput>
-    </View>
+    </TouchableWithoutFeedback>
   );
 };
 
