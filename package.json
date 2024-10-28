@@ -16,6 +16,7 @@
   },
   "dependencies": {
     "@clerk/clerk-expo": "^2.2.8",
+    "@expo/react-native-action-sheet": "^4.1.0",
     "@expo/vector-icons": "^14.0.2",
     "@react-native-async-storage/async-storage": "^2.0.0",
     "@react-native-community/blur": "^4.4.1",
@@ -28,6 +29,7 @@
     "expo": "^51.0.0",
     "expo-constants": "~16.0.2",
     "expo-font": "~12.0.10",
+    "expo-image-picker": "~15.0.7",
     "expo-linking": "~6.3.1",
     "expo-router": "~3.5.23",
     "expo-secure-store": "^13.0.2",
@@ -39,6 +41,7 @@
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-native": "^0.74.5",
+    "react-native-actions-sheet": "^0.9.7",
     "react-native-bouncy-checkbox": "^4.1.2",
     "react-native-check-box": "^2.1.7",
     "react-native-click-outside": "^0.1.1",

@@ -87,7 +87,7 @@ const EditableField = ({
         <TextInput
           className={`${isMultipleLine? "rounded-xl":"rounded-full"}  border border-border font-helvetica-light text-14 px-[12px] flex-1 w-full h-full ${
             isReadOnly ? "text-deny" : textLight0Dark500
-          }`}
+          } ${isMultipleLine? "text-start":""}`}
           multiline={isMultipleLine}
           value={inputValue}
           readOnly={isAlwaysReadOnly ? true : isReadOnly}

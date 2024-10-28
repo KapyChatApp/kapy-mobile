@@ -27,8 +27,8 @@ const MyWallPage = () => {
           },
         });
       
-        const { firstName, lastName, nickName, bio, ..._bio } = response.data; 
-        setHeaderProps({ firstName, lastName, nickName, bio });
+        const { firstName, lastName, nickName, bio, avatar, ..._bio } = response.data; 
+        setHeaderProps({ firstName, lastName, nickName, bio ,avatarURL:avatar});
         setBioProps(_bio);
       } catch (err) {
         console.log(err);

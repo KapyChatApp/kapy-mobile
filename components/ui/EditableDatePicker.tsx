@@ -20,7 +20,7 @@ const EditableDatePicker = ({
   setData,
 }: EditabelDatePickerProps) => {
   const [isPrivate, setIsPrivate] = useState(false);
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(Platform.OS ==="android"? false:true);
   const ref = useClickOutside<View>(() => setOpen(false));
   const [inLineDate, setInlineDate] = useState("");
   const setDate = (event: DateTimePickerEvent, date?: Date) => {
@@ -29,6 +29,10 @@ const EditableDatePicker = ({
       nativeEvent: {timestamp, utcOffset},
     } = event;
     setData?.(date);
+    if(Platform.OS==="android"){
+      setOpen(false);
+    }
+    
   };
   
   return (
@@ -49,13 +53,15 @@ const EditableDatePicker = ({
           onFocus={() => setOpen(true)}
         ></TextInput>
         <View className="absolute w-full flex items-end pr-[28px]">
-          <RNDateTimePicker
+          {open? (<RNDateTimePicker
             value={data}
             style={{ width: 300, height:28}}
             textColor="#F57602"
             mode="date"
             onChange={setDate}
-          />
+            positiveButton={{label: 'OK', textColor: 'green'}} 
+          />):null}
+          
         </View>
         <TouchableOpacity>
           <Icon iconURL={IconURL.editable} size={18} />

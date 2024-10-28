@@ -8,11 +8,12 @@ import { bgLight500Dark10 } from "@/styles/theme";
 import Previous from "@/components/ui/Previous";
 import { useNavigation } from "expo-router";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { BioEditorProps } from "@/types/user";
+import { BioEditorProps, HeaderProfileEditorProps } from "@/types/user";
 import axios from "axios";
 
 const UpdateProfilePage = () => {
   const [bioProps, setBioProps] = useState<BioEditorProps | undefined>();
+  const [headerProps, setHeaderProps] = useState<HeaderProfileEditorProps| undefined>();
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -28,6 +29,7 @@ const UpdateProfilePage = () => {
           }
         );
         setBioProps(response.data);
+        setHeaderProps(response.data);
       } catch (err) {
         console.log(err);
       }
@@ -40,7 +42,7 @@ const UpdateProfilePage = () => {
       <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"}
       style={{ flex: 1 }}>
         <ScrollView className="flex-1">
-          <HeaderProfileEditor />
+          <HeaderProfileEditor {...headerProps} />
           <View className="space w-full h-[90px]"></View>
           <BioEditor {...bioProps} />
         </ScrollView>
