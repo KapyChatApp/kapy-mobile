@@ -8,11 +8,6 @@ const FriendAlphabetList = ({ letter }: any) => {
   return (
     <View className="flex px-[20px] " style={{ gap: 4 }}>
       <Text className={`${textLight0Dark500}`}>{letter}</Text>
-        <FriendBox></FriendBox>
-        <FriendBox></FriendBox>
-        <FriendBox></FriendBox>
-        <FriendBox></FriendBox>
-        <FriendBox></FriendBox>
     </View>
   );
 };
