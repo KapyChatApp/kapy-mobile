@@ -1,5 +1,5 @@
 import { View, Text } from "react-native";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import EditableField from "@/components/ui/EditableField";
 import CustomButton from "@/components/ui/CustomButton";
 import Popover, { PopoverPlacement } from "react-native-popover-view";
@@ -8,12 +8,86 @@ import EditablePopover from "@/components/ui/EditablePopover";
 import { Genders, RelationShips } from "@/constants/UiItems";
 import EditableDatePicker from "@/components/ui/EditableDatePicker";
 import { IconURL } from "@/constants/IconURL";
+import { BioEditorProps } from "@/types/user";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import axios from "axios";
+import NoticeCard from "@/components/ui/NoticeCard";
 
-const BioEditor = () => {
-  const [gender, setGender] = useState("Male");
-  const [birthday, setBirtday] = useState(new Date());
-  const [relationShip, setRelationShip] = useState("single");
+const BioEditor = (props: BioEditorProps | undefined) => {
+  const [isNoticeOpen, setIsNoticeOpen] = useState(false);
+  const [isReload, setIsReload] = useState(false);
+  const [gender, setGender] = useState<boolean | undefined>(true);
+  const [showGender, setShowGender] = useState<string | undefined>();
+  const [birthDay, setBirtDay] = useState<string>();
+  const [relationShip, setRelationShip] = useState<string | undefined>("");
+  const [firstName, setFirstName] = useState<string | undefined>("");
+  const [lastName, setLastName] = useState<string | undefined>("");
+  const [nickName, setNickname] = useState<string | undefined>("");
+  const [job, setJob] = useState<string | undefined>("");
+  const [hobbies, setHobbies] = useState<string | undefined>("");
+  const [address, setAddress] = useState<string | undefined>("");
+  const [bio, setBio] = useState<string | undefined>("");
   const fieldHeight = 35;
+
+  useEffect(() => {
+    if (props) {
+      setGender(props.gender);
+      setShowGender(props.gender ? "Male" : "Female");
+      setFirstName(props.firstName);
+      setLastName(props.lastName);
+      setNickname(props.nickName);
+      setJob(props.job);
+      setHobbies(props.hobbies);
+      setAddress(props.address);
+      setBio(props.bio);
+      setRelationShip(props.relationShip);
+      setBirtDay(props.birthDay);
+    }
+  }, [props, isReload]);
+
+  const handleUpdateProfile = async () => {
+    const profileData = {
+      firstName,
+      lastName,
+      nickName,
+      gender: showGender === "Male" ? true : false,
+      address,
+      job,
+      hobbies,
+      bio,
+      relationShip,
+      birthDay,
+    };
+
+    const token = await AsyncStorage.getItem("token");
+    try {
+      const response = await axios.patch(
+        process.env.EXPO_PUBLIC_BASE_URL + "/user/update",
+        profileData,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `${token}`,
+          },
+        }
+      );
+
+      if (response.data.status) {
+        setIsNoticeOpen(true);
+      }
+
+      console.log(response.data);
+    } catch (error: any) {
+      console.error(
+        "Error updating profile:",
+        error.response ? error.response.data : error.message
+      );
+    }
+  };
+
+  const handleAfterUpdate = () => {
+    setIsReload(!isReload);
+  };
   return (
     <View
       className="px-[16px] flex items-center justify-center"
@@ -28,8 +102,8 @@ const BioEditor = () => {
             label="Firstname:"
             width="100%"
             height={fieldHeight}
-            defaultValue="Recent name"
-            onChangeText={(e: any) => console.log(e.target.value)}
+            defaultValue={firstName}
+            onChangeText={setFirstName}
           />
         </View>
         <View className="flex-1">
@@ -37,8 +111,8 @@ const BioEditor = () => {
             label="Lastname:"
             width="100%"
             height={fieldHeight}
-            defaultValue="Recent name"
-            onChangeText={(e: any) => console.log(e.target.value)}
+            defaultValue={lastName}
+            onChangeText={setLastName}
           />
         </View>
       </View>
@@ -51,8 +125,8 @@ const BioEditor = () => {
             label="Nickname:"
             width="100%"
             height={fieldHeight}
-            defaultValue="Recent name"
-            onChangeText={(e: any) => console.log(e.target.value)}
+            defaultValue={nickName}
+            onChangeText={setNickname}
           />
         </View>
         <View className="flex-1">
@@ -60,12 +134,11 @@ const BioEditor = () => {
             label="Gender"
             width="100%"
             height={fieldHeight}
-            data={gender}
-            setData={setGender}
+            data={showGender}
+            setData={setShowGender}
             values={Genders}
-            moreIconURL={IconURL.show_more_func} 
+            moreIconURL={IconURL.show_more_func}
             size={12}
-
           />
         </View>
       </View>
@@ -74,29 +147,29 @@ const BioEditor = () => {
         label="Birthday"
         width="100%"
         height={fieldHeight}
-        data={birthday}
-        setData={setBirtday}
+        data={birthDay ? new Date(birthDay) : new Date()}
+        setData={setBirtDay}
       />
       <EditableField
         label="Address:"
         width="100%"
         height={fieldHeight}
-        defaultValue="Default value"
-        onChangeText={(e: any) => console.log(e.target.value)}
+        defaultValue={address}
+        onChangeText={setAddress}
       />
       <EditableField
         label="Jobs:"
         width="100%"
         height={fieldHeight}
-        defaultValue="Default value"
-        onChangeText={(e: any) => console.log(e.target.value)}
+        defaultValue={job}
+        onChangeText={setJob}
       />
       <EditableField
         label="Hobbies:"
         width="100%"
         height={fieldHeight}
-        defaultValue="Default value"
-        onChangeText={(e: any) => console.log(e.target.value)}
+        defaultValue={hobbies}
+        onChangeText={setHobbies}
       />
       <EditablePopover
         label="RelationShip: "
@@ -107,14 +180,13 @@ const BioEditor = () => {
         values={RelationShips}
         moreIconURL={IconURL.relationship}
         size={18}
-        
       />
 
       <EditableField
         label="Phonenumber:"
         width="100%"
         height={fieldHeight}
-        defaultValue="098978511"
+        defaultValue={props?.phoneNumber}
         isAlwaysReadOnly={true}
         notice="PhoneNumber can only change in"
         labelLink="Security"
@@ -125,12 +197,20 @@ const BioEditor = () => {
         label="Email:"
         width="100%"
         height={fieldHeight}
-        defaultValue="example@gmail.com"
+        defaultValue={props?.email}
         notice="Email can only change in"
         labelLink="Security"
         redirectLink="/"
         isAlwaysReadOnly={true}
         onChangeText={(e: any) => console.log(e.target.value)}
+      />
+      <EditableField
+        label="Tell everyone something about you"
+        width="100%"
+        defaultValue={bio}
+        onChangeText={setBio}
+        height={120}
+        isMultipleLine={true}
       />
       <CustomButton
         type={false}
@@ -138,8 +218,16 @@ const BioEditor = () => {
         fontSize={14}
         width={100}
         height={46}
-        onPress={() => {}}
+        onPress={handleUpdateProfile}
       ></CustomButton>
+      {isNoticeOpen ? (
+        <NoticeCard
+          content="Update information successfully!"
+          isOpen={isNoticeOpen}
+          setIsOpen={setIsNoticeOpen}
+          goOn={handleAfterUpdate}
+        />
+      ) : null}
     </View>
   );
 };

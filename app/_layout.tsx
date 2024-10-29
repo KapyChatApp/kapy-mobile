@@ -4,15 +4,20 @@ import { ClerkProvider, ClerkLoaded } from "@clerk/clerk-expo";
 import { Slot, SplashScreen, Stack } from "expo-router";
 import { useFonts } from "expo-font";
 import { useEffect } from "react";
-import { DrawerLayoutAndroid, GestureHandlerRootView } from "react-native-gesture-handler";
+import {
+  DrawerLayoutAndroid,
+  GestureHandlerRootView,
+} from "react-native-gesture-handler";
 import MainHeader from "@/components/navigator/Topbar/MainHeader";
 import { EventProvider } from "react-native-outside-press";
 import { ThemeProvider } from "@/context/ThemeProviders";
 import { ClickOutsideProvider } from "react-native-click-outside";
-import { Drawer } from 'expo-router/drawer';
+import { Drawer } from "expo-router/drawer";
 import { DrawerLayoutAndroidBase } from "react-native";
 import TopBar from "@/components/navigator/Topbar/TopBar";
 import BFFListPage from "./(tabs)/friends/bff-list";
+import ActionSheet from "react-native-actions-sheet";
+import { ActionSheetProvider } from "@expo/react-native-action-sheet";
 SplashScreen.preventAutoHideAsync();
 export default function RootLayout() {
   const [fontsLoaded, error] = useFonts({
@@ -67,24 +72,35 @@ export default function RootLayout() {
   return (
     <GestureHandlerRootView>
       <EventProvider>
-      <ThemeProvider>
-        <ClickOutsideProvider>
-        <Stack>
-          <Stack.Screen name="index" options={{ headerShown: false }} />
-          <Stack.Screen name="(auth)" options={{ headerShown: false }} />
-          <Stack.Screen
-            name="(tabs)"
-            options={{
-              headerShown: false,
-              headerTitle: (props) => <MainHeader></MainHeader>,
-            }}
-          />
-          <Stack.Screen name="chatbox" options={{headerShown:false}}/>
-          <Stack.Screen name="(mine)/my-multimedia" options={{headerShown:false}}/>
-          <Stack.Screen name="(mine)/my-wall" options={{headerShown:false}}/>
-          <Stack.Screen name="community" options={{headerShown:false}}/>
-        </Stack>
-        </ClickOutsideProvider>
+        <ThemeProvider>
+          <ClickOutsideProvider>
+            <ActionSheetProvider>
+              <Stack>
+                <Stack.Screen name="index" options={{ headerShown: false }} />
+                <Stack.Screen name="(auth)" options={{ headerShown: false }} />
+                <Stack.Screen
+                  name="(tabs)"
+                  options={{
+                    headerShown: false,
+                    headerTitle: (props) => <MainHeader></MainHeader>,
+                  }}
+                />
+                <Stack.Screen name="chatbox" options={{ headerShown: false }} />
+                <Stack.Screen
+                  name="(mine)/my-multimedia"
+                  options={{ headerShown: false }}
+                />
+                <Stack.Screen
+                  name="(mine)/my-wall"
+                  options={{ headerShown: false }}
+                />
+                <Stack.Screen
+                  name="community"
+                  options={{ headerShown: false }}
+                />
+              </Stack>
+            </ActionSheetProvider>
+          </ClickOutsideProvider>
         </ThemeProvider>
       </EventProvider>
     </GestureHandlerRootView>

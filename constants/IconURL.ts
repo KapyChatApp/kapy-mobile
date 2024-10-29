@@ -76,6 +76,8 @@ export const IconURL = {
   multimedia_d: require("../assets/icons/multimedia_d.png"),
   my_document: require("../assets/icons/my_document.png"),
   my_gallery: require("../assets/icons/my_gallery.png"),
+  nickname_l:require("../assets/icons/nickname_l.png"),
+  nickname_d:require("../assets/icons/nickname_d.png"),
   onthemic: require("../assets/icons/onthemic.png"),
   open_statuswriter: require("../assets/icons/open_statuswriter.png"),
   opencam_l: require("../assets/icons/opencam_l.png"),

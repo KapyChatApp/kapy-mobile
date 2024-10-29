@@ -18,6 +18,7 @@ export interface EditableInputFieldProps {
   moreIconURL?: ImageSourcePropType | undefined;
   size?: Int32;
   isAlwaysReadOnly?: boolean;
+  isMultipleLine?:boolean;
   defaultValue?: any;
   notice?: string;
   labelLink?:string;
