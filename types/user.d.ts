@@ -17,7 +17,8 @@ export interface HeadProfileProps {
   lastName?: string;
   nickName?: string;
   bio?: string;
-avatarURL?:string;
+avatar?:string;
+background?:string;
 }
 export interface UserBioProps {
   gender?: boolean;

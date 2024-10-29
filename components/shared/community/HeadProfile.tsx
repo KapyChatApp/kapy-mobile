@@ -9,9 +9,9 @@ import { HeadProfileProps } from "@/types/user";
 const HeadProfile = (props:HeadProfileProps) => {
   return (
     <View className="flex items-center justify-center relative">
-      <View className="w-screen h-[200px] bg-deny "></View>
+      <Image source={{uri:props.background}} className="w-screen h-[200px] bg-deny "></Image>
       <View className=" flex items-center justify-center absolute top-[90px]">
-        <UserAvatar avatarURL={{uri:props.avatarURL}} size={176}></UserAvatar>
+        <UserAvatar avatarURL={{uri:props.avatar}} size={176}></UserAvatar>
         <Text className="text-24 font-helvetica-bold text-cardinal mt-[4px]">{props.firstName + ' '+ props.lastName}</Text>
         <Text className={`text-14 font-helvetica-light my-[2px] ${textLight0Dark500}`}>({props.nickName})</Text>
         

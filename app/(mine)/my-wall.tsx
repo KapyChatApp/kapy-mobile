@@ -13,40 +13,49 @@ import axios from "axios";
 
 const MyWallPage = () => {
   const navigation = useNavigation();
-  const [headerProps,setHeaderProps] = useState<HeadProfileProps | undefined>();
+  const [headerProps, setHeaderProps] = useState<
+    HeadProfileProps | undefined
+  >();
   const [bioProps, setBioProps] = useState<UserBioProps | undefined>();
-  useEffect(()=>{
-    const fetchData = async () => {
-      try {
-        const token = await AsyncStorage.getItem("token");
-      
-        const response = await axios.get(process.env.EXPO_PUBLIC_BASE_URL + "/mine/profile", {
-          headers: {
-            "Content-Type": "application/json",
-            "Authorization": `${token}`,
-          },
-        });
-      
-        const { firstName, lastName, nickName, bio, avatar, ..._bio } = response.data; 
-        setHeaderProps({ firstName, lastName, nickName, bio ,avatarURL:avatar});
-        setBioProps(_bio);
-      } catch (err) {
-        console.log(err);
+  useEffect(() => {
+    const disPlayUserData = async () => {
+      const user = await AsyncStorage.getItem("user");
+      if (!user) {
+        throw new Error("You are unauthenticated!");
       }
+      const {
+        firstName,
+        lastName,
+        nickName,
+        bio,
+        avatar,
+        background,
+        ..._bio
+      } = JSON.parse(user);
+
+      setHeaderProps({
+        firstName,
+        lastName,
+        nickName,
+        bio,
+        avatar,
+        background,
+      });
+      setBioProps(_bio);
     };
 
-    fetchData();
+    disPlayUserData();
   }, []);
 
   return (
     <SafeAreaView className={`flex-1 ${bgLight500Dark10}`}>
-    <ScrollView>
-      <HeadProfile {...headerProps}/>
-      <Previous navigation={navigation} isAbsolute={true} />
-      <UserBio {...bioProps} />
-      <View className="w-full h-[300px]"></View>
-    </ScrollView>
-  </SafeAreaView>
+      <ScrollView>
+        <HeadProfile {...headerProps} />
+        <Previous navigation={navigation} isAbsolute={true} />
+        <UserBio {...bioProps} />
+        <View className="w-full h-[300px]"></View>
+      </ScrollView>
+    </SafeAreaView>
   );
 };
 
