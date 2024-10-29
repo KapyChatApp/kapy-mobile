@@ -16,6 +16,7 @@ const FriendLayout = ({ children }: any) => {
         name="friend-profile/[friendId]"
         options={{ headerShown: false }}
       />
+      <Stack.Screen name="new-friend" options={{headerShown:false}}/>
     </Stack>
   );
 };

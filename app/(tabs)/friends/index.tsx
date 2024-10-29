@@ -1,25 +1,33 @@
-import { View, Text } from "react-native";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import SideBar from "@/components/navigator/Sidebar/SideBar";
-import TopBar from "@/components/navigator/Topbar/TopBar";
+import axios from "axios";
 import MainHeader from "@/components/navigator/Topbar/MainHeader";
 import Search from "@/components/shared/function/Search";
-import FastRequestBox from "@/components/shared/friend/FastRequestBox";
-import { ScrollView } from "react-native-gesture-handler";
 import FastRequestList from "@/components/shared/friend/FastRequestList";
 import FriendList from "@/components/shared/friend/FriendList";
-import OutsidePressHandler, { EventProvider } from "react-native-outside-press";
-import { bgLight500Dark0, bgLight500Dark10 } from "@/styles/theme";
+import { bgLight500Dark10, textLight0Dark500 } from "@/styles/theme";
+import FriendBox from "@/components/shared/friend/FriendBox";
+import { FriendBoxProps } from "@/types/friend";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import FriendMainHeader from "@/components/navigator/Topbar/FriendMainHeader";
 
 const FriendsPage = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const [query, setQuery] = useState("");
+  const [friends, setFriends] = useState<FriendBoxProps[]|undefined>([]);
+
+ 
   return (
     <SafeAreaView className={`${bgLight500Dark10} flex-1`}>
-      <MainHeader></MainHeader>
-      <Search></Search>
-      <FastRequestList></FastRequestList>
-      <FriendList></FriendList>
+      <FriendMainHeader />
+      <Search onChangeText={setQuery} />
+      <View className="flex-1">
+          <FastRequestList />
+          <FriendList />
+        </View>
+      
+     
     </SafeAreaView>
   );
 };

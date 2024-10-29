@@ -1,13 +1,41 @@
 import { View, Text, TouchableOpacity } from "react-native";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import FastRequestBox from "./FastRequestBox";
 import { ScrollView } from "react-native-gesture-handler";
 import { Link, useRouter } from "expo-router";
 import Icon from "@/components/ui/Icon";
 import { IconURL } from "@/constants/IconURL";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import axios from "axios";
+import { RequestedProps } from "@/types/friend";
 
 const FastRequestList = () => {
   const router = useRouter();
+  const [myRequesteds, setMyRequested] = useState<RequestedProps[] | null>([]);
+  useEffect(() => {
+    const getMyRequested = async () => {
+      const token = await AsyncStorage.getItem("token");
+      console.log("Token retrieved: ", token);
+      try {
+        const response = await axios.get(
+          process.env.EXPO_PUBLIC_BASE_URL + "/mine/requested",
+          {
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `${token}`,
+            },
+          }
+        );
+        if (response.data) {
+          setMyRequested(response.data);
+        }
+      } catch (error) {
+        console.log(error);
+        throw error;
+      }
+    };
+    getMyRequested();
+  }, []);
   return (
     <View className="request-list-container flex">
       <View className="request-header  mx-[18px] my-[10px]  flex flex-row items-center justify-between">
@@ -27,13 +55,9 @@ const FastRequestList = () => {
         className="request-list flex flex-row mx-[18px]"
         contentContainerStyle={{ columnGap: 4 }}
       >
-        <FastRequestBox type={true}></FastRequestBox>
-        <FastRequestBox type={false}></FastRequestBox>
-        <FastRequestBox type={false}></FastRequestBox>
-        <FastRequestBox type={false}></FastRequestBox>
-        <FastRequestBox type={true}></FastRequestBox>
-        <FastRequestBox type={true}></FastRequestBox>
-        <FastRequestBox type={true}></FastRequestBox>
+        {myRequesteds?.map((item) => (
+          <FastRequestBox {...item} />
+        ))}
       </ScrollView>
     </View>
   );
