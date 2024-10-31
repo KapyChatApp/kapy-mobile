@@ -1,4 +1,4 @@
-import { View, Text } from "react-native";
+import { View, Text, Platform } from "react-native";
 import React, { useEffect, useState } from "react";
 import { useLocalSearchParams, useNavigation } from "expo-router";
 import HeadProfile from "@/components/shared/community/HeadProfile";
@@ -19,6 +19,7 @@ import DenyButton from "@/components/ui/DenyButton";
 import { unBFF, unFriend } from "@/requests/un-request";
 import { acceptBFF, acceptFriend } from "@/requests/accept-request";
 import { addBFF, addFriend } from "@/requests/add-request";
+import { IconURL } from "@/constants/IconURL";
 
 const FriendProfilePage = () => {
   const { friendId } = useLocalSearchParams();
@@ -88,13 +89,16 @@ const FriendProfilePage = () => {
             className="flex-1 flex items-center justify-center top-[180px] flex-row"
             style={{ columnGap: 4 }}
           >
-            <DenyButton
+            <CustomButton
               width={120}
               height={40}
-              label="Unfriend"
+              label="Friend"
+              fontSize={14}
+              iconURL={IconURL.is_friend_btn}
+              iconSize={18}
               onPress={async ()=> await unFriend(friendedId, () => setRelation("stranger"))}
             />
-            <CustomButton width={120} height={40} label="Add bff" type={true} onPress={async ()=> await addBFF(friendedId,()=> setRelation("sent_bff"))} />
+            <CustomButton width={120} height={40} fontSize={14} iconURL={IconURL.is_bff_btn}  iconSize={18} label="Add bff" type={true} onPress={async ()=> await addBFF(friendedId,()=> setRelation("sent_bff"))} />
           </View>
         );
       case "bff":
@@ -103,13 +107,16 @@ const FriendProfilePage = () => {
             className="flex-1 flex items-center justify-center top-[180px] flex-row"
             style={{ columnGap: 4 }}
           >
-            <DenyButton
+            <CustomButton
               width={120}
               height={40}
               label="Unfriend"
+              fontSize={14}
+              iconURL={IconURL.is_friend_btn}
+              iconSize={18}
               onPress={async()=>await unFriend(friendedId, () => setRelation("stranger"))}
             />
-            <DenyButton width={120} height={40} label="UnBFF" onPress={async()=>await unBFF(friendedId, () => setRelation("friend"))} />
+            <CustomButton width={120} height={40} label="UnBFF" fontSize={14} type={true} iconURL={IconURL.is_bff_btn} iconSize={18} onPress={async()=>await unBFF(friendedId, () => setRelation("friend"))} />
           </View>
         );
       case "sent_bff":
@@ -123,6 +130,9 @@ const FriendProfilePage = () => {
               height={40}
               label="Requested"
               type={true}
+              fontSize={14}
+              iconURL={IconURL.pending_btn}
+              iconSize={18}
               onPress={async ()=> await unBFF(friendedId, () => setRelation("friend"))}
             />
           </View>
@@ -138,12 +148,16 @@ const FriendProfilePage = () => {
              height={40}
              label="Deny"
              type={true}
+             fontSize={14}
              onPress={async ()=> await unBFF(friendedId, ()=>  setRelation("friend"))}/>
             <CustomButton
               width={120}
               height={40}
               label="Accept"
               type={true}
+              fontSize={14}
+              iconURL={IconURL.is_bff_btn}
+              iconSize={18}
               onPress={async ()=> await acceptBFF(friendedId, ()=>  setRelation("bff"))}
             />
           </View>
@@ -158,6 +172,9 @@ const FriendProfilePage = () => {
               width={120}
               height={40}
               label="Requested"
+              fontSize={14}
+              iconURL={IconURL.pending_btn}
+              iconSize={18}
               onPress={async ()=>await unFriend(friendedId, () => setRelation("stranger"))}
             />
           </View>
@@ -168,8 +185,8 @@ const FriendProfilePage = () => {
             className="flex-1 flex items-center justify-center top-[180px] flex-row"
             style={{ columnGap: 4 }}
           >
-            <DenyButton width={120} height={40} label="Deny" onPress={async ()=>await unFriend(friendedId, ()=>  setRelation("stranger"))}/>
-            <CustomButton width={120} height={40} label="Accept" onPress={async ()=>await acceptFriend(friendedId, ()=>  setRelation("friend"))} />
+            <DenyButton width={120} height={40} label="Deny" fontSize={14} onPress={async ()=>await unFriend(friendedId, ()=>  setRelation("stranger"))}/>
+            <CustomButton width={120} height={40} label="Accept" fontSize={14} iconURL={IconURL.is_friend_btn} iconSize={18} onPress={async ()=>await acceptFriend(friendedId, ()=>  setRelation("friend"))} />
           </View>
         );
       default:
@@ -178,7 +195,7 @@ const FriendProfilePage = () => {
             className="flex-1 flex items-center justify-center top-[180px] flex-row"
             style={{ columnGap: 4 }}
           >
-            <CustomButton width={120} height={40} label="Add friend" onPress={async()=>await addFriend(friendedId,()=> setRelation("sent_friend"))} />
+            <CustomButton width={120} height={40} label="Add friend" iconURL={IconURL.is_friend_btn} iconSize={18} fontSize={14} onPress={async()=>await addFriend(friendedId,()=> setRelation("sent_friend"))} />
           </View>
         );
     }
@@ -189,7 +206,8 @@ const FriendProfilePage = () => {
         <HeadProfile {...headerProps} />
         <Previous navigation={navigation} isAbsolute={true} />
         <MoreProfileOption setIsReportOpen={setIsReportOpen} />
-        {RelationButtonGroups()}
+        <View className={`${Platform.OS==="android"? "mt-[40px]":""}`}>{RelationButtonGroups()}</View>
+        
         <UserBio {...bioProps} />
         {isBFF ? (
           <View

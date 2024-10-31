@@ -10,12 +10,44 @@ import { IconURL } from "@/constants/IconURL";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 import { addFriend } from "@/requests/add-request";
+import CustomButton from "@/components/ui/CustomButton";
 const FriendBox = (props: FriendBoxProps) => {
   const router = useRouter();
-  const [isSentRequest, setIsSentRequest] = useState(false);
   const [friendIds, setFriendIds] = useState<string[]>([]);
-  const [relation, setRelation] = useState(props.relation)
-  console.log("Profile", props);
+  const [relation, setRelation] = useState(props.relation);
+  console.log("result: ",props);
+  const RenderFriendBoxButton = () => {
+    switch (relation) {
+      case "friend":
+        return <Icon iconURL={IconURL.is_friend} size={28} />;
+      case "bff":
+        return <Icon iconURL={IconURL.is_bff} size={28} />;
+      case "sent_bff":
+        return (
+          <CustomButton width={80} height={30} label="Accept" type={true} />
+        );
+      case "sent_friend":
+        return <CustomButton width={80} height={30} label="Accept" />;
+      case "received_bff":
+        return (
+          <TouchableOpacity>
+            <Icon iconURL={IconURL.pending_bff} size={28} />
+          </TouchableOpacity>
+        );
+      case "received_friend":
+        return (
+          <TouchableOpacity>
+            <Icon iconURL={IconURL.pending_friend} size={28} />
+          </TouchableOpacity>
+        );
+      default:
+        return (
+          <TouchableOpacity>
+            <Icon iconURL={IconURL.add_friend} size={28} />
+          </TouchableOpacity>
+        );
+    }
+  };
   return (
     <TouchableOpacity
       onPress={() =>
@@ -38,15 +70,7 @@ const FriendBox = (props: FriendBoxProps) => {
           {props.onlineTime} min ago
         </Text>
       </View>
-      {relation === "stranger" ? (
-        <TouchableOpacity onPress={()=>addFriend(props._id,()=>{setIsSentRequest(true); setRelation("friend")})}>
-          <Icon size={40} iconURL={IconURL.add_friend} />
-        </TouchableOpacity>
-      ) : relation === "pending" || isSentRequest ? (
-        <Icon iconURL={IconURL.sent_request} size={38} />
-      ) : (
-        <Icon iconURL={IconURL.is_friend} size={28} />
-      )}
+     {RenderFriendBoxButton()}
     </TouchableOpacity>
   );
 };
