@@ -111,6 +111,7 @@ export const IconURL = {
   show_more_func: require("../assets/icons/show_more_func.png"),
   sidebar: require("../assets/icons/sidebar.png"),
   sun: require("../assets/icons/sun.png"),
+  tick:require("../assets/icons/tick.png"),
   think: require("../assets/icons/think.png"),
   upgrade_plan: require("../assets/icons/upgrade_plan.png"),
   video_call: require("../assets/icons/video_call.png"),

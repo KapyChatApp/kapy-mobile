@@ -1,6 +1,6 @@
 import { View, Text, Alert } from "react-native";
 import React, { useEffect, useState } from "react";
-import { Link, router, useRouter } from "expo-router";
+import { Link, useRouter } from "expo-router";
 import Icon from "@/components/ui/Icon";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import UserAvatar from "@/components/ui/UserAvatar";
@@ -11,12 +11,43 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 import { addFriend } from "@/requests/add-request";
 import CustomButton from "@/components/ui/CustomButton";
-import friends from "@/app/(tabs)/friends";
-const FriendBox = (props: FriendBoxProps) => {
+const FriendFindBox = (props: FriendBoxProps) => {
   const router = useRouter();
   const [friendIds, setFriendIds] = useState<string[]>([]);
   const [relation, setRelation] = useState(props.relation);
-  console.log("result: ", props);
+  console.log("result: ",props);
+  const RenderFriendBoxButton = () => {
+    switch (relation) {
+      case "friend":
+        return <Icon iconURL={IconURL.is_friend} size={28} />;
+      case "bff":
+        return <Icon iconURL={IconURL.is_bff} size={28} />;
+      case "sent_bff":
+        return (
+          <CustomButton width={80} height={30} label="Accept" type={true} />
+        );
+      case "sent_friend":
+        return <CustomButton width={80} height={30} label="Accept" />;
+      case "received_bff":
+        return (
+          <TouchableOpacity>
+            <Icon iconURL={IconURL.pending_bff} size={28} />
+          </TouchableOpacity>
+        );
+      case "received_friend":
+        return (
+          <TouchableOpacity>
+            <Icon iconURL={IconURL.pending_friend} size={28} />
+          </TouchableOpacity>
+        );
+      default:
+        return (
+          <TouchableOpacity>
+            <Icon iconURL={IconURL.add_friend} size={28} />
+          </TouchableOpacity>
+        );
+    }
+  };
   return (
     <TouchableOpacity
       onPress={() =>
@@ -39,9 +70,9 @@ const FriendBox = (props: FriendBoxProps) => {
           {props.onlineTime} min ago
         </Text>
       </View>
-    
+     {RenderFriendBoxButton()}
     </TouchableOpacity>
   );
 };
 
-export default FriendBox;
+export default FriendFindBox;

@@ -10,15 +10,20 @@ import { useNavigation } from "expo-router";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { BioEditorProps, HeaderProfileEditorProps } from "@/types/user";
 import axios from "axios";
+import LoadingSpinner from "@/components/ui/LoadingSpinner";
 
 const UpdateProfilePage = () => {
   const [bioProps, setBioProps] = useState<BioEditorProps | undefined>();
-  const [headerProps, setHeaderProps] = useState<HeaderProfileEditorProps| undefined>();
+  const [headerProps, setHeaderProps] = useState<
+    HeaderProfileEditorProps | undefined
+  >();
+  const [loading, setLoading] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   useEffect(() => {
     const fetchData = async () => {
       try {
         const token = await AsyncStorage.getItem("token");
-        
+
         const response = await axios.get(
           process.env.EXPO_PUBLIC_BASE_URL + "/mine/profile",
           {
@@ -39,13 +44,25 @@ const UpdateProfilePage = () => {
   }, []);
   return (
     <SafeAreaView className={`${bgLight500Dark10} flex-1`}>
-      <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"}
-      style={{ flex: 1 }}>
+      <KeyboardAvoidingView
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        style={{ flex: 1 }}
+      >
         <ScrollView className="flex-1">
-          <HeaderProfileEditor {...headerProps} />
+          <HeaderProfileEditor {...headerProps} setStartLoading={() => setLoading(true)}
+            setEndLoading={() => setLoading(false)}
+            setIsLoading={() => setIsLoading(true)}
+            setNotIsLoading={() => setIsLoading(false) }/>
           <View className="space w-full h-[90px]"></View>
-          <BioEditor {...bioProps} />
+          <BioEditor
+            {...bioProps}
+            setStartLoading={() => setLoading(true)}
+            setEndLoading={() => setLoading(false)}
+            setIsLoading={() => setIsLoading(true)}
+            setNotIsLoading={() => setIsLoading(false)}
+          />
         </ScrollView>
+        {loading ? <LoadingSpinner loading={isLoading} /> : null}
       </KeyboardAvoidingView>
     </SafeAreaView>
   );

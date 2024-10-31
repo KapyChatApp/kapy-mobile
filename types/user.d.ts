@@ -35,6 +35,10 @@ export interface UserBioProps {
 export interface HeaderProfileEditorProps{
   avatar?:string;
   background?:string;
+  setStartLoading: () => void,
+  setEndLoading: () => void,
+  setIsLoading: () => void,
+  setNotIsLoading: () => void
 }
 
 export interface BioEditorProps {
@@ -52,4 +56,8 @@ export interface BioEditorProps {
   job?: string;
   hobbies?: string;
   bio?:string;
+  setStartLoading: () => void,
+  setEndLoading: () => void,
+  setIsLoading: () => void,
+  setNotIsLoading: () => void
 }

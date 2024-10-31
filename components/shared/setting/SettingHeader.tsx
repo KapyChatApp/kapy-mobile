@@ -33,7 +33,7 @@ const SettingHeader = () => {
   return (
     <View className="flex flex-row items-center justify-between py-[17px] px-[19px]">
       <View className="flex flex-row">
-        <UserAvatarLink avatarURL={{uri:avatar}} size={72} link="/friends/my-wall"></UserAvatarLink>
+        <UserAvatarLink avatarURL={{uri:avatar}} size={72} link="/(mine)/my-wall"></UserAvatarLink>
         <View className={`flex ml-[12px] justify-center `}>
           <Text
             className={`text-16 font-helvetica-bold text-light-0 dark:text-dark-500 ${textLight0Dark500} `}
