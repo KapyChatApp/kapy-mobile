@@ -19,7 +19,7 @@ const FriendTopBar = ({ isOpen, setIsOpen }: any) => {
       <TouchableOpacity onPress={() => setIsOpen(!isOpen)}>
         <Icon size={22} iconURL={IconURL.sidebar}></Icon>
       </TouchableOpacity>
-      <View className="p-[6px]">
+      <View className="p-[6px] pr-0">
         <CustomButton label="New Friend" width={120} height={35} onPress={()=>router.push({pathname:"/(tabs)/friends/new-friend"})}/>
       </View>
     </View>

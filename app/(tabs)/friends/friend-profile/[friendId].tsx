@@ -14,6 +14,11 @@ import SocialPost from "@/components/shared/community/SocialPost";
 import { HeadProfileProps, UserBioProps } from "@/types/user";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
+import CustomButton from "@/components/ui/CustomButton";
+import DenyButton from "@/components/ui/DenyButton";
+import { unBFF, unFriend } from "@/requests/un-request";
+import { acceptBFF, acceptFriend } from "@/requests/accept-request";
+import { addBFF, addFriend } from "@/requests/add-request";
 
 const FriendProfilePage = () => {
   const { friendId } = useLocalSearchParams();
@@ -31,31 +36,35 @@ const FriendProfilePage = () => {
     HeadProfileProps | undefined
   >();
   const [bioProps, setBioProps] = useState<UserBioProps | undefined>();
+  const [relation, setRelation] = useState("stranger");
+  const [friendedId, setFriendedId] = useState("");
   useEffect(() => {
     const disPlayUserData = async () => {
       const token = await AsyncStorage.getItem("token");
 
-        const response = await axios.get(
-          process.env.EXPO_PUBLIC_BASE_URL + "/friend/profile",
-          {
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `${token}`,
-            },
-            params:{friendId:friendId}
-          }
-        );
-    
+      const response = await axios.get(
+        process.env.EXPO_PUBLIC_BASE_URL + "/friend/profile",
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `${token}`,
+          },
+          params: { friendId: friendId },
+        }
+      );
+
       const {
+        _id,
         firstName,
         lastName,
         nickName,
         bio,
         avatar,
         background,
+        relation,
         ..._bio
       } = response.data;
-
+      console.log("relation", response.data);
       setHeaderProps({
         firstName,
         lastName,
@@ -65,17 +74,123 @@ const FriendProfilePage = () => {
         background,
       });
       setBioProps(_bio);
+      setRelation(relation);
+      setFriendedId(_id.toString());
     };
 
     disPlayUserData();
   }, []);
+  const RelationButtonGroups = () => {
+    switch (relation) {
+      case "friend":
+        return (
+          <View
+            className="flex-1 flex items-center justify-center top-[180px] flex-row"
+            style={{ columnGap: 4 }}
+          >
+            <DenyButton
+              width={120}
+              height={40}
+              label="Unfriend"
+              onPress={async ()=> await unFriend(friendedId, () => setRelation("stranger"))}
+            />
+            <CustomButton width={120} height={40} label="Add bff" type={true} onPress={async ()=> await addBFF(friendedId,()=> setRelation("sent_bff"))} />
+          </View>
+        );
+      case "bff":
+        return (
+          <View
+            className="flex-1 flex items-center justify-center top-[180px] flex-row"
+            style={{ columnGap: 4 }}
+          >
+            <DenyButton
+              width={120}
+              height={40}
+              label="Unfriend"
+              onPress={async()=>await unFriend(friendedId, () => setRelation("stranger"))}
+            />
+            <DenyButton width={120} height={40} label="UnBFF" onPress={async()=>await unBFF(friendedId, () => setRelation("friend"))} />
+          </View>
+        );
+      case "sent_bff":
+        return (
+          <View
+            className="flex-1 flex items-center justify-center top-[180px] flex-row"
+            style={{ columnGap: 4 }}
+          >
+            <CustomButton
+              width={120}
+              height={40}
+              label="Requested"
+              type={true}
+              onPress={async ()=> await unBFF(friendedId, () => setRelation("friend"))}
+            />
+          </View>
+        );
+      case "received_bff":
+        return (
+          <View
+            className="flex-1 flex items-center justify-center top-[180px] flex-row"
+            style={{ columnGap: 4 }}
+          >
+            <DenyButton
+             width={120}
+             height={40}
+             label="Deny"
+             type={true}
+             onPress={async ()=> await unBFF(friendedId, ()=>  setRelation("friend"))}/>
+            <CustomButton
+              width={120}
+              height={40}
+              label="Accept"
+              type={true}
+              onPress={async ()=> await acceptBFF(friendedId, ()=>  setRelation("bff"))}
+            />
+          </View>
+        );
+      case "sent_friend":
+        return (
+          <View
+            className="flex-1 flex items-center justify-center top-[180px] flex-row"
+            style={{ columnGap: 4 }}
+          >
+            <CustomButton
+              width={120}
+              height={40}
+              label="Requested"
+              onPress={async ()=>await unFriend(friendedId, () => setRelation("stranger"))}
+            />
+          </View>
+        );
+      case "received_friend":
+        return (
+          <View
+            className="flex-1 flex items-center justify-center top-[180px] flex-row"
+            style={{ columnGap: 4 }}
+          >
+            <DenyButton width={120} height={40} label="Deny" onPress={async ()=>await unFriend(friendedId, ()=>  setRelation("stranger"))}/>
+            <CustomButton width={120} height={40} label="Accept" onPress={async ()=>await acceptFriend(friendedId, ()=>  setRelation("friend"))} />
+          </View>
+        );
+      default:
+        return (
+          <View
+            className="flex-1 flex items-center justify-center top-[180px] flex-row"
+            style={{ columnGap: 4 }}
+          >
+            <CustomButton width={120} height={40} label="Add friend" onPress={async()=>await addFriend(friendedId,()=> setRelation("sent_friend"))} />
+          </View>
+        );
+    }
+  };
   return (
     <SafeAreaView className={`flex-1 ${bgLight500Dark10}`}>
       <ScrollView>
         <HeadProfile {...headerProps} />
         <Previous navigation={navigation} isAbsolute={true} />
         <MoreProfileOption setIsReportOpen={setIsReportOpen} />
-        <UserBio {...bioProps}/>
+        {RelationButtonGroups()}
+        <UserBio {...bioProps} />
         {isBFF ? (
           <View
             className="w-full mt-[250px] px-[12px] mb-[10px]"

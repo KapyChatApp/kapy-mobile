@@ -9,52 +9,13 @@ import { FriendBoxProps } from "@/types/friend";
 import { IconURL } from "@/constants/IconURL";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
+import { addFriend } from "@/requests/add-request";
 const FriendBox = (props: FriendBoxProps) => {
   const router = useRouter();
   const [isSentRequest, setIsSentRequest] = useState(false);
   const [friendIds, setFriendIds] = useState<string[]>([]);
-  useEffect(() => {
-    const getFiendIds = async () => {
-      const user = await AsyncStorage.getItem("user");
-      if (!user) {
-        throw new Error("You are unauthenticated!");
-      }
-      const { friendIds } = JSON.parse(user);
-      setFriendIds(friendIds);
-    };
-  });
-  const handleFriendRequest = async () => {
-    try {
-      const token = await AsyncStorage.getItem("token");
-      const user = await AsyncStorage.getItem("user");
-      if (!user) {
-        throw new Error("You are unauthenticated!");
-      }
-      const { _id } = JSON.parse(user);
-      const friendRequestBody = { sender: _id, receiver: props._id };
-      const response = await axios.post(
-        process.env.EXPO_PUBLIC_BASE_URL + "/request/friend",
-        friendRequestBody,
-        {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `${token}`,
-          },
-        }
-      );
-
-      if (response.status === 200 || response.status === 201) {
-        Alert.alert("Sent your request!");
-        setIsSentRequest(true);
-      } else {
-        Alert.alert(`Your request fail ${response.statusText} `);
-      }
-    } catch (error) {
-      console.log(error);
-      throw error;
-    }
-  };
-  console.log(props);
+  const [relation, setRelation] = useState(props.relation)
+  console.log("Profile", props);
   return (
     <TouchableOpacity
       onPress={() =>
@@ -77,11 +38,11 @@ const FriendBox = (props: FriendBoxProps) => {
           {props.onlineTime} min ago
         </Text>
       </View>
-      {props.relation === "stranger" ? (
-        <TouchableOpacity onPress={handleFriendRequest}>
+      {relation === "stranger" ? (
+        <TouchableOpacity onPress={()=>addFriend(props._id,()=>{setIsSentRequest(true); setRelation("friend")})}>
           <Icon size={40} iconURL={IconURL.add_friend} />
         </TouchableOpacity>
-      ) : props.relation === "pending" || isSentRequest ? (
+      ) : relation === "pending" || isSentRequest ? (
         <Icon iconURL={IconURL.sent_request} size={38} />
       ) : (
         <Icon iconURL={IconURL.is_friend} size={28} />

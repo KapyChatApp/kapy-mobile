@@ -7,6 +7,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 import { FriendBoxProps } from "@/types/friend";
 import FriendBox from "./FriendBox";
+import { textLight0Dark500 } from "@/styles/theme";
 
 const FriendList = () => {
   const [myFriends, setMyFriends] = useState<FriendBoxProps[]>([]);
@@ -28,7 +29,7 @@ const FriendList = () => {
   },[])
   return (
     <View className="flex flex-1">
-      <Text className="font-helvetica-light mx-[20px] my-[12px]">My friends</Text>
+      <Text className={`font-helvetica-light mx-[20px] my-[12px] ${textLight0Dark500}`}>My friends</Text>
         <ScrollView className="flex-1 px-[20px]" contentContainerStyle={{rowGap:4}}>
           {myFriends.map((item)=><FriendBox {...item}/>)}
           {/* <FriendAlphabetList letter="A"></FriendAlphabetList>
