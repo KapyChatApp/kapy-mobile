@@ -1,5 +1,5 @@
 import { View, Text, Image, Alert } from "react-native";
-import React from "react";
+import React, { useState } from "react";
 import RequestButton from "@/components/ui/RequestButton";
 import { IconURL } from "@/constants/IconURL";
 import UserAvatar from "@/components/ui/UserAvatar";
@@ -7,8 +7,11 @@ import { bgLight510Dark20, textLight0Dark500 } from "@/styles/theme";
 import { RequestedProps } from "@/types/friend";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
+import { TouchableOpacity } from "react-native-gesture-handler";
+import { router } from "expo-router";
 
 const FastRequestBox = (props: RequestedProps) => {
+  const [isReloadAndHide, setIsReloadAndHide] = useState(false);
   const acceptFriendReq = async (token: string, userId: string) => {
     try {
       const acceptBody = { sender: props._id, receiver: userId };
@@ -23,7 +26,7 @@ const FastRequestBox = (props: RequestedProps) => {
         }
       );
       if (response.status == 200 || response.status == 201) {
-        Alert.alert("Accepted!");
+        setIsReloadAndHide(true);
       } else {
         Alert.alert("Cannot accept now!");
       }
@@ -46,7 +49,7 @@ const FastRequestBox = (props: RequestedProps) => {
         }
       );
       if (response.status == 200 || response.status == 201) {
-        Alert.alert("Accepted!");
+        setIsReloadAndHide(true);
       } else {
         Alert.alert("Cannot accept now!");
       }
@@ -72,8 +75,10 @@ const FastRequestBox = (props: RequestedProps) => {
     }
   };
   return (
-    <View
+    <View className="flex-1">
+      {isReloadAndHide? null:(<TouchableOpacity
       className={`w-[209px] h-[97px] flex flex-row border border-border rounded-3xl items-center justify-center p-[13px] ${bgLight510Dark20}`}
+      onPress={()=> router.push({pathname:"/(tabs)/friends/friend-profile/[friendId]", params:{friendId:props._id}})}
     >
       <UserAvatar avatarURL={{ uri: props.avatar }} size={70}></UserAvatar>
       <View className="info-container flex ml-[16px]">
@@ -98,7 +103,9 @@ const FastRequestBox = (props: RequestedProps) => {
           props.relation === "bff" ? IconURL.bff_request : IconURL.f_request
         }
       ></Image>
+    </TouchableOpacity>)}
     </View>
+    
   );
 };
 

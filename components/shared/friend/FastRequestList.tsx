@@ -11,7 +11,7 @@ import { RequestedProps } from "@/types/friend";
 
 const FastRequestList = () => {
   const router = useRouter();
-  const [myRequesteds, setMyRequested] = useState<RequestedProps[] | null>([]);
+  const [myRequesteds, setMyRequesteds] = useState<RequestedProps[] | null>([]);
   useEffect(() => {
     const getMyRequested = async () => {
       const token = await AsyncStorage.getItem("token");
@@ -27,7 +27,7 @@ const FastRequestList = () => {
           }
         );
         if (response.data) {
-          setMyRequested(response.data);
+          setMyRequesteds(response.data);
         }
       } catch (error) {
         console.log(error);
@@ -37,8 +37,9 @@ const FastRequestList = () => {
     getMyRequested();
   }, []);
   return (
-    <View className="request-list-container flex">
-      <View className="request-header  mx-[18px] my-[10px]  flex flex-row items-center justify-between">
+    <View>
+      {myRequesteds?.length===0? null:( <View className="request-list-container flex">
+      <View className="request-header  mx-[18px] mt-[10px]  flex flex-row items-center justify-between">
         <Text className=" font-helvetica-light text-14">Friend requests</Text>
         <Link href="/friends/all-request">
           <View className="flex flex-row items-center ">
@@ -59,7 +60,9 @@ const FastRequestList = () => {
           <FastRequestBox {...item} />
         ))}
       </ScrollView>
+    </View>)}
     </View>
+   
   );
 };
 

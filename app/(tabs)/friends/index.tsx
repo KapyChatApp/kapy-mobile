@@ -11,23 +11,24 @@ import FriendBox from "@/components/shared/friend/FriendBox";
 import { FriendBoxProps } from "@/types/friend";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import FriendMainHeader from "@/components/navigator/Topbar/FriendMainHeader";
+import { useFocusEffect } from "expo-router";
+import { useIsFocused } from "@react-navigation/native";
 
 const FriendsPage = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [query, setQuery] = useState("");
-  const [friends, setFriends] = useState<FriendBoxProps[]|undefined>([]);
+  const [friends, setFriends] = useState<FriendBoxProps[] | undefined>([]);
+  const isFocused = useIsFocused();
+  useEffect(() => {}, [isFocused]);
 
- 
   return (
     <SafeAreaView className={`${bgLight500Dark10} flex-1`}>
       <FriendMainHeader />
       <Search onChangeText={setQuery} />
       <View className="flex-1">
-          <FastRequestList />
-          <FriendList />
-        </View>
-      
-     
+        <FastRequestList />
+        <FriendList />
+      </View>
     </SafeAreaView>
   );
 };

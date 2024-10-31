@@ -13,6 +13,7 @@ const SignOutButton = () => {
   const navigation = useNavigation();
   const handleLogout = async ()=>{
     await AsyncStorage.removeItem('token');
+    await AsyncStorage.removeItem('user');
     navigation.dispatch(
       CommonActions.reset({
         index: 0,
