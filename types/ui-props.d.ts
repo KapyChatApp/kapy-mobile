@@ -46,3 +46,9 @@ export interface EditabelDatePickerProps {
   data?: any;
   setData?: (data) => void;
 }
+
+export interface ProfileFieldProps {
+  label?:string;
+  value?:string;
+  iconURL?:string;
+}
