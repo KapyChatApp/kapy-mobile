@@ -100,6 +100,7 @@ export default function RootLayout() {
                   name="community"
                   options={{ headerShown: false }}
                 />
+                <Stack.Screen name="(error)/not-found" options={{headerShown:false}}/>
               </Stack>
             </ActionSheetProvider>
           </ClickOutsideProvider>

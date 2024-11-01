@@ -1,6 +1,6 @@
 import { View, Text, Platform } from "react-native";
 import React, { useEffect, useState } from "react";
-import { useLocalSearchParams, useNavigation } from "expo-router";
+import { useLocalSearchParams, useNavigation, useRouter } from "expo-router";
 import HeadProfile from "@/components/shared/community/HeadProfile";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { ScrollView } from "react-native-gesture-handler";
@@ -21,10 +21,12 @@ import { acceptBFF, acceptFriend } from "@/requests/accept-request";
 import { addBFF, addFriend } from "@/requests/add-request";
 import { IconURL } from "@/constants/IconURL";
 import LoadingSpinner from "@/components/ui/LoadingSpinner";
+import { getFriendProfile } from "@/requests/friend-profile";
 
 const FriendProfilePage = () => {
   const { friendId } = useLocalSearchParams();
   const navigation = useNavigation();
+  const router = useRouter();
   const isBFF = true;
   const [isReportOpen, setIsReportOpen] = useState(false);
   // const postContent = [
@@ -45,19 +47,8 @@ const FriendProfilePage = () => {
   const [isLoading, setIsLoading] = useState(true);
   useEffect(() => {
     const disPlayUserData = async () => {
-      const token = await AsyncStorage.getItem("token");
-
-      const response = await axios.get(
-        process.env.EXPO_PUBLIC_BASE_URL + "/friend/profile",
-        {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `${token}`,
-          },
-          params: { friendId: friendId },
-        }
-      );
-
+      try{
+      const friendData=await getFriendProfile(friendId);
       const {
         _id,
         firstName,
@@ -68,8 +59,7 @@ const FriendProfilePage = () => {
         background,
         relation,
         ..._bio
-      } = response.data;
-      console.log("relation", response.data);
+      } = friendData;
       setHeaderProps({
         firstName,
         lastName,
@@ -81,6 +71,12 @@ const FriendProfilePage = () => {
       setBioProps(_bio);
       setRelation(relation);
       setFriendedId(_id.toString());
+
+    }
+      catch(error){
+        console.log(error);
+        router.push("/(tabs)/friends/not-found");
+      }
     };
 
     disPlayUserData();

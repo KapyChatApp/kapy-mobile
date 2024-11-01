@@ -15,6 +15,7 @@ const FriendLayout = ({ children }: any) => {
         options={{ headerShown: false }}
       />
       <Stack.Screen name="new-friend" options={{headerShown:false}}/>
+      <Stack.Screen name="not-found" options={{headerShown:false}}/>
     </Stack>
   );
 };
