@@ -16,12 +16,12 @@ const SidebarLinkList = () => {
       ></SidebarItems>
       <SidebarItems
         label="Bestfriends"
-        link="/friends/bff-list"
+        link="/(mine)/bff-list"
         iconURL={theme === "light" ? IconURL.bff_list_l : IconURL.bff_list_d}
       ></SidebarItems>
       <SidebarItems
         label="Blocked list"
-        link="/friends/blocked-list"
+        link="/(mine)/blocked-list"
         iconURL={
           theme === "light" ? IconURL.block_list_l : IconURL.block_list_d
         }

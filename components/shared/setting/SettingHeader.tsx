@@ -1,10 +1,10 @@
 import { View, Text, Switch, Image, useColorScheme } from "react-native";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import CustomButton from "@/components/ui/CustomButton";
 import { IconURL } from "@/constants/IconURL";
 import SunMoonSwitch from "@/components/ui/SunMoonSwitch";
 import UserAvatarLink from "@/components/ui/UserAvatarLink";
-import { useRouter } from "expo-router";
+import { useFocusEffect, useRouter } from "expo-router";
 import { useTheme } from "@/context/ThemeProviders";
 import { textLight0Dark500 } from "@/styles/theme";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -16,7 +16,7 @@ const SettingHeader = () => {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [nickName, setNickName] = useState("");
-  useEffect(() => {
+  useFocusEffect( useCallback(() => {
     const getAvatar = async () => {
       const user = await AsyncStorage.getItem("user");
       if (!user) {
@@ -28,12 +28,12 @@ const SettingHeader = () => {
       setLastName(lastName);
       setNickName(nickName);
     };
-    getAvatar();
-  });
+    getAvatar();},[]
+  ));
   return (
     <View className="flex flex-row items-center justify-between py-[17px] px-[19px]">
       <View className="flex flex-row">
-        <UserAvatarLink avatarURL={{uri:avatar}} size={72} link="/friends/my-wall"></UserAvatarLink>
+        <UserAvatarLink avatarURL={{uri:avatar}} size={72} link="/(mine)/my-wall"></UserAvatarLink>
         <View className={`flex ml-[12px] justify-center `}>
           <Text
             className={`text-16 font-helvetica-bold text-light-0 dark:text-dark-500 ${textLight0Dark500} `}

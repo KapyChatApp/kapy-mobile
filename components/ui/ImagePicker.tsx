@@ -5,8 +5,12 @@ import { useClickOutside } from "react-native-click-outside";
 import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { generateRandomNumberString } from "@/utils/Random";
+import { getMyProfile } from "@/requests/my-profile";
 
-const ImagePickerBox = ({ setIsOpen, toEndPoint, aspect }: any) => {
+const ImagePickerBox = ({ setIsOpen, toEndPoint, aspect, setStartLoading,
+  setEndLoading,
+  setIsLoading,
+  setNotIsLoading, setReload }: any) => {
   const ref = useClickOutside<View>(() => setIsOpen(false));
   const [image, setImage] = useState<string | null>(null);
   const [uploading, setUploading] = useState<boolean>(false);
@@ -42,6 +46,8 @@ const ImagePickerBox = ({ setIsOpen, toEndPoint, aspect }: any) => {
 
     try {
       setUploading(true);
+      setStartLoading();
+      setIsLoading();
       const token = await AsyncStorage.getItem("token");
 
       // Tạo đối tượng tệp từ URI
@@ -62,11 +68,12 @@ const ImagePickerBox = ({ setIsOpen, toEndPoint, aspect }: any) => {
         }
       );
 
-      if (response.status === 200) {
-        Alert.alert(
-          "Upload Successful!",
-          "Your profile picture has been updated."
-        );
+      if (response.status == 200 || response.status ==201) {
+        setNotIsLoading();
+        const timmer = setTimeout(()=>setEndLoading(),1500);
+        await getMyProfile();
+        setReload()
+        return ()=> clearInterval(timmer);
       } else {
         Alert.alert(
           "Upload Failed",

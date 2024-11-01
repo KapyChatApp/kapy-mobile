@@ -1,4 +1,4 @@
-import { View, Text } from "react-native";
+import { View, Text, Alert } from "react-native";
 import React, { useEffect, useState } from "react";
 import EditableField from "@/components/ui/EditableField";
 import CustomButton from "@/components/ui/CustomButton";
@@ -13,7 +13,10 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 import NoticeCard from "@/components/ui/NoticeCard";
 
-const BioEditor = (props: BioEditorProps | undefined) => {
+const BioEditor = (
+  props: BioEditorProps | undefined,
+ 
+) => {
   const [isNoticeOpen, setIsNoticeOpen] = useState(false);
   const [isReload, setIsReload] = useState(false);
   const [gender, setGender] = useState<boolean | undefined>(true);
@@ -46,6 +49,8 @@ const BioEditor = (props: BioEditorProps | undefined) => {
   }, [props, isReload]);
 
   const handleUpdateProfile = async () => {
+    props?.setStartLoading();
+    props?.setIsLoading();
     const profileData = {
       firstName,
       lastName,
@@ -72,10 +77,14 @@ const BioEditor = (props: BioEditorProps | undefined) => {
         }
       );
 
-      if (response.data.status) {
-        setIsNoticeOpen(true);
+      if (response.status == 200 || response.status == 201) {
+        props?.setNotIsLoading();
+        const timmer = setTimeout(()=>props?.setEndLoading(),1500);
+        return ()=> clearTimeout(timmer);
+      } else {
+        Alert.alert(`Update failed: ${response.status}`);
+        props?.setEndLoading();
       }
-
       console.log(response.data);
     } catch (error: any) {
       console.error(
@@ -220,14 +229,6 @@ const BioEditor = (props: BioEditorProps | undefined) => {
         height={46}
         onPress={handleUpdateProfile}
       ></CustomButton>
-      {isNoticeOpen ? (
-        <NoticeCard
-          content="Update information successfully!"
-          isOpen={isNoticeOpen}
-          setIsOpen={setIsNoticeOpen}
-          goOn={handleAfterUpdate}
-        />
-      ) : null}
     </View>
   );
 };

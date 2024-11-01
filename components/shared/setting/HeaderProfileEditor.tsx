@@ -97,6 +97,11 @@ const HeaderProfileEditor = (props: HeaderProfileEditorProps) => {
                 toEndPoint="/media/upload-avatar"
                 setIsOpen={setIsUpdateAvatarOpen}
                 aspect={[4,3]}
+                setStartLoading={props.setStartLoading}
+                setEndLoading={props.setEndLoading}
+                setIsLoading={props.setIsLoading}
+                setNotIsLoading={props.setNotIsLoading}
+                setReload={props.setReload}
               />
             </View>
           ) : null}
@@ -106,6 +111,11 @@ const HeaderProfileEditor = (props: HeaderProfileEditorProps) => {
                 toEndPoint="/media/upload-background"
                 setIsOpen={setIsUpdateBackgroundOpen}
                 aspect={[16,9]}
+                setStartLoading={props.setStartLoading}
+                setEndLoading={props.setEndLoading}
+                setIsLoading={props.setIsLoading}
+                setNotIsLoading={props.setNotIsLoading}
+                setReload={props.setReload}
               />
             </View>
           ) : null}

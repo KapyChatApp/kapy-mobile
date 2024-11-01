@@ -3,19 +3,16 @@ import React, { useEffect, useState } from "react";
 import Previous from "@/components/ui/Previous";
 import { useNavigation } from "expo-router";
 import Search from "@/components/shared/function/Search";
-import { bgLight500Dark10, textLight0Dark500 } from "@/styles/theme";
+import { bgLight500Dark10 } from "@/styles/theme";
 import { FriendBoxProps } from "@/types/friend";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
-import FastRequestList from "@/components/shared/friend/FastRequestList";
-import FriendList from "@/components/shared/friend/FriendList";
-import FriendBox from "@/components/shared/friend/FriendBox";
-import friends from ".";
+import FriendFindBox from "@/components/shared/friend/FriendFindBox";
 
 const NewFriendPage = () => {
   const navigation = useNavigation();
   const [query, setQuery] = useState("");
-  const [friend, setFriend] = useState<FriendBoxProps|  undefined>();
+  const [friend, setFriend] = useState<FriendBoxProps | undefined>();
   useEffect(() => {
     const delayDebounceFn = setTimeout(async () => {
       if (query) {
@@ -48,7 +45,7 @@ const NewFriendPage = () => {
       <Search onChangeText={setQuery} />
       {query && friend?._id ? (
         <View className="flex-1 px-[20px] py-[12px] flex" style={{ rowGap: 4 }}>
-          <FriendBox {...friend} />
+          <FriendFindBox {...friend} />
         </View>
       ) : null}
     </SafeAreaView>

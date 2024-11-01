@@ -47,7 +47,6 @@ const SideBar = ({ isOpen, setIsOpen }: any) => {
 
   const ref = useClickOutside<View>(() => setIsOpen(false));
 
-  // Chỉ render sidebar khi `isVisible` là true
   return isVisible ? (
     <SafeAreaView
       className={`h-screen absolute w-full flex z-50 `}
@@ -57,7 +56,7 @@ const SideBar = ({ isOpen, setIsOpen }: any) => {
       <Animated.View
         ref={ref}
         style={[animatedStyles, { zIndex: 20 }]}
-        className="h-full w-2/3 bg-white dark:bg-black opacity-100 absolute pt-[24px]"
+        className="h-full w-3/4 bg-white dark:bg-black opacity-100 absolute pt-[24px]"
       >
         <SidebarHeader isOpen={isOpen} setIsOpen={setIsOpen} />
         <SidebarLinkList />

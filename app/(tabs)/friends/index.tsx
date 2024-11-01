@@ -7,7 +7,7 @@ import Search from "@/components/shared/function/Search";
 import FastRequestList from "@/components/shared/friend/FastRequestList";
 import FriendList from "@/components/shared/friend/FriendList";
 import { bgLight500Dark10, textLight0Dark500 } from "@/styles/theme";
-import FriendBox from "@/components/shared/friend/FriendBox";
+import FriendBox from "@/components/shared/friend/FriendFindBox";
 import { FriendBoxProps } from "@/types/friend";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import FriendMainHeader from "@/components/navigator/Topbar/FriendMainHeader";

@@ -4,8 +4,18 @@ import Popover, { PopoverPlacement } from "react-native-popover-view";
 import Icon from "@/components/ui/Icon";
 import { IconURL } from "@/constants/IconURL";
 import { bgLight500Dark10, textLight0Dark500 } from "@/styles/theme";
-
-const MoreProfileOption = ({setIsReportOpen}:any) => {
+import { block } from "@/requests/add-request";
+const MoreProfileOption = ({setIsReportOpen, friendId, setStartLoading, setEndLoading, setIsLoading, setIsNotLoading}:any) => {
+  const handleBlock = async ()=>{
+    setStartLoading();
+    setIsLoading();
+    const blockStatus = await block(friendId);
+    if(blockStatus){
+      setIsNotLoading();
+      const timmer = setInterval(()=> setEndLoading(), 1500);
+      return ()=> clearInterval(timmer);
+    }
+  }
   return (
     <View className="absolute right-[10px] top-[20px]">
       <Popover
@@ -27,7 +37,7 @@ const MoreProfileOption = ({setIsReportOpen}:any) => {
           <Text className={`${textLight0Dark500} font-helvetica-light text-16`}>Report</Text>
         </TouchableOpacity>
         <View className='line w-full h-[1px] bg-border dark:bg-white' ></View>
-        <TouchableOpacity className={`flex items-center justify-center p-[16px] w-[204px] ${bgLight500Dark10}`}>
+        <TouchableOpacity className={`flex items-center justify-center p-[16px] w-[204px] ${bgLight500Dark10}`} onPress={handleBlock}>
           <Text className={`${textLight0Dark500} font-helvetica-light text-16`}>Block</Text>
         </TouchableOpacity>
       </Popover>

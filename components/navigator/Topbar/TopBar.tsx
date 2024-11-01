@@ -1,5 +1,5 @@
 import { View, Text, Touchable } from "react-native";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import TabIcon from "../../ui/TabIcon";
 import { IconURL } from "@/constants/IconURL";
 import { TouchableOpacity } from "react-native-gesture-handler";
@@ -7,9 +7,10 @@ import Icon from "../../ui/Icon";
 import UserAvatarLink from "@/components/ui/UserAvatarLink";
 import { SafeAreaView } from "react-native-safe-area-context";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useFocusEffect } from "expo-router";
 const TopBar = ({ isOpen, setIsOpen }: any) => {
   const [avatar, setAvatar] = useState("/assets/avatars/Male.png");
-  useEffect(()=>{
+  useFocusEffect(useCallback(()=>{
     const getAvatar= async ()=>{
       const user = await AsyncStorage.getItem("user");
       if (!user) {
@@ -21,7 +22,7 @@ const TopBar = ({ isOpen, setIsOpen }: any) => {
       setAvatar(avatar);
     }
     getAvatar();
-  })
+  },[]));
   return (
     <View
       className={`wrapper flex flex-row items-center justify-between px-[22px] pt-[12px]`}

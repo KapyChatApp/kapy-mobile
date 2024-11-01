@@ -6,31 +6,16 @@ import TabIcon from "@/components/ui/TabIcon";
 import TabBar from "@/components/navigator/Tabbar/TabBar";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
+import { getMyProfile } from "@/requests/my-profile";
 const HomeLayout = () => {
+  const [user, setUser] = useState();
   useEffect(() => {
     const fetchData = async () => {
-      try {
-        const token = await AsyncStorage.getItem("token");
-
-        const response = await axios.get(
-          process.env.EXPO_PUBLIC_BASE_URL + "/mine/profile",
-          {
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `${token}`,
-            },
-          }
-        );
-        const userData = response.data;
-        await AsyncStorage.setItem("user", JSON.stringify(userData));
-      } catch (err) {
-        console.log(err);
-        throw err;
-      }
-    };
-
+      const localUserData = await getMyProfile();
+      setUser(localUserData);
+    }
     fetchData();
-  });
+  },[]);
   return (
     <Tabs
       tabBar={(props) => <TabBar {...props}></TabBar>}

@@ -1,17 +1,18 @@
 import { View, Text } from "react-native";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import Icon from "@/components/ui/Icon";
 import { IconURL } from "@/constants/IconURL";
 import UserAvatarLink from "@/components/ui/UserAvatarLink";
 import { textLight0Dark500 } from "@/styles/theme";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useFocusEffect } from "expo-router";
 
 const SidebarHeader = ({ isOpen, setIsOpen }: any) => {
   const [avatar, setAvatar] = useState("/assets/avatars/Male.png");
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
-  useEffect(() => {
+  useFocusEffect(useCallback(() => {
     const getAvatar = async () => {
       const user = await AsyncStorage.getItem("user");
       if (!user) {
@@ -23,7 +24,7 @@ const SidebarHeader = ({ isOpen, setIsOpen }: any) => {
       setLastName(lastName);
     };
     getAvatar();
-  });
+  },[]));
   return (
     <View className="header flex flex-row justify-between items-center px-6">
       <View className="user flex flex-row items-center">
