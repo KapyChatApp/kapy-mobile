@@ -12,6 +12,7 @@ const HomeLayout = () => {
   useEffect(() => {
     const fetchData = async () => {
       const localUserData = await getMyProfile();
+      console.log(localUserData);
       setUser(localUserData);
     }
     fetchData();

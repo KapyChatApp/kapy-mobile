@@ -29,13 +29,13 @@ const FriendProfilePage = () => {
   const router = useRouter();
   const isBFF = true;
   const [isReportOpen, setIsReportOpen] = useState(false);
-  // const postContent = [
-  //   "Nội dung bài post",
-  //   "Lorem ipsum dolor sit amet consectetur adipisicing elit. Veniam voluptatibus maxime quam quod, itaque optio fugit repudiandae quis asperiores facere eveniet quasi perspiciatis cumque veritatis, perferendis similique placeat, voluptatum ullam?",
-  //   "Một bài post khác như thế này luôn",
-  //   "HAHAHAHAAH",
-  //   "HIHIHIHIHIHIHI",
-  // ];
+  const postContent = [
+    "Nội dung bài post",
+    "Lorem ipsum dolor sit amet consectetur adipisicing elit. Veniam voluptatibus maxime quam quod, itaque optio fugit repudiandae quis asperiores facere eveniet quasi perspiciatis cumque veritatis, perferendis similique placeat, voluptatum ullam?",
+    "Một bài post khác như thế này luôn",
+    "HAHAHAHAAH",
+    "HIHIHIHIHIHIHI",
+  ];
   const [headerProps, setHeaderProps] = useState<
     HeadProfileProps | undefined
   >();
@@ -47,33 +47,31 @@ const FriendProfilePage = () => {
   const [isLoading, setIsLoading] = useState(true);
   useEffect(() => {
     const disPlayUserData = async () => {
-      try{
-      const friendData=await getFriendProfile(friendId);
-      const {
-        _id,
-        firstName,
-        lastName,
-        nickName,
-        bio,
-        avatar,
-        background,
-        relation,
-        ..._bio
-      } = friendData;
-      setHeaderProps({
-        firstName,
-        lastName,
-        nickName,
-        bio,
-        avatar,
-        background,
-      });
-      setBioProps(_bio);
-      setRelation(relation);
-      setFriendedId(_id.toString());
-
-    }
-      catch(error){
+      try {
+        const friendData = await getFriendProfile(friendId);
+        const {
+          _id,
+          firstName,
+          lastName,
+          nickName,
+          bio,
+          avatar,
+          background,
+          relation,
+          ..._bio
+        } = friendData;
+        setHeaderProps({
+          firstName,
+          lastName,
+          nickName,
+          bio,
+          avatar,
+          background,
+        });
+        setBioProps(_bio);
+        setRelation(relation);
+        setFriendedId(_id.toString());
+      } catch (error) {
         console.log(error);
         router.push("/(tabs)/friends/not-found");
       }
@@ -281,7 +279,7 @@ const FriendProfilePage = () => {
         </View>
 
         <UserBio {...bioProps} />
-        {isBFF ? (
+        {relation === "bff" ? (
           <View
             className="w-full mt-[250px] px-[12px] mb-[10px]"
             style={{ rowGap: 10 }}
@@ -294,15 +292,15 @@ const FriendProfilePage = () => {
             </Text>
           </View>
         ) : null}
-        {/* {isBFF ? (
+        {relation === "bff" ? (
           <View className="flex items-center px-[12px]" style={{ rowGap: 50 }}>
             {postContent.map((item, index) => (
               <SocialPost key={index} content={item} />
             ))}
           </View>
         ) : (
-          <UnblockPostView />
-        )} */}
+          <UnblockPostView friendId={friendedId} />
+        )}
         <View className="w-full h-[60px]"></View>
       </ScrollView>
       {isReportOpen ? <ReportForm setIsOpen={setIsReportOpen} /> : null}

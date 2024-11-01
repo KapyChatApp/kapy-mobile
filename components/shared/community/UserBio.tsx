@@ -14,35 +14,47 @@ const UserBio = (props: UserBioProps) => {
       } flex-1 px-[12px]`}
     >
       <View className="flex">
-        <Text className={`${textLight0Dark500} text-14 font-helvetica-bold mb-[13px]`}>
+        <Text
+          className={`${textLight0Dark500} text-14 font-helvetica-bold mb-[13px]`}
+        >
           General
         </Text>
         <ProfileField label="Gender" value={props.gender ? "Male" : "Female"} />
-        <ProfileField label="Birthday" value={props.birthDay} />
-        <ProfileField label="AttendDay" value={props.attendDate} />
+        <ProfileField
+          label="Birthday"
+          value={formatDate(props.birthDay ? props.birthDay : "")}
+        />
+        <ProfileField
+          label="AttendDay"
+          value={formatDate(props.attendDate ? props.attendDate : "")}
+        />
         <ProfileField
           label="Relationship"
           value={props.relationShip}
           iconURL={IconURL.relationship}
         />
-        <ProfileField/>
+        <ProfileField />
       </View>
       <View className="flex">
-        <Text className={`${textLight0Dark500} text-14 font-helvetica-bold mb-[13px]`}>
+        <Text
+          className={`${textLight0Dark500} text-14 font-helvetica-bold mb-[13px]`}
+        >
           Contact
         </Text>
         <ProfileField label="Phonenumber" value={props.phoneNumber} />
         <ProfileField label="Email" value={props.email} />
         <ProfileField label="Address" value={props.address} />
-        <ProfileField/>
+        <ProfileField />
       </View>
       <View className="flex">
-        <Text className={`${textLight0Dark500} text-14 font-helvetica-bold mb-[13px]`}>
+        <Text
+          className={`${textLight0Dark500} text-14 font-helvetica-bold mb-[13px]`}
+        >
           Personal
         </Text>
         <ProfileField label="Jobs" value={props.job} />
         <ProfileField label="Hobbies" value={props.hobbies} />
-        <ProfileField/>
+        <ProfileField />
       </View>
     </View>
   );

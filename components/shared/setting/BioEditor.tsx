@@ -12,11 +12,9 @@ import { BioEditorProps } from "@/types/user";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 import NoticeCard from "@/components/ui/NoticeCard";
+import { getMyProfile } from "@/requests/my-profile";
 
-const BioEditor = (
-  props: BioEditorProps | undefined,
- 
-) => {
+const BioEditor = (props: BioEditorProps | undefined) => {
   const [isNoticeOpen, setIsNoticeOpen] = useState(false);
   const [isReload, setIsReload] = useState(false);
   const [gender, setGender] = useState<boolean | undefined>(true);
@@ -33,19 +31,23 @@ const BioEditor = (
   const fieldHeight = 35;
 
   useEffect(() => {
-    if (props) {
-      setGender(props.gender);
-      setShowGender(props.gender ? "Male" : "Female");
-      setFirstName(props.firstName);
-      setLastName(props.lastName);
-      setNickname(props.nickName);
-      setJob(props.job);
-      setHobbies(props.hobbies);
-      setAddress(props.address);
-      setBio(props.bio);
-      setRelationShip(props.relationShip);
-      setBirtDay(props.birthDay);
-    }
+    const handleInitiateBioEditor = async () => {
+      if (props) {
+        setGender(props.gender);
+        setShowGender(props.gender ? "Male" : "Female");
+        setFirstName(props.firstName);
+        setLastName(props.lastName);
+        setNickname(props.nickName);
+        setJob(props.job);
+        setHobbies(props.hobbies);
+        setAddress(props.address);
+        setBio(props.bio);
+        setRelationShip(props.relationShip);
+        setBirtDay(props.birthDay);
+      }
+      await getMyProfile();
+    };
+    handleInitiateBioEditor();
   }, [props, isReload]);
 
   const handleUpdateProfile = async () => {
@@ -79,8 +81,8 @@ const BioEditor = (
 
       if (response.status == 200 || response.status == 201) {
         props?.setNotIsLoading();
-        const timmer = setTimeout(()=>props?.setEndLoading(),1500);
-        return ()=> clearTimeout(timmer);
+        const timmer = setTimeout(() => props?.setEndLoading(), 1500);
+        return () => clearTimeout(timmer);
       } else {
         Alert.alert(`Update failed: ${response.status}`);
         props?.setEndLoading();

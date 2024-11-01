@@ -13,6 +13,7 @@ import axios from "axios";
 import LoadingSpinner from "@/components/ui/LoadingSpinner";
 
 const UpdateProfilePage = () => {
+  const navigation = useNavigation();
   const [bioProps, setBioProps] = useState<BioEditorProps | undefined>();
   const [headerProps, setHeaderProps] = useState<
     HeaderProfileEditorProps | undefined
@@ -51,6 +52,7 @@ const UpdateProfilePage = () => {
         style={{ flex: 1 }}
       >
         <ScrollView className="flex-1">
+         
           <HeaderProfileEditor
             {...headerProps}
             setStartLoading={() => setLoading(true)}
@@ -67,6 +69,9 @@ const UpdateProfilePage = () => {
             setIsLoading={() => setIsLoading(true)}
             setNotIsLoading={() => setIsLoading(false)}
           />
+           <View className="absolute mt-[20px] ml-[20px]">
+            <Previous navigation={navigation}/>
+          </View>
         </ScrollView>
         {loading ? <LoadingSpinner loading={isLoading} /> : null}
       </KeyboardAvoidingView>
