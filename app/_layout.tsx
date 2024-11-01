@@ -15,7 +15,7 @@ import { ClickOutsideProvider } from "react-native-click-outside";
 import { Drawer } from "expo-router/drawer";
 import { DrawerLayoutAndroidBase } from "react-native";
 import TopBar from "@/components/navigator/Topbar/TopBar";
-import BFFListPage from "./(tabs)/friends/bff-list";
+import BFFListPage from "./(mine)/bff-list";
 import ActionSheet from "react-native-actions-sheet";
 import { ActionSheetProvider } from "@expo/react-native-action-sheet";
 SplashScreen.preventAutoHideAsync();
@@ -94,6 +94,8 @@ export default function RootLayout() {
                   name="(mine)/my-wall"
                   options={{ headerShown: false }}
                 />
+                 <Stack.Screen name="(mine)/blocked-list" options={{ headerShown: false }} />
+                 <Stack.Screen name="(mine)/bff-list" options={{ headerShown: false }} />
                 <Stack.Screen
                   name="community"
                   options={{ headerShown: false }}

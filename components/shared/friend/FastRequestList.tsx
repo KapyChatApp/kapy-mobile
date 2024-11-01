@@ -1,41 +1,25 @@
 import { View, Text, TouchableOpacity } from "react-native";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import FastRequestBox from "./FastRequestBox";
 import { ScrollView } from "react-native-gesture-handler";
-import { Link, useRouter } from "expo-router";
+import { Link, useFocusEffect, useRouter } from "expo-router";
 import Icon from "@/components/ui/Icon";
 import { IconURL } from "@/constants/IconURL";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 import { RequestedProps } from "@/types/friend";
+import { getMyRequesteds } from "@/requests/my-requested";
 
 const FastRequestList = () => {
   const router = useRouter();
   const [myRequesteds, setMyRequesteds] = useState<RequestedProps[] | null>([]);
-  useEffect(() => {
-    const getMyRequested = async () => {
-      const token = await AsyncStorage.getItem("token");
-      console.log("Token retrieved: ", token);
-      try {
-        const response = await axios.get(
-          process.env.EXPO_PUBLIC_BASE_URL + "/mine/requested",
-          {
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `${token}`,
-            },
-          }
-        );
-        if (response.data) {
-          setMyRequesteds(response.data);
-        }
-      } catch (error) {
-        console.log(error);
-        throw error;
-      }
+  useFocusEffect(useCallback(() => {
+    const getMyRequestedsFunc = async () => {
+     const myRequestedResponse = await getMyRequesteds();
+     setMyRequesteds(myRequestedResponse);
     };
-    getMyRequested();
-  }, []);
+    getMyRequestedsFunc();
+  },[]));
   return (
     <View>
       {myRequesteds?.length===0? null:( <View className="request-list-container flex">

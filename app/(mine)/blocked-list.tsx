@@ -1,5 +1,5 @@
 import { View, Text } from "react-native";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigation } from "expo-router";
 import Previous from "@/components/ui/Previous";
 import { ScrollView } from "react-native-gesture-handler";
@@ -7,9 +7,19 @@ import BlockedUserBox from "@/components/shared/friend/BlockedUserBox";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Search from "@/components/shared/function/Search";
 import { bgLight500Dark10 } from "@/styles/theme";
+import { FriendBoxProps } from "@/types/friend";
+import { getMyBlocks } from "@/requests/my-blocks";
 
 const BlockedListPage = () => {
   const navigation = useNavigation();
+  const [blocks, setBlocks] = useState<FriendBoxProps[]>();
+  useEffect(()=>{
+    const getMyBlocksFunc = async ()=>{
+      const blockedListResponse = await getMyBlocks();
+      setBlocks(blockedListResponse);
+    }
+   getMyBlocksFunc();
+  },[])
   return (
     <SafeAreaView className={`${bgLight500Dark10} flex-1`}>
       <Previous
@@ -20,18 +30,7 @@ const BlockedListPage = () => {
       <View className="mt-[40px] flex flex-1" style={{ rowGap: 4 }}>
         <Search></Search>
         <ScrollView className="flex-1 " contentContainerStyle={{ rowGap: 4 }}>
-          <BlockedUserBox></BlockedUserBox>
-          <BlockedUserBox></BlockedUserBox>
-          <BlockedUserBox></BlockedUserBox>
-          <BlockedUserBox></BlockedUserBox>
-          <BlockedUserBox></BlockedUserBox>
-          <BlockedUserBox></BlockedUserBox>
-          <BlockedUserBox></BlockedUserBox>
-          <BlockedUserBox></BlockedUserBox>
-          <BlockedUserBox></BlockedUserBox>
-          <BlockedUserBox></BlockedUserBox>
-          <BlockedUserBox></BlockedUserBox>
-          <BlockedUserBox></BlockedUserBox>
+         {blocks?.map((item)=><BlockedUserBox key={item._id} {...item}/>)}
         </ScrollView>
       </View>
     </SafeAreaView>
