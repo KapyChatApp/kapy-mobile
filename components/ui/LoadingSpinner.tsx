@@ -6,11 +6,11 @@ import Animated, { Easing, useSharedValue, useAnimatedStyle, withRepeat, withTim
 
 const LoadingSpinner = ({loading}:{loading:boolean}) => {
   const rotation = useSharedValue(0);
-  const spinnerScale = useSharedValue(1); // Scale cho spinner
-  const tickScale = useSharedValue(0); // Scale cho tick
+  const spinnerScale = useSharedValue(1); 
+  const tickScale = useSharedValue(0); 
 
-  // Thiết lập hiệu ứng xoay cho spinner
   useEffect(() => {
+    console.log("loading status: ", loading);
     if (loading) {
       rotation.value = withRepeat(
         withTiming(1, {
@@ -21,7 +21,6 @@ const LoadingSpinner = ({loading}:{loading:boolean}) => {
         false
       );
     } else {
-      // Dừng spinner và thu nhỏ về kích thước 0
       spinnerScale.value = withTiming(0, { duration: 300 });
       setTimeout(() => {
         tickScale.value = withTiming(1, { duration: 300 });
@@ -29,7 +28,6 @@ const LoadingSpinner = ({loading}:{loading:boolean}) => {
     }
   }, [loading, rotation, spinnerScale, tickScale]);
 
-  // Tạo kiểu dáng animated cho spinner
   const spinnerStyle = useAnimatedStyle(() => {
     return {
       transform: [
@@ -39,7 +37,6 @@ const LoadingSpinner = ({loading}:{loading:boolean}) => {
     };
   });
 
-  // Tạo kiểu dáng cho dấu tick
   const tickStyle = useAnimatedStyle(() => {
     return {
       opacity: loading ? 0 : 1,
@@ -52,9 +49,9 @@ const LoadingSpinner = ({loading}:{loading:boolean}) => {
       <View style={styles.box}>
         <Animated.View style={[styles.spinner, spinnerStyle]} />
         <Animated.Image
-          source={IconURL.tick} // Đường dẫn đến ảnh dấu tick
+          source={IconURL.tick}
           style={[styles.tick, tickStyle]} 
-          resizeMode="contain" // Để giữ nguyên tỷ lệ của ảnh
+          resizeMode="contain"
         />
       </View>
     </View>

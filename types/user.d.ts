@@ -39,6 +39,7 @@ export interface HeaderProfileEditorProps{
   setEndLoading: () => void,
   setIsLoading: () => void,
   setNotIsLoading: () => void
+  setReload:()=>void
 }
 
 export interface BioEditorProps {

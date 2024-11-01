@@ -101,6 +101,7 @@ const HeaderProfileEditor = (props: HeaderProfileEditorProps) => {
                 setEndLoading={props.setEndLoading}
                 setIsLoading={props.setIsLoading}
                 setNotIsLoading={props.setNotIsLoading}
+                setReload={props.setReload}
               />
             </View>
           ) : null}
@@ -114,6 +115,7 @@ const HeaderProfileEditor = (props: HeaderProfileEditorProps) => {
                 setEndLoading={props.setEndLoading}
                 setIsLoading={props.setIsLoading}
                 setNotIsLoading={props.setNotIsLoading}
+                setReload={props.setReload}
               />
             </View>
           ) : null}

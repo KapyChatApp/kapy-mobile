@@ -5,11 +5,12 @@ import { useClickOutside } from "react-native-click-outside";
 import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { generateRandomNumberString } from "@/utils/Random";
+import { getMyProfile } from "@/requests/my-profile";
 
 const ImagePickerBox = ({ setIsOpen, toEndPoint, aspect, setStartLoading,
   setEndLoading,
   setIsLoading,
-  setNotIsLoading }: any) => {
+  setNotIsLoading, setReload }: any) => {
   const ref = useClickOutside<View>(() => setIsOpen(false));
   const [image, setImage] = useState<string | null>(null);
   const [uploading, setUploading] = useState<boolean>(false);
@@ -45,8 +46,8 @@ const ImagePickerBox = ({ setIsOpen, toEndPoint, aspect, setStartLoading,
 
     try {
       setUploading(true);
-      setStartLoading(true);
-      setIsLoading(true);
+      setStartLoading();
+      setIsLoading();
       const token = await AsyncStorage.getItem("token");
 
       // Tạo đối tượng tệp từ URI
@@ -70,6 +71,8 @@ const ImagePickerBox = ({ setIsOpen, toEndPoint, aspect, setStartLoading,
       if (response.status == 200 || response.status ==201) {
         setNotIsLoading();
         const timmer = setTimeout(()=>setEndLoading(),1500);
+        await getMyProfile();
+        setReload()
         return ()=> clearInterval(timmer);
       } else {
         Alert.alert(

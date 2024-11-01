@@ -18,7 +18,9 @@ const UpdateProfilePage = () => {
     HeaderProfileEditorProps | undefined
   >();
   const [loading, setLoading] = useState<boolean>(false);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+
+  const [reload, setReload] = useState<boolean>(false);
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -41,7 +43,7 @@ const UpdateProfilePage = () => {
     };
 
     fetchData();
-  }, []);
+  }, [reload]);
   return (
     <SafeAreaView className={`${bgLight500Dark10} flex-1`}>
       <KeyboardAvoidingView
@@ -49,10 +51,14 @@ const UpdateProfilePage = () => {
         style={{ flex: 1 }}
       >
         <ScrollView className="flex-1">
-          <HeaderProfileEditor {...headerProps} setStartLoading={() => setLoading(true)}
+          <HeaderProfileEditor
+            {...headerProps}
+            setStartLoading={() => setLoading(true)}
             setEndLoading={() => setLoading(false)}
             setIsLoading={() => setIsLoading(true)}
-            setNotIsLoading={() => setIsLoading(false) }/>
+            setNotIsLoading={() => setIsLoading(false)}
+            setReload={() => setReload(true)}
+          />
           <View className="space w-full h-[90px]"></View>
           <BioEditor
             {...bioProps}
