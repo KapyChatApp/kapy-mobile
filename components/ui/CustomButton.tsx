@@ -11,7 +11,7 @@ const CustomButton = ({ type, width, height, onPress, label, fontSize, iconURL,i
       style={{ width: width, height: height , columnGap:4}}
       onPress={onPress}
     >
-      <Icon iconURL={iconURL} size={iconSize}/>
+      {iconURL? (<Icon iconURL={iconURL} size={iconSize}/>):null}
       <Text className="text-white font-helvetica-bold" style={{fontSize:fontSize}}> {label}</Text>
     </TouchableOpacity>
   );

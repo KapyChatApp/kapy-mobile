@@ -50,7 +50,7 @@ const SettingHeader = () => {
         <CustomButton
           width={106}
           height={33}
-          label="Update profile"
+          label="Edit profile"
           onPress={() => {
             router.push("/setting/update-profile");
           }}

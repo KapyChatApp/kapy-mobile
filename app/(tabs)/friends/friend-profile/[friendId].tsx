@@ -1,6 +1,6 @@
 import { View, Text, Platform } from "react-native";
 import React, { useEffect, useState } from "react";
-import { useLocalSearchParams, useNavigation } from "expo-router";
+import { useLocalSearchParams, useNavigation, useRouter } from "expo-router";
 import HeadProfile from "@/components/shared/community/HeadProfile";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { ScrollView } from "react-native-gesture-handler";
@@ -21,19 +21,19 @@ import { acceptBFF, acceptFriend } from "@/requests/accept-request";
 import { addBFF, addFriend } from "@/requests/add-request";
 import { IconURL } from "@/constants/IconURL";
 import LoadingSpinner from "@/components/ui/LoadingSpinner";
-
+import { getFriendProfile } from "@/requests/friend-profile";
 const FriendProfilePage = () => {
   const { friendId } = useLocalSearchParams();
   const navigation = useNavigation();
-  const isBFF = true;
+  const router = useRouter();
   const [isReportOpen, setIsReportOpen] = useState(false);
-  // const postContent = [
-  //   "Nội dung bài post",
-  //   "Lorem ipsum dolor sit amet consectetur adipisicing elit. Veniam voluptatibus maxime quam quod, itaque optio fugit repudiandae quis asperiores facere eveniet quasi perspiciatis cumque veritatis, perferendis similique placeat, voluptatum ullam?",
-  //   "Một bài post khác như thế này luôn",
-  //   "HAHAHAHAAH",
-  //   "HIHIHIHIHIHIHI",
-  // ];
+  const postContent = [
+    "Nội dung bài post",
+    "Lorem ipsum dolor sit amet consectetur adipisicing elit. Veniam voluptatibus maxime quam quod, itaque optio fugit repudiandae quis asperiores facere eveniet quasi perspiciatis cumque veritatis, perferendis similique placeat, voluptatum ullam?",
+    "Một bài post khác như thế này luôn",
+    "HAHAHAHAAH",
+    "HIHIHIHIHIHIHI",
+  ];
   const [headerProps, setHeaderProps] = useState<
     HeadProfileProps | undefined
   >();
@@ -43,48 +43,42 @@ const FriendProfilePage = () => {
 
   const [loading, setLoading] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+
+  const [reload, setReload] = useState(false);
   useEffect(() => {
     const disPlayUserData = async () => {
-      const token = await AsyncStorage.getItem("token");
-
-      const response = await axios.get(
-        process.env.EXPO_PUBLIC_BASE_URL + "/friend/profile",
-        {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `${token}`,
-          },
-          params: { friendId: friendId },
-        }
-      );
-
-      const {
-        _id,
-        firstName,
-        lastName,
-        nickName,
-        bio,
-        avatar,
-        background,
-        relation,
-        ..._bio
-      } = response.data;
-      console.log("relation", response.data);
-      setHeaderProps({
-        firstName,
-        lastName,
-        nickName,
-        bio,
-        avatar,
-        background,
-      });
-      setBioProps(_bio);
-      setRelation(relation);
-      setFriendedId(_id.toString());
+      try {
+        const friendData = await getFriendProfile(friendId);
+        const {
+          _id,
+          firstName,
+          lastName,
+          nickName,
+          bio,
+          avatar,
+          background,
+          relation,
+          ..._bio
+        } = friendData;
+        setHeaderProps({
+          firstName,
+          lastName,
+          nickName,
+          bio,
+          avatar,
+          background,
+        });
+        setBioProps(_bio);
+        setRelation(relation);
+        setFriendedId(_id.toString());
+      } catch (error) {
+        console.log(error);
+        router.push("/(tabs)/friends/not-found");
+      }
     };
 
     disPlayUserData();
-  }, []);
+  }, [reload]);
   const RelationButtonGroups = () => {
     switch (relation) {
       case "friend":
@@ -285,7 +279,7 @@ const FriendProfilePage = () => {
         </View>
 
         <UserBio {...bioProps} />
-        {isBFF ? (
+        {relation === "bff" ? (
           <View
             className="w-full mt-[250px] px-[12px] mb-[10px]"
             style={{ rowGap: 10 }}
@@ -298,15 +292,15 @@ const FriendProfilePage = () => {
             </Text>
           </View>
         ) : null}
-        {/* {isBFF ? (
+        {relation === "bff" ? (
           <View className="flex items-center px-[12px]" style={{ rowGap: 50 }}>
             {postContent.map((item, index) => (
               <SocialPost key={index} content={item} />
             ))}
           </View>
         ) : (
-          <UnblockPostView />
-        )} */}
+          <UnblockPostView friendId={friendedId} relation={relation} lastName={headerProps?.lastName} reload={()=>setReload(true)} />
+        )}
         <View className="w-full h-[60px]"></View>
       </ScrollView>
       {isReportOpen ? <ReportForm setIsOpen={setIsReportOpen} /> : null}

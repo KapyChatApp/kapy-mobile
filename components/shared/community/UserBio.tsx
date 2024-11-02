@@ -3,44 +3,58 @@ import React from "react";
 import { textLight0Dark500 } from "@/styles/theme";
 import { UserBioProps } from "@/types/user";
 import { formatDate } from "@/utils/DateFormatter";
+import ProfileField from "@/components/ui/ProfileField";
+import { IconURL } from "@/constants/IconURL";
 
-const UserBio = (props:UserBioProps) => {
+const UserBio = (props: UserBioProps) => {
   return (
-    <View className={`border border-border p-[20px] rounded-3xl ${Platform.OS==='ios'? "top-[200px] ":"top-[220px]"} flex justify-center gap-y-[12px] mx-[20px]`}>
-      <View className="flex flex-row w-full justify-start gap-x-[8px]">
-        <View className="flex gap-y-[4px]">
-          <Text className={`font-helvetica-light text-14 ${textLight0Dark500}`}>
-            Gender: {props.gender? "Male":"Female"}
-          </Text>
-          <Text className={`font-helvetica-light text-14 ${textLight0Dark500}`}>
-            Birthday: {props.birthDay ? formatDate(props.birthDay) : "N/A"}
-          </Text>
-          <Text className={`font-helvetica-light text-14 ${textLight0Dark500}`}>
-            AttendDay: {props.attendDate ? formatDate(props.attendDate) : "N/A"}
-          </Text>
-        </View>
-        <View className="flex gap-y-[4px]">
-          <Text className={`font-helvetica-light text-14 ${textLight0Dark500}`}>
-            PhoneNumber: {props.phoneNumber}
-          </Text>
-          <Text className={`font-helvetica-light text-14 ${textLight0Dark500}`}>
-            Email: {props.email}
-          </Text>
-          <Text className={`font-helvetica-light text-14 ${textLight0Dark500}`}>
-            Relationship: {props.relationShip}
-          </Text>
-        </View>
+    <View
+      className={`${
+        Platform.OS === "ios" ? "top-[200px] " : "top-[220px]"
+      } flex-1 px-[12px]`}
+    >
+      <View className="flex">
+        <Text
+          className={`${textLight0Dark500} text-14 font-helvetica-bold mb-[13px]`}
+        >
+          General
+        </Text>
+        <ProfileField label="Gender" value={props.gender ? "Male" : "Female"} />
+        <ProfileField
+          label="Birthday"
+          value={formatDate(props.birthDay ? props.birthDay : "")}
+        />
+        <ProfileField
+          label="AttendDay"
+          value={formatDate(props.attendDate ? props.attendDate : "")}
+        />
+        <ProfileField
+          label="Relationship"
+          value={props.relationShip}
+          iconURL={IconURL.relationship}
+        />
+        <ProfileField />
       </View>
-      <View className="w-full flex gap-y-[4px]">
-        <Text className={`font-helvetica-light text-14 ${textLight0Dark500}`}>
-          Address: {props.address}
+      <View className="flex">
+        <Text
+          className={`${textLight0Dark500} text-14 font-helvetica-bold mb-[13px]`}
+        >
+          Contact
         </Text>
-        <Text className={`font-helvetica-light text-14 ${textLight0Dark500}`}>
-          Jobs: {props.job}
+        <ProfileField label="Phonenumber" value={props.phoneNumber} />
+        <ProfileField label="Email" value={props.email} />
+        <ProfileField label="Address" value={props.address} />
+        <ProfileField />
+      </View>
+      <View className="flex">
+        <Text
+          className={`${textLight0Dark500} text-14 font-helvetica-bold mb-[13px]`}
+        >
+          Personal
         </Text>
-        <Text className={`font-helvetica-light text-14 ${textLight0Dark500}`}>
-          Hobbies: {props.hobbies}
-        </Text>
+        <ProfileField label="Jobs" value={props.job} />
+        <ProfileField label="Hobbies" value={props.hobbies} />
+        <ProfileField />
       </View>
     </View>
   );

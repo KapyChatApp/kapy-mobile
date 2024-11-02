@@ -28,7 +28,7 @@ const BestFriendBox = (props:FriendBoxProps) => {
         type={true}
         width={76}
         height={31}
-        label="unBFriend"
+        label="Un BFF"
       ></CustomButton>
     </TouchableOpacity>
   );

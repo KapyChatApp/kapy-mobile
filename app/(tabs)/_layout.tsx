@@ -13,6 +13,7 @@ const HomeLayout = () => {
     const fetchData = async () => {
       const localUserData = await getMyProfile();
       setUser(localUserData);
+      console.log("localuser: ",user);
     }
     fetchData();
   },[]);

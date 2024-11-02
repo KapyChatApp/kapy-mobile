@@ -17,6 +17,7 @@ module.exports = {
           320: "#A9A9A9",
           330: "#565A59",
           340: "#F0F0F0",
+          350: "#4C4C4C",
           500: "#FFFFFF",
           510: "#FAFAFA",
           600: "#FFF2E8",
@@ -50,6 +51,7 @@ module.exports = {
         hover1: "#FFAB66",
         hover2: "#DBDBDB",
         border: "#CCCCCC",
+        fieldBorder:"#4C4C4C",
         lightbg: "#FFFFFF",
         darkbg: "#0A090D",
         specialRelation: "#0075FF",
@@ -57,6 +59,7 @@ module.exports = {
         l_input: "#565A59",
         l_search: "#FFF2E8",
         deny: "#A9A9A9",
+        profile:"#4C4C4C"
       },
       fontSize: {
         40: "40px",

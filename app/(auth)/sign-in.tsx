@@ -56,8 +56,7 @@ const SignInPage = () => {
       const loginData = loginResponse.data;
       const token = loginData.token;
       await AsyncStorage.setItem("token", token);
-      const savedToken = await AsyncStorage.getItem("token");
-  
+      const savedToken = await AsyncStorage.getItem("token")
       if (savedToken) {
         navigation.dispatch(
           CommonActions.reset({

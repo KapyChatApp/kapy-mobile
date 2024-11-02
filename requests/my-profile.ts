@@ -4,7 +4,7 @@ import axios from "axios";
 
 export const getMyProfile = async ()=>{
     try{
-    const {token} = await getLocalAuth();
+    const token = await AsyncStorage.getItem("token");
     const response = await axios.get(
         process.env.EXPO_PUBLIC_BASE_URL + "/mine/profile",
         {

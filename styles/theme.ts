@@ -14,3 +14,4 @@ export const borderLight0Dark500 = "border border-ios-light-0 dark:border-ios-da
 // Text styles
 export const textLight0Dark500 = "text-light-0 dark:text-dark-500";
 export const textLight330Dark500 = "text-light-330 dark:text-dark-500";
+export const textLight350Dark500 = "text-light-350 dark:text-dark-500";
