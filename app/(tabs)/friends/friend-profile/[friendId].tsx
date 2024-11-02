@@ -22,12 +22,10 @@ import { addBFF, addFriend } from "@/requests/add-request";
 import { IconURL } from "@/constants/IconURL";
 import LoadingSpinner from "@/components/ui/LoadingSpinner";
 import { getFriendProfile } from "@/requests/friend-profile";
-
 const FriendProfilePage = () => {
   const { friendId } = useLocalSearchParams();
   const navigation = useNavigation();
   const router = useRouter();
-  const isBFF = true;
   const [isReportOpen, setIsReportOpen] = useState(false);
   const postContent = [
     "Nội dung bài post",
@@ -45,6 +43,8 @@ const FriendProfilePage = () => {
 
   const [loading, setLoading] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+
+  const [reload, setReload] = useState(false);
   useEffect(() => {
     const disPlayUserData = async () => {
       try {
@@ -78,7 +78,7 @@ const FriendProfilePage = () => {
     };
 
     disPlayUserData();
-  }, []);
+  }, [reload]);
   const RelationButtonGroups = () => {
     switch (relation) {
       case "friend":
@@ -299,7 +299,7 @@ const FriendProfilePage = () => {
             ))}
           </View>
         ) : (
-          <UnblockPostView friendId={friendedId} />
+          <UnblockPostView friendId={friendedId} relation={relation} lastName={headerProps?.lastName} reload={()=>setReload(true)} />
         )}
         <View className="w-full h-[60px]"></View>
       </ScrollView>

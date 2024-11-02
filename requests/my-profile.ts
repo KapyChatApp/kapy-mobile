@@ -16,7 +16,7 @@ export const getMyProfile = async ()=>{
       );
       const userData = response.data;
       await AsyncStorage.setItem("user", JSON.stringify(userData));
-      return await AsyncStorage.getItem("user");
+      return userData;
     } catch(error){
         console.log(error);
         throw error;
