@@ -12,8 +12,6 @@ import MoreProfileOption from "@/components/shared/community/MoreProfileOption";
 import ReportForm from "@/components/shared/community/ReportForm";
 import SocialPost from "@/components/shared/community/SocialPost";
 import { HeadProfileProps, UserBioProps } from "@/types/user";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import axios from "axios";
 import CustomButton from "@/components/ui/CustomButton";
 import DenyButton from "@/components/ui/DenyButton";
 import { unBFF, unFriend } from "@/requests/un-request";
@@ -45,6 +43,7 @@ const FriendProfilePage = () => {
   const [isLoading, setIsLoading] = useState(true);
 
   const [reload, setReload] = useState(false);
+  const [isProfileLoading, setIsProfileLoading] = useState(true);
   useEffect(() => {
     const disPlayUserData = async () => {
       try {
@@ -71,6 +70,7 @@ const FriendProfilePage = () => {
         setBioProps(_bio);
         setRelation(relation);
         setFriendedId(_id.toString());
+        setIsProfileLoading(false);
       } catch (error) {
         console.log(error);
         router.push("/(tabs)/friends/not-found");
@@ -299,7 +299,12 @@ const FriendProfilePage = () => {
             ))}
           </View>
         ) : (
-          <UnblockPostView friendId={friendedId} relation={relation} lastName={headerProps?.lastName} reload={()=>setReload(true)} />
+          <UnblockPostView
+            friendId={friendedId}
+            relation={relation}
+            lastName={headerProps?.lastName}
+            reload={() => setReload(true)}
+          />
         )}
         <View className="w-full h-[60px]"></View>
       </ScrollView>

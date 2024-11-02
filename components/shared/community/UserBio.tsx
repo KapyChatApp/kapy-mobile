@@ -13,49 +13,52 @@ const UserBio = (props: UserBioProps) => {
         Platform.OS === "ios" ? "top-[200px] " : "top-[220px]"
       } flex-1 px-[12px]`}
     >
-      <View className="flex">
+      {props.gender||props.birthDay||props.attendDate||props.relationShip? ( <View className="flex">
         <Text
           className={`${textLight0Dark500} text-14 font-helvetica-bold mb-[13px]`}
         >
           General
         </Text>
-        <ProfileField label="Gender" value={props.gender ? "Male" : "Female"} />
-        <ProfileField
+        {props.gender? (<ProfileField label="Gender" value={props.gender ? "Male" : "Female"} />):null}
+        {props.birthDay? ( <ProfileField
           label="Birthday"
           value={formatDate(props.birthDay ? props.birthDay : "")}
-        />
-        <ProfileField
+        />):null}
+        {props.attendDate? ( <ProfileField
           label="AttendDay"
           value={formatDate(props.attendDate ? props.attendDate : "")}
-        />
-        <ProfileField
+        />):null}
+        {props.relationShip? (      <ProfileField
           label="Relationship"
           value={props.relationShip}
           iconURL={IconURL.relationship}
-        />
+        />):null}
         <ProfileField />
-      </View>
-      <View className="flex">
+      </View>):null}
+
+      {props.phoneNumber||props.email||props.address? ( <View className="flex">
         <Text
           className={`${textLight0Dark500} text-14 font-helvetica-bold mb-[13px]`}
         >
           Contact
         </Text>
-        <ProfileField label="Phonenumber" value={props.phoneNumber} />
-        <ProfileField label="Email" value={props.email} />
-        <ProfileField label="Address" value={props.address} />
+        {props.phoneNumber? ( <ProfileField label="Phonenumber" value={props.phoneNumber} />):null }
+        {props.email? (<ProfileField label="Email" value={props.email} />):null}
+        {props.address? (<ProfileField label="Address" value={props.address} />):null}
         <ProfileField />
-      </View>
-      <View className="flex">
+      </View>):null}
+     
+     {props.job||props.hobbies? ( <View className="flex">
         <Text
           className={`${textLight0Dark500} text-14 font-helvetica-bold mb-[13px]`}
         >
           Personal
         </Text>
-        <ProfileField label="Jobs" value={props.job} />
-        <ProfileField label="Hobbies" value={props.hobbies} />
+        {props.job? (<ProfileField label="Jobs" value={props.job} />):null}
+        {props.hobbies? (<ProfileField label="Hobbies" value={props.hobbies} />):null}
         <ProfileField />
-      </View>
+      </View>):null}
+     
     </View>
   );
 };
