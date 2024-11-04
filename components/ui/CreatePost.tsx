@@ -11,7 +11,7 @@ const CreatePost = ({ avatarURL }: { avatarURL: string | undefined }) => {
   const router = useRouter();
   return (
     <TouchableOpacity
-      className="border-[0.5px] border-border rounded-3xl flex- flex-row mx-[10px] h-[70px] items-center justify-center p-[20px] "
+      className="border-[0.5px] border-border rounded-3xl flex- flex-row mx-[10px] h-[70px] items-center justify-center p-[10px] "
       style={{ columnGap: 10 }}
       onPress={() => router.push("/community/create-post")}
     >
