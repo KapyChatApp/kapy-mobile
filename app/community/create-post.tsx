@@ -13,6 +13,8 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { bgLight500Dark10, textLight0Dark500 } from "@/styles/theme";
 import { useClickOutside } from "react-native-click-outside";
 import PostTyping from "@/components/ui/PostTyping";
+import GalleryPickerBox from "@/components/ui/GalleryPickerBox";
+import { pickMedia } from "@/utils/GalleryPicker";
 
 const CreatePostPage =  () => {
   const navigation = useNavigation();
@@ -22,6 +24,14 @@ const CreatePostPage =  () => {
   const [caption, setCaption]  = useState("");
   const [isTyping, setIsTyping]  = useState(false);
   const ref = useClickOutside<View>(()=>setIsTyping(false));
+  const [isGallreyPickerOpen, setIsGalleryPickerOpen] = useState(false);
+
+  const [selectedMedia, setSelectedMedia] = useState<{ uri: string; type: string }[]>([]);
+  const handlePickMedia = async () => {
+    const media = await pickMedia();
+    setSelectedMedia((prev) => [...prev, ...media]); 
+  };
+
   useEffect(()=>{
     const getLocalData = async ()=>{
         const user = await AsyncStorage.getItem("user");
@@ -36,14 +46,14 @@ const CreatePostPage =  () => {
   },[])
 
   return (
-    <SafeAreaView className={`${bgLight500Dark10} flex-1`}>
+    <SafeAreaView className={`bg-white dark:bg-black flex-1`}>
            <KeyboardAvoidingView
       behavior={Platform.OS === "ios" ? "padding" : "height"}
       style={{ flex: 1 }}
     >
-        <View className="ml-[10px] mt-[10px]"><Previous header="Create a post" navigation={navigation} /></View>
+        <View className="pl-[10px] pt-[10px] mb-[10px]" ><Previous header="Create a post" navigation={navigation} /></View>
       
-      <ScrollView contentContainerStyle={{padding:10, rowGap:8}}>
+      <ScrollView  className={`${bgLight500Dark10}`} contentContainerStyle={{padding:10, rowGap:8}}>
         <View className="flex flex-row" style={{columnGap:10}}>
           <UserAvatar avatarURL={{ uri: avatar }} size={50} />
           <View className="flex" style={{rowGap:4}}>
@@ -83,10 +93,12 @@ const CreatePostPage =  () => {
           </View>
         </View>
         <TextInput placeholder="Write something..."  multiline={true} className={`font-helvetica-light text-16 ${textLight0Dark500}`}/>
-        <View></View>
+          <View>
+            <GalleryPickerBox selectedMedia={selectedMedia} setSelectedMedia={setSelectedMedia}/>
+          </View>
        
       </ScrollView>
-      <View ref={ref} ><PostTyping/></View>
+      <View ref={ref} ><PostTyping handleGalleryPicker={handlePickMedia}/></View>
       
       </KeyboardAvoidingView>
     </SafeAreaView>
