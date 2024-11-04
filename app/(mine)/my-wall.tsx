@@ -6,10 +6,11 @@ import HeadProfile from "@/components/shared/community/HeadProfile";
 import { ScrollView } from "react-native-gesture-handler";
 import Previous from "@/components/ui/Previous";
 import UserBio from "@/components/shared/community/UserBio";
-import { bgLight500Dark10 } from "@/styles/theme";
+import { bgLight500Dark10, textLight0Dark500 } from "@/styles/theme";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { HeadProfileProps, UserBioProps } from "@/types/user";
 import axios from "axios";
+import CreatePost from "@/components/shared/community/CreatePost";
 
 const MyWallPage = () => {
   const navigation = useNavigation();
@@ -53,7 +54,9 @@ const MyWallPage = () => {
         <HeadProfile {...headerProps} />
         <Previous navigation={navigation} isAbsolute={true} />
         <UserBio {...bioProps} />
-        <View className="w-full h-[300px]"></View>
+        <View className="w-full h-[200px]"></View>
+        <Text className={`${textLight0Dark500} font-helvetica-bold text-14`}>Posts</Text>
+        <CreatePost/>
       </ScrollView>
     </SafeAreaView>
   );
