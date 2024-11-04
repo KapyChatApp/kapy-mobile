@@ -10,13 +10,11 @@ import { bgLight500Dark10, textLight0Dark500 } from "@/styles/theme";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { HeadProfileProps, UserBioProps } from "@/types/user";
 import axios from "axios";
-import CreatePost from "@/components/shared/community/CreatePost";
+import CreatePost from "@/components/ui/CreatePost";
 
 const MyWallPage = () => {
   const navigation = useNavigation();
-  const [headerProps, setHeaderProps] = useState<
-    HeadProfileProps | undefined
-  >();
+  const [headerProps, setHeaderProps] = useState<HeadProfileProps>();
   const [bioProps, setBioProps] = useState<UserBioProps | undefined>();
   useEffect(() => {
     const disPlayUserData = async () => {
@@ -50,13 +48,14 @@ const MyWallPage = () => {
 
   return (
     <SafeAreaView className={`flex-1 ${bgLight500Dark10}`}>
-      <ScrollView>
+      <ScrollView className="px-[10px]">
         <HeadProfile {...headerProps} />
         <Previous navigation={navigation} isAbsolute={true} />
         <UserBio {...bioProps} />
         <View className="w-full h-[200px]"></View>
         <Text className={`${textLight0Dark500} font-helvetica-bold text-14`}>Posts</Text>
-        <CreatePost/>
+        <CreatePost avatarURL={headerProps?.avatar}/>
+        <View className="w-full h-[200px]"></View>
       </ScrollView>
     </SafeAreaView>
   );
