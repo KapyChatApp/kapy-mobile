@@ -8,6 +8,7 @@ import { useFocusEffect, useRouter } from "expo-router";
 import { useTheme } from "@/context/ThemeProviders";
 import { textLight0Dark500 } from "@/styles/theme";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import MyAvatar from "@/components/ui/MyAvatar";
 const SettingHeader = () => {
   const [isOn, setIsOn] = useState(false);
   const router = useRouter();
@@ -33,7 +34,7 @@ const SettingHeader = () => {
   return (
     <View className="flex flex-row items-center justify-between py-[17px] px-[19px]">
       <View className="flex flex-row">
-        <UserAvatarLink avatarURL={{uri:avatar}} size={72} link="/(mine)/my-wall"></UserAvatarLink>
+        <MyAvatar size={72}/>
         <View className={`flex ml-[12px] justify-center `}>
           <Text
             className={`text-16 font-helvetica-bold text-light-0 dark:text-dark-500 ${textLight0Dark500} `}

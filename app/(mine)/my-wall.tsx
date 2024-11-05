@@ -11,6 +11,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { HeadProfileProps, UserBioProps } from "@/types/user";
 import axios from "axios";
 import CreatePost from "@/components/ui/CreatePost";
+import MyPostList from "@/components/shared/community/MyPostList";
 
 const MyWallPage = () => {
   const navigation = useNavigation();
@@ -53,8 +54,10 @@ const MyWallPage = () => {
         <Previous navigation={navigation} isAbsolute={true} />
         <UserBio {...bioProps} />
         <View className="w-full h-[200px]"></View>
-        <Text className={`${textLight0Dark500} font-helvetica-bold text-14`}>Posts</Text>
+        <Text className={`${textLight0Dark500} font-helvetica-bold text-14 mb-[20px]`}>Posts</Text>
         <CreatePost avatarURL={headerProps?.avatar}/>
+        <View className="w-full h-[30px]"></View>
+        <MyPostList/>
         <View className="w-full h-[200px]"></View>
       </ScrollView>
     </SafeAreaView>
