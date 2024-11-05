@@ -4,10 +4,12 @@ import { TouchableOpacity } from 'react-native-gesture-handler'
 import { DefaultAva } from '@/constants/DefaultAva'
 import { useNavigation, useRouter } from 'expo-router'
 
-const UserAvatarLink = ({avatarURL,size,link}:any) => {
+const UserAvatarLink = ({avatarURL,size,userId}:any) => {
   const router = useRouter();
   return (
-    <TouchableOpacity className="flex" onPress={()=>router.push(link)}>
+    <TouchableOpacity className="flex" onPress={()=>router.push({
+      pathname:"/friends/friend-profile/[friendId]",params:{friendId:userId}
+    })}>
       <Image
         source={avatarURL? avatarURL : DefaultAva.male}
         className={`rounded-full`}

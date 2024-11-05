@@ -7,32 +7,35 @@ import UserAvatarLink from "@/components/ui/UserAvatarLink";
 import { textLight0Dark500 } from "@/styles/theme";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useFocusEffect } from "expo-router";
+import MyAvatar from "@/components/ui/MyAvatar";
 
 const SidebarHeader = ({ isOpen, setIsOpen }: any) => {
   const [avatar, setAvatar] = useState("/assets/avatars/Male.png");
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
-  useFocusEffect(useCallback(() => {
-    const getAvatar = async () => {
-      const user = await AsyncStorage.getItem("user");
-      if (!user) {
-        throw new Error("You are unauthenticated!");
-      }
-      const { firstName, lastName, avatar } = JSON.parse(user);
-      setAvatar(avatar);
-      setFirstName(firstName);
-      setLastName(lastName);
-    };
-    getAvatar();
-  },[]));
+  useFocusEffect(
+    useCallback(() => {
+      const getAvatar = async () => {
+        const user = await AsyncStorage.getItem("user");
+        if (!user) {
+          throw new Error("You are unauthenticated!");
+        }
+        const { firstName, lastName, avatar } = JSON.parse(user);
+        setAvatar(avatar);
+        setFirstName(firstName);
+        setLastName(lastName);
+      };
+      getAvatar();
+    }, [])
+  );
   return (
     <View className="header flex flex-row justify-between items-center px-6">
       <View className="user flex flex-row items-center">
-        <UserAvatarLink avatarURL={{uri:avatar}} size={57} link="/friends/my-wall"></UserAvatarLink>
+        <MyAvatar size={57} />
         <Text
           className={`font-helvetica-bold text-14 ml-4 ${textLight0Dark500}`}
         >
-          {firstName + ' '+ lastName}
+          {firstName + " " + lastName}
         </Text>
       </View>
       <TouchableOpacity onPress={() => setIsOpen(!isOpen)}>

@@ -8,6 +8,7 @@ import UserAvatarLink from "@/components/ui/UserAvatarLink";
 import { SafeAreaView } from "react-native-safe-area-context";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useFocusEffect } from "expo-router";
+import MyAvatar from "@/components/ui/MyAvatar";
 const TopBar = ({ isOpen, setIsOpen }: any) => {
   const [avatar, setAvatar] = useState("/assets/avatars/Male.png");
   useFocusEffect(useCallback(()=>{
@@ -30,7 +31,7 @@ const TopBar = ({ isOpen, setIsOpen }: any) => {
       <TouchableOpacity onPress={() => setIsOpen(!isOpen)}>
         <Icon size={22} iconURL={IconURL.sidebar}></Icon>
       </TouchableOpacity>
-      <UserAvatarLink avatarURL={{uri:avatar}} size={47} link="/(mine)/my-wall"></UserAvatarLink>
+       <MyAvatar size={47}/>
     </View>
   );
 };
