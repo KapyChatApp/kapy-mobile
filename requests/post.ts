@@ -24,6 +24,29 @@ export const getMyPosts = async ()=>{
   }
 }
 
+export const getFriendPosts = async (friendId:string)=>{
+  try{
+    const {token} = await getLocalAuth();
+    console.log("requireId", friendId);
+    const response = await axios.get(process.env.EXPO_PUBLIC_BASE_URL +"/post/friend", {
+      headers:{
+        "Content-Type":"application/json",
+        Authorization:`${token}` ,
+      
+      },
+      params:{friendId : friendId}
+    })
+    if(!response.data){
+      console.log(response.status);
+      throw new Error('Not found posts');
+    }
+    return response.data;
+  }catch(error){
+    console.log(error);
+    throw error;
+  }
+}
+
 export const createPost = async (
   caption: string,
   selectedMedia: { uri: string; type: string }[],

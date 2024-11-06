@@ -20,6 +20,7 @@ import { addBFF, addFriend } from "@/requests/add-request";
 import { IconURL } from "@/constants/IconURL";
 import LoadingSpinner from "@/components/ui/LoadingSpinner";
 import { getFriendProfile } from "@/requests/friend-profile";
+import FriendPostList from "@/components/shared/community/FriendPostList";
 const FriendProfilePage = () => {
   const { friendId } = useLocalSearchParams();
   const navigation = useNavigation();
@@ -274,7 +275,7 @@ const FriendProfilePage = () => {
           setNotIsLoading={() => setIsLoading(false)}
           friendId={friendedId}
         />
-        <View className={`${Platform.OS === "android" ? "mt-[40px]" : ""}`}>
+        <View className={`${Platform.OS === "android" ? "mt-[60px]" : ""}`}>
           {RelationButtonGroups()}
         </View>
 
@@ -293,10 +294,8 @@ const FriendProfilePage = () => {
           </View>
         ) : null}
         {relation === "bff" ? (
-          <View className="flex items-center px-[12px]" style={{ rowGap: 50 }}>
-            {postContent.map((item, index) => (
-              <SocialPost key={index} content={item} />
-            ))}
+          <View className="flex  items-center w-full">
+            {friendedId? (   <FriendPostList friendId={friendedId}/>):null}
           </View>
         ) : (
           <UnblockPostView
