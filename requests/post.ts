@@ -4,6 +4,31 @@ import { getLocalAuth } from "./local-auth";
 import { Alert } from "react-native";
 import { generateRandomNumberString } from "@/utils/Random";
 
+export const getAPost = async (postId:string, goOn:()=>void)=>{
+  try{
+    const {token} = await getLocalAuth();
+    
+    const response = await axios.get( process.env.EXPO_PUBLIC_BASE_URL + "/post/apost",{
+      headers:{
+        "Content-Type": "application/json",
+        Authorization: `${token}`
+      },
+      params:{
+        postId: postId
+      }
+    }); 
+    console.log("data ",  response.data);
+    if(!response.data){
+      goOn();
+    }
+    return response.data;
+  }catch(error){
+    console.log(error);
+    goOn();
+    throw error;
+  }
+}
+
 export const getMyPosts = async () => {
   try {
     const { token } = await getLocalAuth();

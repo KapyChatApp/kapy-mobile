@@ -35,11 +35,10 @@ const SocialPost = (props: SocialPostProps) => {
       setTotalLike(totalLike - 1);
       setIsliked(false);
       await disLike(props._id);
-    }
-    else{
-    setTotalLike(totalLike + 1);
-    setIsliked(true);
-    await like(props._id);
+    } else {
+      setTotalLike(totalLike + 1);
+      setIsliked(true);
+      await like(props._id);
     }
   };
 
@@ -48,6 +47,12 @@ const SocialPost = (props: SocialPostProps) => {
       className="flex border border-border rounded-3xl p-[16px] w-full pb-[50px]"
       style={{ rowGap: 8 }}
       pointerEvents="box-none"
+      onPress={() =>
+        router.push({
+          pathname: "/community/post-detail/[postId]",
+          params: { postId: props._id },
+        })
+      }
     >
       <View className="flex flex-row" style={{ columnGap: 8 }}>
         <UserAvatarLink
