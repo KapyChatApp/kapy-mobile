@@ -11,7 +11,7 @@ import CommentTyping from "@/components/shared/community/CommentTyping";
 import { commentsData } from "@/data/CommentData";
 
 const PostDetailPage = () => {
-  const { postId } = useLocalSearchParams();
+  const { post } = useLocalSearchParams();
   const navigation = useNavigation();
   return (
     <KeyboardAvoidingView className="flex-1"  behavior={Platform.OS === "ios" ? "padding" : "height"}>
@@ -23,7 +23,7 @@ const PostDetailPage = () => {
           <View className="ml-[10px] mt-[10px]">
             <Previous navigation={navigation} isAbsolute={false} />
           </View>
-          <SocialPost content={postId} />
+          <SocialPost {...post} />
           <Text className={`${textLight0Dark500} font-helvetica-light text-14`}>
             Comments
           </Text>
