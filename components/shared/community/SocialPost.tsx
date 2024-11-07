@@ -17,24 +17,28 @@ const SocialPost = (props: SocialPostProps) => {
   const [isShowComment, setIsShowComment] = useState(false);
   const router = useRouter();
   const [totalLike, setTotalLike] = useState(props.likedIds.length);
-  const [liked, setIsliked] = useState(false);
   const {showActionSheetWithOptions} = useActionSheet();
-  const [_id, set_id] = useState("");
+  const [userId, setUserId] = useState("");
+  const [liked, setIsliked] = useState(props.likedIds.includes(userId.toString())? true:false );
+  
   useFocusEffect(
     useCallback(() => {
       const likeStreamManage = async () => {
         const { _id } = await getLocalAuth();
-        set_id(_id);
-        if (props.likedIds.includes(_id.toString())) {
+        setUserId(_id);
+        const userIdString = _id.toString();
+        if (props.likedIds.map((id) => id.toString()).includes(userIdString)) {
           setIsliked(true);
+        } else {
+          setIsliked(false);
         }
-        setIsliked(false);
       };
       likeStreamManage();
     }, [])
   );
 
   const handleLikeFunction = async () => {
+    console.log(liked);
     if (liked) {
       setTotalLike(totalLike - 1);
       setIsliked(false);
@@ -50,12 +54,12 @@ const SocialPost = (props: SocialPostProps) => {
     await deletePost(props._id, ()=> Alert.alert('Deleted'));
   }
   const handleLongPress = async ()=>{
-    const options = props.userId.toString()===_id? [
+    const options = props.userId.toString()===userId? [
       "Delete the post",
       "Edit the post",
       "Cancel",
     ] : ["Report this port","Cancel"];
-    const cancelButtonIndex = props.userId.toString() === _id? 2:1;
+    const cancelButtonIndex = props.userId.toString() === userId? 2:1;
     showActionSheetWithOptions(
       {
         options,
@@ -80,12 +84,7 @@ const SocialPost = (props: SocialPostProps) => {
       className="flex border border-border rounded-3xl p-[16px] w-full pb-[50px]"
       style={{ rowGap: 8 }}
       pointerEvents="box-none"
-      onPress={ props.isDetail? null:() =>
-        router.push({
-          pathname: "/community/post-detail/[postId]",
-          params: { postId: props._id },
-        })
-      }
+     
       onLongPress={handleLongPress}
     >
       <View className="flex flex-row" style={{ columnGap: 8 }}>
@@ -140,7 +139,12 @@ const SocialPost = (props: SocialPostProps) => {
         style={{ columnGap: 8 }}
       >
         <Love total={totalLike} onPress={handleLikeFunction} />
-        <Comment />
+        <Comment  onPress={ props.isDetail? null:() =>
+        router.push({
+          pathname: "/community/post-detail/[postId]",
+          params: { postId: props._id },
+        })
+      } />
         <Share />
       </View>
     </Pressable>

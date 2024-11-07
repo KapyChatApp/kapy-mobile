@@ -128,8 +128,10 @@ const CreatePostPage = () => {
           <PostTyping
             handleGalleryPicker={handlePickMedia}
             handleCreatePost={async () =>
-              await createPost(caption, selectedMedia, () =>
-                Alert.alert("Your post is being created and will be done soon!")
+              await createPost(caption, selectedMedia, () =>{
+                Alert.alert("Your post is being created and will be done soon!");
+                navigation.goBack();
+              }
               )
             }
           />
