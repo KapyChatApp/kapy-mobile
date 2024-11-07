@@ -1,4 +1,4 @@
-import { View, Text, Pressable, Image } from "react-native";
+import { View, Text, Pressable, Image, Alert } from "react-native";
 import React, { useCallback, useEffect, useState } from "react";
 import UserAvatarLink from "@/components/ui/UserAvatarLink";
 import { textLight0Dark500 } from "@/styles/theme";
@@ -9,18 +9,22 @@ import { useFocusEffect, useRouter } from "expo-router";
 import { SocialPostProps } from "@/types/post";
 import { formatDate } from "@/utils/DateFormatter";
 import { Video } from "expo-av";
-import { disLike, like } from "@/requests/post";
+import { deletePost, disLike, like } from "@/requests/post";
 import { getLocalAuth } from "@/requests/local-auth";
+import { useActionSheet } from "@expo/react-native-action-sheet";
 
 const SocialPost = (props: SocialPostProps) => {
   const [isShowComment, setIsShowComment] = useState(false);
   const router = useRouter();
   const [totalLike, setTotalLike] = useState(props.likedIds.length);
   const [liked, setIsliked] = useState(false);
+  const {showActionSheetWithOptions} = useActionSheet();
+  const [_id, set_id] = useState("");
   useFocusEffect(
     useCallback(() => {
       const likeStreamManage = async () => {
         const { _id } = await getLocalAuth();
+        set_id(_id);
         if (props.likedIds.includes(_id.toString())) {
           setIsliked(true);
         }
@@ -42,17 +46,47 @@ const SocialPost = (props: SocialPostProps) => {
     }
   };
 
+  const handleDeletePost = async ()=>{
+    await deletePost(props._id, ()=> Alert.alert('Deleted'));
+  }
+  const handleLongPress = async ()=>{
+    const options = props.userId.toString()===_id? [
+      "Delete the post",
+      "Edit the post",
+      "Cancel",
+    ] : ["Report this port","Cancel"];
+    const cancelButtonIndex = props.userId.toString() === _id? 2:1;
+    showActionSheetWithOptions(
+      {
+        options,
+        cancelButtonIndex,
+      },
+      (selectedIndex: number | undefined) => {
+        switch (selectedIndex) {
+          case 0:
+            handleDeletePost();
+            break;
+          case 1:
+            break;
+
+          case cancelButtonIndex:
+       
+        }
+      }
+    );
+  }
   return (
     <Pressable
       className="flex border border-border rounded-3xl p-[16px] w-full pb-[50px]"
       style={{ rowGap: 8 }}
       pointerEvents="box-none"
-      onPress={() =>
+      onPress={ props.isDetail? null:() =>
         router.push({
           pathname: "/community/post-detail/[postId]",
           params: { postId: props._id },
         })
       }
+      onLongPress={handleLongPress}
     >
       <View className="flex flex-row" style={{ columnGap: 8 }}>
         <UserAvatarLink

@@ -121,6 +121,28 @@ export const createPost = async (
   }
 };
 
+export const deletePost = async (postId:string, goOn:()=>void)=>{
+  try{
+    const {token} = await getLocalAuth();
+    
+    const response = await axios.delete(process.env.EXPO_PUBLIC_BASE_URL + "/post/delete",{
+      headers:{
+        "Content-Type":"application/json",
+        Authorization:`${token}`
+      },
+      params:{postId:postId}
+    });
+
+    if(response.status ==200){
+      goOn();
+    }
+    else{
+    Alert.alert('Cannot delete the post now!');}
+  }catch(error){
+    console.log(error);
+    throw error;
+  }
+}
 export const like = async (postId: string) => {
   try {
     const { token } = await getLocalAuth();

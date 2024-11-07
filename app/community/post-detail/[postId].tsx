@@ -37,7 +37,7 @@ const PostDetailPage = () => {
           <View className="ml-[10px] mt-[10px]">
             <Previous navigation={navigation} isAbsolute={false} />
           </View>
-          {post ? <SocialPost {...post} /> : null}
+          {post ? <SocialPost {...post} isDetail={true} /> : null}
 
           <Text className={`${textLight0Dark500} font-helvetica-light text-14`}>
             Comments

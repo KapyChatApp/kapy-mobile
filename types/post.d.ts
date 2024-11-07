@@ -13,4 +13,5 @@ export interface SocialPostProps{
     caption:string;
     createAt:string;
     contents:FileProps[];
+    isDetail?:boolean;
 }
