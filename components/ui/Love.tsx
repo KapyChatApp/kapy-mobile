@@ -5,11 +5,11 @@ import { IconURL } from "@/constants/IconURL";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { bgLight500Dark10 } from "@/styles/theme";
 
-const Love = ({ onPress }: any) => {
+const Love = ({ onPress, totalLike }: {onPress:()=>void, totalLike:number}) => {
   return (
     <View>
       <Text className="text-cardinal text-12 font-helvetica-bold m-[2px] ml-[16px]">
-        2004
+        {totalLike}
       </Text>
       <TouchableOpacity
         className={`flex flex-row items-center justify-center border border-cardinal w-[82px] h-[27px] rounded-lg ${bgLight500Dark10}`}

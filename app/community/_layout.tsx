@@ -7,6 +7,7 @@ const CommunityLayout = () => {
     <Stack>
         <Stack.Screen name="post-detail/[postId]" options={{headerShown:false}}/>
         <Stack.Screen name="create-post" options={{headerShown:false}}/>
+        <Stack.Screen name="not-found" options={{headerShown:false}}/>
     </Stack>
   )
 }

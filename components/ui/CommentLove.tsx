@@ -5,11 +5,11 @@ import Icon from "./Icon";
 import { IconURL } from "@/constants/IconURL";
 import { bgLight500Dark10 } from "@/styles/theme";
 
-const CommentLove = ({ onPress }: any) => {
+const CommentLove = ({ onPress, totalLike }: {onPress:()=>void, totalLike:number}) => {
   return (
     <View>
       <Text className="text-cardinal text-10 font-helvetica-bold m-[2px] ml-[16px]">
-        2004
+        {totalLike}
       </Text>
       <TouchableOpacity
         className={`flex flex-row items-center justify-center border border-cardinal w-[60px] h-[20px] rounded-lg ${bgLight500Dark10}`}

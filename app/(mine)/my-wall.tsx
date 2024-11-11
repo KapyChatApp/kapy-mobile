@@ -1,7 +1,7 @@
 import { View, Text } from "react-native";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { useNavigation } from "expo-router";
+import { useFocusEffect, useNavigation } from "expo-router";
 import HeadProfile from "@/components/shared/community/HeadProfile";
 import { ScrollView } from "react-native-gesture-handler";
 import Previous from "@/components/ui/Previous";
@@ -17,7 +17,7 @@ const MyWallPage = () => {
   const navigation = useNavigation();
   const [headerProps, setHeaderProps] = useState<HeadProfileProps>();
   const [bioProps, setBioProps] = useState<UserBioProps | undefined>();
-  useEffect(() => {
+  useFocusEffect(useCallback(() => {
     const disPlayUserData = async () => {
       const user = await AsyncStorage.getItem("user");
       if (!user) {
@@ -45,7 +45,7 @@ const MyWallPage = () => {
     };
 
     disPlayUserData();
-  }, []);
+  }, []));
 
   return (
     <SafeAreaView className={`flex-1 ${bgLight500Dark10}`}>
