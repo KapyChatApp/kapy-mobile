@@ -17,9 +17,14 @@ const PostDetailPage = () => {
   const [post, setPost] = useState<SocialPostProps>();
   const router = useRouter();
   const navigation = useNavigation();
+  const [replyName, setReplyName] = useState("");
+  const [replyCommentId, setReplyCommentId] = useState("");
+  const [targetType, setTargetType] = useState("post");
   useEffect(() => {
     const getPostDetail = async () => {
-      const result = await getAPost(postId.toString(),() => router.push("/not-found"));
+      const result = await getAPost(postId.toString(), () =>
+        router.push("/not-found")
+      );
       setPost(result);
     };
     getPostDetail();
@@ -42,13 +47,19 @@ const PostDetailPage = () => {
           <Text className={`${textLight0Dark500} font-helvetica-light text-14`}>
             Comments
           </Text>
-          <View className="px-[10px]">
-            {commentsData.map((item, index) => (
-              <Comment isReply={false} key={item.id} comment={item} />
+          <View className="px-[10px]" style={{rowGap:10}}>
+            {post?.comments.map((item) => (
+              <Comment key={item._id} {...item} setReplyName={setReplyName} replyName={replyName} setReplyCommentId={setReplyCommentId} setTargetType={setTargetType}/>
             ))}
           </View>
         </ScrollView>
-        <CommentTyping />
+        <CommentTyping
+          replyId={replyName.length==0? post?._id:replyCommentId}
+          replyName={replyName}
+          setReplyName={setReplyName}
+          targetType={targetType}
+          setTargetType={setTargetType}
+        />
       </SafeAreaView>
     </KeyboardAvoidingView>
   );

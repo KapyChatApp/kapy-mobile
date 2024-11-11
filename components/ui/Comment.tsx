@@ -5,11 +5,11 @@ import Icon from "./Icon";
 import { IconURL } from "@/constants/IconURL";
 import { bgLight500Dark10 } from "@/styles/theme";
 
-const Comment = ({ onPress }: any) => {
+const Comment = ({ onPress,totalComment }: {onPress:any, totalComment:number}) => {
   return (
     <View>
       <Text className="text-cardinal text-12 font-helvetica-bold m-[2px] ml-[16px]">
-        6
+        {totalComment}
       </Text>
       <TouchableOpacity
         className={`flex flex-row items-center justify-center border border-cardinal w-[93px] h-[27px] rounded-lg ${bgLight500Dark10}`}

@@ -17,10 +17,14 @@ const SocialPost = (props: SocialPostProps) => {
   const [isShowComment, setIsShowComment] = useState(false);
   const router = useRouter();
   const [totalLike, setTotalLike] = useState(props.likedIds.length);
+  const [totalComment, setTotalComment] = useState(props.comments
+    .length
+  );
+  const [totalShare, setTotalShare] = useState(props.shares.length);
   const {showActionSheetWithOptions} = useActionSheet();
   const [userId, setUserId] = useState("");
   const [liked, setIsliked] = useState(props.likedIds.includes(userId.toString())? true:false );
-  
+
   useFocusEffect(
     useCallback(() => {
       const likeStreamManage = async () => {
@@ -138,8 +142,8 @@ const SocialPost = (props: SocialPostProps) => {
         className="flex flex-row absolute -bottom-[14px] left-[20px]"
         style={{ columnGap: 8 }}
       >
-        <Love total={totalLike} onPress={handleLikeFunction} />
-        <Comment  onPress={ props.isDetail? null:() =>
+        <Love totalLike={totalLike} onPress={handleLikeFunction} />
+        <Comment totalComment={totalComment}  onPress={ props.isDetail? null:() =>
         router.push({
           pathname: "/community/post-detail/[postId]",
           params: { postId: props._id },
