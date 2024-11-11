@@ -34,9 +34,12 @@
       [
         "expo-notifications",
         {
-          "sounds": ["./assets/sounds/notification/default.wav"]
+          "sounds": [
+            "./assets/sounds/notification/default.wav"
+          ]
         }
-      ]
+      ],
+      "expo-asset"
     ],
     "experiments": {
       "typedRoutes": true
@@ -50,5 +53,8 @@
       "CAMERA",
       "MEDIA_LIBRARY"
     ],
-    "expo": { "userInterfaceStyle": "automatic"   } }
+    "expo": {
+      "userInterfaceStyle": "automatic"
+    }
+  }
 }

@@ -47,9 +47,9 @@ const PostDetailPage = () => {
           <Text className={`${textLight0Dark500} font-helvetica-light text-14`}>
             Comments
           </Text>
-          <View className="px-[10px]" style={{rowGap:10}}>
-            {post?.comments.map((item) => (
-              <Comment key={item._id} {...item} setReplyName={setReplyName} replyName={replyName} setReplyCommentId={setReplyCommentId} setTargetType={setTargetType}/>
+          <View className="px-[10px]">
+            {post?.comments.map((item, index) => (
+              <Comment key={item._id} {...item} setReplyName={setReplyName} replyName={replyName} setReplyCommentId={setReplyCommentId} setTargetType={setTargetType} isLastComment={index === post.comments.length-1? true:false}/>
             ))}
           </View>
         </ScrollView>
@@ -59,6 +59,7 @@ const PostDetailPage = () => {
           setReplyName={setReplyName}
           targetType={targetType}
           setTargetType={setTargetType}
+          
         />
       </SafeAreaView>
     </KeyboardAvoidingView>

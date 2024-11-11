@@ -12,7 +12,7 @@ import { Video } from "expo-av";
 import { deletePost, disLike, like } from "@/requests/post";
 import { getLocalAuth } from "@/requests/local-auth";
 import { useActionSheet } from "@expo/react-native-action-sheet";
-
+import * as Sharing from 'expo-sharing';
 const SocialPost = (props: SocialPostProps) => {
   const [isShowComment, setIsShowComment] = useState(false);
   const router = useRouter();
@@ -24,7 +24,7 @@ const SocialPost = (props: SocialPostProps) => {
   const {showActionSheetWithOptions} = useActionSheet();
   const [userId, setUserId] = useState("");
   const [liked, setIsliked] = useState(props.likedIds.includes(userId.toString())? true:false );
-
+  const [post, setPost] = useState(props);
   useFocusEffect(
     useCallback(() => {
       const likeStreamManage = async () => {
@@ -149,7 +149,7 @@ const SocialPost = (props: SocialPostProps) => {
           params: { postId: props._id },
         })
       } />
-        <Share />
+        <Share totalShare={0} onPress={()=>{}}/>
       </View>
     </Pressable>
   );

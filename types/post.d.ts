@@ -33,4 +33,5 @@ export interface CommentProps {
   setReplyCommentId:(id:string)=>void;
   setTargetType:(type:string)=>void;
   isReply?:boolean;
+  isLastComment?:boolean;
 }

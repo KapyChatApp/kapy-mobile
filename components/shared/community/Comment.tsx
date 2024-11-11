@@ -41,20 +41,18 @@ const Comment = (props: CommentProps) => {
   }, []);
 
   return (
-    <View className="flex" style={{ rowGap: 16 }}>
+    <View
+      className={`flex ${
+        props.isLastComment ? "" : "border-l-[1px]"
+      } border-border ${props.isReply ? "ml-[18px]" : ""}`}
+    >
       <View className="flex flex-row">
-        <View
-          className="mr-2"
-          style={{
-            width: 10,
-            marginLeft: props.isReply ? 10 : 0,
-            alignSelf: "flex-start",
-          }}
-        />
-        <View className="flex " style={{ rowGap: 8 }}>
+        <View />
+        <View className={`h-[40px] w-[26px] rounded-b-3xl border-l-[1px] border-b-[1px] border-border ${props.isLastComment? "":"-left-[1px] "}`}></View>
+        <View className="flex py-[10px]">
           <View
-            className={`flex border border-border px-3 rounded-3xl ${
-              props.isReply ? "py-1" : "py-2"
+            className={`flex border border-border px-3 ${props.isReply? "rounded-2xl":"rounded-3xl"}  ${
+              props.isReply ? "py-2" : "py-2"
             } min-w-[200px] pb-[26px]`}
           >
             <View
@@ -83,7 +81,7 @@ const Comment = (props: CommentProps) => {
               </View>
             </View>
             <View
-              className="flex flex-row items-end absolute -bottom-3 left-2"
+              className="flex flex-row items-end absolute -bottom-[13px] left-2 "
               style={{ columnGap: 8 }}
             >
               <Text className="text-dark-330 text-10">
@@ -102,13 +100,13 @@ const Comment = (props: CommentProps) => {
           </View>
         </View>
       </View>
-      <View className="flex ml-[24px]" style={{ rowGap: 10 }}>
+      <View className="flex ml-[24px] pt-[8px]">
         {haveReplies && (
           <TouchableOpacity
             onPress={() => setIsShowReply(!isShowReply)}
             style={{ zIndex: 10 }}
           >
-            <Text className={`${textLight0Dark500} ml-12 mt-1 text-10`}>
+            <Text className={`${textLight0Dark500} ml-12 text-10`}>
               {isShowReply ? "Hide replies..." : "Show replies..."}
             </Text>
           </TouchableOpacity>
@@ -123,6 +121,7 @@ const Comment = (props: CommentProps) => {
               setReplyName={props.setReplyName}
               setReplyCommentId={props.setReplyCommentId}
               setTargetType={props.setTargetType}
+              isLastComment={index === props.replieds.length - 1 ? true : false}
             />
           ))}
       </View>
