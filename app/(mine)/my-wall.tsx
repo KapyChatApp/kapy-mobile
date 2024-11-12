@@ -59,7 +59,6 @@ const MyWallPage = () => {
         <CreatePost avatarURL={headerProps?.avatar}/>
         <View className="w-full h-[30px]"></View>
         <MyPostList/>
-        <SocialSkeletonLoader/>
         <View className="w-full h-[200px]"></View>
       </ScrollView>
     </SafeAreaView>

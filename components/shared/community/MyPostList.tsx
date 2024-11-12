@@ -15,9 +15,15 @@ const MyPostList = () => {
     getMyPostFunc();
   }, []);
   return (
-    <View className="flex-1 items-center justify-cente" style={{rowGap:20}}>
+    <View className="flex-1 items-center justify-center" style={{rowGap:20}}>
       {postsData.length!=0? ( postsData.map((item)=><SocialPost key={item._id} {...item}/>)):(
+        <View className="w-full" style={{rowGap:30}}>
         <SocialSkeletonLoading/>
+        <SocialSkeletonLoading/>
+        <SocialSkeletonLoading/>
+        <SocialSkeletonLoading/>
+        <SocialSkeletonLoading/>
+        </View>
         
       )}
     </View>

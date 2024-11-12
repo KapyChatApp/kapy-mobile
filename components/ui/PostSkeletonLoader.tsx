@@ -20,11 +20,12 @@ const SocialSkeletonLoader = () => {
   return (
     <View  className="flex border border-border rounded-3xl p-[16px] w-full pb-[50px]"
     style={{ rowGap: 8 }}>
-      <View style={styles.avatarContainer}>
+      <View className='flex flex-row ' style={{columnGap:10}}>
         <Animated.View
-          style={[styles.avatar, animatedStyle]} 
+        className="w-[60px] h-[60px] rounded-full bg-skeleton"
+          style={animatedStyle} 
         />
-        <View style={styles.textContainer}>
+        <View className='pt-[10px]'>
           <Animated.View
           className="w-[200px] h-[10px] rounded-full bg-skeleton"
             style={ animatedStyle} 
@@ -73,63 +74,6 @@ const SocialSkeletonLoader = () => {
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    padding: 16,
-  },
-  avatarContainer: {
-    flexDirection: 'row',
-    marginBottom: 16,
-  },
-  avatar: {
-    width: 59,
-    height: 59,
-    borderRadius: 30,
-    backgroundColor: '#e0e0e0',
-  },
-  textContainer: {
-    marginLeft: 8,
-    justifyContent: 'center',
-    flex: 1,
-  },
-  name: {
-    width: 120,
-    height: 20,
-    backgroundColor: '#e0e0e0',
-    borderRadius: 4,
-  },
-  date: {
-    width: 80,
-    height: 14,
-    backgroundColor: '#e0e0e0',
-    borderRadius: 4,
-    marginTop: 6,
-  },
-  caption: {
-    width: '100%',
-    height: 60,
-    backgroundColor: '#e0e0e0',
-    borderRadius: 4,
-    marginTop: 10,
-  },
-  image: {
-    width: '100%',
-    height: 200,
-    backgroundColor: '#e0e0e0',
-    borderRadius: 10,
-    marginTop: 10,
-  },
-  actions: {
-    flexDirection: 'row',
-    marginTop: 14,
-  },
-  actionButton: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    backgroundColor: '#e0e0e0',
-    marginRight: 8,
-  },
-});
+
 
 export default SocialSkeletonLoader;
