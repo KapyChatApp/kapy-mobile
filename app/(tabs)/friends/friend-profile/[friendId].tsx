@@ -21,6 +21,7 @@ import { IconURL } from "@/constants/IconURL";
 import LoadingSpinner from "@/components/ui/LoadingSpinner";
 import { getFriendProfile } from "@/requests/friend-profile";
 import FriendPostList from "@/components/shared/community/FriendPostList";
+import HeadProfileSkeletonLoader from "@/components/ui/HeadProfileSkeletonLoader";
 const FriendProfilePage = () => {
   const { friendId } = useLocalSearchParams();
   const navigation = useNavigation();
@@ -265,7 +266,7 @@ const FriendProfilePage = () => {
   return (
     <SafeAreaView className={`flex-1 ${bgLight500Dark10}`}>
       <ScrollView>
-        <HeadProfile {...headerProps} />
+        {false? (     <HeadProfile {...headerProps} />):(<HeadProfileSkeletonLoader/>)}
         <Previous navigation={navigation} isAbsolute={true} />
         <MoreProfileOption
           setIsReportOpen={setIsReportOpen}
@@ -275,7 +276,7 @@ const FriendProfilePage = () => {
           setNotIsLoading={() => setIsLoading(false)}
           friendId={friendedId}
         />
-        <View className={`${Platform.OS === "android" ? "mt-[60px]" : ""}`}>
+        <View className={`${Platform.OS === "android" ? "mt-[60px]" : "mt-[20px]"}`}>
           {RelationButtonGroups()}
         </View>
 
