@@ -1,7 +1,7 @@
 import axios from "axios";
 import { getLocalAuth } from "./local-auth";
 
-export const getFriendProfile = async (friendId: string|string[]) => {
+export const getFriendProfile = async (friendId: string|string[], goOn:()=>void) => {
   try {
     const { token } = await getLocalAuth();
     const response = await axios.get(
@@ -17,6 +17,7 @@ export const getFriendProfile = async (friendId: string|string[]) => {
     if(response.status==404){
         return false;
     }
+    goOn();
     return response.data;
   } catch (error) {
     console.log(error);

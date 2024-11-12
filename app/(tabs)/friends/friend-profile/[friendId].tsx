@@ -22,6 +22,8 @@ import LoadingSpinner from "@/components/ui/LoadingSpinner";
 import { getFriendProfile } from "@/requests/friend-profile";
 import FriendPostList from "@/components/shared/community/FriendPostList";
 import HeadProfileSkeletonLoader from "@/components/ui/HeadProfileSkeletonLoader";
+import BioSkeletonLoader from "@/components/ui/BioSkeletonLoader";
+import SocialSkeletonLoader from "@/components/ui/PostSkeletonLoader";
 const FriendProfilePage = () => {
   const { friendId } = useLocalSearchParams();
   const navigation = useNavigation();
@@ -49,7 +51,9 @@ const FriendProfilePage = () => {
   useEffect(() => {
     const disPlayUserData = async () => {
       try {
-        const friendData = await getFriendProfile(friendId);
+        const friendData = await getFriendProfile(friendId, () =>
+          setIsProfileLoading(false)
+        );
         const {
           _id,
           firstName,
@@ -72,7 +76,6 @@ const FriendProfilePage = () => {
         setBioProps(_bio);
         setRelation(relation);
         setFriendedId(_id.toString());
-        setIsProfileLoading(false);
       } catch (error) {
         console.log(error);
         router.push("/(tabs)/friends/not-found");
@@ -266,7 +269,11 @@ const FriendProfilePage = () => {
   return (
     <SafeAreaView className={`flex-1 ${bgLight500Dark10}`}>
       <ScrollView>
-        {false? (     <HeadProfile {...headerProps} />):(<HeadProfileSkeletonLoader/>)}
+        {isProfileLoading ? (
+          <HeadProfileSkeletonLoader />
+        ) : (
+          <HeadProfile {...headerProps} />
+        )}
         <Previous navigation={navigation} isAbsolute={true} />
         <MoreProfileOption
           setIsReportOpen={setIsReportOpen}
@@ -276,11 +283,13 @@ const FriendProfilePage = () => {
           setNotIsLoading={() => setIsLoading(false)}
           friendId={friendedId}
         />
-        <View className={`${Platform.OS === "android" ? "mt-[60px]" : "mt-[20px]"}`}>
-          {RelationButtonGroups()}
+        <View
+          className={`${Platform.OS === "android" ? "mt-[60px]" : "mt-[20px]"}`}
+        >
+          {isProfileLoading? null:RelationButtonGroups()}
         </View>
+        {isProfileLoading ? <BioSkeletonLoader /> : <UserBio {...bioProps} />}
 
-        <UserBio {...bioProps} />
         {relation === "bff" ? (
           <View
             className="w-full mt-[250px] px-[12px] mb-[10px]"
@@ -296,7 +305,19 @@ const FriendProfilePage = () => {
         ) : null}
         {relation === "bff" ? (
           <View className="flex  items-center w-full">
-            {friendedId? (   <FriendPostList friendId={friendedId}/>):null}
+            {friendedId ? (
+              isProfileLoading ? (
+                <View className="flex" style={{ rowGap: 20 }}>
+                  <SocialSkeletonLoader />
+                  <SocialSkeletonLoader />
+                  <SocialSkeletonLoader />
+                  <SocialSkeletonLoader />
+                  <SocialSkeletonLoader />
+                </View>
+              ) : (
+                <FriendPostList friendId={friendedId} />
+              )
+            ) : null}
           </View>
         ) : (
           <UnblockPostView

@@ -20,18 +20,9 @@ const FriendPostList = ({ friendId }: { friendId: string }) => {
       className="flex-1 items-center justify-center w-full px-[15px]"
       style={{ rowGap: 20 }}
     >
-      {postsData.length != 0 ? (
-        postsData.map((item) => <SocialPost key={item._id} {...item} />)
-      ) : (
-        <View className="flex-1 w-full">
-          <SocialSkeletonLoader />
-          <SocialSkeletonLoader />
-          <SocialSkeletonLoader />
-          <SocialSkeletonLoader />
-          <SocialSkeletonLoader />
-          <SocialSkeletonLoader />
-        </View>
-      )}
+      {postsData.map((item) => (
+        <SocialPost key={item._id} {...item} />
+      ))}
     </View>
   );
 };
