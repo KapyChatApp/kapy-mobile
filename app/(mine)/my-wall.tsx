@@ -12,6 +12,7 @@ import { HeadProfileProps, UserBioProps } from "@/types/user";
 import axios from "axios";
 import CreatePost from "@/components/ui/CreatePost";
 import MyPostList from "@/components/shared/community/MyPostList";
+import SocialSkeletonLoader from "@/components/ui/PostSkeletonLoader";
 
 const MyWallPage = () => {
   const navigation = useNavigation();
@@ -58,6 +59,7 @@ const MyWallPage = () => {
         <CreatePost avatarURL={headerProps?.avatar}/>
         <View className="w-full h-[30px]"></View>
         <MyPostList/>
+        <SocialSkeletonLoader/>
         <View className="w-full h-[200px]"></View>
       </ScrollView>
     </SafeAreaView>
