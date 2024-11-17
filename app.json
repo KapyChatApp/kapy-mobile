@@ -7,6 +7,7 @@
     "icon": "./assets/images/icon.png",
     "scheme": "myapp",
     "userInterfaceStyle": "automatic",
+    "newArchEnabled": true,
     "splash": {
       "image": "./assets/images/splash.png",
       "resizeMode": "contain",
@@ -21,7 +22,6 @@
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "usesCleartextTraffic": true,
       "package": "com.anonymous.KapyMobile"
     },
     "web": {
@@ -40,7 +40,8 @@
           ]
         }
       ],
-      "expo-asset"
+      "expo-asset",
+      "expo-secure-store"
     ],
     "experiments": {
       "typedRoutes": true
@@ -49,13 +50,6 @@
       "eas": {
         "projectId": "d60d3ab1-07e9-4e7e-af08-3996d196dd15"
       }
-    },
-    "permissions": [
-      "CAMERA",
-      "MEDIA_LIBRARY"
-    ],
-    "expo": {
-      "userInterfaceStyle": "automatic"
     }
   }
 }
