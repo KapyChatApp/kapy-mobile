@@ -12,52 +12,67 @@ import { HeadProfileProps, UserBioProps } from "@/types/user";
 import axios from "axios";
 import CreatePost from "@/components/ui/CreatePost";
 import MyPostList from "@/components/shared/community/MyPostList";
+import SocialSkeletonLoader from "@/components/ui/PostSkeletonLoader";
+import HeadProfileSkeletonLoader from "@/components/ui/HeadProfileSkeletonLoader";
+import BioSkeletonLoader from "@/components/ui/BioSkeletonLoader";
 
 const MyWallPage = () => {
   const navigation = useNavigation();
   const [headerProps, setHeaderProps] = useState<HeadProfileProps>();
   const [bioProps, setBioProps] = useState<UserBioProps | undefined>();
-  useFocusEffect(useCallback(() => {
-    const disPlayUserData = async () => {
-      const user = await AsyncStorage.getItem("user");
-      if (!user) {
-        throw new Error("You are unauthenticated!");
-      }
-      const {
-        firstName,
-        lastName,
-        nickName,
-        bio,
-        avatar,
-        background,
-        ..._bio
-      } = JSON.parse(user);
+  const [isProfileLoading, setIsProfileLoading] = useState(true);
+  useFocusEffect(
+    useCallback(() => {
+      const disPlayUserData = async () => {
+        const user = await AsyncStorage.getItem("user");
+        if (!user) {
+          throw new Error("You are unauthenticated!");
+        }
+        const {
+          firstName,
+          lastName,
+          nickName,
+          bio,
+          avatar,
+          background,
+          ..._bio
+        } = JSON.parse(user);
 
-      setHeaderProps({
-        firstName,
-        lastName,
-        nickName,
-        bio,
-        avatar,
-        background,
-      });
-      setBioProps(_bio);
-    };
+        setHeaderProps({
+          firstName,
+          lastName,
+          nickName,
+          bio,
+          avatar,
+          background,
+        });
+        setBioProps(_bio);
+        setIsProfileLoading(false);
+      };
 
-    disPlayUserData();
-  }, []));
+      disPlayUserData();
+    }, [])
+  );
 
   return (
     <SafeAreaView className={`flex-1 ${bgLight500Dark10}`}>
       <ScrollView className="px-[10px]">
-        <HeadProfile {...headerProps} />
+        {isProfileLoading ? (
+          <HeadProfileSkeletonLoader />
+        ) : (
+          <HeadProfile {...headerProps} />
+        )}
         <Previous navigation={navigation} isAbsolute={true} />
-        <UserBio {...bioProps} />
+        {isProfileLoading ? <BioSkeletonLoader /> : <UserBio {...bioProps} />}
         <View className="w-full h-[200px]"></View>
-        <Text className={`${textLight0Dark500} font-helvetica-bold text-14 mb-[20px]`}>Posts</Text>
-        <CreatePost avatarURL={headerProps?.avatar}/>
+        <Text
+          className={`${textLight0Dark500} font-helvetica-bold text-14 mb-[20px]`}
+        >
+          Posts
+        </Text>
+        <CreatePost avatarURL={headerProps?.avatar} />
         <View className="w-full h-[30px]"></View>
-        <MyPostList/>
+        <MyPostList />
         <View className="w-full h-[200px]"></View>
       </ScrollView>
     </SafeAreaView>

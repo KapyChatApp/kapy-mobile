@@ -59,7 +59,8 @@ module.exports = {
         l_input: "#565A59",
         l_search: "#FFF2E8",
         deny: "#A9A9A9",
-        profile:"#4C4C4C"
+        profile:"#4C4C4C",
+        skeleton:"#E0E0E0"
       },
       fontSize: {
         40: "40px",

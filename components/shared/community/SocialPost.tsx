@@ -12,21 +12,21 @@ import { Video } from "expo-av";
 import { deletePost, disLike, like } from "@/requests/post";
 import { getLocalAuth } from "@/requests/local-auth";
 import { useActionSheet } from "@expo/react-native-action-sheet";
-import * as Sharing from 'expo-sharing';
+import * as Sharing from "expo-sharing";
 const SocialPost = (props: SocialPostProps) => {
   const [isShowComment, setIsShowComment] = useState(false);
   const router = useRouter();
   const [totalLike, setTotalLike] = useState(props.likedIds.length);
-  const [totalComment, setTotalComment] = useState(props.comments
-    .length
-  );
+  const [totalComment, setTotalComment] = useState(props.comments.length);
   const [totalShare, setTotalShare] = useState(props.shares.length);
-  const {showActionSheetWithOptions} = useActionSheet();
+  const { showActionSheetWithOptions } = useActionSheet();
   const [userId, setUserId] = useState("");
-  const [liked, setIsliked] = useState(props.likedIds.includes(userId.toString())? true:false );
-  const [post, setPost] = useState(props);
+  const [liked, setIsliked] = useState(
+    props.likedIds.includes(userId.toString()) ? true : false
+  );
   useFocusEffect(
     useCallback(() => {
+      console.log(props.contents);
       const likeStreamManage = async () => {
         const { _id } = await getLocalAuth();
         setUserId(_id);
@@ -54,16 +54,15 @@ const SocialPost = (props: SocialPostProps) => {
     }
   };
 
-  const handleDeletePost = async ()=>{
-    await deletePost(props._id, ()=> Alert.alert('Deleted'));
-  }
-  const handleLongPress = async ()=>{
-    const options = props.userId.toString()===userId? [
-      "Delete the post",
-      "Edit the post",
-      "Cancel",
-    ] : ["Report this port","Cancel"];
-    const cancelButtonIndex = props.userId.toString() === userId? 2:1;
+  const handleDeletePost = async () => {
+    await deletePost(props._id, () => Alert.alert("Deleted"));
+  };
+  const handleLongPress = async () => {
+    const options =
+      props.userId.toString() === userId
+        ? ["Delete the post", "Edit the post", "Cancel"]
+        : ["Report this port", "Cancel"];
+    const cancelButtonIndex = props.userId.toString() === userId ? 2 : 1;
     showActionSheetWithOptions(
       {
         options,
@@ -78,17 +77,15 @@ const SocialPost = (props: SocialPostProps) => {
             break;
 
           case cancelButtonIndex:
-       
         }
       }
     );
-  }
+  };
   return (
     <Pressable
       className="flex border border-border rounded-3xl p-[16px] w-full pb-[50px]"
       style={{ rowGap: 8 }}
       pointerEvents="box-none"
-     
       onLongPress={handleLongPress}
     >
       <View className="flex flex-row" style={{ columnGap: 8 }}>
@@ -115,10 +112,11 @@ const SocialPost = (props: SocialPostProps) => {
             <Video
               source={{ uri: item.url }}
               style={{
-                width: "100%",
-                height: 200,
+                width: "auto",
+                height: "auto",
                 borderRadius: 10,
                 marginBottom: 10,
+                aspectRatio: Number(item.width) / Number(item.height),
               }}
               shouldPlay={false}
               isLooping={false}
@@ -128,10 +126,11 @@ const SocialPost = (props: SocialPostProps) => {
             <Image
               source={{ uri: item.url }}
               style={{
-                width: "100%",
-                height: 200,
+                width: "auto",
+                height: "auto",
                 borderRadius: 10,
                 marginBottom: 10,
+                aspectRatio: Number(item.width) / Number(item.height),
               }}
               resizeMode="cover"
             />
@@ -143,13 +142,19 @@ const SocialPost = (props: SocialPostProps) => {
         style={{ columnGap: 8 }}
       >
         <Love totalLike={totalLike} onPress={handleLikeFunction} />
-        <Comment totalComment={totalComment}  onPress={ props.isDetail? null:() =>
-        router.push({
-          pathname: "/community/post-detail/[postId]",
-          params: { postId: props._id },
-        })
-      } />
-        <Share totalShare={0} onPress={()=>{}}/>
+        <Comment
+          totalComment={totalComment}
+          onPress={
+            props.isDetail
+              ? null
+              : () =>
+                  router.push({
+                    pathname: "/community/post-detail/[postId]",
+                    params: { postId: props._id },
+                  })
+          }
+        />
+        <Share totalShare={0} onPress={() => {}} />
       </View>
     </Pressable>
   );
