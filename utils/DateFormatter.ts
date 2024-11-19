@@ -1,4 +1,4 @@
-import { formatDistanceToNow } from "date-fns";
+import { formatDistance } from "date-fns";
 
 export const formatDate = (dateString: string) => {
     const date = new Date(dateString);
@@ -10,5 +10,9 @@ export const formatDate = (dateString: string) => {
   };
 
   export const formatDateDistance = (date: string | Date) => {
-    return formatDistanceToNow(new Date(date), { addSuffix: true });
+    const utcDate = new Date(date);
+  
+    const nowUtc = new Date(new Date().toISOString()); 
+  
+    return formatDistance(utcDate, nowUtc, { addSuffix: true });
   };

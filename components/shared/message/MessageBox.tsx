@@ -30,14 +30,14 @@ const MessageBox = (props:MessageBoxProps) => {
           numberOfLines={1}
           className={`font-helvetica-light text-14 overflow-ellipsis ${textLight0Dark500}`}
         >
-          {props.messages[props.messages.length-1].text? props.messages[props.messages.length-1].text: " "}
+          {props.messages.length!=0? props.messages[props.messages.length-1].text: " "}
         </Text>
         <Text
           numberOfLines={1}
           ellipsizeMode="tail"
           className="font-helvetica-light text-12 text-deny"
         >
-          {formatDateDistance(props.messages[props.messages.length-1].createAt)}
+          {props.messages.length!=0? formatDateDistance(props.messages[props.messages.length-1].createAt) : null}
         </Text>
       </View>
     </TouchableOpacity>

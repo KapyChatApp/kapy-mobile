@@ -62,7 +62,7 @@ export const getAllMessages = async (boxId: string | string[]) => {
   }
 };
 
-export const createGroup = async (memberIds: string[], leaderId: string) => {
+export const createGroup = async (memberIds: string[], leaderId: string, goOn:(boxId:string)=>void) => {
   try {
     const { token } = await getLocalAuth();
     const requestBody: CreateChatBoxProps = {
@@ -79,6 +79,9 @@ export const createGroup = async (memberIds: string[], leaderId: string) => {
         },
       }
     );
+    if(response.data){
+      goOn(response.data._id);
+    }
     return response.data ? response.data : null;
   } catch (error) {
     console.log(error);
