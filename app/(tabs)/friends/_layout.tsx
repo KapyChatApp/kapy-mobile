@@ -8,7 +8,6 @@ const FriendLayout = ({ children }: any) => {
     <Stack initialRouteName="index">
       <Stack.Screen name="index" options={{ headerShown: false }} />
       <Stack.Screen name="all-request" options={{ headerShown: false }} />
-      <Stack.Screen name="my-groups" options={{ headerShown: false }} />
       <Stack.Screen name="invite-group" options={{ headerShown: false }} />
       <Stack.Screen
         name="friend-profile/[friendId]"

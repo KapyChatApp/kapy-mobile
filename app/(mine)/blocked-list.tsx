@@ -27,7 +27,7 @@ const BlockedListPage = () => {
         isAbsolute={true}
         header="Blocked list"
       ></Previous>
-      <View className="mt-[40px] flex flex-1" style={{ rowGap: 4 }}>
+      <View className="mt-[60px] flex flex-1" style={{ rowGap: 4 }}>
         <Search></Search>
         <ScrollView className="flex-1 " contentContainerStyle={{ rowGap: 4 }}>
          {blocks?.map((item)=><BlockedUserBox key={item._id} {...item}/>)}

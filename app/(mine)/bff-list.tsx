@@ -23,7 +23,7 @@ const BFFListPage = () => {
   return (
     <SafeAreaView className={`${bgLight500Dark10} flex-1`}>
       <Previous navigation={navigation} isAbsolute={true} header="Bestfriend list"></Previous>
-      <View className="mt-[40px] flex flex-1" style={{ rowGap: 4 }}>
+      <View className="mt-[60px] flex flex-1" style={{ rowGap: 4 }}>
         <Search></Search>
         <ScrollView className=" flex-1" contentContainerStyle={{ rowGap: 4 }}>
           {myBFFs?.map((item:any)=><BestFriendBox key={item._id} {...item}/>)}

@@ -29,7 +29,7 @@ export const getAPost = async (postId:string, goOn:()=>void)=>{
   }
 }
 
-export const getMyPosts = async () => {
+export const getMyPosts = async (goOn:()=>void) => {
   try {
     const { token } = await getLocalAuth();
 
@@ -45,6 +45,8 @@ export const getMyPosts = async () => {
     if (!response.data) {
       throw new Error("Not found your posts");
     }
+    console.log("postData: ",response.data)
+    goOn();
     return response.data;
   } catch (error) {
     console.log(error);

@@ -40,13 +40,7 @@ export const createComment = async (
         },
       }
     );
-
-    if (response.status === 200) {
-      console.log("Comment created successfully", response.data);
       goOn();
-    } else {
-      Alert.alert("Failed: " + response.status);
-    }
   } catch (error) {
     console.error("Error creating comment:", error);
     throw error;

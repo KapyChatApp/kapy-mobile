@@ -7,7 +7,7 @@ import Share from "@/components/ui/Share";
 import Comment from "@/components/ui/Comment";
 import { useFocusEffect, useRouter } from "expo-router";
 import { SocialPostProps } from "@/types/post";
-import { formatDate } from "@/utils/DateFormatter";
+import { formatDate, formatDateDistance } from "@/utils/DateFormatter";
 import { Video } from "expo-av";
 import { deletePost, disLike, like } from "@/requests/post";
 import { getLocalAuth } from "@/requests/local-auth";
@@ -95,11 +95,11 @@ const SocialPost = (props: SocialPostProps) => {
           size={59}
         />
         <View className="flex pt-[8px]" style={{ rowGap: 6 }}>
-          <Text className={`${textLight0Dark500} font-helvetica-bold text-16`}>
+          <Text className={`${textLight0Dark500} font-helvetica-bold text-14`}>
             {props.firstName + " " + props.lastName}
           </Text>
-          <Text className="text-dark-330 font-helvetica-light text-10">
-            {formatDate(props.createAt)}
+          <Text className="text-dark-330 dark:text-dark-320 font-helvetica-light text-10">
+            {formatDateDistance(props.createAt)}
           </Text>
         </View>
       </View>

@@ -16,6 +16,7 @@ export const getMyProfile = async ()=>{
       );
       const userData = response.data;
       await AsyncStorage.setItem("user", JSON.stringify(userData));
+      console.log("this is localuser " ,await AsyncStorage.getItem("user"));
       return userData;
     } catch(error){
         console.log(error);

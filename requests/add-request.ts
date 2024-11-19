@@ -70,7 +70,7 @@ export const block = async (friendId: string) => {
     );
 
     if (response.status === 200 || response.status === 201) {
-      return true;
+      return true
     } else {
       Alert.alert(`Your request fail ${response.statusText} `);
       return false;

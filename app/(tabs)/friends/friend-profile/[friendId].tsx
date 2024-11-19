@@ -29,13 +29,6 @@ const FriendProfilePage = () => {
   const navigation = useNavigation();
   const router = useRouter();
   const [isReportOpen, setIsReportOpen] = useState(false);
-  const postContent = [
-    "Nội dung bài post",
-    "Lorem ipsum dolor sit amet consectetur adipisicing elit. Veniam voluptatibus maxime quam quod, itaque optio fugit repudiandae quis asperiores facere eveniet quasi perspiciatis cumque veritatis, perferendis similique placeat, voluptatum ullam?",
-    "Một bài post khác như thế này luôn",
-    "HAHAHAHAAH",
-    "HIHIHIHIHIHIHI",
-  ];
   const [headerProps, setHeaderProps] = useState<
     HeadProfileProps | undefined
   >();

@@ -26,7 +26,8 @@ const Previous = ({ navigation, header, isAbsolute }: any) => {
         >
           {header}
         </Text>
-        <View className={`w-[${textWidth}px] h-[2px] bg-cardinal`}></View>
+        {header?  <View className={`w-[${textWidth}px] h-[2px] bg-cardinal`}/>:null}
+       
       </View>
     </View>
   );
