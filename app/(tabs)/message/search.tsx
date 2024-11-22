@@ -6,10 +6,10 @@ import Search from "@/components/shared/function/Search";
 import { ScrollView } from "react-native-gesture-handler";
 import { bgLight500Dark10 } from "@/styles/theme";
 import { FriendBoxProps } from "@/types/friend";
-import { findMyFriend } from "@/requests/find-request";
+import { findMyFriend } from "@/lib/find-request";
 import FriendBoxNonEvent from "@/components/shared/friend/FriendBoxNonEvent";
-import { createGroup, getAMessageBox } from "@/requests/message-request";
-import { getLocalAuth } from "@/requests/local-auth";
+import { createGroup, getAMessageBox } from "@/lib/message-request";
+import { getLocalAuth } from "@/lib/local-auth";
 
 const SearchPage = () => {
   const navigation = useNavigation();
@@ -17,12 +17,12 @@ const SearchPage = () => {
   const [results, setResults] = useState<FriendBoxProps[]>([]);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
   const [localUserId, setLocalUserId] = useState("");
-const router = useRouter();
-  useEffect(() => { 
-    const getLocalId = async ()=>{
-        const {_id} = await getLocalAuth();
-        setLocalUserId(_id);
-    }
+  const router = useRouter();
+  useEffect(() => {
+    const getLocalId = async () => {
+      const { _id } = await getLocalAuth();
+      setLocalUserId(_id);
+    };
 
     getLocalId();
 
@@ -57,8 +57,16 @@ const router = useRouter();
         contentContainerStyle={{ rowGap: 4 }}
       >
         {results.map((item) => (
-          <TouchableOpacity onPress={async ()=> await createGroup([localUserId, item._id], localUserId,(boxId)=>router.push({pathname:"/chatbox/[messageId]",params:{messageId:boxId}}))
-          }>
+          <TouchableOpacity
+            onPress={async () =>
+              await createGroup([localUserId, item._id], localUserId, (boxId) =>
+                router.push({
+                  pathname: "/chatbox/[messageId]",
+                  params: { messageId: boxId },
+                })
+              )
+            }
+          >
             <FriendBoxNonEvent key={item._id} {...item} />
           </TouchableOpacity>
         ))}

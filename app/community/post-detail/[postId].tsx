@@ -9,7 +9,7 @@ import { ScrollView } from "react-native-gesture-handler";
 import Comment from "@/components/shared/community/Comment";
 import CommentTyping from "@/components/shared/community/CommentTyping";
 import { commentsData } from "@/data/CommentData";
-import { getAPost } from "@/requests/post";
+import { getAPost } from "@/lib/post";
 import { SocialPostProps } from "@/types/post";
 
 const PostDetailPage = () => {
@@ -49,17 +49,26 @@ const PostDetailPage = () => {
           </Text>
           <View className="px-[10px]">
             {post?.comments.map((item, index) => (
-              <Comment key={item._id} {...item} setReplyName={setReplyName} replyName={replyName} setReplyCommentId={setReplyCommentId} setTargetType={setTargetType} isLastComment={index === post.comments.length-1? true:false}/>
+              <Comment
+                key={item._id}
+                {...item}
+                setReplyName={setReplyName}
+                replyName={replyName}
+                setReplyCommentId={setReplyCommentId}
+                setTargetType={setTargetType}
+                isLastComment={
+                  index === post.comments.length - 1 ? true : false
+                }
+              />
             ))}
           </View>
         </ScrollView>
         <CommentTyping
-          replyId={replyName.length==0? post?._id:replyCommentId}
+          replyId={replyName.length == 0 ? post?._id : replyCommentId}
           replyName={replyName}
           setReplyName={setReplyName}
           targetType={targetType}
           setTargetType={setTargetType}
-          
         />
       </SafeAreaView>
     </KeyboardAvoidingView>

@@ -5,12 +5,18 @@ import { useClickOutside } from "react-native-click-outside";
 import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { generateRandomNumberString } from "@/utils/Random";
-import { getMyProfile } from "@/requests/my-profile";
+import { getMyProfile } from "@/lib/my-profile";
 
-const ImagePickerBox = ({ setIsOpen, toEndPoint, aspect, setStartLoading,
+const ImagePickerBox = ({
+  setIsOpen,
+  toEndPoint,
+  aspect,
+  setStartLoading,
   setEndLoading,
   setIsLoading,
-  setNotIsLoading, setReload }: any) => {
+  setNotIsLoading,
+  setReload,
+}: any) => {
   const ref = useClickOutside<View>(() => setIsOpen(false));
   const [image, setImage] = useState<string | null>(null);
   const [uploading, setUploading] = useState<boolean>(false);
@@ -68,12 +74,12 @@ const ImagePickerBox = ({ setIsOpen, toEndPoint, aspect, setStartLoading,
         }
       );
 
-      if (response.status == 200 || response.status ==201) {
+      if (response.status == 200 || response.status == 201) {
         setNotIsLoading();
-        const timmer = setTimeout(()=>setEndLoading(),1500);
+        const timmer = setTimeout(() => setEndLoading(), 1500);
         await getMyProfile();
-        setReload()
-        return ()=> clearInterval(timmer);
+        setReload();
+        return () => clearInterval(timmer);
       } else {
         Alert.alert(
           "Upload Failed",

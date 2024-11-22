@@ -17,14 +17,14 @@ import { HeadProfileProps } from "@/types/user";
 import Popover, { PopoverPlacement } from "react-native-popover-view";
 import Icon from "@/components/ui/Icon";
 import { IconURL } from "@/constants/IconURL";
-import { getLocalAuth } from "@/requests/local-auth";
+import { getLocalAuth } from "@/lib/local-auth";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { bgLight500Dark10, textLight0Dark500 } from "@/styles/theme";
 import { useClickOutside } from "react-native-click-outside";
 import PostTyping from "@/components/ui/PostTyping";
 import GalleryPickerBox from "@/components/ui/GalleryPickerBox";
 import { pickMedia } from "@/utils/GalleryPicker";
-import { createPost } from "@/requests/post";
+import { createPost } from "@/lib/post";
 
 const CreatePostPage = () => {
   const navigation = useNavigation();
@@ -128,11 +128,12 @@ const CreatePostPage = () => {
           <PostTyping
             handleGalleryPicker={handlePickMedia}
             handleCreatePost={async () =>
-              await createPost(caption, selectedMedia, () =>{
-                Alert.alert("Your post is being created and will be done soon!");
+              await createPost(caption, selectedMedia, () => {
+                Alert.alert(
+                  "Your post is being created and will be done soon!"
+                );
                 navigation.goBack();
-              }
-              )
+              })
             }
           />
         </View>

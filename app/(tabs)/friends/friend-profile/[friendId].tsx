@@ -14,12 +14,12 @@ import SocialPost from "@/components/shared/community/SocialPost";
 import { HeadProfileProps, UserBioProps } from "@/types/user";
 import CustomButton from "@/components/ui/CustomButton";
 import DenyButton from "@/components/ui/DenyButton";
-import { unBFF, unFriend } from "@/requests/un-request";
-import { acceptBFF, acceptFriend } from "@/requests/accept-request";
-import { addBFF, addFriend } from "@/requests/add-request";
+import { unBFF, unFriend } from "@/lib/un-request";
+import { acceptBFF, acceptFriend } from "@/lib/accept-request";
+import { addBFF, addFriend } from "@/lib/add-request";
 import { IconURL } from "@/constants/IconURL";
 import LoadingSpinner from "@/components/ui/LoadingSpinner";
-import { getFriendProfile } from "@/requests/friend-profile";
+import { getFriendProfile } from "@/lib/friend-profile";
 import FriendPostList from "@/components/shared/community/FriendPostList";
 import HeadProfileSkeletonLoader from "@/components/ui/HeadProfileSkeletonLoader";
 import BioSkeletonLoader from "@/components/ui/BioSkeletonLoader";
@@ -279,7 +279,7 @@ const FriendProfilePage = () => {
         <View
           className={`${Platform.OS === "android" ? "mt-[60px]" : "mt-[20px]"}`}
         >
-          {isProfileLoading? null:RelationButtonGroups()}
+          {isProfileLoading ? null : RelationButtonGroups()}
         </View>
         {isProfileLoading ? <BioSkeletonLoader /> : <UserBio {...bioProps} />}
 

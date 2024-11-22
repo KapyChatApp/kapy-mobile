@@ -17,7 +17,7 @@ const HeadProfile = (props:HeadProfileProps) => {
         
         <View className="flex flex-row items-center justify-center">
           <Text className={`text-14 font-helvetica-light ${textLight0Dark500}`}>Community Point: </Text>
-          <Text className="text-18 font-helvetica-bold text-cardinal">100</Text>
+          <Text className="text-18 font-helvetica-bold text-cardinal">{props.point}</Text>
         </View>
         <Text className={`text-16 font-helvetica-light my-[8px] ${textLight0Dark500}`}>{props.bio}</Text>
 

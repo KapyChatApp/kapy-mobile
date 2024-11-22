@@ -1,6 +1,6 @@
 import { View, Text } from "react-native";
 import React, { useEffect, useState } from "react";
-import { getFriendPosts } from "@/requests/post";
+import { getFriendPosts } from "@/lib/post";
 import { SocialPostProps } from "@/types/post";
 import SocialPost from "./SocialPost";
 import SocialSkeletonLoader from "@/components/ui/PostSkeletonLoader";

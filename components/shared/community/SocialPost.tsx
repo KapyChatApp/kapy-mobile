@@ -9,8 +9,8 @@ import { useFocusEffect, useRouter } from "expo-router";
 import { SocialPostProps } from "@/types/post";
 import { formatDate, formatDateDistance } from "@/utils/DateFormatter";
 import { Video } from "expo-av";
-import { deletePost, disLike, like } from "@/requests/post";
-import { getLocalAuth } from "@/requests/local-auth";
+import { deletePost, disLike, like } from "@/lib/post";
+import { getLocalAuth } from "@/lib/local-auth";
 import { useActionSheet } from "@expo/react-native-action-sheet";
 import * as Sharing from "expo-sharing";
 const SocialPost = (props: SocialPostProps) => {

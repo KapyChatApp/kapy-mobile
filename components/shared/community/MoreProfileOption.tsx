@@ -3,7 +3,7 @@ import { View, Text, TouchableOpacity, Modal, StyleSheet } from "react-native";
 import Icon from "@/components/ui/Icon";
 import { IconURL } from "@/constants/IconURL";
 import { bgLight500Dark10, textLight0Dark500 } from "@/styles/theme";
-import { block } from "@/requests/add-request";
+import { block } from "@/lib/add-request";
 
 const MoreProfileOption = ({
   setIsReportOpen,
@@ -39,43 +39,47 @@ const MoreProfileOption = ({
         visible={modalVisible}
         onRequestClose={() => setModalVisible(false)}
       >
-       
-          <View style={styles.modalContent}>
-            <TouchableOpacity
-              onPress={() => {
-                // Handle Share profile
-                setModalVisible(false);
-              }}
-              style={styles.option}
-            >
-              <Text style={styles.optionText} className={`${textLight0Dark500}`}>Share profile</Text>
-            </TouchableOpacity>
+        <View style={styles.modalContent}>
+          <TouchableOpacity
+            onPress={() => {
+              // Handle Share profile
+              setModalVisible(false);
+            }}
+            style={styles.option}
+          >
+            <Text style={styles.optionText} className={`${textLight0Dark500}`}>
+              Share profile
+            </Text>
+          </TouchableOpacity>
 
-            <View style={styles.line} />
+          <View style={styles.line} />
 
-            <TouchableOpacity
-              onPress={() => {
-                setIsReportOpen(true);
-                setModalVisible(false);
-              }}
-              style={styles.option}
-            >
-              <Text style={styles.optionText} className={`${textLight0Dark500}`}>Report</Text>
-            </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => {
+              setIsReportOpen(true);
+              setModalVisible(false);
+            }}
+            style={styles.option}
+          >
+            <Text style={styles.optionText} className={`${textLight0Dark500}`}>
+              Report
+            </Text>
+          </TouchableOpacity>
 
-            <View style={styles.line} />
+          <View style={styles.line} />
 
-            <TouchableOpacity
-              onPress={() => {
-                handleBlock();
-                setModalVisible(false);
-              }}
-              style={styles.option}
-            >
-              <Text style={styles.optionText} className={`${textLight0Dark500}`}>Block</Text>
-            </TouchableOpacity>
-          </View>
-
+          <TouchableOpacity
+            onPress={() => {
+              handleBlock();
+              setModalVisible(false);
+            }}
+            style={styles.option}
+          >
+            <Text style={styles.optionText} className={`${textLight0Dark500}`}>
+              Block
+            </Text>
+          </TouchableOpacity>
+        </View>
       </Modal>
     </View>
   );

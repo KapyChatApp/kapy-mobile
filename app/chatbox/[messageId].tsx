@@ -17,10 +17,18 @@ import {
   useClickOutside,
 } from "react-native-click-outside";
 import MessageBox from "@/components/shared/message/MessageBox";
-import { ChatBoxHeaderProps, MessageBoxProps, MessageProps } from "@/types/message";
-import { getAllMessages, getAMessageBox, sendMessage } from "@/requests/message-request";
+import {
+  ChatBoxHeaderProps,
+  MessageBoxProps,
+  MessageProps,
+} from "@/types/message";
+import {
+  getAllMessages,
+  getAMessageBox,
+  sendMessage,
+} from "@/lib/message-request";
 import Message from "@/components/shared/message/Message";
-import { getLocalAuth } from "@/requests/local-auth";
+import { getLocalAuth } from "@/lib/local-auth";
 
 const MessageDetailPage = () => {
   const { messageId } = useLocalSearchParams();
@@ -87,15 +95,25 @@ const MessageDetailPage = () => {
                   avatar={avatar}
                   isSender={localUserId === item.createBy.toString()}
                   position={position}
-                 
                 />
               );
             })}
           </ScrollView>
         </View>
         <View collapsable={false} ref={ref}>
-          <TypingSpace isTyping={isTyping} setIsTypeping={setIsTypeping} onChangeText={setMessageText} onPress={async()=> await sendMessage(localUserId,messageId.toString(),chatBoxHeader?.receiverId,messageText)
-}/>
+          <TypingSpace
+            isTyping={isTyping}
+            setIsTypeping={setIsTypeping}
+            onChangeText={setMessageText}
+            onPress={async () =>
+              await sendMessage(
+                localUserId,
+                messageId.toString(),
+                chatBoxHeader?.receiverId,
+                messageText
+              )
+            }
+          />
         </View>
       </SafeAreaView>
     </KeyboardAvoidingView>

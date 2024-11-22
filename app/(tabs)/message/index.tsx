@@ -11,8 +11,9 @@ import MessageBox from "@/components/shared/message/MessageBox";
 import { ScrollView } from "react-native-gesture-handler";
 import { bgLight500Dark10 } from "@/styles/theme";
 import SideMenu from "@rexovolt/react-native-side-menu";
-import { getMyChatBoxes } from "@/requests/message-request";
+import { getMyChatBoxes } from "@/lib/message-request";
 import { MessageBoxProps } from "@/types/message";
+import { listenPusher, pusherClient } from "@/lib/pusher";
 
 const OutSideMessagePage = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -24,12 +25,19 @@ const OutSideMessagePage = () => {
       setMessageBoxes(messageBoxes ? messageBoxes : []);
     };
     getMyMessageBoxesFUNC();
+    pusherClient.subscribe('public');
+    pusherClient.bind('incoming-message', (data: any) => {
+      console.log("Nhận tin nhắn từ server:", data);
+    });
+
   }, []);
   return (
     <SafeAreaView className={`${bgLight500Dark10} flex-1 `}>
       <MainHeader></MainHeader>
-      <TouchableOpacity onPress={()=>router.push("/message/search")}>
-        <View pointerEvents="box-none"><Search isDisable={true}/></View>
+      <TouchableOpacity onPress={() => router.push("/message/search")}>
+        <View pointerEvents="box-none">
+          <Search isDisable={true} />
+        </View>
       </TouchableOpacity>
       {messageBoxes.length > 0 ? (
         <ScrollView className="message-list w-full flex-1">

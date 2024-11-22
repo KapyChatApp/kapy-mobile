@@ -7,8 +7,8 @@ import CommentLove from "@/components/ui/CommentLove";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { CommentProps } from "@/types/post";
 import { formatDate } from "@/utils/DateFormatter";
-import { getLocalAuth } from "@/requests/local-auth";
-import { disLikeComment, likeComment } from "@/requests/comment-request";
+import { getLocalAuth } from "@/lib/local-auth";
+import { disLikeComment, likeComment } from "@/lib/comment-request";
 
 const Comment = (props: CommentProps) => {
   const [isShowReply, setIsShowReply] = useState(false);
@@ -48,12 +48,16 @@ const Comment = (props: CommentProps) => {
     >
       <View className="flex flex-row">
         <View />
-        <View className={`h-[40px] w-[26px] rounded-b-3xl border-l-[1px] border-b-[1px] border-border ${props.isLastComment? "":"-left-[1px] "}`}></View>
+        <View
+          className={`h-[40px] w-[26px] rounded-b-3xl border-l-[1px] border-b-[1px] border-border ${
+            props.isLastComment ? "" : "-left-[1px] "
+          }`}
+        ></View>
         <View className="flex py-[10px]">
           <View
-            className={`flex border border-border px-3 ${props.isReply? "rounded-2xl":"rounded-3xl"}  ${
-              props.isReply ? "py-2" : "py-2"
-            } min-w-[200px] pb-[26px]`}
+            className={`flex border border-border px-3 ${
+              props.isReply ? "rounded-2xl" : "rounded-3xl"
+            }  ${props.isReply ? "py-2" : "py-2"} min-w-[200px] pb-[26px]`}
           >
             <View
               className="flex flex-row items-center w-fit "
