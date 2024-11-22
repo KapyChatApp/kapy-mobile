@@ -99,6 +99,7 @@ export default function RootLayout() {
                   options={{ headerShown: false }}
                 />
                 <Stack.Screen name="(mine)/my-groups" options={{headerShown:false}}/>
+                <Stack.Screen name="(mine)/all-rate" options={{headerShown:false}}/>
                 <Stack.Screen
                   name="community"
                   options={{ headerShown: false }}

@@ -1,3 +1,11 @@
+export interface ShortUserProps{
+  _id:string;
+  firstName:string;
+  lastName:string;
+  nickName:string;
+  avatar:string;
+}
+
 export interface UserRegisterProps {
   firstName: string;
   lastName: string;

@@ -1,4 +1,4 @@
-import { View, Text } from "react-native";
+import { View, Text, Platform } from "react-native";
 import React, { useCallback, useEffect, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useFocusEffect, useNavigation } from "expo-router";
@@ -15,12 +15,18 @@ import MyPostList from "@/components/shared/community/MyPostList";
 import SocialSkeletonLoader from "@/components/ui/PostSkeletonLoader";
 import HeadProfileSkeletonLoader from "@/components/ui/HeadProfileSkeletonLoader";
 import BioSkeletonLoader from "@/components/ui/BioSkeletonLoader";
+import RecentRate from "@/components/shared/community/RecentRate";
+import { getLocalAuth } from "@/lib/local-auth";
+import { RateProps } from "@/types/rate";
+import { getRatesOfUser } from "@/lib/report";
 
 const MyWallPage = () => {
   const navigation = useNavigation();
   const [headerProps, setHeaderProps] = useState<HeadProfileProps>();
   const [bioProps, setBioProps] = useState<UserBioProps | undefined>();
   const [isProfileLoading, setIsProfileLoading] = useState(true);
+  const [_id, set_id] =  useState("");
+  const [recentRates, setRecentRates] = useState<RateProps[]>([]);
   useFocusEffect(
     useCallback(() => {
       const disPlayUserData = async () => {
@@ -28,7 +34,9 @@ const MyWallPage = () => {
         if (!user) {
           throw new Error("You are unauthenticated!");
         }
+       
         const {
+          _id,
           firstName,
           lastName,
           nickName,
@@ -38,7 +46,7 @@ const MyWallPage = () => {
           point,
           ..._bio
         } = JSON.parse(user);
-
+        set_id(_id);
         setHeaderProps({
           firstName,
           lastName,
@@ -46,9 +54,11 @@ const MyWallPage = () => {
           bio,
           avatar,
           background,
-          point
+          point,
         });
         setBioProps(_bio);
+        const recentRates = await getRatesOfUser(_id);
+        setRecentRates(recentRates);
         setIsProfileLoading(false);
       };
 
@@ -65,17 +75,23 @@ const MyWallPage = () => {
           <HeadProfile {...headerProps} />
         )}
         <Previous navigation={navigation} isAbsolute={true} />
-        {isProfileLoading ? <BioSkeletonLoader /> : <UserBio {...bioProps} />}
-        <View className="w-full h-[200px]"></View>
-        <Text
-          className={`${textLight0Dark500} font-helvetica-bold text-14 mb-[20px]`}
+        <View
+          className={`${
+            Platform.OS === "ios" ? "top-[200px] " : "top-[220px]"
+          } flex `} style={{rowGap:20}}
         >
-          Posts
-        </Text>
-        <CreatePost avatarURL={headerProps?.avatar} />
-        <View className="w-full h-[30px]"></View>
-        <MyPostList />
-        <View className="w-full h-[200px]"></View>
+          <RecentRate path="/all-rate" userId={_id} recentRates={recentRates}/>
+          {isProfileLoading ? <BioSkeletonLoader /> : <UserBio {...bioProps} />}
+          <Text
+            className={`${textLight0Dark500} font-helvetica-bold text-14 mb-[20px]`}
+          >
+            Posts
+          </Text>
+          <CreatePost avatarURL={headerProps?.avatar} />
+          <View className="w-full h-[30px]"></View>
+          <MyPostList />
+          <View className="w-full h-[200px]"></View>
+        </View>
       </ScrollView>
     </SafeAreaView>
   );
