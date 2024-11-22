@@ -7,33 +7,34 @@ import { IconURL } from "@/constants/IconURL";
 import { RateProps } from "@/types/rate";
 import { formatDateDistance } from "@/utils/DateFormatter";
 
-const renderCarrot = (point: number) => {
-  const fullCarrots = Math.floor(point / 10);
-  const remainder = point % 10;
 
-  const carrots = [];
-  for (let i = 0; i < fullCarrots; i++) {
-    carrots.push(
-      <Icon key={`carrot-full-${i}`} iconURL={IconURL.carrot} size={15} />
-    );
-  }
-
-  if (remainder > 0) {
-    carrots.push(
-      <View
-        key="carrot-partial"
-        style={{
-          width: `${(remainder / 10) * 100}%`,
-          overflow: "hidden",
-        }}
-      >
-        <Icon iconURL={IconURL.carrot} size={15} />
-      </View>
-    );
-  }
-
-  return <View style={{ flexDirection: "row", columnGap: 5 }}>{carrots}</View>;
-};
+export const renderCarrot = (point: number) => {
+    const fullCarrots = Math.floor(point / 10);
+    const remainder = point % 10;
+  
+    const carrots = [];
+    for (let i = 0; i < fullCarrots; i++) {
+      carrots.push(
+        <Icon key={`carrot-full-${i}`} iconURL={IconURL.carrot} size={15} />
+      );
+    }
+  
+    if (remainder > 0) {
+      carrots.push(
+        <View
+          key="carrot-partial"
+          style={{
+            width: `${(remainder / 10) * 100}%`,
+            overflow: "hidden",
+          }}
+        >
+          <Icon iconURL={IconURL.carrot} size={15} />
+        </View>
+      );
+    }
+  
+    return <View style={{ flexDirection: "row", columnGap: 5 }}>{carrots}</View>;
+  };
 
 const Rate = (props: RateProps) => {
   return (
@@ -50,9 +51,10 @@ const Rate = (props: RateProps) => {
           userId={props.user._id}
           size={49}
         />
-        <Text className="text-light-330 font-helvetica-light text-10">
+        <View className="flex flex-row"> <Text className="text-light-330 font-helvetica-light text-10 flex-wrap flex-1">
           {formatDateDistance(props.createAt)}
-        </Text>
+        </Text></View>
+       
       </View>
       <View className="flex flex-1 " style={{ rowGap: 4 }}>
         <Text className={`font-helvetica-bold text-14 ${textLight0Dark500}`}>

@@ -18,14 +18,14 @@ import BioSkeletonLoader from "@/components/ui/BioSkeletonLoader";
 import RecentRate from "@/components/shared/community/RecentRate";
 import { getLocalAuth } from "@/lib/local-auth";
 import { RateProps } from "@/types/rate";
-import { getRatesOfUser } from "@/lib/report";
+import { getRatesOfUser } from "@/lib/rate";
 
 const MyWallPage = () => {
   const navigation = useNavigation();
   const [headerProps, setHeaderProps] = useState<HeadProfileProps>();
   const [bioProps, setBioProps] = useState<UserBioProps | undefined>();
   const [isProfileLoading, setIsProfileLoading] = useState(true);
-  const [_id, set_id] =  useState("");
+  const [_id, set_id] = useState("");
   const [recentRates, setRecentRates] = useState<RateProps[]>([]);
   useFocusEffect(
     useCallback(() => {
@@ -34,7 +34,7 @@ const MyWallPage = () => {
         if (!user) {
           throw new Error("You are unauthenticated!");
         }
-       
+
         const {
           _id,
           firstName,
@@ -78,9 +78,10 @@ const MyWallPage = () => {
         <View
           className={`${
             Platform.OS === "ios" ? "top-[200px] " : "top-[220px]"
-          } flex `} style={{rowGap:20}}
+          } flex `}
+          style={{ rowGap: 20 }}
         >
-          <RecentRate path="/all-rate" userId={_id} recentRates={recentRates}/>
+          <RecentRate path="/all-rate" userId={_id} recentRates={recentRates} />
           {isProfileLoading ? <BioSkeletonLoader /> : <UserBio {...bioProps} />}
           <Text
             className={`${textLight0Dark500} font-helvetica-bold text-14 mb-[20px]`}

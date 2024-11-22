@@ -24,6 +24,9 @@ import FriendPostList from "@/components/shared/community/FriendPostList";
 import HeadProfileSkeletonLoader from "@/components/ui/HeadProfileSkeletonLoader";
 import BioSkeletonLoader from "@/components/ui/BioSkeletonLoader";
 import SocialSkeletonLoader from "@/components/ui/PostSkeletonLoader";
+import { RateProps } from "@/types/rate";
+import { getRatesOfUser } from "@/lib/rate";
+import RecentRate from "@/components/shared/community/RecentRate";
 const FriendProfilePage = () => {
   const { friendId } = useLocalSearchParams();
   const navigation = useNavigation();
@@ -41,6 +44,7 @@ const FriendProfilePage = () => {
 
   const [reload, setReload] = useState(false);
   const [isProfileLoading, setIsProfileLoading] = useState(true);
+  const [recentRates, setRecentRates] = useState<RateProps[]>([]);
   useEffect(() => {
     const disPlayUserData = async () => {
       try {
@@ -56,6 +60,7 @@ const FriendProfilePage = () => {
           avatar,
           background,
           relation,
+          point,
           ..._bio
         } = friendData;
         setHeaderProps({
@@ -65,9 +70,12 @@ const FriendProfilePage = () => {
           bio,
           avatar,
           background,
+          point,
         });
         setBioProps(_bio);
         setRelation(relation);
+        const recentRates = await getRatesOfUser(_id);
+        setRecentRates(recentRates);
         setFriendedId(_id.toString());
       } catch (error) {
         console.log(error);
@@ -281,46 +289,58 @@ const FriendProfilePage = () => {
         >
           {isProfileLoading ? null : RelationButtonGroups()}
         </View>
-        {isProfileLoading ? <BioSkeletonLoader /> : <UserBio {...bioProps} />}
+        <View
+          className={`${
+            Platform.OS === "ios" ? "top-[200px] " : "top-[220px]"
+          } flex `}
+          style={{ rowGap: 20 }}
+        >
+          <View className="px-[10px]">
+            <RecentRate
+              path="/(tabs)/friends/all-friend-rate"
+              userId={friendId.toString()}
+              recentRates={recentRates}
+            />
+          </View>
 
-        {relation === "bff" ? (
-          <View
-            className="w-full mt-[250px] px-[12px] mb-[10px]"
-            style={{ rowGap: 10 }}
-          >
-            <View className="w-full h-[0.5px] bg-border "></View>
-            <Text
-              className={`${textLight0Dark500} font-helvetica-bold w-full p-[10px] text-16`}
-            >
-              Posts
-            </Text>
-          </View>
-        ) : null}
-        {relation === "bff" ? (
-          <View className="flex  items-center w-full">
-            {friendedId ? (
-              isProfileLoading ? (
-                <View className="flex" style={{ rowGap: 20 }}>
-                  <SocialSkeletonLoader />
-                  <SocialSkeletonLoader />
-                  <SocialSkeletonLoader />
-                  <SocialSkeletonLoader />
-                  <SocialSkeletonLoader />
-                </View>
-              ) : (
-                <FriendPostList friendId={friendedId} />
-              )
-            ) : null}
-          </View>
-        ) : (
-          <UnblockPostView
-            friendId={friendedId}
-            relation={relation}
-            lastName={headerProps?.lastName}
-            reload={() => setReload(true)}
-          />
-        )}
-        <View className="w-full h-[60px]"></View>
+          {isProfileLoading ? <BioSkeletonLoader /> : <UserBio {...bioProps} />}
+
+          {relation === "bff" ? (
+            <View className="w-full px-[12px] mb-[10px]" style={{ rowGap: 10 }}>
+              <View className="w-full h-[0.5px] bg-border "></View>
+              <Text
+                className={`${textLight0Dark500} font-helvetica-bold w-full p-[10px] text-16`}
+              >
+                Posts
+              </Text>
+            </View>
+          ) : null}
+          {relation === "bff" ? (
+            <View className="flex  items-center w-full">
+              {friendedId ? (
+                isProfileLoading ? (
+                  <View className="flex" style={{ rowGap: 20 }}>
+                    <SocialSkeletonLoader />
+                    <SocialSkeletonLoader />
+                    <SocialSkeletonLoader />
+                    <SocialSkeletonLoader />
+                    <SocialSkeletonLoader />
+                  </View>
+                ) : (
+                  <FriendPostList friendId={friendedId} />
+                )
+              ) : null}
+            </View>
+          ) : (
+            <UnblockPostView
+              friendId={friendedId}
+              relation={relation}
+              lastName={headerProps?.lastName}
+              reload={() => setReload(true)}
+            />
+          )}
+          <View className="w-full h-[60px]"></View>
+        </View>
       </ScrollView>
       {isReportOpen ? <ReportForm setIsOpen={setIsReportOpen} /> : null}
       {loading ? <LoadingSpinner loading={isLoading} /> : null}
