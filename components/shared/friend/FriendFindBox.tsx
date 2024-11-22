@@ -9,13 +9,13 @@ import { FriendBoxProps } from "@/types/friend";
 import { IconURL } from "@/constants/IconURL";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
-import { addFriend } from "@/requests/add-request";
+import { addFriend } from "@/lib/add-request";
 import CustomButton from "@/components/ui/CustomButton";
 const FriendFindBox = (props: FriendBoxProps) => {
   const router = useRouter();
   const [friendIds, setFriendIds] = useState<string[]>([]);
   const [relation, setRelation] = useState(props.relation);
-  console.log("result: ",props);
+  console.log("result: ", props);
   const RenderFriendBoxButton = () => {
     switch (relation) {
       case "friend":
@@ -70,7 +70,7 @@ const FriendFindBox = (props: FriendBoxProps) => {
           {props.onlineTime} min ago
         </Text>
       </View>
-     {RenderFriendBoxButton()}
+      {RenderFriendBoxButton()}
     </TouchableOpacity>
   );
 };

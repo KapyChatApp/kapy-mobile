@@ -12,7 +12,7 @@ import { BioEditorProps } from "@/types/user";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 import NoticeCard from "@/components/ui/NoticeCard";
-import { getMyProfile } from "@/requests/my-profile";
+import { getMyProfile } from "@/lib/my-profile";
 
 const BioEditor = (props: BioEditorProps | undefined) => {
   const [isNoticeOpen, setIsNoticeOpen] = useState(false);

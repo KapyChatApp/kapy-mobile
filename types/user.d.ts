@@ -19,6 +19,7 @@ export interface HeadProfileProps {
   bio?: string;
 avatar?:string;
 background?:string;
+point?:string;
 }
 export interface UserBioProps {
   gender?: boolean;

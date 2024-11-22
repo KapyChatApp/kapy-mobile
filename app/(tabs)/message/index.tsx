@@ -1,6 +1,6 @@
-import { View, Text } from "react-native";
-import React, { useState } from "react";
-import { Stack } from "expo-router";
+import { View, Text, Touchable, TouchableOpacity } from "react-native";
+import React, { useEffect, useState } from "react";
+import { Stack, useRouter } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
 import TopBar from "@/components/navigator/Topbar/TopBar";
 import SideBar from "@/components/navigator/Sidebar/SideBar";
@@ -11,33 +11,41 @@ import MessageBox from "@/components/shared/message/MessageBox";
 import { ScrollView } from "react-native-gesture-handler";
 import { bgLight500Dark10 } from "@/styles/theme";
 import SideMenu from "@rexovolt/react-native-side-menu";
+import { getMyChatBoxes } from "@/lib/message-request";
+import { MessageBoxProps } from "@/types/message";
+import { listenPusher, pusherClient } from "@/lib/pusher";
 
 const OutSideMessagePage = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const [messageBoxes, setMessageBoxes] = useState<MessageBoxProps[]>([]);
+  const router = useRouter();
+  useEffect(() => {
+    const getMyMessageBoxesFUNC = async () => {
+      const messageBoxes = await getMyChatBoxes();
+      setMessageBoxes(messageBoxes ? messageBoxes : []);
+    };
+    getMyMessageBoxesFUNC();
+    pusherClient.subscribe('public');
+    pusherClient.bind('incoming-message', (data: any) => {
+      console.log("Nhận tin nhắn từ server:", data);
+    });
+
+  }, []);
   return (
     <SafeAreaView className={`${bgLight500Dark10} flex-1 `}>
-        <MainHeader></MainHeader>
-        <Search></Search>
+      <MainHeader></MainHeader>
+      <TouchableOpacity onPress={() => router.push("/message/search")}>
+        <View pointerEvents="box-none">
+          <Search isDisable={true} />
+        </View>
+      </TouchableOpacity>
+      {messageBoxes.length > 0 ? (
         <ScrollView className="message-list w-full flex-1">
-          <MessageBox></MessageBox>
-          <MessageBox></MessageBox>
-          <MessageBox></MessageBox>
-          <MessageBox></MessageBox>
-          <MessageBox></MessageBox>
-          <MessageBox></MessageBox>
-          <MessageBox></MessageBox>
-          <MessageBox></MessageBox>
-          <MessageBox></MessageBox>
-          <MessageBox></MessageBox>
-          <MessageBox></MessageBox>
-          <MessageBox></MessageBox>
-          <MessageBox></MessageBox>
-          <MessageBox></MessageBox>
-          <MessageBox></MessageBox>
-          <MessageBox></MessageBox>
-          <MessageBox></MessageBox>
-          <MessageBox></MessageBox>
+          {messageBoxes?.map((item) => (
+            <MessageBox key={item._id} {...item} />
+          ))}
         </ScrollView>
+      ) : null}
     </SafeAreaView>
   );
 };

@@ -35,6 +35,7 @@ const MyWallPage = () => {
           bio,
           avatar,
           background,
+          point,
           ..._bio
         } = JSON.parse(user);
 
@@ -45,6 +46,7 @@ const MyWallPage = () => {
           bio,
           avatar,
           background,
+          point
         });
         setBioProps(_bio);
         setIsProfileLoading(false);

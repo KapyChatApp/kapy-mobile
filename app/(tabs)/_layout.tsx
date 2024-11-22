@@ -6,22 +6,17 @@ import TabIcon from "@/components/ui/TabIcon";
 import TabBar from "@/components/navigator/Tabbar/TabBar";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
-import { getMyProfile } from "@/requests/my-profile";
+import { getMyProfile } from "@/lib/my-profile";
 const HomeLayout = () => {
-  const [user, setUser] = useState();
   useEffect(() => {
     const fetchData = async () => {
       const localUserData = await getMyProfile();
-      setUser(localUserData);
-      console.log("localuser: ",user);
-    }
+      console.log("localuser: ", localUserData);
+    };
     fetchData();
-  },[]);
+  }, []);
   return (
-    <Tabs
-      tabBar={(props) => <TabBar {...props}></TabBar>}
-      sceneContainerStyle={{ zIndex: 1 }}
-    >
+    <Tabs tabBar={(props) => <TabBar {...props}></TabBar>}>
       <Tabs.Screen
         name="message"
         options={{

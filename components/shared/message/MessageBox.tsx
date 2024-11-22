@@ -4,7 +4,9 @@ import { TouchableOpacity } from "react-native-gesture-handler";
 import UserAvatar from "@/components/ui/UserAvatar";
 import { bgLight510Dark10, textLight0Dark500 } from "@/styles/theme";
 import { useRouter } from "expo-router";
-const MessageBox = () => {
+import { MessageBoxProps } from "@/types/message";
+import { formatDate, formatDateDistance} from "@/utils/DateFormatter";
+const MessageBox = (props:MessageBoxProps) => {
   const router = useRouter();
   return (
     <TouchableOpacity
@@ -12,30 +14,30 @@ const MessageBox = () => {
       className={`flex flex-row px-[20px] py-[10px] items-center w-screen ${bgLight510Dark10}`}
       onPress={()=>{router.push({
         pathname:"/chatbox/[messageId]",
-        params:{messageId:1},
+        params:{messageId:props._id},
       })}}
     >
-      <UserAvatar size={48}></UserAvatar>
+      <UserAvatar avatarURL={{uri:props.avatar}} size={48}></UserAvatar>
       <View className="flex ml-5 w-screen">
         <Text
           numberOfLines={1}
           ellipsizeMode="tail"
           className={`font-helvetica-bold text-14 ${textLight0Dark500}`}
         >
-          Name
+          {props.name}
         </Text>
         <Text
           numberOfLines={1}
           className={`font-helvetica-light text-14 overflow-ellipsis ${textLight0Dark500}`}
         >
-          Lorem ipsum dolor sit amet consectetur adipisicing elit.
+          {props.messages.length!=0? props.messages[props.messages.length-1].text: " "}
         </Text>
         <Text
           numberOfLines={1}
           ellipsizeMode="tail"
           className="font-helvetica-light text-12 text-deny"
         >
-          00:00
+          {props.messages.length!=0? formatDateDistance(props.messages[props.messages.length-1].createAt) : null}
         </Text>
       </View>
     </TouchableOpacity>

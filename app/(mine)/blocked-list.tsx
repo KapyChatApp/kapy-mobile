@@ -8,18 +8,18 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import Search from "@/components/shared/function/Search";
 import { bgLight500Dark10 } from "@/styles/theme";
 import { FriendBoxProps } from "@/types/friend";
-import { getMyBlocks } from "@/requests/my-blocks";
+import { getMyBlocks } from "@/lib/my-blocks";
 
 const BlockedListPage = () => {
   const navigation = useNavigation();
   const [blocks, setBlocks] = useState<FriendBoxProps[]>();
-  useEffect(()=>{
-    const getMyBlocksFunc = async ()=>{
+  useEffect(() => {
+    const getMyBlocksFunc = async () => {
       const blockedListResponse = await getMyBlocks();
       setBlocks(blockedListResponse);
-    }
-   getMyBlocksFunc();
-  },[])
+    };
+    getMyBlocksFunc();
+  }, []);
   return (
     <SafeAreaView className={`${bgLight500Dark10} flex-1`}>
       <Previous
@@ -27,10 +27,12 @@ const BlockedListPage = () => {
         isAbsolute={true}
         header="Blocked list"
       ></Previous>
-      <View className="mt-[40px] flex flex-1" style={{ rowGap: 4 }}>
+      <View className="mt-[60px] flex flex-1" style={{ rowGap: 4 }}>
         <Search></Search>
         <ScrollView className="flex-1 " contentContainerStyle={{ rowGap: 4 }}>
-         {blocks?.map((item)=><BlockedUserBox key={item._id} {...item}/>)}
+          {blocks?.map((item) => (
+            <BlockedUserBox key={item._id} {...item} />
+          ))}
         </ScrollView>
       </View>
     </SafeAreaView>

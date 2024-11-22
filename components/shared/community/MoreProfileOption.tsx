@@ -1,48 +1,118 @@
-import { View, Text, TouchableOpacity } from "react-native";
-import React from "react";
-import Popover, { PopoverPlacement } from "react-native-popover-view";
+import React, { useState } from "react";
+import { View, Text, TouchableOpacity, Modal, StyleSheet } from "react-native";
 import Icon from "@/components/ui/Icon";
 import { IconURL } from "@/constants/IconURL";
 import { bgLight500Dark10, textLight0Dark500 } from "@/styles/theme";
-import { block } from "@/requests/add-request";
-const MoreProfileOption = ({setIsReportOpen, friendId, setStartLoading, setEndLoading, setIsLoading, setIsNotLoading}:any) => {
-  const handleBlock = async ()=>{
+import { block } from "@/lib/add-request";
+
+const MoreProfileOption = ({
+  setIsReportOpen,
+  friendId,
+  setStartLoading,
+  setEndLoading,
+  setIsLoading,
+  setIsNotLoading,
+}: any) => {
+  const [modalVisible, setModalVisible] = useState(false);
+
+  const handleBlock = async () => {
     setStartLoading();
     setIsLoading();
     const blockStatus = await block(friendId);
-    if(blockStatus){
+    if (blockStatus) {
       setIsNotLoading();
-      const timmer = setInterval(()=> setEndLoading(), 1500);
-      return ()=> clearInterval(timmer);
+      const timer = setInterval(() => setEndLoading(), 1500);
+      return () => clearInterval(timer);
     }
-  }
+  };
+
   return (
-    <View className="absolute right-[10px] top-[20px]">
-      <Popover
-      offset={0}
-      popoverShift={{x:0, y:0}}
-        arrowSize={{ width: -2, height: -1 }}
-        popoverStyle={{borderRadius:20}}
-        from={
-          <TouchableOpacity>
-            <Icon iconURL={IconURL.more_func} size={30} />
-          </TouchableOpacity>
-        }
+    <View style={styles.container} className={``}>
+      <TouchableOpacity onPress={() => setModalVisible(true)}>
+        <Icon iconURL={IconURL.more_func} size={30} />
+      </TouchableOpacity>
+
+      {/* Modal */}
+      <Modal
+        animationType="fade"
+        transparent={true}
+        visible={modalVisible}
+        onRequestClose={() => setModalVisible(false)}
       >
-        <TouchableOpacity className={`flex items-center justify-center p-[16px] w-[204px] ${bgLight500Dark10}`}>
-          <Text className={`${textLight0Dark500} font-helvetica-light text-16`}>Share profile</Text>
-        </TouchableOpacity>
-        <View className='line w-full h-[1px] bg-border dark:bg-white' ></View>
-        <TouchableOpacity onPress={()=> setIsReportOpen(true)} className={`flex items-center justify-center p-[16px] w-[204px] ${bgLight500Dark10}`}>
-          <Text className={`${textLight0Dark500} font-helvetica-light text-16`}>Report</Text>
-        </TouchableOpacity>
-        <View className='line w-full h-[1px] bg-border dark:bg-white' ></View>
-        <TouchableOpacity className={`flex items-center justify-center p-[16px] w-[204px] ${bgLight500Dark10}`} onPress={handleBlock}>
-          <Text className={`${textLight0Dark500} font-helvetica-light text-16`}>Block</Text>
-        </TouchableOpacity>
-      </Popover>
+        <View style={styles.modalContent}>
+          <TouchableOpacity
+            onPress={() => {
+              // Handle Share profile
+              setModalVisible(false);
+            }}
+            style={styles.option}
+          >
+            <Text style={styles.optionText} className={`${textLight0Dark500}`}>
+              Share profile
+            </Text>
+          </TouchableOpacity>
+
+          <View style={styles.line} />
+
+          <TouchableOpacity
+            onPress={() => {
+              setIsReportOpen(true);
+              setModalVisible(false);
+            }}
+            style={styles.option}
+          >
+            <Text style={styles.optionText} className={`${textLight0Dark500}`}>
+              Report
+            </Text>
+          </TouchableOpacity>
+
+          <View style={styles.line} />
+
+          <TouchableOpacity
+            onPress={() => {
+              handleBlock();
+              setModalVisible(false);
+            }}
+            style={styles.option}
+          >
+            <Text style={styles.optionText} className={`${textLight0Dark500}`}>
+              Block
+            </Text>
+          </TouchableOpacity>
+        </View>
+      </Modal>
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    position: "absolute",
+    right: 10,
+    top: 20,
+  },
+  modalContent: {
+    width: 204,
+    backgroundColor: bgLight500Dark10,
+    borderRadius: 20,
+    paddingVertical: 8,
+  },
+  option: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    paddingVertical: 16,
+    width: "100%",
+  },
+  optionText: {
+    fontSize: 16,
+    fontFamily: "Helvetica-Light",
+    color: textLight0Dark500,
+  },
+  line: {
+    height: 1,
+    backgroundColor: "#ccc", // Có thể điều chỉnh cho chế độ sáng/tối
+  },
+});
 
 export default MoreProfileOption;

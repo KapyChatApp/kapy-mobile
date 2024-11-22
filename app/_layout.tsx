@@ -1,7 +1,13 @@
 import React, { Children } from "react";
 import * as SecureStore from "expo-secure-store";
 import { ClerkProvider, ClerkLoaded } from "@clerk/clerk-expo";
-import { Slot, SplashScreen, Stack } from "expo-router";
+import {
+  Slot,
+  SplashScreen,
+  Stack,
+  useNavigation,
+  useRouter,
+} from "expo-router";
 import { useFonts } from "expo-font";
 import { useEffect } from "react";
 import {
@@ -18,6 +24,9 @@ import TopBar from "@/components/navigator/Topbar/TopBar";
 import BFFListPage from "./(mine)/bff-list";
 import ActionSheet from "react-native-actions-sheet";
 import { ActionSheetProvider } from "@expo/react-native-action-sheet";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { CommonActions } from "@react-navigation/native";
+import axios from "axios";
 SplashScreen.preventAutoHideAsync();
 export default function RootLayout() {
   const [fontsLoaded, error] = useFonts({
@@ -29,45 +38,32 @@ export default function RootLayout() {
     "Helvetica-Ultra-Light": require("../assets/fonts/helveticaneueultralight.ttf"),
     "Helvetica-Ultra-Light-Italic": require("../assets/fonts/helveticaneueultralightitalic.ttf"),
   });
-
+  const router = useRouter();
   useEffect(() => {
     if (error) throw error;
     if (fontsLoaded) SplashScreen.hideAsync();
+    const checkToken = async () => {
+      const token = await AsyncStorage.getItem("token");
+      if (!token) return;
+      try {
+        const res = await axios.post(
+          process.env.EXPO_PUBLIC_BASE_URL + "/auth/check-token",
+          { token: token }
+        );
+        if (res.data.isAuthenticated) {
+          router.push("/(tabs)/message");
+        } else {
+          router.push("/(auth)/sign-in");
+        }
+      } catch (error) {
+        console.log(error);
+        throw error;
+      }
+    };
+    checkToken();
   }, [fontsLoaded, error]);
 
   if (!fontsLoaded && !error) return null;
-  // const tokenCache = {
-  //   async getToken(key: string) {
-  //     try {
-  //       const item = await SecureStore.getItemAsync(key);
-  //       if (item) {
-  //         console.log(`${key} was used 🔐 \n`);
-  //       } else {
-  //         console.log("No values stored under key: " + key);
-  //       }
-  //       return item;
-  //     } catch (error) {
-  //       console.error("SecureStore get item error: ", error);
-  //       await SecureStore.deleteItemAsync(key);
-  //       return null;
-  //     }
-  //   },
-  //   async saveToken(key: string, value: string) {
-  //     try {
-  //       return SecureStore.setItemAsync(key, value);
-  //     } catch (err) {
-  //       return;
-  //     }
-  //   },
-  // };
-
-  // const publishableKey = process.env.EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY!;
-
-  // if (!publishableKey) {
-  //   throw new Error(
-  //     "Missing Publishable Key. Please set EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY in your .env"
-  //   );
-  // }
 
   return (
     <GestureHandlerRootView>
@@ -94,13 +90,23 @@ export default function RootLayout() {
                   name="(mine)/my-wall"
                   options={{ headerShown: false }}
                 />
-                 <Stack.Screen name="(mine)/blocked-list" options={{ headerShown: false }} />
-                 <Stack.Screen name="(mine)/bff-list" options={{ headerShown: false }} />
+                <Stack.Screen
+                  name="(mine)/blocked-list"
+                  options={{ headerShown: false }}
+                />
+                <Stack.Screen
+                  name="(mine)/bff-list"
+                  options={{ headerShown: false }}
+                />
+                <Stack.Screen name="(mine)/my-groups" options={{headerShown:false}}/>
                 <Stack.Screen
                   name="community"
                   options={{ headerShown: false }}
                 />
-                <Stack.Screen name="(error)/not-found" options={{headerShown:false}}/>
+                <Stack.Screen
+                  name="(error)/not-found"
+                  options={{ headerShown: false }}
+                />
               </Stack>
             </ActionSheetProvider>
           </ClickOutsideProvider>

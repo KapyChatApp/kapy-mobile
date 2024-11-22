@@ -10,7 +10,7 @@ import { RequestedProps } from "@/types/friend";
 import { formatDate } from "@/utils/DateFormatter";
 import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { unFriend } from "@/requests/un-request";
+import { unFriend } from "@/lib/un-request";
 
 const DetailRequestBox = (props: RequestedProps) => {
   const [isReloadAndHide, setIsReloadAndHide] = useState(false);

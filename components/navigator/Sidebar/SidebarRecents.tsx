@@ -9,12 +9,7 @@ const SidebarRecents = ({ items }: any) => {
     <View>
       <Text className={`text-14 font-helvetica-bold ml-[20px] ${textLight0Dark500}`}>Recents</Text>
       <ScrollView className="reecent-list p-[4px] overflow-hidden">
-        <MessageBox></MessageBox>
-        <MessageBox></MessageBox>
-        <MessageBox></MessageBox>
-        <MessageBox></MessageBox>
-        <MessageBox></MessageBox>
-        <MessageBox></MessageBox>
+       
       </ScrollView>
     </View>
   );
