@@ -27,6 +27,7 @@ import SocialSkeletonLoader from "@/components/ui/PostSkeletonLoader";
 import { RateProps } from "@/types/rate";
 import { getRatesOfUser } from "@/lib/rate";
 import RecentRate from "@/components/shared/community/RecentRate";
+import { getLocalAuth } from "@/lib/local-auth";
 const FriendProfilePage = () => {
   const { friendId } = useLocalSearchParams();
   const navigation = useNavigation();
@@ -45,6 +46,8 @@ const FriendProfilePage = () => {
   const [reload, setReload] = useState(false);
   const [isProfileLoading, setIsProfileLoading] = useState(true);
   const [recentRates, setRecentRates] = useState<RateProps[]>([]);
+
+  const [localUserId, setLocalUserId] = useState("");
   useEffect(() => {
     const disPlayUserData = async () => {
       try {

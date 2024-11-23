@@ -7,11 +7,12 @@ import { IconURL } from "@/constants/IconURL";
 import { Link, useFocusEffect, useRouter } from "expo-router";
 import { RateProps } from "@/types/rate";
 import { getRatesOfUser } from "@/lib/rate";
+import { getLocalAuth } from "@/lib/local-auth";
 
 const RecentRate = ({
   path,
   recentRates,
-  userId,
+  userId
 }: {
   path: any;
   recentRates: RateProps[];
@@ -40,7 +41,7 @@ const RecentRate = ({
 
       <View className="flex px-[8px]" style={{ rowGap: 10 }}>
         {recentRates.map((item) => (
-          <Rate key={item._id} {...item} />
+          <View pointerEvents="none"><Rate key={item._id} {...item}/></View>
         ))}
       </View>
     </View>
