@@ -9,9 +9,7 @@ import { IconURL } from "@/constants/IconURL";
 const UserBio = (props: UserBioProps) => {
   return (
     <View
-      className={`${
-        Platform.OS === "ios" ? "top-[200px] " : "top-[220px]"
-      } flex-1 px-[12px]`}
+      className={` flex-1 px-[12px]`}
     >
       {props.gender ||
       props.birthDay ||

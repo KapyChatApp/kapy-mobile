@@ -110,7 +110,7 @@ const SocialPost = (props: SocialPostProps) => {
         {props.contents.map((item) =>
           item.type === "Video" ? (
             <Video
-              source={{ uri: item.url }}
+              source={{ uri: item.url? item.url : "" }}
               style={{
                 width: "auto",
                 height: "auto",
