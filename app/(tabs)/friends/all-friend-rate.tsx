@@ -15,9 +15,9 @@ import { deleteRate, editRate, getRatesOfUser } from "@/lib/rate";
 import { useLocalSearchParams } from "expo-router/build/hooks";
 import CustomButton from "@/components/ui/CustomButton";
 import { IconURL } from "@/constants/IconURL";
-import RateForm from "@/components/shared/community/RateForm";
+import RateForm from "@/components/form/RateForm";
 import { getLocalAuth } from "@/lib/local-auth";
-import EditRateForm from "@/components/shared/community/EditRateForm";
+import EditRateForm from "@/components/form/EditRateForm";
 import LoadingSpinner from "@/components/ui/LoadingSpinner";
 
 const AllFriendRatePage = () => {
@@ -27,7 +27,7 @@ const AllFriendRatePage = () => {
   const [isRateFormOpen, setIsRateFormOpen] = useState(false);
   const [reload, setReload] = useState(false);
   const [editRateId, setEditRateId] = useState("");
-  const [isEditFormOpen, setIsEditFormOpen]  = useState(false);
+  const [isEditFormOpen, setIsEditFormOpen] = useState(false);
   const [editPoint, setEditPoint] = useState("");
   const [editMessage, setEditMessage] = useState("");
   const [deletePoint, setDeletePoint] = useState("");
@@ -35,9 +35,9 @@ const AllFriendRatePage = () => {
   const [isLoading, setIsLoading] = useState(false);
   useEffect(() => {
     const getAllRatesFUNC = async () => {
-      const {_id} = await getLocalAuth();
+      const { _id } = await getLocalAuth();
       const result = await getRatesOfUser(userId.toString());
-      const rates = result.map((rate:RateProps) => ({
+      const rates = result.map((rate: RateProps) => ({
         ...rate,
         localUserId: _id,
       }));
@@ -46,10 +46,17 @@ const AllFriendRatePage = () => {
     };
     getAllRatesFUNC();
   }, [reload]);
-  
-  const handleDelete =  async (pointId:string)=>{
-    await deleteRate(pointId, ()=>setLoading(true),()=>setLoading(false), ()=>setIsLoading(true), ()=>setIsLoading(false),()=>setReload(true));
-  }
+
+  const handleDelete = async (pointId: string) => {
+    await deleteRate(
+      pointId,
+      () => setLoading(true),
+      () => setLoading(false),
+      () => setIsLoading(true),
+      () => setIsLoading(false),
+      () => setReload(true)
+    );
+  };
   return (
     <SafeAreaView className={` ${bgLight500Dark10} flex-1`}>
       <View className="mt-[10px] mx-[10px] flex flex-row justify-between items-center">
@@ -68,21 +75,29 @@ const AllFriendRatePage = () => {
           setReload={() => setReload(true)}
         />
       ) : null}
-      {isEditFormOpen? (
-         <EditRateForm
-         pointId={editRateId}
-         onClose={() => setIsEditFormOpen(false)}
-         setReload={() => setReload(true)}
-         defaultMessage={editMessage}
-         defaultPoint={Number.parseInt(editPoint)}
-       />
-      ):null}
+      {isEditFormOpen ? (
+        <EditRateForm
+          pointId={editRateId}
+          onClose={() => setIsEditFormOpen(false)}
+          setReload={() => setReload(true)}
+          defaultMessage={editMessage}
+          defaultPoint={Number.parseInt(editPoint)}
+        />
+      ) : null}
       <ScrollView className="p-[16px]" contentContainerStyle={{ rowGap: 8 }}>
         {rates?.map((item) => (
-          <Rate key={item._id} {...item} setEditRateId={setEditRateId} setIsEditFormOpen={()=>setIsEditFormOpen(true)} setEditMessage={setEditMessage} setEditPoint={setEditPoint} handleDelete={handleDelete}/>
+          <Rate
+            key={item._id}
+            {...item}
+            setEditRateId={setEditRateId}
+            setIsEditFormOpen={() => setIsEditFormOpen(true)}
+            setEditMessage={setEditMessage}
+            setEditPoint={setEditPoint}
+            handleDelete={handleDelete}
+          />
         ))}
       </ScrollView>
-      {loading? <LoadingSpinner loading={isLoading}/>:null}
+      {loading ? <LoadingSpinner loading={isLoading} /> : null}
     </SafeAreaView>
   );
 };

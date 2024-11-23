@@ -6,7 +6,7 @@ import { IconURL } from "@/constants/IconURL";
 import { TextInput } from "react-native-gesture-handler";
 import CustomButton from "@/components/ui/CustomButton";
 import { useClickOutside } from "react-native-click-outside";
-import { renderCarrot } from "./Rate";
+import { renderCarrot } from "../shared/community/Rate";
 import LoadingSpinner from "@/components/ui/LoadingSpinner";
 import { editRate } from "@/lib/rate";
 
@@ -18,17 +18,17 @@ const EditRateForm = ({
   setReload,
 }: {
   pointId: string;
-  defaultPoint?:number;
-  defaultMessage?:string;
+  defaultPoint?: number;
+  defaultMessage?: string;
   onClose: () => void;
-  setReload: ()=>void;
+  setReload: () => void;
 }) => {
   const ref = useClickOutside<View>(() => onClose());
   const [point, setPoint] = useState("");
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  return ( 
+  return (
     <Modal
       visible={true}
       transparent
@@ -60,7 +60,10 @@ const EditRateForm = ({
               >
                 Point
               </Text>
-              <View className="flex flex-row items-center" style={{ columnGap: 10 }}>
+              <View
+                className="flex flex-row items-center"
+                style={{ columnGap: 10 }}
+              >
                 <TextInput
                   keyboardType="numeric"
                   maxLength={3}
@@ -87,12 +90,27 @@ const EditRateForm = ({
                 defaultValue={defaultMessage?.toString()}
               />
             </View>
-            <CustomButton width={100} height={50} label="Submit" onPress={async()=> {
-                await editRate(pointId,Number.parseInt(point), message, ()=> setLoading(true), ()=>setLoading(false),()=>setIsLoading(true), ()=>setIsLoading(false), ()=>setReload())}} />
+            <CustomButton
+              width={100}
+              height={50}
+              label="Submit"
+              onPress={async () => {
+                await editRate(
+                  pointId,
+                  Number.parseInt(point),
+                  message,
+                  () => setLoading(true),
+                  () => setLoading(false),
+                  () => setIsLoading(true),
+                  () => setIsLoading(false),
+                  () => setReload()
+                );
+              }}
+            />
           </View>
         </View>
       </View>
-      {loading? <LoadingSpinner loading={isLoading}/>:null}
+      {loading ? <LoadingSpinner loading={isLoading} /> : null}
     </Modal>
   );
 };
