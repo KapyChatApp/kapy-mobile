@@ -12,4 +12,10 @@ export interface RateProps{
   message:string;
   createAt:string;
   user:ShortUserProps;
+  localUserId:string;
+  setEditRateId:(id:string)=>void;
+  setIsEditFormOpen:()=>void;
+  setEditPoint:(point:string)=>void;
+  setEditMessage:(message:string)=>void;
+  handleDelete:(pointId)=>void;
 }

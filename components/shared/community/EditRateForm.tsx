@@ -8,17 +8,16 @@ import CustomButton from "@/components/ui/CustomButton";
 import { useClickOutside } from "react-native-click-outside";
 import { renderCarrot } from "./Rate";
 import LoadingSpinner from "@/components/ui/LoadingSpinner";
-import { createRate } from "@/lib/rate";
-import { CreateRateProps } from "@/types/rate";
+import { editRate } from "@/lib/rate";
 
-const RateForm = ({
-  userId,
+const EditRateForm = ({
+  pointId,
   onClose,
   defaultPoint,
   defaultMessage,
   setReload,
 }: {
-  userId: string;
+  pointId: string;
   defaultPoint?:number;
   defaultMessage?:string;
   onClose: () => void;
@@ -89,12 +88,7 @@ const RateForm = ({
               />
             </View>
             <CustomButton width={100} height={50} label="Submit" onPress={async()=> {
-                const param:CreateRateProps = {
-                    userId:userId,
-                    point:Number.parseInt(point),
-                    message:message
-                }
-                await createRate(param, ()=> setLoading(true), ()=>setLoading(false),()=>setIsLoading(true), ()=>setIsLoading(false), ()=>setReload())}} />
+                await editRate(pointId,Number.parseInt(point), message, ()=> setLoading(true), ()=>setLoading(false),()=>setIsLoading(true), ()=>setIsLoading(false), ()=>setReload())}} />
           </View>
         </View>
       </View>
@@ -134,4 +128,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default RateForm;
+export default EditRateForm;
