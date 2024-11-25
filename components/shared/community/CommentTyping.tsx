@@ -8,6 +8,7 @@ import { textLight0Dark500 } from "@/styles/theme";
 import SingleGalleryPickerBox from "@/components/ui/SingleGalleryPicker";
 import { pickMedia, singlePickMedia } from "@/utils/GalleryPicker";
 import { createComment } from "@/lib/comment-request";
+import { CommentProps } from "@/types/post";
 
 const CommentTyping = ({
   replyId,
@@ -15,12 +16,14 @@ const CommentTyping = ({
   setReplyName,
   targetType,
   setTargetType,
+  createNewComment,
 }: {
   replyId: string | undefined;
   replyName: string;
   setReplyName: (name: string) => void;
   setTargetType: (type: string) => void;
   targetType: string;
+  createNewComment: (newComment:CommentProps) => void;
 }) => {
   const { theme } = useTheme();
   const [selectedMedia, setSelectedMedia] = useState<{
@@ -80,15 +83,17 @@ const CommentTyping = ({
           onChangeText={setCaption}
         />
         <TouchableOpacity
-          onPress={async () =>
-            await createComment(
+          onPress={async () => {
+            const newComment = await createComment(
               caption,
               selectedMedia,
               () => Alert.alert("Successfully!"),
               replyId,
               targetType
-            )
-          }
+            );
+            createNewComment(newComment);
+            
+          }}
         >
           <Icon iconURL={IconURL.send} size={34} />
         </TouchableOpacity>
