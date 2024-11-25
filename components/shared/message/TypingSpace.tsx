@@ -18,6 +18,7 @@ const TypingSpace = ({
   setIsTypeping,
   onChangeText,
   onPress,
+  handlePickMedia,
 }: any) => {
   const { theme } = useTheme();
 
@@ -86,7 +87,7 @@ const TypingSpace = ({
               size={28}
             ></Icon>
           </TouchableOpacity>
-          <TouchableOpacity>
+          <TouchableOpacity onPress={handlePickMedia}>
             <Icon
               iconURL={theme === "light" ? IconURL.image_l : IconURL.image_d}
               size={28}

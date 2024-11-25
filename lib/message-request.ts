@@ -25,7 +25,7 @@ export const getAMessageBox = async (boxId: string | string[]) => {
   try {
     const { token } = await getLocalAuth();
     const response = await axios.get(
-      process.env.EXPO_PUBLIC_BASE_URL + "/message/a-messagebox",
+      process.env.EXPO_PUBLIC_BASE_URL + "/message/get-info-box-chat",
       {
         headers: {
           "Content-Type": "application/json",
@@ -34,7 +34,7 @@ export const getAMessageBox = async (boxId: string | string[]) => {
         params: { boxId: boxId },
       }
     );
-    return response.data ? response.data : null;
+    return response.data.box ? response.data.box : null;
   } catch (error) {
     console.log(error);
     throw error;

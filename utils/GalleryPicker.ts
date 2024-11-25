@@ -10,7 +10,7 @@ export const pickMedia = async () => {
   }
 
   let result = await ImagePicker.launchImageLibraryAsync({
-    mediaTypes: ImagePicker.MediaTypeOptions.All,
+    mediaTypes:['images','videos'],
     allowsEditing: false,
     quality: 1,
     selectionLimit: 0, 
@@ -40,7 +40,7 @@ export const singlePickMedia = async ()=>{
   }
 
   let result = await ImagePicker.launchImageLibraryAsync({
-    mediaTypes: ImagePicker.MediaTypeOptions.All,
+    mediaTypes: ['images','videos'],
     allowsEditing: false,
     quality: 1,
     selectionLimit: 1, 

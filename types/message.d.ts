@@ -36,16 +36,17 @@ export interface MessageProps {
 }
 
 export interface MessageBoxProps {
-  _id: string;
-  groupName: string;
-  groupAva: string;
-  receiverIds: ReceiverProps[];
-  createAt: string;
-  lastMessage: MessageProps;
-  localUserId:string;
+  _id?: string;
+  groupName?: string;
+  groupAva?: string;
+  receiverIds?: ReceiverProps[];
+  createAt?: string;
+  lastMessage?: MessageProps;
+  localUserId?:string;
 }
 
 export interface ChatBoxHeaderProps {
+  _id?:string;
   name?: string | undefined;
   isOnline?: boolean;
   avatar?: string;

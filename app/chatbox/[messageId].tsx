@@ -5,6 +5,8 @@ import {
   KeyboardAvoidingView,
   Platform,
   Pressable,
+  FlatList,
+  Image,
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import { useLocalSearchParams } from "expo-router";
@@ -30,6 +32,9 @@ import {
 import Message from "@/components/shared/message/Message";
 import { getLocalAuth } from "@/lib/local-auth";
 import { pusherClient } from "@/lib/pusher";
+import { pickMedia } from "@/utils/GalleryPicker";
+import GalleryPickerBox from "@/components/ui/GalleryPickerBox";
+import { Video } from "expo-av";
 
 const MessageDetailPage = () => {
   const { messageId } = useLocalSearchParams();
@@ -40,12 +45,25 @@ const MessageDetailPage = () => {
   const [chatBoxHeader, setChatBoxHeader] = useState<ChatBoxHeaderProps>();
   const [avatar, setAvatar] = useState("");
   const [messageText, setMessageText] = useState("");
+  const [messageBox, setMessageBox]= useState<MessageBoxProps>();
+
+  const [selectedMedia, setSelectedMedia] = useState<
+    { uri: string; type: string }[]
+  >([]);
+  const handlePickMedia = async () => {
+    const media = await pickMedia();
+    setSelectedMedia((prev) => [...prev, ...media]);
+  };
+
+  const receiverIds = messageBox?.receiverIds ?? []; 
+  const receiver = receiverIds[0];  
+  const otherReceiver = receiverIds[1];  
   useEffect(() => {
     const getAllMessageFUNC = async () => {
       const { _id } = await getLocalAuth();
       const messageBox = await getAMessageBox(messageId);
-      setChatBoxHeader(messageBox);
-      setAvatar(messageBox.avatar);
+        setChatBoxHeader(messageBox);
+        setMessageBox(messageBox);
       const messages = await getAllMessages(messageId);
       setMessages(messages);
       setLocalUserId(_id);
@@ -105,18 +123,29 @@ const MessageDetailPage = () => {
 
               return (
                 <Message
-                  key={item._id}
+                  key={index}
                   {...item}
-                  avatar={avatar}
+                  avatar={messageBox?.groupAva
+                    ? messageBox?.groupAva
+                    : receiver
+                    ? receiver._id === localUserId
+                      ? otherReceiver?.avatar
+                      : receiver.avatar
+                    : ""}
                   isSender={localUserId === item.createBy.toString()}
                   position={position}
                 />
               );
             })}
+
           </ScrollView>
+          
         </View>
         <View collapsable={false} ref={ref}>
+            {/* Hiển thị các phương tiện đã chọn */}
+        
           <TypingSpace
+            handlePickMedia={handlePickMedia}
             isTyping={isTyping}
             setIsTypeping={setIsTypeping}
             onChangeText={setMessageText}
