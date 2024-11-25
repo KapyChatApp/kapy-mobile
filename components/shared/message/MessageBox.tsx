@@ -17,14 +17,14 @@ const MessageBox = (props:MessageBoxProps) => {
         params:{messageId:props._id},
       })}}
     >
-      <UserAvatar avatarURL={{uri:props.groupAva? props.groupAva :( props.receiverIds[0]._id === props.localUserId? props.receiverIds[1].avatar: props.receiverIds[0] )}} size={48}></UserAvatar>
+      <UserAvatar avatarURL={{uri:props.groupAva? props.groupAva :( props.receiverIds[0]._id === props.localUserId? props.receiverIds[1].avatar: props.receiverIds[0].avatar )}} size={48}></UserAvatar>
       <View className="flex ml-5 w-screen">
         <Text
           numberOfLines={1}
           ellipsizeMode="tail"
           className={`font-helvetica-bold text-14 ${textLight0Dark500}`}
         >
-          {props.groupName? props.groupName : props.receiverIds[1].firstName + props.receiverIds[1].lastName}
+          {props.groupName? props.groupName :(props.receiverIds[0]._id ===props.localUserId? props.receiverIds[1].firstName + ' ' + props.receiverIds[1].lastName : props.receiverIds[0].firstName + props.receiverIds[0].lastName)}
         </Text>
         <Text
           numberOfLines={1}

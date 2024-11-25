@@ -13,7 +13,6 @@ import { bgLight500Dark10 } from "@/styles/theme";
 import SideMenu from "@rexovolt/react-native-side-menu";
 import { getMyChatBoxes } from "@/lib/message-request";
 import { MessageBoxProps } from "@/types/message";
-import { listenPusher, pusherClient } from "@/lib/pusher";
 import { getLocalAuth } from "@/lib/local-auth";
 
 const OutSideMessagePage = () => {
@@ -31,11 +30,7 @@ const OutSideMessagePage = () => {
       setMessageBoxes(messageBoxesWithLocalId ? messageBoxesWithLocalId : []);
     };
     getMyMessageBoxesFUNC();
-    // pusherClient.subscribe('public');
-    // pusherClient.bind('incoming-message', (data: any) => {
-    //   console.log("Nhận tin nhắn từ server:", data);
-    // });
-
+   
   }, []);
   return (
     <SafeAreaView className={`${bgLight500Dark10} flex-1 `}>

@@ -29,6 +29,7 @@ import {
 } from "@/lib/message-request";
 import Message from "@/components/shared/message/Message";
 import { getLocalAuth } from "@/lib/local-auth";
+import { pusherClient } from "@/lib/pusher";
 
 const MessageDetailPage = () => {
   const { messageId } = useLocalSearchParams();
@@ -48,6 +49,20 @@ const MessageDetailPage = () => {
       const messages = await getAllMessages(messageId);
       setMessages(messages);
       setLocalUserId(_id);
+      const channel = pusherClient.subscribe(`private-${messageId}`);
+      channel.bind("pusher:subscription_succeeded", () => {
+        console.log(`Subscribed to channel private-${messageId} successfully!`);
+      });
+
+      channel.bind("pusher:subscription_error", (status: any) => {
+        console.error(
+          `Subscription failed for channel private-${messageId}.`,
+          status
+        );
+      });
+      pusherClient.bind("new-message", (data: any) =>
+        setMessages((prevMessages) => [...prevMessages, data])
+      );
     };
     getAllMessageFUNC();
   }, []);
@@ -105,12 +120,25 @@ const MessageDetailPage = () => {
             isTyping={isTyping}
             setIsTypeping={setIsTypeping}
             onChangeText={setMessageText}
-            onPress={async () =>
-              await sendMessage(
-                messageId.toString(),
-                messageText
-              )
-            }
+            onPress={async () => {
+              setMessages((prevMessages) => [
+                ...prevMessages,
+                {
+                  _id: "",
+                  isReact: false,
+                  readedId: [],
+                  contentId: [],
+                  text: messageText,
+                  createAt: new Date().toString(),
+                  createBy: localUserId,
+                  position: "",
+                  isSender: true,
+                  avatar: "",
+                },
+              ]);
+              await sendMessage(messageId.toString(), messageText);
+              setMessageText("");
+            }}
           />
         </View>
       </SafeAreaView>
