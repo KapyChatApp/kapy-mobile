@@ -344,7 +344,14 @@ const FriendProfilePage = () => {
           <View className="w-full h-[60px]"></View>
         </View>
       </ScrollView>
-      {isReportOpen ? <ReportForm onClose={()=>{setIsReportOpen(false); console.log(isReportOpen)}} /> : null}
+      {isReportOpen ? (
+          <ReportForm
+            onClose={() => {
+              setIsReportOpen(false);
+              console.log(isReportOpen);
+            }}
+          />
+      ) : null}
       {loading ? <LoadingSpinner loading={isLoading} /> : null}
     </SafeAreaView>
   );

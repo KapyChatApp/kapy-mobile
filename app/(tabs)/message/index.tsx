@@ -14,6 +14,7 @@ import SideMenu from "@rexovolt/react-native-side-menu";
 import { getMyChatBoxes } from "@/lib/message-request";
 import { MessageBoxProps } from "@/types/message";
 import { listenPusher, pusherClient } from "@/lib/pusher";
+import { getLocalAuth } from "@/lib/local-auth";
 
 const OutSideMessagePage = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -21,14 +22,19 @@ const OutSideMessagePage = () => {
   const router = useRouter();
   useEffect(() => {
     const getMyMessageBoxesFUNC = async () => {
+      const {_id} = await getLocalAuth();
       const messageBoxes = await getMyChatBoxes();
-      setMessageBoxes(messageBoxes ? messageBoxes : []);
+      const messageBoxesWithLocalId = messageBoxes.map((item:MessageBoxProps) => ({
+        ...item, 
+        localUserId: _id, 
+      }));
+      setMessageBoxes(messageBoxesWithLocalId ? messageBoxesWithLocalId : []);
     };
     getMyMessageBoxesFUNC();
-    pusherClient.subscribe('public');
-    pusherClient.bind('incoming-message', (data: any) => {
-      console.log("Nhận tin nhắn từ server:", data);
-    });
+    // pusherClient.subscribe('public');
+    // pusherClient.bind('incoming-message', (data: any) => {
+    //   console.log("Nhận tin nhắn từ server:", data);
+    // });
 
   }, []);
   return (

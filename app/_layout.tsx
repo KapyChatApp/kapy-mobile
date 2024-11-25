@@ -98,8 +98,14 @@ export default function RootLayout() {
                   name="(mine)/bff-list"
                   options={{ headerShown: false }}
                 />
-                <Stack.Screen name="(mine)/my-groups" options={{headerShown:false}}/>
-                <Stack.Screen name="(mine)/all-rate" options={{headerShown:false}}/>
+                <Stack.Screen
+                  name="(mine)/my-groups"
+                  options={{ headerShown: false }}
+                />
+                <Stack.Screen
+                  name="(mine)/all-rate"
+                  options={{ headerShown: false }}
+                />
                 <Stack.Screen
                   name="community"
                   options={{ headerShown: false }}
@@ -108,6 +114,7 @@ export default function RootLayout() {
                   name="(error)/not-found"
                   options={{ headerShown: false }}
                 />
+                <Stack.Screen name="report" options={{ headerShown: false }} />
               </Stack>
             </ActionSheetProvider>
           </ClickOutsideProvider>

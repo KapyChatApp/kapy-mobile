@@ -8,9 +8,10 @@ import { textLight0Dark500 } from "@/styles/theme";
 import { BlurView } from "@react-native-community/blur";
 import { useClickOutside } from "react-native-click-outside";
 
-const ReportForm = ({ onClose }: any) => {
+const ReportForm = ({ onClose }: {onClose:()=>void}) => {
   const ref = useClickOutside<View>(()=>onClose());
   return (
+    <View className="flex-1 " style={{zIndex:100}}>
     <Modal visible={true} animationType="fade" transparent onRequestClose={onClose}>
       <View style={styles.overlay}>
         <View
@@ -41,6 +42,7 @@ const ReportForm = ({ onClose }: any) => {
         </View>
       </View>
     </Modal>
+    </View>
   );
 };
 

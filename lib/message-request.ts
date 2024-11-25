@@ -14,7 +14,7 @@ export const getMyChatBoxes = async () => {
         },
       }
     );
-    return response.data ? response.data : null;
+    return response.data.box ? response.data.box : null;
   } catch (error) {
     console.log(error);
     throw error;
@@ -55,14 +55,18 @@ export const getAllMessages = async (boxId: string | string[]) => {
       }
     );
 
-    return response.data ? response.data : null;
+    return response.data.messages ? response.data.messages : null;
   } catch (error) {
     console.log(error);
     throw error;
   }
 };
 
-export const createGroup = async (memberIds: string[], leaderId: string, goOn:(boxId:string)=>void) => {
+export const createGroup = async (
+  memberIds: string[],
+  leaderId: string,
+  goOn: (boxId: string) => void
+) => {
   try {
     const { token } = await getLocalAuth();
     const requestBody: CreateChatBoxProps = {
@@ -79,7 +83,7 @@ export const createGroup = async (memberIds: string[], leaderId: string, goOn:(b
         },
       }
     );
-    if(response.data){
+    if (response.data) {
       goOn(response.data._id);
     }
     return response.data ? response.data : null;
@@ -89,20 +93,13 @@ export const createGroup = async (memberIds: string[], leaderId: string, goOn:(b
   }
 };
 
-export const sendMessage = async (
-  userId: string,
-  groupId: string,
-  recipientId?: string,
-  content?: string
-) => {
+export const sendMessage = async (boxId: string, content?: string) => {
   try {
     const { token } = await getLocalAuth();
     const formData = new FormData();
-    const textContent:string[] = [content || ""]
-    formData.append("userId", userId);
-    formData.append("groupId", groupId);
+    const textContent: string[] = [content || ""];
+    formData.append("boxId", boxId);
     formData.append("content", `"${content}"`);
-    formData.append("recipientId", recipientId || "");
 
     const response = await axios.post(
       process.env.EXPO_PUBLIC_BASE_URL + "/message/send",

@@ -5,6 +5,7 @@ import { IconURL } from "@/constants/IconURL";
 import { bgLight500Dark10, textLight0Dark500 } from "@/styles/theme";
 import { block } from "@/lib/add-request";
 import { useClickOutside } from "react-native-click-outside";
+import { useRouter } from "expo-router";
 
 const MoreProfileOption = ({
   setIsReportOpen,
@@ -16,7 +17,7 @@ const MoreProfileOption = ({
 }: any) => {
   const ref = useClickOutside<View>(()=>setModalVisible(false));
   const [modalVisible, setModalVisible] = useState(false);
-
+  const  router =useRouter();
   const handleBlock = async () => {
     setStartLoading();
     setIsLoading();
@@ -54,8 +55,8 @@ const MoreProfileOption = ({
             </TouchableOpacity>
             <TouchableOpacity className="flex items-center justify-center w-full h-[50px]  border-border border-y-[0.5px]"
               onPress={() => {
-                setIsReportOpen(true);
                 setModalVisible(false);
+                router.push({pathname:"/report"})
               }}
             >
               <Text className={`${textLight0Dark500} font-helvetica-light text-14 text-center`}>Report</Text>

@@ -17,27 +17,27 @@ const MessageBox = (props:MessageBoxProps) => {
         params:{messageId:props._id},
       })}}
     >
-      <UserAvatar avatarURL={{uri:props.avatar}} size={48}></UserAvatar>
+      <UserAvatar avatarURL={{uri:props.groupAva? props.groupAva :( props.receiverIds[0]._id === props.localUserId? props.receiverIds[1].avatar: props.receiverIds[0] )}} size={48}></UserAvatar>
       <View className="flex ml-5 w-screen">
         <Text
           numberOfLines={1}
           ellipsizeMode="tail"
           className={`font-helvetica-bold text-14 ${textLight0Dark500}`}
         >
-          {props.name}
+          {props.groupName? props.groupName : props.receiverIds[1].firstName + props.receiverIds[1].lastName}
         </Text>
         <Text
           numberOfLines={1}
           className={`font-helvetica-light text-14 overflow-ellipsis ${textLight0Dark500}`}
         >
-          {props.messages.length!=0? props.messages[props.messages.length-1].text: " "}
+          {props.lastMessage.createBy === props.localUserId? "You: " + (props.lastMessage.contentId.length!=0? "Sent a file": props.lastMessage.text) : (props.lastMessage.contentId.length!=0? "Sent a file" :props.lastMessage.text) }
         </Text>
         <Text
           numberOfLines={1}
           ellipsizeMode="tail"
           className="font-helvetica-light text-12 text-deny"
         >
-          {props.messages.length!=0? formatDateDistance(props.messages[props.messages.length-1].createAt) : null}
+          {formatDateDistance(props.lastMessage.createAt)}
         </Text>
       </View>
     </TouchableOpacity>

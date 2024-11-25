@@ -107,9 +107,7 @@ const MessageDetailPage = () => {
             onChangeText={setMessageText}
             onPress={async () =>
               await sendMessage(
-                localUserId,
                 messageId.toString(),
-                chatBoxHeader?.receiverId,
                 messageText
               )
             }
