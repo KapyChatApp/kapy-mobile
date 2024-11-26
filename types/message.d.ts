@@ -43,6 +43,7 @@ export interface MessageBoxProps {
   createAt?: string;
   lastMessage?: MessageProps;
   localUserId?:string;
+  setLastMessage?:(message:string)=>void;
 }
 
 export interface ChatBoxHeaderProps {

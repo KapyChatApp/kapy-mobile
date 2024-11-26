@@ -53,6 +53,7 @@ const MessageDetailPage = () => {
   const handlePickMedia = async () => {
     const media = await pickMedia();
     setSelectedMedia((prev) => [...prev, ...media]);
+    console.log(selectedMedia);
   };
 
   const receiverIds = messageBox?.receiverIds ?? []; 
@@ -142,14 +143,13 @@ const MessageDetailPage = () => {
           
         </View>
         <View collapsable={false} ref={ref}>
-            {/* Hiển thị các phương tiện đã chọn */}
-        
           <TypingSpace
             handlePickMedia={handlePickMedia}
             isTyping={isTyping}
             setIsTypeping={setIsTypeping}
             onChangeText={setMessageText}
             onPress={async () => {
+              if(messageText!=""){
               setMessages((prevMessages) => [
                 ...prevMessages,
                 {
@@ -166,7 +166,7 @@ const MessageDetailPage = () => {
                 },
               ]);
               await sendMessage(messageId.toString(), messageText);
-              setMessageText("");
+              setMessageText("");}
             }}
           />
         </View>

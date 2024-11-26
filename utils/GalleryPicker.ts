@@ -13,10 +13,10 @@ export const pickMedia = async () => {
     mediaTypes:['images','videos'],
     allowsEditing: false,
     quality: 1,
-    selectionLimit: 0, 
+    selectionLimit: 10, 
     allowsMultipleSelection:true
   });
-
+  
   if (!result.canceled) {
 
     const selectedAssets = result.assets.map((asset) => ({
@@ -43,7 +43,7 @@ export const singlePickMedia = async ()=>{
     mediaTypes: ['images','videos'],
     allowsEditing: false,
     quality: 1,
-    selectionLimit: 1, 
+    selectionLimit: 10, 
   });
 
   if (!result.canceled) {
