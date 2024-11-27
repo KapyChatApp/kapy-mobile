@@ -119,3 +119,22 @@ export const sendMessage = async (boxId: string, content?: string) => {
     throw error;
   }
 };
+
+export const markRead = async (boxId: string) => {
+  try {
+    const { token } = await getLocalAuth();
+    const response = await axios.post(
+      process.env.EXPO_PUBLIC_BASE_URL + "/message/mark-read",
+      { boxId: boxId},
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `${token}`,
+        },
+      }
+    );
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};

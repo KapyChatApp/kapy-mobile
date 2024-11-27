@@ -8,7 +8,7 @@ import {
   FlatList,
   Image,
 } from "react-native";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useLocalSearchParams } from "expo-router";
 import ChatBoxHeader from "@/components/shared/message/ChatBoxHeader";
 import TypingSpace from "@/components/shared/message/TypingSpace";
@@ -27,6 +27,7 @@ import {
 import {
   getAllMessages,
   getAMessageBox,
+  markRead,
   sendMessage,
 } from "@/lib/message-request";
 import Message from "@/components/shared/message/Message";
@@ -50,6 +51,8 @@ const MessageDetailPage = () => {
   const [selectedMedia, setSelectedMedia] = useState<
     { uri: string; type: string }[]
   >([]);
+
+  const scrollViewRef = useRef<ScrollView>(null);
   const handlePickMedia = async () => {
     const media = await pickMedia();
     setSelectedMedia((prev) => [...prev, ...media]);
@@ -62,6 +65,7 @@ const MessageDetailPage = () => {
   useEffect(() => {
     const getAllMessageFUNC = async () => {
       const { _id } = await getLocalAuth();
+      await markRead(messageId.toString());
       const messageBox = await getAMessageBox(messageId);
         setChatBoxHeader(messageBox);
         setMessageBox(messageBox);
@@ -97,8 +101,12 @@ const MessageDetailPage = () => {
         </View>
         <View className="flex-1">
           <ScrollView
+           ref={scrollViewRef} 
             className={` ${bgLight500Dark10} flex-1 flex`}
             contentContainerStyle={{ rowGap: 3, padding: 2 }}
+            onContentSizeChange={() =>
+              scrollViewRef.current?.scrollToEnd({ animated: true })
+            } 
           >
             {messages.map((item, index) => {
               const previousMessage = messages[index - 1];
@@ -163,6 +171,7 @@ const MessageDetailPage = () => {
                   position: "",
                   isSender: true,
                   avatar: "",
+                  boxId:"",
                 },
               ]);
               await sendMessage(messageId.toString(), messageText);

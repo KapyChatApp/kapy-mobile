@@ -42,7 +42,8 @@ const fullName = receiver
         </Text>
         <Text
           numberOfLines={1}
-          className={`font-helvetica-light text-14 overflow-ellipsis ${textLight0Dark500}`}
+          className={` text-14 overflow-ellipsis ${textLight0Dark500}  ${props.lastMessage?.
+            readStatus!? "font-helvetica-bold":"font-helvetica-light "}`}
         >
           {props.lastMessage?.createBy === props.localUserId? "You: " + (props.lastMessage?.contentId.length!=0? "Sent a file": props.lastMessage?.text) : (props.lastMessage?.contentId.length!=0? "Sent a file" :props.lastMessage?.text) }
         </Text>

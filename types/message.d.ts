@@ -33,6 +33,8 @@ export interface MessageProps {
   position:string;
   isSender:boolean;
   avatar:string;
+  boxId:string;
+  readStatus?:boolean;
 }
 
 export interface MessageBoxProps {
