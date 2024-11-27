@@ -15,12 +15,14 @@ import { getMyChatBoxes } from "@/lib/message-request";
 import { MessageBoxProps, MessageProps } from "@/types/message";
 import { getLocalAuth } from "@/lib/local-auth";
 import { pusherClient } from "@/lib/pusher";
+import { useMarkReadContext } from "@/context/MarkReadProvider";
+import CustomButton from "@/components/ui/CustomButton";
 
 const OutSideMessagePage = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [messageBoxes, setMessageBoxes] = useState<MessageBoxProps[]>([]);
   const router = useRouter();
-
+  const {markAsUnread,unreadMessages, updateDefaultMessages} =useMarkReadContext();
   useEffect(() => {
     const getMyMessageBoxesFUNC = async () => {
       const { _id } = await getLocalAuth();
@@ -32,14 +34,11 @@ const OutSideMessagePage = () => {
         })
       );
       setMessageBoxes(messageBoxesWithLocalId ? messageBoxesWithLocalId : []);
-
+      const messageBoxIds = messageBoxes.map((item:MessageBoxProps)=> item._id);
+      updateDefaultMessages(messageBoxIds);
+     
       for (const messageBox of messageBoxes) {
         const channel = pusherClient.subscribe(`private-${messageBox._id}`);
-        channel.bind("pusher:subscription_succeeded", () => {
-          console.log(
-            `Subscribed to channel private-${messageBox._id} successfully!`
-          );
-        });
       }
       pusherClient.bind("new-message", (data: any) =>
         handleSetLastMessage(data)
@@ -49,19 +48,22 @@ const OutSideMessagePage = () => {
   }, []);
   const handleSetLastMessage = (data: any) => {
     const { boxId } = data;
-    console.log("new message: ", data);
-    const newMessage:MessageProps={...data, readStatus:false};
-    setMessageBoxes((prevMessageBoxes) =>
-      prevMessageBoxes.map((box) =>
-        box._id === boxId
-          ? {
-              ...box,
-              lastMessage: newMessage,
-              updatedAt: new Date().toISOString(),
-            }
-          : box
-      )
-    );
+    setTimeout(() => {
+      markAsUnread(boxId);
+      setMessageBoxes((prevMessageBoxes) =>
+        prevMessageBoxes.map((box) =>
+          box._id === boxId
+            ? {
+                ...box,
+                lastMessage: data,
+                updatedAt: new Date().toISOString(),
+                readStatus:false,
+              }
+            : box
+        )
+      );
+    }, 0);
+   
   };
 
   return (

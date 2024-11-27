@@ -15,7 +15,6 @@ import Icon from "@/components/ui/Icon";
 import { ChatBoxHeaderProps, MessageBoxProps } from "@/types/message";
 
 const ChatBoxHeader = (props:MessageBoxProps) => {
-  console.log("data ", props);
   const navigation = useNavigation();
   const router = useRouter();
   const receiverIds = props.receiverIds ?? []; 

@@ -34,7 +34,7 @@ export interface MessageProps {
   isSender:boolean;
   avatar:string;
   boxId:string;
-  readStatus?:boolean;
+
 }
 
 export interface MessageBoxProps {
@@ -46,6 +46,7 @@ export interface MessageBoxProps {
   lastMessage?: MessageProps;
   localUserId?:string;
   setLastMessage?:(message:string)=>void;
+  readStatus?:boolean;
 }
 
 export interface ChatBoxHeaderProps {

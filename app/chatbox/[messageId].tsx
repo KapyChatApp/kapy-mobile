@@ -36,6 +36,7 @@ import { pusherClient } from "@/lib/pusher";
 import { pickMedia } from "@/utils/GalleryPicker";
 import GalleryPickerBox from "@/components/ui/GalleryPickerBox";
 import { Video } from "expo-av";
+import { useMarkReadContext } from "@/context/MarkReadProvider";
 
 const MessageDetailPage = () => {
   const { messageId } = useLocalSearchParams();
@@ -46,7 +47,7 @@ const MessageDetailPage = () => {
   const [chatBoxHeader, setChatBoxHeader] = useState<ChatBoxHeaderProps>();
   const [avatar, setAvatar] = useState("");
   const [messageText, setMessageText] = useState("");
-  const [messageBox, setMessageBox]= useState<MessageBoxProps>();
+  const [messageBox, setMessageBox] = useState<MessageBoxProps>();
 
   const [selectedMedia, setSelectedMedia] = useState<
     { uri: string; type: string }[]
@@ -59,16 +60,18 @@ const MessageDetailPage = () => {
     console.log(selectedMedia);
   };
 
-  const receiverIds = messageBox?.receiverIds ?? []; 
-  const receiver = receiverIds[0];  
-  const otherReceiver = receiverIds[1];  
+  const { markAsRead, unreadMessages } = useMarkReadContext();
+
+  const receiverIds = messageBox?.receiverIds ?? [];
+  const receiver = receiverIds[0];
+  const otherReceiver = receiverIds[1];
   useEffect(() => {
     const getAllMessageFUNC = async () => {
       const { _id } = await getLocalAuth();
       await markRead(messageId.toString());
       const messageBox = await getAMessageBox(messageId);
-        setChatBoxHeader(messageBox);
-        setMessageBox(messageBox);
+      setChatBoxHeader(messageBox);
+      setMessageBox(messageBox);
       const messages = await getAllMessages(messageId);
       setMessages(messages);
       setLocalUserId(_id);
@@ -83,9 +86,12 @@ const MessageDetailPage = () => {
           status
         );
       });
-      pusherClient.bind("new-message", (data: any) =>
-        setMessages((prevMessages) => [...prevMessages, data])
-      );
+      pusherClient.bind("new-message", (data: any) => {
+        setMessages((prevMessages) => [...prevMessages, data]);
+        markAsRead(messageId.toString());
+      });
+
+      markAsRead(messageId.toString());
     };
     getAllMessageFUNC();
   }, []);
@@ -101,12 +107,12 @@ const MessageDetailPage = () => {
         </View>
         <View className="flex-1">
           <ScrollView
-           ref={scrollViewRef} 
+            ref={scrollViewRef}
             className={` ${bgLight500Dark10} flex-1 flex`}
             contentContainerStyle={{ rowGap: 3, padding: 2 }}
             onContentSizeChange={() =>
               scrollViewRef.current?.scrollToEnd({ animated: true })
-            } 
+            }
           >
             {messages.map((item, index) => {
               const previousMessage = messages[index - 1];
@@ -134,21 +140,21 @@ const MessageDetailPage = () => {
                 <Message
                   key={index}
                   {...item}
-                  avatar={messageBox?.groupAva
-                    ? messageBox?.groupAva
-                    : receiver
-                    ? receiver._id === localUserId
-                      ? otherReceiver?.avatar
-                      : receiver.avatar
-                    : ""}
+                  avatar={
+                    messageBox?.groupAva
+                      ? messageBox?.groupAva
+                      : receiver
+                      ? receiver._id === localUserId
+                        ? otherReceiver?.avatar
+                        : receiver.avatar
+                      : ""
+                  }
                   isSender={localUserId === item.createBy.toString()}
                   position={position}
                 />
               );
             })}
-
           </ScrollView>
-          
         </View>
         <View collapsable={false} ref={ref}>
           <TypingSpace
@@ -156,26 +162,29 @@ const MessageDetailPage = () => {
             isTyping={isTyping}
             setIsTypeping={setIsTypeping}
             onChangeText={setMessageText}
+            value={messageText}
             onPress={async () => {
-              if(messageText!=""){
-              setMessages((prevMessages) => [
-                ...prevMessages,
-                {
-                  _id: "",
-                  isReact: false,
-                  readedId: [],
-                  contentId: [],
-                  text: messageText,
-                  createAt: new Date().toString(),
-                  createBy: localUserId,
-                  position: "",
-                  isSender: true,
-                  avatar: "",
-                  boxId:"",
-                },
-              ]);
-              await sendMessage(messageId.toString(), messageText);
-              setMessageText("");}
+              const messageTextData = messageText;
+              setMessageText("");
+              if (messageTextData != "") {
+                setMessages((prevMessages) => [
+                  ...prevMessages,
+                  {
+                    _id: "",
+                    isReact: false,
+                    readedId: [],
+                    contentId: [],
+                    text: messageText,
+                    createAt: new Date().toString(),
+                    createBy: localUserId,
+                    position: "",
+                    isSender: true,
+                    avatar: "",
+                    boxId: "",
+                  },
+                ]);
+                await sendMessage(messageId.toString(), messageText);
+              }
             }}
           />
         </View>

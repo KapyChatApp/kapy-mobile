@@ -84,7 +84,7 @@ export const createGroup = async (
       }
     );
     if (response.data) {
-      goOn(response.data._id);
+      setTimeout(()=>goOn(response.data._id),300)
     }
     return response.data ? response.data : null;
   } catch (error) {
@@ -112,7 +112,6 @@ export const sendMessage = async (boxId: string, content?: string) => {
       }
     );
 
-    console.log("Response from API:", response.data);
     return response.data;
   } catch (error) {
     console.error("Error sending message:", error);
