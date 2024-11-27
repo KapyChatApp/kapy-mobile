@@ -90,6 +90,7 @@ export const IconURL = {
   nickname_l:require("../assets/icons/nickname_l.png"),
   nickname_d:require("../assets/icons/nickname_d.png"),
   not_found:require("../assets/icons/notfound_404.png"),
+  notification:require("../assets/icons/notification.png"),
   onthemic: require("../assets/icons/onthemic.png"),
   open_statuswriter: require("../assets/icons/open_statuswriter.png"),
   opencam_l: require("../assets/icons/opencam_l.png"),
