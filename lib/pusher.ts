@@ -1,16 +1,20 @@
 import { MessageProps } from "@/types/message";
 import PusherClient from "pusher-js";
+import { getLocalAuth } from "./local-auth";
 
+const getToken = async ()=>{
+  const {token} = await getLocalAuth();
+  return token
+}
 export const pusherClient = new PusherClient(
   process.env.EXPO_PUBLIC_PUSHER_APP_KEY!,
   {
     cluster: process.env.EXPO_PUBLIC_PUSHER_APP_CLUSTER!,
     forceTLS: true,
-    authEndpoint: 'api/pusher-auth',
-    authTransport: 'ajax',
+    authEndpoint: process.env.EXPO_PUBLIC_BASE_URL + "/pusher/auth",
     auth:{
         headers:{
-            'Content-Type':'application/json'
+            Authorization: `${getToken()}`
         }
     }
   }
@@ -27,16 +31,4 @@ pusherClient.connection.bind("connected", () => {
 pusherClient.connection.bind("disconnected", () => {
   console.log("Pusher đã bị ngắt kết nối!");
 });
-export const listenPusher = () => {
-  const channel = pusherClient.subscribe("public");
-  channel.bind("new-message", (data: any) => {
-    console.log("Nhận tin nhắn từ server:", data);
-  });
 
-  return ()=>{
-    pusherClient.unsubscribe("public");
-    pusherClient.unbind("new-message",(data: any) => {
-        console.log("Nhận tin nhắn từ server:", data);
-      });
-  }
-};

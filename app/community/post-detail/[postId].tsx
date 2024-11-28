@@ -10,7 +10,7 @@ import Comment from "@/components/shared/community/Comment";
 import CommentTyping from "@/components/shared/community/CommentTyping";
 import { commentsData } from "@/data/CommentData";
 import { getAPost } from "@/lib/post";
-import { SocialPostProps } from "@/types/post";
+import { CommentProps, SocialPostProps } from "@/types/post";
 
 const PostDetailPage = () => {
   const { postId } = useLocalSearchParams();
@@ -29,6 +29,49 @@ const PostDetailPage = () => {
     };
     getPostDetail();
   }, []);
+
+  const addCommentToPost = (newComment: CommentProps) => {
+    setPost((prevPost) => {
+      if (!prevPost) return prevPost; 
+      
+      return {
+        ...prevPost,
+        comments: [...(prevPost.comments || []), newComment], 
+      };
+    });
+  };
+  
+  const addReplyToComment = (parentCommentId: string, newReply: CommentProps) => {
+    const addReplyRecursively = (comments: CommentProps[]): CommentProps[] => {
+      return comments.map((comment) => {
+        if (comment._id === parentCommentId) {
+        
+          return {
+            ...comment,
+            replieds: [...comment.replieds, newReply], 
+          };
+        }
+  
+        if (comment.replieds && comment.replieds.length > 0) {
+          return {
+            ...comment,
+            replieds: addReplyRecursively(comment.replieds),
+          };
+        }
+  
+        return comment;
+      });
+    };
+  
+    setPost((prevPost) => {
+      if (!prevPost) return prevPost;
+  
+      return {
+        ...prevPost,
+        comments: addReplyRecursively(prevPost.comments), 
+      };
+    });
+  };
   return (
     <KeyboardAvoidingView
       className="flex-1"
@@ -69,6 +112,7 @@ const PostDetailPage = () => {
           setReplyName={setReplyName}
           targetType={targetType}
           setTargetType={setTargetType}
+          createNewComment={(newComment:CommentProps)=> replyName===""? addCommentToPost(newComment): addReplyToComment(replyCommentId, newComment)}
         />
       </SafeAreaView>
     </KeyboardAvoidingView>
