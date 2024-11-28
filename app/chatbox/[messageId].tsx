@@ -37,6 +37,7 @@ import { pickMedia } from "@/utils/GalleryPicker";
 import GalleryPickerBox from "@/components/ui/GalleryPickerBox";
 import { Video } from "expo-av";
 import { useMarkReadContext } from "@/context/MarkReadProvider";
+import SelectedMedia from "@/components/shared/multimedia/SelectedMedia";
 
 const MessageDetailPage = () => {
   const { messageId } = useLocalSearchParams();
@@ -157,6 +158,7 @@ const MessageDetailPage = () => {
           </ScrollView>
         </View>
         <View collapsable={false} ref={ref}>
+       <SelectedMedia selectedMedia={selectedMedia} setSelectedMedia={setSelectedMedia}/>
           <TypingSpace
             handlePickMedia={handlePickMedia}
             isTyping={isTyping}
