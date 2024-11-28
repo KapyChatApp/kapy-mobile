@@ -1,5 +1,5 @@
 import { View, Text } from "react-native";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useLocalSearchParams, useNavigation } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { bgLight500Dark10 } from "@/styles/theme";
@@ -9,10 +9,25 @@ import FastMediaList from "@/components/shared/multimedia/FastMediaList";
 import { useTheme } from "@/context/ThemeProviders";
 import { IconURL } from "@/constants/IconURL";
 import FunctionCard from "@/components/shared/function/FunctionCard";
+import { MessageBoxProps } from "@/types/message";
+import { getAMessageBox } from "@/lib/message-request";
 
 const ChatBoxDetailPage = () => {
   const { chatboxDetailId } = useLocalSearchParams();
   const { theme } = useTheme();
+  const [messageBox, setMessageBox] = useState<MessageBoxProps |null>(null);
+  useEffect(()=>{
+    const getAMessageBoxFUNC = async () => {
+      const messageBox:MessageBoxProps = await getAMessageBox(chatboxDetailId);
+      const messageBoxData = {
+        ...messageBox,
+        _id:messageBox._id,        
+      }
+      setMessageBox(messageBoxData);
+    };
+
+    getAMessageBoxFUNC();
+  },[])
   return (
     <SafeAreaView className={`${bgLight500Dark10} flex-1`}>
       <ScrollView
@@ -25,7 +40,7 @@ const ChatBoxDetailPage = () => {
         }}
         showsVerticalScrollIndicator={false}
       >
-        <ChatBoxDetailHeader />
+         <ChatBoxDetailHeader {...messageBox}/>
         <FastMediaList label="Photos, Videos" />
         <FastMediaList label="Files" />
         <View className="flex justify-center w-full mt-[16px]" style={{rowGap:5}}>

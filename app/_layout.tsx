@@ -27,6 +27,7 @@ import { ActionSheetProvider } from "@expo/react-native-action-sheet";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { CommonActions } from "@react-navigation/native";
 import axios from "axios";
+import { MarkReadProvider } from "@/context/MarkReadProvider";
 SplashScreen.preventAutoHideAsync();
 export default function RootLayout() {
   const [fontsLoaded, error] = useFonts({
@@ -69,49 +70,66 @@ export default function RootLayout() {
     <GestureHandlerRootView>
       <EventProvider>
         <ThemeProvider>
-          <ClickOutsideProvider>
-            <ActionSheetProvider>
-              <Stack>
-                <Stack.Screen name="index" options={{ headerShown: false }} />
-                <Stack.Screen name="(auth)" options={{ headerShown: false }} />
-                <Stack.Screen
-                  name="(tabs)"
-                  options={{
-                    headerShown: false,
-                    headerTitle: (props) => <MainHeader></MainHeader>,
-                  }}
-                />
-                <Stack.Screen name="chatbox" options={{ headerShown: false }} />
-                <Stack.Screen
-                  name="(mine)/my-multimedia"
-                  options={{ headerShown: false }}
-                />
-                <Stack.Screen
-                  name="(mine)/my-wall"
-                  options={{ headerShown: false }}
-                />
-                <Stack.Screen
-                  name="(mine)/blocked-list"
-                  options={{ headerShown: false }}
-                />
-                <Stack.Screen
-                  name="(mine)/bff-list"
-                  options={{ headerShown: false }}
-                />
-                <Stack.Screen name="(mine)/my-groups" options={{headerShown:false}}/>
-                <Stack.Screen name="(mine)/all-rate" options={{headerShown:false}}/>
-                <Stack.Screen name="(mine)/notification" options={{headerShown:false}}/>
-                <Stack.Screen
-                  name="community"
-                  options={{ headerShown: false }}
-                />
-                <Stack.Screen
-                  name="(error)/not-found"
-                  options={{ headerShown: false }}
-                />
-              </Stack>
-            </ActionSheetProvider>
-          </ClickOutsideProvider>
+          <MarkReadProvider>
+            <ClickOutsideProvider>
+              <ActionSheetProvider>
+                <Stack>
+                  <Stack.Screen name="index" options={{ headerShown: false }} />
+                  <Stack.Screen
+                    name="(auth)"
+                    options={{ headerShown: false }}
+                  />
+                  <Stack.Screen
+                    name="(tabs)"
+                    options={{
+                      headerShown: false,
+                      headerTitle: (props) => <MainHeader></MainHeader>,
+                    }}
+                  />
+                  <Stack.Screen
+                    name="chatbox"
+                    options={{ headerShown: false }}
+                  />
+                  <Stack.Screen
+                    name="(mine)/my-multimedia"
+                    options={{ headerShown: false }}
+                  />
+                  <Stack.Screen
+                    name="(mine)/my-wall"
+                    options={{ headerShown: false }}
+                  />
+                  <Stack.Screen
+                    name="(mine)/blocked-list"
+                    options={{ headerShown: false }}
+                  />
+                  <Stack.Screen
+                    name="(mine)/bff-list"
+                    options={{ headerShown: false }}
+                  />
+                  <Stack.Screen
+                    name="(mine)/my-groups"
+                    options={{ headerShown: false }}
+                  />
+                  <Stack.Screen
+                    name="(mine)/all-rate"
+                    options={{ headerShown: false }}
+                  />
+                  <Stack.Screen
+                    name="community"
+                    options={{ headerShown: false }}
+                  />
+                  <Stack.Screen
+                    name="(error)/not-found"
+                    options={{ headerShown: false }}
+                  />
+                  <Stack.Screen
+                    name="report"
+                    options={{ headerShown: false }}
+                  />
+                </Stack>
+              </ActionSheetProvider>
+            </ClickOutsideProvider>
+          </MarkReadProvider>
         </ThemeProvider>
       </EventProvider>
     </GestureHandlerRootView>

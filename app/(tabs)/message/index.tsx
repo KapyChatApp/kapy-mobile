@@ -12,25 +12,60 @@ import { ScrollView } from "react-native-gesture-handler";
 import { bgLight500Dark10 } from "@/styles/theme";
 import SideMenu from "@rexovolt/react-native-side-menu";
 import { getMyChatBoxes } from "@/lib/message-request";
-import { MessageBoxProps } from "@/types/message";
-import { listenPusher, pusherClient } from "@/lib/pusher";
+import { MessageBoxProps, MessageProps } from "@/types/message";
+import { getLocalAuth } from "@/lib/local-auth";
+import { pusherClient } from "@/lib/pusher";
+import { useMarkReadContext } from "@/context/MarkReadProvider";
+import CustomButton from "@/components/ui/CustomButton";
 
 const OutSideMessagePage = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [messageBoxes, setMessageBoxes] = useState<MessageBoxProps[]>([]);
   const router = useRouter();
+  const {markAsUnread,unreadMessages, updateDefaultMessages} =useMarkReadContext();
   useEffect(() => {
     const getMyMessageBoxesFUNC = async () => {
+      const { _id } = await getLocalAuth();
       const messageBoxes = await getMyChatBoxes();
-      setMessageBoxes(messageBoxes ? messageBoxes : []);
+      const messageBoxesWithLocalId = messageBoxes.map(
+        (item: MessageBoxProps) => ({
+          ...item,
+          localUserId: _id,
+        })
+      );
+      setMessageBoxes(messageBoxesWithLocalId ? messageBoxesWithLocalId : []);
+      const messageBoxIds = messageBoxes.map((item:MessageBoxProps)=> item._id);
+      updateDefaultMessages(messageBoxIds);
+     
+      for (const messageBox of messageBoxes) {
+        const channel = pusherClient.subscribe(`private-${messageBox._id}`);
+      }
+      pusherClient.bind("new-message", (data: any) =>
+        handleSetLastMessage(data)
+      );
     };
     getMyMessageBoxesFUNC();
-    pusherClient.subscribe('public');
-    pusherClient.bind('incoming-message', (data: any) => {
-      console.log("Nhận tin nhắn từ server:", data);
-    });
-
   }, []);
+  const handleSetLastMessage = (data: any) => {
+    const { boxId } = data;
+    setTimeout(() => {
+      markAsUnread(boxId);
+      setMessageBoxes((prevMessageBoxes) =>
+        prevMessageBoxes.map((box) =>
+          box._id === boxId
+            ? {
+                ...box,
+                lastMessage: data,
+                updatedAt: new Date().toISOString(),
+                readStatus:false,
+              }
+            : box
+        )
+      );
+    }, 0);
+   
+  };
+
   return (
     <SafeAreaView className={`${bgLight500Dark10} flex-1 `}>
       <MainHeader></MainHeader>

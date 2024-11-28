@@ -5,8 +5,10 @@ import {
   KeyboardAvoidingView,
   Platform,
   Pressable,
+  FlatList,
+  Image,
 } from "react-native";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useLocalSearchParams } from "expo-router";
 import ChatBoxHeader from "@/components/shared/message/ChatBoxHeader";
 import TypingSpace from "@/components/shared/message/TypingSpace";
@@ -25,10 +27,16 @@ import {
 import {
   getAllMessages,
   getAMessageBox,
+  markRead,
   sendMessage,
 } from "@/lib/message-request";
 import Message from "@/components/shared/message/Message";
 import { getLocalAuth } from "@/lib/local-auth";
+import { pusherClient } from "@/lib/pusher";
+import { pickMedia } from "@/utils/GalleryPicker";
+import GalleryPickerBox from "@/components/ui/GalleryPickerBox";
+import { Video } from "expo-av";
+import { useMarkReadContext } from "@/context/MarkReadProvider";
 
 const MessageDetailPage = () => {
   const { messageId } = useLocalSearchParams();
@@ -39,15 +47,51 @@ const MessageDetailPage = () => {
   const [chatBoxHeader, setChatBoxHeader] = useState<ChatBoxHeaderProps>();
   const [avatar, setAvatar] = useState("");
   const [messageText, setMessageText] = useState("");
+  const [messageBox, setMessageBox] = useState<MessageBoxProps>();
+
+  const [selectedMedia, setSelectedMedia] = useState<
+    { uri: string; type: string }[]
+  >([]);
+
+  const scrollViewRef = useRef<ScrollView>(null);
+  const handlePickMedia = async () => {
+    const media = await pickMedia();
+    setSelectedMedia((prev) => [...prev, ...media]);
+    console.log(selectedMedia);
+  };
+
+  const { markAsRead, unreadMessages } = useMarkReadContext();
+
+  const receiverIds = messageBox?.receiverIds ?? [];
+  const receiver = receiverIds[0];
+  const otherReceiver = receiverIds[1];
   useEffect(() => {
     const getAllMessageFUNC = async () => {
       const { _id } = await getLocalAuth();
+      await markRead(messageId.toString());
       const messageBox = await getAMessageBox(messageId);
       setChatBoxHeader(messageBox);
-      setAvatar(messageBox.avatar);
+      setMessageBox(messageBox);
       const messages = await getAllMessages(messageId);
       setMessages(messages);
       setLocalUserId(_id);
+      const channel = pusherClient.subscribe(`private-${messageId}`);
+      channel.bind("pusher:subscription_succeeded", () => {
+        console.log(`Subscribed to channel private-${messageId} successfully!`);
+      });
+
+      channel.bind("pusher:subscription_error", (status: any) => {
+        console.error(
+          `Subscription failed for channel private-${messageId}.`,
+          status
+        );
+      });
+      pusherClient.bind("new-message", (data: any) => {
+        setMessages((prevMessages) => [...prevMessages, data]);
+        markAsRead(messageId.toString());
+      });
+
+      markAsRead(messageId.toString());
     };
     getAllMessageFUNC();
   }, []);
@@ -63,8 +107,12 @@ const MessageDetailPage = () => {
         </View>
         <View className="flex-1">
           <ScrollView
+            ref={scrollViewRef}
             className={` ${bgLight500Dark10} flex-1 flex`}
             contentContainerStyle={{ rowGap: 3, padding: 2 }}
+            onContentSizeChange={() =>
+              scrollViewRef.current?.scrollToEnd({ animated: true })
+            }
           >
             {messages.map((item, index) => {
               const previousMessage = messages[index - 1];
@@ -90,9 +138,17 @@ const MessageDetailPage = () => {
 
               return (
                 <Message
-                  key={item._id}
+                  key={index}
                   {...item}
-                  avatar={avatar}
+                  avatar={
+                    messageBox?.groupAva
+                      ? messageBox?.groupAva
+                      : receiver
+                      ? receiver._id === localUserId
+                        ? otherReceiver?.avatar
+                        : receiver.avatar
+                      : ""
+                  }
                   isSender={localUserId === item.createBy.toString()}
                   position={position}
                 />
@@ -102,17 +158,34 @@ const MessageDetailPage = () => {
         </View>
         <View collapsable={false} ref={ref}>
           <TypingSpace
+            handlePickMedia={handlePickMedia}
             isTyping={isTyping}
             setIsTypeping={setIsTypeping}
             onChangeText={setMessageText}
-            onPress={async () =>
-              await sendMessage(
-                localUserId,
-                messageId.toString(),
-                chatBoxHeader?.receiverId,
-                messageText
-              )
-            }
+            value={messageText}
+            onPress={async () => {
+              const messageTextData = messageText;
+              setMessageText("");
+              if (messageTextData != "") {
+                setMessages((prevMessages) => [
+                  ...prevMessages,
+                  {
+                    _id: "",
+                    isReact: false,
+                    readedId: [],
+                    contentId: [],
+                    text: messageText,
+                    createAt: new Date().toString(),
+                    createBy: localUserId,
+                    position: "",
+                    isSender: true,
+                    avatar: "",
+                    boxId: "",
+                  },
+                ]);
+                await sendMessage(messageId.toString(), messageText);
+              }
+            }}
           />
         </View>
       </SafeAreaView>

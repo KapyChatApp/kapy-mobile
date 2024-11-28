@@ -14,7 +14,7 @@ export const getMyChatBoxes = async () => {
         },
       }
     );
-    return response.data ? response.data : null;
+    return response.data.box ? response.data.box : null;
   } catch (error) {
     console.log(error);
     throw error;
@@ -25,7 +25,7 @@ export const getAMessageBox = async (boxId: string | string[]) => {
   try {
     const { token } = await getLocalAuth();
     const response = await axios.get(
-      process.env.EXPO_PUBLIC_BASE_URL + "/message/a-messagebox",
+      process.env.EXPO_PUBLIC_BASE_URL + "/message/get-info-box-chat",
       {
         headers: {
           "Content-Type": "application/json",
@@ -34,7 +34,7 @@ export const getAMessageBox = async (boxId: string | string[]) => {
         params: { boxId: boxId },
       }
     );
-    return response.data ? response.data : null;
+    return response.data.box ? response.data.box : null;
   } catch (error) {
     console.log(error);
     throw error;
@@ -55,14 +55,18 @@ export const getAllMessages = async (boxId: string | string[]) => {
       }
     );
 
-    return response.data ? response.data : null;
+    return response.data.messages ? response.data.messages : null;
   } catch (error) {
     console.log(error);
     throw error;
   }
 };
 
-export const createGroup = async (memberIds: string[], leaderId: string, goOn:(boxId:string)=>void) => {
+export const createGroup = async (
+  memberIds: string[],
+  leaderId: string,
+  goOn: (boxId: string) => void
+) => {
   try {
     const { token } = await getLocalAuth();
     const requestBody: CreateChatBoxProps = {
@@ -79,8 +83,8 @@ export const createGroup = async (memberIds: string[], leaderId: string, goOn:(b
         },
       }
     );
-    if(response.data){
-      goOn(response.data._id);
+    if (response.data) {
+      setTimeout(()=>goOn(response.data._id),300)
     }
     return response.data ? response.data : null;
   } catch (error) {
@@ -89,20 +93,13 @@ export const createGroup = async (memberIds: string[], leaderId: string, goOn:(b
   }
 };
 
-export const sendMessage = async (
-  userId: string,
-  groupId: string,
-  recipientId?: string,
-  content?: string
-) => {
+export const sendMessage = async (boxId: string, content?: string) => {
   try {
     const { token } = await getLocalAuth();
     const formData = new FormData();
-    const textContent:string[] = [content || ""]
-    formData.append("userId", userId);
-    formData.append("groupId", groupId);
+    const textContent: string[] = [content || ""];
+    formData.append("boxId", boxId);
     formData.append("content", `"${content}"`);
-    formData.append("recipientId", recipientId || "");
 
     const response = await axios.post(
       process.env.EXPO_PUBLIC_BASE_URL + "/message/send",
@@ -115,10 +112,28 @@ export const sendMessage = async (
       }
     );
 
-    console.log("Response from API:", response.data);
     return response.data;
   } catch (error) {
     console.error("Error sending message:", error);
+    throw error;
+  }
+};
+
+export const markRead = async (boxId: string) => {
+  try {
+    const { token } = await getLocalAuth();
+    const response = await axios.post(
+      process.env.EXPO_PUBLIC_BASE_URL + "/message/mark-read",
+      { boxId: boxId},
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `${token}`,
+        },
+      }
+    );
+  } catch (error) {
+    console.log(error);
     throw error;
   }
 };

@@ -24,9 +24,7 @@ const UnblockPostView = ({
   const [unSent, setUnSent] = useState<boolean>(false);
   return (
     <View
-      className={`flex items-center justify-center ${
-        Platform.OS === "ios" ? "top-[180px] " : "top-[200px]"
-      } mb-[200px]`}
+      className={`flex items-center justify-center mb-[200px]`}
       style={{ rowGap: 26 }}
     >
       <View className="flex flex-row">

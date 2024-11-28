@@ -39,6 +39,7 @@ export const IconURL = {
   change_image: require("../assets/icons/change_image.png"),
   chat_func_more_l: require("../assets/icons/chat_func_more_l.png"),
   chat_func_more_d: require("../assets/icons/chat_func_more_d.png"),
+  circle:require("../assets/icons/circle.png"),
   close: require("../assets/icons/close.png"),
   comment: require("../assets/icons/comment.png"),
   editable: require("../assets/icons/editable.png"),
