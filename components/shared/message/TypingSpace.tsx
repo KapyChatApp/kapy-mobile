@@ -20,9 +20,10 @@ const TypingSpace = ({
   value,
   onPress,
   handlePickMedia,
+  setIsCameraOpen,
+  setIsMicroOpen,
 }: any) => {
   const { theme } = useTheme();
-
   return (
     <View
       className={`w-full h-[66] bg-light-500 dark:bg-dark-0 flex flex-row justify-between items-center px-[10px]`}
@@ -82,7 +83,7 @@ const TypingSpace = ({
               </View>
             </TouchableOpacity>
           </Popover>
-          <TouchableOpacity>
+          <TouchableOpacity onPress={setIsMicroOpen}>
             <Icon
               iconURL={theme === "light" ? IconURL.mic_l : IconURL.mic_d}
               size={28}
@@ -94,7 +95,7 @@ const TypingSpace = ({
               size={28}
             ></Icon>
           </TouchableOpacity>
-          <TouchableOpacity>
+          <TouchableOpacity onPress={setIsCameraOpen}>
             <Icon
               iconURL={
                 theme === "light" ? IconURL.opencam_l : IconURL.opencam_d
@@ -123,17 +124,13 @@ const TypingSpace = ({
           value={value}
         ></TextInput>
       </View>
-      {isTyping ? (
+   
         <View>
           <TouchableOpacity  onPress={onPress} >
             <Icon iconURL={IconURL.send} size={30}/>
           </TouchableOpacity>
         </View>
-      ) : (
-        <TouchableOpacity>
-          <Icon iconURL={IconURL.icon} size={40}></Icon>
-        </TouchableOpacity>
-      )}
+      
     </View>
   );
 };

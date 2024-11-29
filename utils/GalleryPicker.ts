@@ -14,7 +14,7 @@ export const pickMedia = async () => {
       quality: 1,
       allowsMultipleSelection: true, // Chọn nhiều ảnh
     });
-
+     console.log(result.assets);
     // Xử lý nếu `result` không tồn tại
     if (!result || typeof result.canceled === "undefined") {
       console.warn("Error: Unexpected result structure or user exited unexpectedly.");
