@@ -6,6 +6,7 @@ import UserAvatar from "@/components/ui/UserAvatar";
 import { MessageProps } from "@/types/message";
 import { formatDateDistance } from "@/utils/DateFormatter";
 import { Image } from "react-native";
+import VideoPlayer from "../multimedia/VideoPlayer";
 
 const Message = (props: MessageProps) => {
   const [position, setPosition] = useState(props.position);
@@ -61,12 +62,14 @@ const Message = (props: MessageProps) => {
          maxHeight: 240,
          aspectRatio: props.contentId[0].width! / props.contentId[0].height!,
        }}
-     >
-       <Image
-         source={{ uri: props.contentId[0].url }}
-         className="w-full h-full rounded-2xl"
-        
-       />
+     >{
+      props.contentId[0].type==="Image"?    <Image
+      source={{ uri: props.contentId[0].url }}
+      className="w-full h-full rounded-2xl"
+     
+    />: <View className="rounded-2xl flex-1"><VideoPlayer videoSource={props.contentId[0].url!}/> </View>
+     }
+    
      </View>
         ) : (
           <View

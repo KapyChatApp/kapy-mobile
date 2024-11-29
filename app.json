@@ -45,7 +45,7 @@
         {
           "photosPermission": "The app accesses your photos to let you share them with your friends."
         }
-      ], 
+      ],
       [
         "expo-camera",
         {
@@ -55,7 +55,8 @@
         }
       ],
       "expo-asset",
-      "expo-secure-store"
+      "expo-secure-store",
+      "expo-video"
     ],
     "experiments": {
       "typedRoutes": true

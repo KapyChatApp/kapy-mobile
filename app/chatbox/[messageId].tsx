@@ -51,7 +51,7 @@ const MessageDetailPage = () => {
   const [avatar, setAvatar] = useState("");
   const [messageText, setMessageText] = useState("");
   const [messageBox, setMessageBox] = useState<MessageBoxProps>();
- const [isCameraOpen, setIsCameraOpen] = useState(false);
+  const [isCameraOpen, setIsCameraOpen] = useState(false);
   const [selectedMedia, setSelectedMedia] = useState<
     { uri: string; type: string }[]
   >([]);
@@ -69,13 +69,12 @@ const MessageDetailPage = () => {
   const receiver = receiverIds[0];
   const otherReceiver = receiverIds[1];
 
-  const handleSendMessage = async ()=>{
-    
+  const handleSendMessage = async () => {
     const messageTextData = messageText;
-    let mediaData = selectedMedia
+    let mediaData = selectedMedia;
     setSelectedMedia([]);
     setMessageText("");
-    if (messageTextData != "" || mediaData.length!=0) {
+    if (messageTextData != "" || mediaData.length != 0) {
       setMessages((prevMessages) => [
         ...prevMessages,
         {
@@ -94,7 +93,7 @@ const MessageDetailPage = () => {
       ]);
       await sendMessage(messageId.toString(), messageText, mediaData);
     }
-  }
+  };
   useEffect(() => {
     const getAllMessageFUNC = async () => {
       const { _id } = await getLocalAuth();
@@ -132,7 +131,15 @@ const MessageDetailPage = () => {
       style={{ flex: 1 }}
     >
       <SafeAreaView className="flex-1 ">
-      {isCameraOpen? <View className="fixed w-screen h-screen"><ExpoCamera onClose={()=>setIsCameraOpen(false)}/></View> :null}
+        {isCameraOpen ? (
+          <View className="fixed w-screen h-screen">
+            <ExpoCamera
+              onClose={() => setIsCameraOpen(false)}
+             onSend={handleSendMessage}
+             setSelectedMedia={(uri:string, type:string)=> setSelectedMedia([{uri:uri, type:type}])}  
+            />
+          </View>
+        ) : null}
         <View ref={ref}>
           <ChatBoxHeader {...chatBoxHeader} />
         </View>
@@ -187,9 +194,12 @@ const MessageDetailPage = () => {
             })}
           </ScrollView>
         </View>
-      
+
         <View collapsable={false} ref={ref}>
-       <SelectedMedia selectedMedia={selectedMedia} setSelectedMedia={setSelectedMedia}/>
+          <SelectedMedia
+            selectedMedia={selectedMedia}
+            setSelectedMedia={setSelectedMedia}
+          />
           <TypingSpace
             handlePickMedia={handlePickMedia}
             isTyping={isTyping}
@@ -197,7 +207,7 @@ const MessageDetailPage = () => {
             onChangeText={setMessageText}
             value={messageText}
             onPress={handleSendMessage}
-            setIsCameraOpen={()=>setIsCameraOpen(true)}
+            setIsCameraOpen={() => setIsCameraOpen(true)}
           />
         </View>
       </SafeAreaView>
