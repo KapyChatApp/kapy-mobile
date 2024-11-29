@@ -41,6 +41,7 @@ export const IconURL = {
   chat_func_more_d: require("../assets/icons/chat_func_more_d.png"),
   circle:require("../assets/icons/circle.png"),
   close: require("../assets/icons/close.png"),
+  close_single:require("../assets/icons/close_single.png"),
   comment: require("../assets/icons/comment.png"),
   editable: require("../assets/icons/editable.png"),
   invite: require("../assets/icons/invite.png"),

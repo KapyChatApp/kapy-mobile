@@ -39,6 +39,7 @@ import { Video } from "expo-av";
 import { useMarkReadContext } from "@/context/MarkReadProvider";
 import SelectedMedia from "@/components/shared/multimedia/SelectedMedia";
 import { uriToFile } from "@/utils/File";
+import ExpoCamera from "@/components/shared/multimedia/ExpoCamera";
 
 const MessageDetailPage = () => {
   const { messageId } = useLocalSearchParams();
@@ -50,7 +51,7 @@ const MessageDetailPage = () => {
   const [avatar, setAvatar] = useState("");
   const [messageText, setMessageText] = useState("");
   const [messageBox, setMessageBox] = useState<MessageBoxProps>();
-
+ const [isCameraOpen, setIsCameraOpen] = useState(false);
   const [selectedMedia, setSelectedMedia] = useState<
     { uri: string; type: string }[]
   >([]);
@@ -131,6 +132,7 @@ const MessageDetailPage = () => {
       style={{ flex: 1 }}
     >
       <SafeAreaView className="flex-1 ">
+      {isCameraOpen? <View className="fixed w-screen h-screen"><ExpoCamera onClose={()=>setIsCameraOpen(false)}/></View> :null}
         <View ref={ref}>
           <ChatBoxHeader {...chatBoxHeader} />
         </View>
@@ -185,6 +187,7 @@ const MessageDetailPage = () => {
             })}
           </ScrollView>
         </View>
+      
         <View collapsable={false} ref={ref}>
        <SelectedMedia selectedMedia={selectedMedia} setSelectedMedia={setSelectedMedia}/>
           <TypingSpace
@@ -194,6 +197,7 @@ const MessageDetailPage = () => {
             onChangeText={setMessageText}
             value={messageText}
             onPress={handleSendMessage}
+            setIsCameraOpen={()=>setIsCameraOpen(true)}
           />
         </View>
       </SafeAreaView>

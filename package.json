@@ -75,7 +75,8 @@
     "react-native-ui-datepicker": "^2.0.4",
     "react-native-web": "~0.19.10",
     "tailwind-rn": "^4.2.0",
-    "use-state-with-callback": "^3.0.2"
+    "use-state-with-callback": "^3.0.2",
+    "expo-camera": "~16.0.7"
   },
   "devDependencies": {
     "@babel/core": "^7.25.9",

@@ -20,9 +20,9 @@ const TypingSpace = ({
   value,
   onPress,
   handlePickMedia,
+  setIsCameraOpen
 }: any) => {
   const { theme } = useTheme();
-
   return (
     <View
       className={`w-full h-[66] bg-light-500 dark:bg-dark-0 flex flex-row justify-between items-center px-[10px]`}
@@ -94,7 +94,7 @@ const TypingSpace = ({
               size={28}
             ></Icon>
           </TouchableOpacity>
-          <TouchableOpacity>
+          <TouchableOpacity onPress={setIsCameraOpen}>
             <Icon
               iconURL={
                 theme === "light" ? IconURL.opencam_l : IconURL.opencam_d

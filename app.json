@@ -46,6 +46,14 @@
           "photosPermission": "The app accesses your photos to let you share them with your friends."
         }
       ], 
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "Allow Kapy ChatApp to access your camera",
+          "microphonePermission": "Allow Kapy ChatApp to access your microphone",
+          "recordAudioAndroid": true
+        }
+      ],
       "expo-asset",
       "expo-secure-store"
     ],
