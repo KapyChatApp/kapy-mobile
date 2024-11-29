@@ -123,17 +123,13 @@ const TypingSpace = ({
           value={value}
         ></TextInput>
       </View>
-      {isTyping ? (
+   
         <View>
           <TouchableOpacity  onPress={onPress} >
             <Icon iconURL={IconURL.send} size={30}/>
           </TouchableOpacity>
         </View>
-      ) : (
-        <TouchableOpacity>
-          <Icon iconURL={IconURL.icon} size={40}></Icon>
-        </TouchableOpacity>
-      )}
+      
     </View>
   );
 };

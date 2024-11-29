@@ -38,6 +38,7 @@ import GalleryPickerBox from "@/components/ui/GalleryPickerBox";
 import { Video } from "expo-av";
 import { useMarkReadContext } from "@/context/MarkReadProvider";
 import SelectedMedia from "@/components/shared/multimedia/SelectedMedia";
+import { uriToFile } from "@/utils/File";
 
 const MessageDetailPage = () => {
   const { messageId } = useLocalSearchParams();
@@ -66,6 +67,33 @@ const MessageDetailPage = () => {
   const receiverIds = messageBox?.receiverIds ?? [];
   const receiver = receiverIds[0];
   const otherReceiver = receiverIds[1];
+
+  const handleSendMessage = async ()=>{
+    
+    const messageTextData = messageText;
+    let mediaData = selectedMedia
+    setSelectedMedia([]);
+    setMessageText("");
+    if (messageTextData != "" || mediaData.length!=0) {
+      setMessages((prevMessages) => [
+        ...prevMessages,
+        {
+          _id: "",
+          isReact: false,
+          readedId: [],
+          contentId: selectedMedia,
+          text: messageText,
+          createAt: new Date().toString(),
+          createBy: localUserId,
+          position: "",
+          isSender: true,
+          avatar: "",
+          boxId: "",
+        },
+      ]);
+      await sendMessage(messageId.toString(), messageText, mediaData);
+    }
+  }
   useEffect(() => {
     const getAllMessageFUNC = async () => {
       const { _id } = await getLocalAuth();
@@ -165,29 +193,7 @@ const MessageDetailPage = () => {
             setIsTypeping={setIsTypeping}
             onChangeText={setMessageText}
             value={messageText}
-            onPress={async () => {
-              const messageTextData = messageText;
-              setMessageText("");
-              if (messageTextData != "") {
-                setMessages((prevMessages) => [
-                  ...prevMessages,
-                  {
-                    _id: "",
-                    isReact: false,
-                    readedId: [],
-                    contentId: [],
-                    text: messageText,
-                    createAt: new Date().toString(),
-                    createBy: localUserId,
-                    position: "",
-                    isSender: true,
-                    avatar: "",
-                    boxId: "",
-                  },
-                ]);
-                await sendMessage(messageId.toString(), messageText);
-              }
-            }}
+            onPress={handleSendMessage}
           />
         </View>
       </SafeAreaView>

@@ -1,6 +1,8 @@
 import axios from "axios";
 import { getLocalAuth } from "./local-auth";
 import { CreateChatBoxProps, CreateMessageData } from "@/types/message";
+import { FileProps } from "@/types/file";
+import { generateRandomNumberString } from "@/utils/Random";
 
 export const getMyChatBoxes = async () => {
   try {
@@ -93,26 +95,53 @@ export const createGroup = async (
   }
 };
 
-export const sendMessage = async (boxId: string, content?: string) => {
+export const sendMessage = async (boxId: string, content: string, files:{uri:string, type:string}[]) => {
   try {
     const { token } = await getLocalAuth();
-    const formData = new FormData();
-    const textContent: string[] = [content || ""];
-    formData.append("boxId", boxId);
-    formData.append("content", `"${content}"`);
-
-    const response = await axios.post(
-      process.env.EXPO_PUBLIC_BASE_URL + "/message/send",
-      formData,
-      {
-        headers: {
-          "Content-Type": "multipart/form-data",
-          Authorization: `${token}`,
-        },
+   
+    if(files.length!=0){
+      for(const file of files){
+        const formData = new FormData();
+        const newFile: any = {
+          uri: file.uri,
+          type: file.type === "image" ? "image/jpeg" : file.type,
+          name: generateRandomNumberString(10)?.toString(),
+        };
+  
+        formData.append("boxId",boxId);
+        formData.append("content","");
+        formData.append("file", newFile as any);
+        await axios.post(
+          process.env.EXPO_PUBLIC_BASE_URL + "/message/send-mobile",
+          formData,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+              Authorization: `${token}`,
+            },
+          }
+        );
       }
-    );
+   
+    } else{
+      const formData = new FormData();
+      formData.append("boxId", boxId);
+      formData.append("content", `"${content}"`);
+      const response = await axios.post(
+        process.env.EXPO_PUBLIC_BASE_URL + "/message/send",
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+            Authorization: `${token}`,
+          },
+        }
+      );
+  
+      return response.data;
+    }
 
-    return response.data;
+   
   } catch (error) {
     console.error("Error sending message:", error);
     throw error;
