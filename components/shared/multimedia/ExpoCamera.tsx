@@ -38,9 +38,10 @@ const ExpoCamera = ({
   const [isRecording, setIsRecording] = useState(false);
   const [videoUri, setVideoUri] = useState<string | undefined>("");
 
-  const [recordingTime, setRecordingTime] = useState(0); 
-  const [timerInterval, setTimerInterval] = useState<NodeJS.Timeout | null>(null);
-
+  const [recordingTime, setRecordingTime] = useState(0);
+  const [timerInterval, setTimerInterval] = useState<NodeJS.Timeout | null>(
+    null
+  );
 
   if (!permission) {
     return <View />;
@@ -75,7 +76,7 @@ const ExpoCamera = ({
         const photo = await cameraRef.current.takePictureAsync({
           base64: true, // Optional: Get the base64 encoded image
         });
-        setPhotoUri(photo?.uri); 
+        setPhotoUri(photo?.uri);
         setSelectedMedia(photo?.uri!, "image");
         console.log("Photo taken: ", photo?.uri);
       }
@@ -88,12 +89,12 @@ const ExpoCamera = ({
     if (cameraRef.current) {
       try {
         setIsRecording(true);
-       
+
         setRecordingTime(0);
 
         const interval = setInterval(() => {
           setRecordingTime((prev) => prev + 1);
-        }, 1000); 
+        }, 1000);
 
         setTimerInterval(interval);
 
@@ -102,7 +103,7 @@ const ExpoCamera = ({
           codec: "avc1",
         });
         setVideoUri(video?.uri);
-        setSelectedMedia(video?.uri!,"video");
+        setSelectedMedia(video?.uri!, "video");
         console.log("Video recording started: ", video?.uri);
       } catch (error) {
         console.error("Error starting video recording: ", error);
@@ -115,8 +116,8 @@ const ExpoCamera = ({
       try {
         console.log("stop!");
         await cameraRef.current.stopRecording();
-        clearInterval(timerInterval!); 
-        setTimerInterval(null); 
+        clearInterval(timerInterval!);
+        setTimerInterval(null);
         setIsRecording(false);
         await cameraRef.current.resumePreview();
       } catch (error) {
@@ -160,8 +161,10 @@ const ExpoCamera = ({
           </View>
           <View className="absolute bottom-[40px] right-[20px]">
             <TouchableOpacity
-              onPress={()=> {onSend(); onClose()}
-              }
+              onPress={() => {
+                onSend();
+                onClose();
+              }}
             >
               <Icon size={40} iconURL={IconURL.send} />
             </TouchableOpacity>
@@ -183,19 +186,23 @@ const ExpoCamera = ({
                 <Icon size={30} iconURL={IconURL.change_cam} />
               </TouchableOpacity>
             </View>
-            <View className="flex items-center justify-between mb-[40px]" style={{rowGap:10}}>
-            {isRecording && (
-              <View className=" w-full flex items-center">
-                <Text className="text-white text-lg">
-                  {Math.floor(recordingTime / 60)}:{(recordingTime % 60).toString().padStart(2, '0')}
-                </Text>
-              </View>
-            )}
-            <TouchableOpacity
-              className="w-[80px] h-[80px] bg-cardinal rounded-full"
-              onPress={handlePress}
-              onLongPress={handleLongPress}
-            />
+            <View
+              className="flex items-center justify-between mb-[40px]"
+              style={{ rowGap: 10 }}
+            >
+              {isRecording && (
+                <View className=" w-full flex items-center">
+                  <Text className="text-white text-lg">
+                    {Math.floor(recordingTime / 60)}:
+                    {(recordingTime % 60).toString().padStart(2, "0")}
+                  </Text>
+                </View>
+              )}
+              <TouchableOpacity
+                className="w-[80px] h-[80px] bg-cardinal rounded-full"
+                onPress={handlePress}
+                onLongPress={handleLongPress}
+              />
             </View>
           </View>
         </CameraView>

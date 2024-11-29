@@ -54,9 +54,16 @@
           "recordAudioAndroid": true
         }
       ],
+      [
+        "expo-audio",
+        {
+          "microphonePermission": "Allow Kapy ChatApp to access your microphone."
+        }
+      ],
       "expo-asset",
       "expo-secure-store",
-      "expo-video"
+      "expo-video",
+      "expo-audio"
     ],
     "experiments": {
       "typedRoutes": true

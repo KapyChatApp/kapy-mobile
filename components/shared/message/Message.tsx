@@ -7,8 +7,10 @@ import { MessageProps } from "@/types/message";
 import { formatDateDistance } from "@/utils/DateFormatter";
 import { Image } from "react-native";
 import VideoPlayer from "../multimedia/VideoPlayer";
+import AudioPlayer from "../multimedia/AudioPlayer";
 
 const Message = (props: MessageProps) => {
+  console.log(props.contentId[0]? props.contentId[0].url! + props.contentId[0].type! : "")
   const [position, setPosition] = useState(props.position);
   const [isShowTime, setIsShowTime] = useState(
     position === "bottom" ? true : false
@@ -67,7 +69,7 @@ const Message = (props: MessageProps) => {
       source={{ uri: props.contentId[0].url }}
       className="w-full h-full rounded-2xl"
      
-    />: <View className="rounded-2xl flex-1"><VideoPlayer videoSource={props.contentId[0].url!}/> </View>
+    />: (props.contentId[0].type==="Video"? <View className="rounded-2xl flex-1"><VideoPlayer videoSource={props.contentId[0].url!}/> </View> : <AudioPlayer audioUri={props.contentId[0].url!}/>)
      }
     
      </View>

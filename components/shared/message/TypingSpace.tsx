@@ -20,7 +20,8 @@ const TypingSpace = ({
   value,
   onPress,
   handlePickMedia,
-  setIsCameraOpen
+  setIsCameraOpen,
+  setIsMicroOpen,
 }: any) => {
   const { theme } = useTheme();
   return (
@@ -82,7 +83,7 @@ const TypingSpace = ({
               </View>
             </TouchableOpacity>
           </Popover>
-          <TouchableOpacity>
+          <TouchableOpacity onPress={setIsMicroOpen}>
             <Icon
               iconURL={theme === "light" ? IconURL.mic_l : IconURL.mic_d}
               size={28}

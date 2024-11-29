@@ -40,10 +40,14 @@ import { useMarkReadContext } from "@/context/MarkReadProvider";
 import SelectedMedia from "@/components/shared/multimedia/SelectedMedia";
 import { uriToFile } from "@/utils/File";
 import ExpoCamera from "@/components/shared/multimedia/ExpoCamera";
+import AudioRecorder from "@/components/shared/multimedia/AudioRecorder";
 
 const MessageDetailPage = () => {
   const { messageId } = useLocalSearchParams();
-  const ref = useClickOutside<View>(() => setIsTypeping(false));
+  const ref = useClickOutside<View>(() => {
+    setIsTypeping(false);
+    setIsMicroOpen(false);
+  });
   const [isTyping, setIsTypeping] = useState(false);
   const [messages, setMessages] = useState<MessageProps[]>([]);
   const [localUserId, setLocalUserId] = useState("");
@@ -52,6 +56,7 @@ const MessageDetailPage = () => {
   const [messageText, setMessageText] = useState("");
   const [messageBox, setMessageBox] = useState<MessageBoxProps>();
   const [isCameraOpen, setIsCameraOpen] = useState(false);
+  const [isMicroOpen, setIsMicroOpen] = useState(false);
   const [selectedMedia, setSelectedMedia] = useState<
     { uri: string; type: string }[]
   >([]);
@@ -70,6 +75,7 @@ const MessageDetailPage = () => {
   const otherReceiver = receiverIds[1];
 
   const handleSendMessage = async () => {
+    console.log("data: ",selectedMedia);
     const messageTextData = messageText;
     let mediaData = selectedMedia;
     setSelectedMedia([]);
@@ -135,8 +141,10 @@ const MessageDetailPage = () => {
           <View className="fixed w-screen h-screen">
             <ExpoCamera
               onClose={() => setIsCameraOpen(false)}
-             onSend={handleSendMessage}
-             setSelectedMedia={(uri:string, type:string)=> setSelectedMedia([{uri:uri, type:type}])}  
+              onSend={handleSendMessage}
+              setSelectedMedia={(uri: string, type: string) =>
+                setSelectedMedia([{ uri: uri, type: type }])
+              }
             />
           </View>
         ) : null}
@@ -208,7 +216,17 @@ const MessageDetailPage = () => {
             value={messageText}
             onPress={handleSendMessage}
             setIsCameraOpen={() => setIsCameraOpen(true)}
+            setIsMicroOpen={() => setIsMicroOpen(true)}
           />
+          {isMicroOpen ? (
+            <View ref={ref}>
+              <AudioRecorder
+                setSelectedMedia={(uri: string, type: string) =>
+                  setSelectedMedia([{ uri: uri, type: type }])
+                }
+              />
+            </View>
+          ) : null}
         </View>
       </SafeAreaView>
     </KeyboardAvoidingView>
