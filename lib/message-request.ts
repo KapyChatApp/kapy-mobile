@@ -3,6 +3,7 @@ import { getLocalAuth } from "./local-auth";
 import { CreateChatBoxProps, CreateMessageData } from "@/types/message";
 import { FileProps } from "@/types/file";
 import { generateRandomNumberString } from "@/utils/Random";
+import * as FileSystem from "expo-file-system";
 
 export const getMyChatBoxes = async () => {
   try {
@@ -86,7 +87,7 @@ export const createGroup = async (
       }
     );
     if (response.data) {
-      setTimeout(()=>goOn(response.data._id),300)
+      setTimeout(() => goOn(response.data._id), 300);
     }
     return response.data ? response.data : null;
   } catch (error) {
@@ -95,21 +96,51 @@ export const createGroup = async (
   }
 };
 
-export const sendMessage = async (boxId: string, content: string, files:{uri:string, type:string}[]) => {
+export const sendMessage = async (
+  boxId: string,
+  content: string,
+  files: { uri: string; type: string }[]
+) => {
   try {
     const { token } = await getLocalAuth();
-   
-    if(files.length!=0){
-      for(const file of files){
+
+    if (files.length != 0) {
+      for (const file of files) {
         const formData = new FormData();
-        const newFile: any = {
-          uri: file.uri,
-          type: file.type === "image" ? "image/jpeg" : file.type,
-          name: generateRandomNumberString(10)?.toString(),
-        };
-  
-        formData.append("boxId",boxId);
-        formData.append("content","");
+        let newFile = null;
+        switch (file.type) {
+          case "image":
+            newFile = {
+              uri: file.uri,
+              type: "image/jpeg", 
+              name: generateRandomNumberString(10)?.toString() + ".jpg",
+            };
+            break;
+          case "video":
+            newFile = {
+              uri: file.uri,
+              type: "video/mp4", 
+              name: generateRandomNumberString(10)?.toString() + ".mp4",
+            };
+            break;
+          case "audio":
+            newFile = {
+              uri: file.uri,
+              type: "audio/m4a", 
+              name: generateRandomNumberString(10)?.toString() + ".m4a", };
+            break;
+          default:
+            newFile = {
+              uri: file.uri,
+              type: file.type, 
+              name: generateRandomNumberString(10)?.toString(), 
+            };
+            break;
+        }
+       
+        console.log("typeeeee:" ,file.type);
+        formData.append("boxId", boxId);
+        formData.append("content", "");
         formData.append("file", newFile as any);
         await axios.post(
           process.env.EXPO_PUBLIC_BASE_URL + "/message/send-mobile",
@@ -122,8 +153,7 @@ export const sendMessage = async (boxId: string, content: string, files:{uri:str
           }
         );
       }
-   
-    } else{
+    } else {
       const formData = new FormData();
       formData.append("boxId", boxId);
       formData.append("content", `"${content}"`);
@@ -137,11 +167,9 @@ export const sendMessage = async (boxId: string, content: string, files:{uri:str
           },
         }
       );
-  
+
       return response.data;
     }
-
-   
   } catch (error) {
     console.error("Error sending message:", error);
     throw error;
@@ -153,7 +181,7 @@ export const markRead = async (boxId: string) => {
     const { token } = await getLocalAuth();
     const response = await axios.post(
       process.env.EXPO_PUBLIC_BASE_URL + "/message/mark-read",
-      { boxId: boxId},
+      { boxId: boxId },
       {
         headers: {
           "Content-Type": "application/json",
@@ -164,5 +192,24 @@ export const markRead = async (boxId: string) => {
   } catch (error) {
     console.log(error);
     throw error;
+  }
+};
+
+export const revokeMessage = async (messageId: string) => {
+  try {
+    const { token } = await getLocalAuth();
+    const response = await axios.delete(
+      process.env.EXPO_PUBLIC_BASE_URL + "/message/revoke",
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `${token}`,
+        },
+        params: { messageId: messageId },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    console.log(error);
   }
 };

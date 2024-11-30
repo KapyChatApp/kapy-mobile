@@ -34,9 +34,7 @@ const AudioRecorder = ({
   const progress = useSharedValue(0);
 
   const [recordingTime, setRecordingTime] = useState(0);
-  const [timerInterval, setTimerInterval] = useState<NodeJS.Timeout | null>(
-    null
-  );
+  const [timerInterval, setTimerInterval] = useState<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
     (async () => {
@@ -45,26 +43,33 @@ const AudioRecorder = ({
         Alert.alert("Permission to access microphone was denied");
       }
     })();
-
+  
     return () => {
-      // Cleanup function
-      clearInterval(timerInterval!); 
+      if (timerInterval) {
+        clearInterval(timerInterval);
+      }
+
       if (recording) {
         recording.stopAndUnloadAsync().catch(console.error);
       }
+  
       if (sound) {
-        sound.unloadAsync().catch(console.error); 
+        sound.unloadAsync().catch(console.error);
       }
     };
-  }, [recording, sound]);
+  }, []);
+  
 
   const startRecording = async () => {
     try {
       await Audio.setAudioModeAsync({
-        allowsRecordingIOS: true,
-        playsInSilentModeIOS: true,
+        allowsRecordingIOS: true,           
+        playsInSilentModeIOS: true,     
+        interruptionModeIOS: 1,  
+        staysActiveInBackground: true,    
+        shouldDuckAndroid: true,          
+        interruptionModeAndroid: 1,
       });
-
       const { recording } = await Audio.Recording.createAsync(
         Audio.RecordingOptionsPresets.HIGH_QUALITY
       );
@@ -85,30 +90,41 @@ const AudioRecorder = ({
   };
 
   const stopRecording = async () => {
-    setIsRecording(false);
-    const uri = recording?.getURI();
-    setSelectedMedia(uri!, "Audio");
-    if (!recording) return;
-    clearInterval(timerInterval!);
-    setTimerInterval(null);
+    if (!recording) {
+      console.error("No recording instance found to stop.");
+      return;
+    }
+  
     try {
+      if(recording){
       await recording.stopAndUnloadAsync();
       const uri = recording.getURI();
-      console.log("Recording stored at", uri);
-
-      const { sound } = await recording.createNewLoadedSoundAsync();
-      setSound(sound);
-
-      const status = await sound.getStatusAsync();
-      if (status.isLoaded) {
-        setDuration(status.durationMillis || 0);
+      if (uri) {
+       
+        console.log("Recording URI:", uri);
+        setSelectedMedia(uri, "audio");
+  
+        // Create sound from recording
+        const { sound } = await recording.createNewLoadedSoundAsync();
+        setSound(sound);
+  
+        const status = await sound.getStatusAsync();
+        if (status.isLoaded) {
+          setDuration(status.durationMillis || 0);
+        }
+  
+        console.log("Recording stopped successfully.");
       }
-    } catch (err) {
-      console.error("Failed to stop recording", err);
     }
-
-    setRecording(null);
+    } catch (err) {
+      console.error("Failed to stop recording:", err);
+    } finally {
+      setRecording(null);
+      setIsRecording(false);
+      clearInterval(timerInterval!);
+    }
   };
+  
 
   const playSound = async () => {
     setIsPlaying(true);

@@ -75,7 +75,7 @@ const MessageDetailPage = () => {
   const otherReceiver = receiverIds[1];
 
   const handleSendMessage = async () => {
-    console.log("data: ",selectedMedia);
+    console.log("data: ", selectedMedia);
     const messageTextData = messageText;
     let mediaData = selectedMedia;
     setSelectedMedia([]);
@@ -202,7 +202,6 @@ const MessageDetailPage = () => {
             })}
           </ScrollView>
         </View>
-
         <View collapsable={false} ref={ref}>
           <SelectedMedia
             selectedMedia={selectedMedia}
