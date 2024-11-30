@@ -148,7 +148,6 @@ const ExpoCamera = ({
               <VideoPlayer videoSource={videoUri!} />
             </View>
           )}
-
           <View className="absolute top-[20px] left-[20px]">
             <TouchableOpacity
               onPress={() => {

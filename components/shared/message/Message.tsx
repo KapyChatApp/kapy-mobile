@@ -8,9 +8,13 @@ import { formatDateDistance } from "@/utils/DateFormatter";
 import { Image } from "react-native";
 import VideoPlayer from "../multimedia/VideoPlayer";
 import AudioPlayer from "../multimedia/AudioPlayer";
+import { useActionSheet } from "@expo/react-native-action-sheet";
+import { revokeMessage } from "@/lib/message-request";
 
 const Message = (props: MessageProps) => {
-  console.log(props.contentId[0]? props.contentId[0].url! + props.contentId[0].type! : "")
+  console.log(
+    props.contentId[0] ? props.contentId[0].url! + props.contentId[0].type! : ""
+  );
   const [position, setPosition] = useState(props.position);
   const [isShowTime, setIsShowTime] = useState(
     position === "bottom" ? true : false
@@ -40,6 +44,36 @@ const Message = (props: MessageProps) => {
         return "rounded-3xl";
     }
   };
+
+  const handleRevokeMessage = async () => {
+    await revokeMessage(props._id);
+  };
+
+  const { showActionSheetWithOptions } = useActionSheet();
+  const handleLongPress = async () => {
+    const options = props.isSender
+      ? ["Revoke message", "Cancel"]
+      : ["Report this rate", "Cancel"];
+    const cancelButtonIndex = 1;
+    showActionSheetWithOptions(
+      {
+        options,
+        cancelButtonIndex,
+      },
+      (selectedIndex: number | undefined) => {
+        switch (selectedIndex) {
+          case 0:
+            if (props.isSender) {
+              handleRevokeMessage();
+            } else {
+              console.log("report");
+            }
+            break;
+          case cancelButtonIndex:
+        }
+      }
+    );
+  };
   return (
     <View
       className={`flex-1 flex ${props.isSender ? "items-end" : "items-start"}`}
@@ -50,6 +84,7 @@ const Message = (props: MessageProps) => {
         onPress={() => {
           if (position !== "bottom") setIsShowTime(!isShowTime);
         }}
+        onLongPress={handleLongPress}
       >
         {!props.isSender && (position === "bottom" || position === "free") ? (
           <UserAvatar avatarURL={{ uri: props.avatar }} size={36} />
@@ -57,22 +92,28 @@ const Message = (props: MessageProps) => {
           <View className="w-[36px] h-[36px] bg-transparent-"></View>
         )}
         {props.contentId.length != 0 ? (
-       <View
-       className="flex-1"
-       style={{
-         maxWidth: 240,
-         maxHeight: 240,
-         aspectRatio: props.contentId[0].width! / props.contentId[0].height!,
-       }}
-     >{
-      props.contentId[0].type==="Image"?    <Image
-      source={{ uri: props.contentId[0].url }}
-      className="w-full h-full rounded-2xl"
-     
-    />: (props.contentId[0].type==="Video"? <View className="rounded-2xl flex-1"><VideoPlayer videoSource={props.contentId[0].url!}/> </View> : <AudioPlayer audioUri={props.contentId[0].url!}/>)
-     }
-    
-     </View>
+          <View
+            className="flex-1"
+            style={{
+              maxWidth: 240,
+              maxHeight: 240,
+              aspectRatio:
+                props.contentId[0].width! / props.contentId[0].height!,
+            }}
+          >
+            {props.contentId[0].type === "Image" ? (
+              <Image
+                source={{ uri: props.contentId[0].url }}
+                className="w-full h-full rounded-2xl"
+              />
+            ) : props.contentId[0].type === "Video" ? (
+              <View className="rounded-2xl flex-1">
+                <VideoPlayer videoSource={props.contentId[0].url!} />{" "}
+              </View>
+            ) : props.contentId[0].type === "Audio" ? (
+              <AudioPlayer audioUri={props.contentId[0].url!} />
+            ) : null}
+          </View>
         ) : (
           <View
             ref={ref}
