@@ -9,3 +9,8 @@ export const RelationShipItems = [
   {index:3, label:"Divorced", value:"divorced"},
   {index:4, label:"Widowed", value:"widowed"}
 ];
+
+export const PrivacyItems = [
+  {index:0, label:"Public", value:"public"},
+  {index:1, label:"Private", value:"Private"},
+]

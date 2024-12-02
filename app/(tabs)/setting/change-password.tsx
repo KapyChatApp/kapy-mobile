@@ -8,6 +8,8 @@ import SubmitButton from "@/components/ui/SubmitButton";
 import NoticeCard from "@/components/ui/NoticeCard";
 import SecretInput from "@/components/ui/SecretInput";
 import { IconURL } from "@/constants/IconURL";
+import { bgLight500Dark10 } from "@/styles/theme";
+import { useTheme } from "@/context/ThemeProviders";
 
 const ChangePasswordPage = () => {
   const navigation = useNavigation();
@@ -18,13 +20,14 @@ const ChangePasswordPage = () => {
       router.push("/(auth)/verify-code");
     }
   };
+  const {theme} = useTheme();
   return (
-    <SafeAreaView className="flex items-center" style={{ rowGap: 12 }}>
+    <SafeAreaView className={`flex items-center ${bgLight500Dark10} flex-1`} style={{ rowGap: 12 }}>
       <Previous navigation={navigation} header="Change password" isAbsolute={true}/>
       <View className="flex items-center mt-[60px]" style={{ rowGap: 16 }}>
-        <SecretInput iconURL={IconURL.password_l} placeHolder="Enter your old password"/>
-        <SecretInput iconURL={IconURL.password_l} placeHolder="Enter your new password"/>
-        <SecretInput iconURL={IconURL.password_l} placeHolder="Re-Enter your new password"/>
+        <SecretInput iconURL={theme==="light"? IconURL.password_l:IconURL.password_d} placeHolder="Enter your old password"/>
+        <SecretInput iconURL={theme==="light"? IconURL.password_l:IconURL.password_d} placeHolder="Enter your new password"/>
+        <SecretInput iconURL={theme==="light"? IconURL.password_l:IconURL.password_d} placeHolder="Re-Enter your new password"/>
       </View>
       <OtherSign
         cause="Forgot your password?"

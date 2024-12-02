@@ -62,7 +62,7 @@ const EditablePopover = ({
               <View ref={ref} className="absolute rounded-xl bg-light-510 dark:bg-dark-20" style={{top:popoverPosition.top, left: popoverPosition.left}} >
                 {values.map((item)=> <TouchableOpacity
                 key={item.index}
-                  className={`w-[150px]  h-[50px] flex items-center justify-center ${item.index != values.length-1?  "border-b-[0.5px] border-border": ""}`}
+                  className={`w-[150px]  h-[40px] flex items-center justify-center ${item.index != values.length-1?  "border-b-[0.5px] border-border": ""}`}
                   onPress={() => {
                     setIsPopoverOpen(false);
                     setData?.(item.value);

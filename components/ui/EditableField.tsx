@@ -7,6 +7,8 @@ import { IconURL } from "@/constants/IconURL";
 import Icon from "./Icon";
 import { Link } from "expo-router";
 import { textLight0Dark500 } from "@/styles/theme";
+import EditablePopover from "./EditablePopover";
+import { PrivacyItems } from "@/constants/UiItems";
 
 const EditableField = ({
   label,
