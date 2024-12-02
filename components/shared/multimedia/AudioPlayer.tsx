@@ -26,6 +26,7 @@ const AudioPlayer = ({ audioUri }: { audioUri: string }) => {
   const progress = useSharedValue(0);
 
   useEffect(() => {
+    console.log("audio: ",audioUri);
     loadAudio();
 
     return () => {

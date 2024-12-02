@@ -4,6 +4,7 @@ import { CreateChatBoxProps, CreateMessageData } from "@/types/message";
 import { FileProps } from "@/types/file";
 import { generateRandomNumberString } from "@/utils/Random";
 import * as FileSystem from "expo-file-system";
+import { audioFromUri } from "@/utils/File";
 
 export const getMyChatBoxes = async () => {
   try {
@@ -137,11 +138,17 @@ export const sendMessage = async (
             };
             break;
         }
-       
-        console.log("typeeeee:" ,file.type);
+        // if(file.type==="audio"){
+        //   const audioFile = await audioFromUri(file.uri);
+        //   console.log("file: ",audioFile );
+        //   formData.append("boxId",boxId);
+        //   formData.append("content", "");
+        //   formData.append("file",audioFile!);
+        // }else{
         formData.append("boxId", boxId);
         formData.append("content", "");
         formData.append("file", newFile as any);
+        console.log("file: ", newFile);
         await axios.post(
           process.env.EXPO_PUBLIC_BASE_URL + "/message/send-mobile",
           formData,
