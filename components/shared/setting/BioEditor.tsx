@@ -1,24 +1,20 @@
-import { View, Text, Alert } from "react-native";
+import { View, Alert } from "react-native";
 import React, { useEffect, useState } from "react";
 import EditableField from "@/components/ui/EditableField";
 import CustomButton from "@/components/ui/CustomButton";
-import Popover, { PopoverPlacement } from "react-native-popover-view";
-import { TouchableOpacity } from "react-native-gesture-handler";
 import EditablePopover from "@/components/ui/EditablePopover";
-import { Genders, RelationShips } from "@/constants/UiItems";
+import { GenderItems, RelationShipItems } from "@/constants/UiItems";
 import EditableDatePicker from "@/components/ui/EditableDatePicker";
 import { IconURL } from "@/constants/IconURL";
 import { BioEditorProps } from "@/types/user";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
-import NoticeCard from "@/components/ui/NoticeCard";
 import { getMyProfile } from "@/lib/my-profile";
 
 const BioEditor = (props: BioEditorProps | undefined) => {
   const [isNoticeOpen, setIsNoticeOpen] = useState(false);
   const [isReload, setIsReload] = useState(false);
   const [gender, setGender] = useState<boolean | undefined>(true);
-  const [showGender, setShowGender] = useState<string | undefined>();
   const [birthDay, setBirtDay] = useState<string>();
   const [relationShip, setRelationShip] = useState<string | undefined>("");
   const [firstName, setFirstName] = useState<string | undefined>("");
@@ -34,7 +30,6 @@ const BioEditor = (props: BioEditorProps | undefined) => {
     const handleInitiateBioEditor = async () => {
       if (props) {
         setGender(props.gender);
-        setShowGender(props.gender ? "Male" : "Female");
         setFirstName(props.firstName);
         setLastName(props.lastName);
         setNickname(props.nickName);
@@ -48,16 +43,16 @@ const BioEditor = (props: BioEditorProps | undefined) => {
       await getMyProfile();
     };
     handleInitiateBioEditor();
-  }, [props, isReload]);
+  }, [props,isReload]);
 
   const handleUpdateProfile = async () => {
     props?.setStartLoading();
     props?.setIsLoading();
-    const profileData = {
+    setTimeout(async ()=>{ const profileData = {
       firstName,
       lastName,
       nickName,
-      gender: showGender === "Male" ? true : false,
+      gender: gender,
       address,
       job,
       hobbies,
@@ -82,23 +77,21 @@ const BioEditor = (props: BioEditorProps | undefined) => {
       if (response.status == 200 || response.status == 201) {
         props?.setNotIsLoading();
         const timmer = setTimeout(() => props?.setEndLoading(), 1500);
+        setGender(response.data.gender);
         return () => clearTimeout(timmer);
       } else {
         Alert.alert(`Update failed: ${response.status}`);
         props?.setEndLoading();
       }
-      console.log(response.data);
     } catch (error: any) {
       console.error(
         "Error updating profile:",
         error.response ? error.response.data : error.message
       );
-    }
+    }},100)
+   
   };
 
-  const handleAfterUpdate = () => {
-    setIsReload(!isReload);
-  };
   return (
     <View
       className="px-[16px] flex items-center justify-center"
@@ -145,9 +138,9 @@ const BioEditor = (props: BioEditorProps | undefined) => {
             label="Gender"
             width="100%"
             height={fieldHeight}
-            data={showGender}
-            setData={setShowGender}
-            values={Genders}
+            data={gender}
+            setData={setGender}
+            values={GenderItems}
             moreIconURL={IconURL.show_more_func}
             size={12}
           />
@@ -188,7 +181,7 @@ const BioEditor = (props: BioEditorProps | undefined) => {
         height={fieldHeight}
         data={relationShip}
         setData={setRelationShip}
-        values={RelationShips}
+        values={RelationShipItems}
         moreIconURL={IconURL.relationship}
         size={18}
       />
