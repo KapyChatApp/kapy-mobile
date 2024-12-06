@@ -4,6 +4,7 @@ import { TouchableOpacity } from 'react-native-gesture-handler'
 import { DefaultAva } from '@/constants/DefaultAva'
 import { useFocusEffect, useNavigation, useRouter } from 'expo-router'
 import AsyncStorage from '@react-native-async-storage/async-storage'
+import { bgLight500Dark10 } from '@/styles/theme'
 
 const MyAvatar = ({size}:any) => {
   const router = useRouter();
@@ -16,16 +17,21 @@ const MyAvatar = ({size}:any) => {
         }
         const {avatar} = JSON.parse(user);
         setAvatar(avatar);
+        console.log("ava ",avatar);
         }
-    getLocalUserFunc()
+    getLocalUserFunc();
   },[]))
   return (
     <TouchableOpacity className="flex" onPress={()=>router.push("/(mine)/my-wall")}>
-      <Image
-        source={{uri:avatar}}
-        className={`rounded-full`}
+      {avatar===undefined?<Image
+        source={DefaultAva.user}
+        className={`rounded-full ${bgLight500Dark10}`}
         style={{height:size, width:size}}
-      ></Image>
+      ></Image>:<Image
+      source={{uri:avatar}}
+      className={`rounded-full`}
+      style={{height:size, width:size}}
+    ></Image>}
     </TouchableOpacity>
   )
 }

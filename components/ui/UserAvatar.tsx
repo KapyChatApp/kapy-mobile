@@ -1,16 +1,17 @@
-import { View, Text } from "react-native";
+import { View, Text, Image } from "react-native";
 import React from "react";
-import { Image } from "react-native";
 import { DefaultAva } from "@/constants/DefaultAva";
+import { bgLight500Dark10 } from "@/styles/theme";
 
 const UserAvatar = ({ size, avatarURL }: any) => {
+  const imageSource = avatarURL && avatarURL.uri ? avatarURL : DefaultAva.user;
   return (
     <View className="flex">
       <Image
-        source={avatarURL ? avatarURL : DefaultAva.male}
-        className={`rounded-full`}
+        source={imageSource}
+        className={`rounded-full ${bgLight500Dark10}`}
         style={{ height: size, width: size }}
-      ></Image>
+      />
     </View>
   );
 };

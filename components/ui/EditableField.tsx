@@ -7,6 +7,8 @@ import { IconURL } from "@/constants/IconURL";
 import Icon from "./Icon";
 import { Link } from "expo-router";
 import { textLight0Dark500 } from "@/styles/theme";
+import EditablePopover from "./EditablePopover";
+import { PrivacyItems } from "@/constants/UiItems";
 
 const EditableField = ({
   label,
@@ -38,38 +40,7 @@ const EditableField = ({
       <View className="w-full flex flex-row items-center gap-x-[4px]">
         <Text className={`font-helvetica-light text-14 ${textLight0Dark500}`}>{label}</Text>
         <View className="w-[68px] h-[26px]">
-          <Popover
-            offset={0}
-            popoverShift={{ x: 0, y: 0 }}
-            backgroundStyle={{ backgroundColor: "transparent" }}
-            arrowSize={{ width: 0, height: 0 }}
-            placement={PopoverPlacement.BOTTOM}
-            from={
-              <TouchableOpacity className="border border-border rounded-full p-[2px] flex flex-row items-center justify-center">
-                <Text className="font-helvetica-bold text-12 text-border ">
-                  {isPrivate ? "Private" : "Public"}
-                </Text>
-                <Icon iconURL={IconURL.show_more_func} size={10} />
-              </TouchableOpacity>
-            }
-          >
-            <TouchableOpacity
-              className="flex items-center justify-start w-[68px] border-b border-border"
-              onPress={() => setIsPrivate(false)}
-            >
-              <Text className="font-helvetica-bold text-12 text-border px-[4px] py-[12px]">
-                Public
-              </Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              className="flex items-center justify-start w-[68px]"
-              onPress={() => setIsPrivate(true)}
-            >
-              <Text className="font-helvetica-bold text-12 text-border px-[4px] py-[12px]">
-                Private
-              </Text>
-            </TouchableOpacity>
-          </Popover>
+          <TouchableOpacity/>
         </View>
         {redirectLink ? (
           <View className="flex flex-row items-center gap-x-[2px]">

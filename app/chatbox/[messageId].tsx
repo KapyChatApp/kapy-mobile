@@ -51,7 +51,7 @@ const MessageDetailPage = () => {
   const [isTyping, setIsTypeping] = useState(false);
   const [messages, setMessages] = useState<MessageProps[]>([]);
   const [localUserId, setLocalUserId] = useState("");
-  const [chatBoxHeader, setChatBoxHeader] = useState<ChatBoxHeaderProps>();
+  const [chatBoxHeader, setChatBoxHeader] = useState<MessageBoxProps>();
   const [avatar, setAvatar] = useState("");
   const [messageText, setMessageText] = useState("");
   const [messageBox, setMessageBox] = useState<MessageBoxProps>();
@@ -104,7 +104,8 @@ const MessageDetailPage = () => {
     const getAllMessageFUNC = async () => {
       const { _id } = await getLocalAuth();
       await markRead(messageId.toString());
-      const messageBox = await getAMessageBox(messageId);
+      const messageBox:MessageBoxProps = await getAMessageBox(messageId);
+      messageBox.localUserId=_id;
       setChatBoxHeader(messageBox);
       setMessageBox(messageBox);
       const messages = await getAllMessages(messageId);
