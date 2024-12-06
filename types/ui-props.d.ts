@@ -2,7 +2,6 @@ import { Href } from "expo-router";
 import { DimensionValue } from "react-native";
 import { Int32 } from "react-native/Libraries/Types/CodegenTypes";
 
-
 export interface IconInputField {
   name: string;
   placeHolder: string;
@@ -18,11 +17,11 @@ export interface EditableInputFieldProps {
   moreIconURL?: ImageSourcePropType | undefined;
   size?: Int32;
   isAlwaysReadOnly?: boolean;
-  isMultipleLine?:boolean;
+  isMultipleLine?: boolean;
   defaultValue?: any;
   notice?: string;
-  labelLink?:string;
-  redirectLink?:LinkProps<string | object>;
+  labelLink?: string;
+  redirectLink?: LinkProps<string | object>;
   onChangeText: (text: string) => void;
 }
 
@@ -34,8 +33,8 @@ export interface EditablePopoverProps {
   values: any[];
   data?: any;
   setData?: (data) => void;
-  moreIconURL?:string;
-  size?:number;
+  moreIconURL?: string;
+  size?: number;
 }
 
 export interface EditabelDatePickerProps {
@@ -48,7 +47,8 @@ export interface EditabelDatePickerProps {
 }
 
 export interface ProfileFieldProps {
-  label?:string;
-  value?:string;
-  iconURL?:string;
+  label?: string;
+  value?: string;
+  iconURL?: string;
 }
+

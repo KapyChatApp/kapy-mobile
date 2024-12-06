@@ -3,7 +3,7 @@ import React from "react";
 import { TextInput } from "react-native-gesture-handler";
 import { IconURL } from "@/constants/IconURL";
 import { bgLight600Dark300, textLight0Dark500 } from "@/styles/theme";
-const Search = ({onChangeText, isDisable}:any) => {
+const Search = ({ onChangeText, isDisable }: any) => {
   return (
     <View className="flex flex-row items-center justify-center mt-[6px] mx-[18px] ">
       <Image
@@ -13,7 +13,7 @@ const Search = ({onChangeText, isDisable}:any) => {
       <TextInput
         placeholder="Search"
         placeholderTextColor="#A9A9A9"
-        className= {`w-full h-[42px] pl-[56px] pr-[6px] rounded-full bg-light-600 dark:bg-dark-300 ${textLight0Dark500} `}
+        className={`w-full h-[42px] pl-[56px] pr-[6px] rounded-full bg-light-600 dark:bg-dark-300 ${textLight0Dark500} `}
         onChangeText={onChangeText}
         readOnly={isDisable}
       ></TextInput>

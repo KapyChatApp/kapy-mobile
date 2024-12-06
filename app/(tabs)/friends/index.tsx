@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import axios from "axios";
@@ -13,13 +13,14 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import FriendMainHeader from "@/components/navigator/Topbar/FriendMainHeader";
 import { useFocusEffect } from "expo-router";
 import { useIsFocused } from "@react-navigation/native";
+import { getMyFriends } from "@/lib/my-friends";
+import { groupFriendsByFirstLetter } from "@/utils/Filter";
 
 const FriendsPage = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [query, setQuery] = useState("");
-  const [friends, setFriends] = useState<FriendBoxProps[] | undefined>([]);
-  const isFocused = useIsFocused();
-  useEffect(() => {}, [isFocused]);
+  useEffect(() => {
+  }, []);
 
   return (
     <SafeAreaView className={`${bgLight500Dark10} flex-1`}>
