@@ -75,19 +75,18 @@ const MessageDetailPage = () => {
   const otherReceiver = receiverIds[1];
 
   const handleSendMessage = async () => {
-    console.log("data: ", selectedMedia);
     const messageTextData = messageText;
-    let mediaData = selectedMedia;
+    let mediaData = selectedMedia[0];
     setSelectedMedia([]);
     setMessageText("");
-    if (messageTextData != "" || mediaData.length != 0) {
+    if (messageTextData != "" || selectedMedia.length != 0) {
       setMessages((prevMessages) => [
         ...prevMessages,
         {
           _id: "",
           isReact: false,
           readedId: [],
-          contentId: selectedMedia,
+          contentId: mediaData,
           text: messageText,
           createAt: new Date().toString(),
           createBy: localUserId,
@@ -97,7 +96,7 @@ const MessageDetailPage = () => {
           boxId: "",
         },
       ]);
-      await sendMessage(messageId.toString(), messageText, mediaData);
+      await sendMessage(messageId.toString(), messageText, selectedMedia);
     }
   };
   useEffect(() => {

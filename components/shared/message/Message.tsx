@@ -13,7 +13,7 @@ import { revokeMessage } from "@/lib/message-request";
 
 const Message = (props: MessageProps) => {
   console.log(
-    props.contentId[0] ? props.contentId[0].url! + props.contentId[0].type! : ""
+    props.contentId ? props.contentId.url! + props.contentId.type! : ""
   );
   const [position, setPosition] = useState(props.position);
   const [isShowTime, setIsShowTime] = useState(
@@ -52,9 +52,9 @@ const Message = (props: MessageProps) => {
   const { showActionSheetWithOptions } = useActionSheet();
   const handleLongPress = async () => {
     const options = props.isSender
-      ? ["Revoke message", "Cancel"]
+      ? ["Revoke message","Delete message", "Cancel"]
       : ["Report this rate", "Cancel"];
-    const cancelButtonIndex = 1;
+    const cancelButtonIndex = props.isSender? 2:1;
     showActionSheetWithOptions(
       {
         options,
@@ -91,27 +91,27 @@ const Message = (props: MessageProps) => {
         ) : (
           <View className="w-[36px] h-[36px] bg-transparent-"></View>
         )}
-        {props.contentId.length != 0 ? (
+        {props.contentId? (
           <View
             className="flex-1"
             style={{
               maxWidth: 240,
               maxHeight: 240,
               aspectRatio:
-                props.contentId[0].width! / props.contentId[0].height!,
+                props.contentId.width! / props.contentId.height!,
             }}
           >
-            {props.contentId[0].type === "Image" ? (
+            {props.contentId.type === "Image" ? (
               <Image
-                source={{ uri: props.contentId[0].url }}
+                source={{ uri: props.contentId.url }}
                 className="w-full h-full rounded-2xl"
               />
-            ) : props.contentId[0].type === "Video" ? (
+            ) : props.contentId.type === "Video" ? (
               <View className="rounded-2xl flex-1">
-                <VideoPlayer videoSource={props.contentId[0].url!} />{" "}
+                <VideoPlayer videoSource={props.contentId.url!} />
               </View>
-            ) : props.contentId[0].type === "Audio" ? (
-              <AudioPlayer audioUri={props.contentId[0].url!} />
+            ) : props.contentId.type === "Audio" ? (
+              <AudioPlayer audioUri={props.contentId.url!} />
             ) : null}
           </View>
         ) : (

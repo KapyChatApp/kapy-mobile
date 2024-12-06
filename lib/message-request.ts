@@ -220,3 +220,18 @@ export const revokeMessage = async (messageId: string) => {
     console.log(error);
   }
 };
+
+export const deleteMessage = async (messageId:string) =>{
+  try{
+    const {token} = await getLocalAuth();
+    const response = await axios.delete(process.env.EXPO_PUBLIC_BASE_URL + "/message/delete",{headers:{
+      "Content-Type":"application/json",
+      Authorization:`${token}`
+    },params:{messageId:messageId}});
+    return response.data;
+  }catch(error){
+    console.log(error);
+    throw error;
+
+  }
+}

@@ -26,7 +26,7 @@ export interface MessageProps {
   _id: string;
   isReact: boolean;
   readedId: string[];
-  contentId: FileProps[];
+  contentId: FileProps;
   text: string;
   createAt: string;
   createBy: string;
@@ -43,7 +43,7 @@ export interface MessageBoxProps {
   groupAva?: string;
   receiverIds?: ReceiverProps[];
   createAt?: string;
-  lastMessage?: MessageProps;
+  responseLastMessage?: MessageProps;
   localUserId?:string;
   setLastMessage?:(message:string)=>void;
   readStatus?:boolean;
