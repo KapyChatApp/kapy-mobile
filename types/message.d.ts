@@ -23,7 +23,7 @@ export interface ResponseMessageDTO {
 }
 
 export interface MessageProps {
-  _id: string;
+  id: string;
   isReact: boolean;
   readedId: string[];
   contentId: FileProps;
@@ -34,7 +34,8 @@ export interface MessageProps {
   isSender:boolean;
   avatar:string;
   boxId:string;
-
+  deleteMessage?:(id:string)=>void;
+  revokeMessage?:(id:string)=>void;
 }
 
 export interface MessageBoxProps {

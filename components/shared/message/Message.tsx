@@ -1,4 +1,4 @@
-import { View, Text, Pressable } from "react-native";
+import { View, Text, Pressable, Alert } from "react-native";
 import React, { useState } from "react";
 import { bgLight340Dark330, textLight0Dark500 } from "@/styles/theme";
 import { useClickOutside } from "react-native-click-outside";
@@ -9,12 +9,9 @@ import { Image } from "react-native";
 import VideoPlayer from "../multimedia/VideoPlayer";
 import AudioPlayer from "../multimedia/AudioPlayer";
 import { useActionSheet } from "@expo/react-native-action-sheet";
-import { revokeMessage } from "@/lib/message-request";
+import { deleteMessage, revokeMessage } from "@/lib/message-request";
 
 const Message = (props: MessageProps) => {
-  console.log(
-    props.contentId ? props.contentId.url! + props.contentId.type! : ""
-  );
   const [position, setPosition] = useState(props.position);
   const [isShowTime, setIsShowTime] = useState(
     position === "bottom" ? true : false
@@ -46,15 +43,36 @@ const Message = (props: MessageProps) => {
   };
 
   const handleRevokeMessage = async () => {
-    await revokeMessage(props._id);
+    props.revokeMessage?.(props.id);
+    await revokeMessage(props.id);
   };
 
+  const handleDeleteMessage = async () => {
+    Alert.alert(
+      "Delete Message", // Tiêu đề
+      "Are you sure you want to delete this message?", // Nội dung
+      [
+        {
+          text: "Cancel",
+          style: "cancel",
+        },
+        {
+          text: "Yes",
+          onPress: async () => {
+            props.deleteMessage?.(props.id);
+            await deleteMessage(props.id);
+          },
+        },
+      ],
+      { cancelable: true }
+    );
+  };
   const { showActionSheetWithOptions } = useActionSheet();
   const handleLongPress = async () => {
     const options = props.isSender
-      ? ["Revoke message","Delete message", "Cancel"]
-      : ["Report this rate", "Cancel"];
-    const cancelButtonIndex = props.isSender? 2:1;
+      ? ["Revoke message", "Delete message", "Cancel"]
+      : ["Report this rate", "Delete message", "Cancel"];
+    const cancelButtonIndex = 2;
     showActionSheetWithOptions(
       {
         options,
@@ -68,6 +86,9 @@ const Message = (props: MessageProps) => {
             } else {
               console.log("report");
             }
+            break;
+          case 1:
+            handleDeleteMessage();
             break;
           case cancelButtonIndex:
         }
@@ -91,14 +112,13 @@ const Message = (props: MessageProps) => {
         ) : (
           <View className="w-[36px] h-[36px] bg-transparent-"></View>
         )}
-        {props.contentId? (
+        {props.contentId ? (
           <View
             className="flex-1"
             style={{
               maxWidth: 240,
               maxHeight: 240,
-              aspectRatio:
-                props.contentId.width! / props.contentId.height!,
+              aspectRatio: props.contentId.width! / props.contentId.height!,
             }}
           >
             {props.contentId.type === "Image" ? (
@@ -128,9 +148,15 @@ const Message = (props: MessageProps) => {
             <Text
               className={`${
                 props.isSender ? "text-light-500" : textLight0Dark500
-              } text-14 font-helvetica-light `}
+              } text-14 ${
+                props.text === "Message revoked"
+                  ? "font-helvetica-light-italic"
+                  : "font-helvetica-light "
+              } `}
             >
-              {props.text}
+              {props.text === "Message revoked"
+                ? `*${props.text}*`
+                : props.text}
             </Text>
           </View>
         )}

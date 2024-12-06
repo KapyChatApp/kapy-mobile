@@ -104,7 +104,7 @@ export const sendMessage = async (
 ) => {
   try {
     const { token } = await getLocalAuth();
-
+    console.log("files: ",files);
     if (files.length != 0) {
       for (const file of files) {
         const formData = new FormData();
@@ -113,28 +113,29 @@ export const sendMessage = async (
           case "image":
             newFile = {
               uri: file.uri,
-              type: "image/jpeg", 
+              type: "image/jpeg",
               name: generateRandomNumberString(10)?.toString() + ".jpg",
             };
             break;
           case "video":
             newFile = {
               uri: file.uri,
-              type: "video/mp4", 
+              type: "video/mp4",
               name: generateRandomNumberString(10)?.toString() + ".mp4",
             };
             break;
           case "audio":
             newFile = {
               uri: file.uri,
-              type: "audio/m4a", 
-              name: generateRandomNumberString(10)?.toString() + ".m4a", };
+              type: "audio/m4a",
+              name: generateRandomNumberString(10)?.toString() + ".m4a",
+            };
             break;
           default:
             newFile = {
               uri: file.uri,
-              type: file.type, 
-              name: generateRandomNumberString(10)?.toString(), 
+              type: file.type,
+              name: generateRandomNumberString(10)?.toString(),
             };
             break;
         }
@@ -221,17 +222,23 @@ export const revokeMessage = async (messageId: string) => {
   }
 };
 
-export const deleteMessage = async (messageId:string) =>{
-  try{
-    const {token} = await getLocalAuth();
-    const response = await axios.delete(process.env.EXPO_PUBLIC_BASE_URL + "/message/delete",{headers:{
-      "Content-Type":"application/json",
-      Authorization:`${token}`
-    },params:{messageId:messageId}});
+export const deleteMessage = async (messageId: string) => {
+  try {
+    const { token } = await getLocalAuth();
+    console.log("Deleting: ",messageId);
+    const response = await axios.delete(
+      process.env.EXPO_PUBLIC_BASE_URL + "/message/delete",
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `${token}`,
+        },
+        params: { messageId: messageId },
+      }
+    );
     return response.data;
-  }catch(error){
+  } catch (error) {
     console.log(error);
     throw error;
-
   }
-}
+};

@@ -83,7 +83,7 @@ const MessageDetailPage = () => {
       setMessages((prevMessages) => [
         ...prevMessages,
         {
-          _id: "",
+          id: "",
           isReact: false,
           readedId: [],
           contentId: mediaData,
@@ -95,16 +95,27 @@ const MessageDetailPage = () => {
           avatar: "",
           boxId: "",
         },
-      ]);
+      ])
       await sendMessage(messageId.toString(), messageText, selectedMedia);
     }
+  };
+  const handleDeleteMessage = (id: string) => {
+    setMessages((prevMessages) => prevMessages.filter((message) => message.id !== id));
+  };
+  const handleRevokeMessage = (id: string) => {
+    setMessages((prevMessages) =>
+      prevMessages?.map((message:MessageProps) =>
+        message.id === id
+          ? { ...message, text: "Message revoked" } : message
+      )
+    );
   };
   useEffect(() => {
     const getAllMessageFUNC = async () => {
       const { _id } = await getLocalAuth();
       await markRead(messageId.toString());
-      const messageBox:MessageBoxProps = await getAMessageBox(messageId);
-      messageBox.localUserId=_id;
+      const messageBox: MessageBoxProps = await getAMessageBox(messageId);
+      messageBox.localUserId = _id;
       setChatBoxHeader(messageBox);
       setMessageBox(messageBox);
       const messages = await getAllMessages(messageId);
@@ -197,6 +208,8 @@ const MessageDetailPage = () => {
                   }
                   isSender={localUserId === item.createBy.toString()}
                   position={position}
+                  deleteMessage={handleDeleteMessage}
+                  revokeMessage={handleRevokeMessage}
                 />
               );
             })}
