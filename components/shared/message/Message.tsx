@@ -131,7 +131,7 @@ const Message = (props: MessageProps) => {
                 <VideoPlayer videoSource={props.contentId.url!} />
               </View>
             ) : props.contentId.type === "Audio" ? (
-              <AudioPlayer audioUri={props.contentId.url!} />
+              <AudioPlayer audioUri={props.contentId.url!} isSender={props.isSender}/>
             ) : null}
           </View>
         ) : (
