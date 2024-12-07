@@ -1,11 +1,8 @@
 import axios from "axios";
 import { getLocalAuth } from "./local-auth";
-import { CreateChatBoxProps, CreateMessageData } from "@/types/message";
-import { FileProps } from "@/types/file";
+import { CreateChatBoxProps} from "@/types/message";
 import { generateRandomNumberString } from "@/utils/Random";
 import * as FileSystem from "expo-file-system";
-import { audioFromUri } from "@/utils/File";
-
 export const getMyChatBoxes = async () => {
   try {
     const { token } = await getLocalAuth();
@@ -97,93 +94,6 @@ export const createGroup = async (
   }
 };
 
-export const sendMessage = async (
-  boxId: string,
-  content: string,
-  files: { uri: string; type: string }[]
-) => {
-  try {
-    const { token } = await getLocalAuth();
-    console.log("files: ",files);
-    if (files.length != 0) {
-      for (const file of files) {
-        const formData = new FormData();
-        let newFile = null;
-        switch (file.type) {
-          case "image":
-            newFile = {
-              uri: file.uri,
-              type: "image/jpeg",
-              name: generateRandomNumberString(10)?.toString() + ".jpg",
-            };
-            break;
-          case "video":
-            newFile = {
-              uri: file.uri,
-              type: "video/mp4",
-              name: generateRandomNumberString(10)?.toString() + ".mp4",
-            };
-            break;
-          case "audio":
-            newFile = {
-              uri: file.uri,
-              type: "audio/m4a",
-              name: generateRandomNumberString(10)?.toString() + ".m4a",
-            };
-            break;
-          default:
-            newFile = {
-              uri: file.uri,
-              type: file.type,
-              name: generateRandomNumberString(10)?.toString(),
-            };
-            break;
-        }
-        // if(file.type==="audio"){
-        //   const audioFile = await audioFromUri(file.uri);
-        //   console.log("file: ",audioFile );
-        //   formData.append("boxId",boxId);
-        //   formData.append("content", "");
-        //   formData.append("file",audioFile!);
-        // }else{
-        formData.append("boxId", boxId);
-        formData.append("content", "");
-        formData.append("file", newFile as any);
-        console.log("file: ", newFile);
-        await axios.post(
-          process.env.EXPO_PUBLIC_BASE_URL + "/message/send-mobile",
-          formData,
-          {
-            headers: {
-              "Content-Type": "multipart/form-data",
-              Authorization: `${token}`,
-            },
-          }
-        );
-      }
-    } else {
-      const formData = new FormData();
-      formData.append("boxId", boxId);
-      formData.append("content", `"${content}"`);
-      const response = await axios.post(
-        process.env.EXPO_PUBLIC_BASE_URL + "/message/send",
-        formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-            Authorization: `${token}`,
-          },
-        }
-      );
-
-      return response.data;
-    }
-  } catch (error) {
-    console.error("Error sending message:", error);
-    throw error;
-  }
-};
-
 export const markRead = async (boxId: string) => {
   try {
     const { token } = await getLocalAuth();
@@ -239,6 +149,69 @@ export const deleteMessage = async (messageId: string) => {
     return response.data;
   } catch (error) {
     console.log(error);
+    throw error;
+  }
+};
+
+export const sendMessage = async (
+  boxId: string,
+  content: string,
+  files: { uri: string; type: string , name:string|undefined|null}[]
+) => {
+  try {
+    const { token } = await getLocalAuth();
+    console.log("files: ",files);
+    if (files.length != 0) {
+      for (const file of files) {
+        const formData = new FormData();
+       const fileContent:any = {
+        fileName: file.name,
+        url:"",
+        publicId:"",
+        bytes:"",
+        width:"0",
+        height:"0",
+        format:file.name?.split(".").pop(),
+        type:file.type 
+       }
+       const newFile = {
+        uri:file.uri,
+        type:"image/jpeg",
+        name:file.name?.split(".").pop()
+       }
+        formData.append("boxId", boxId);
+        formData.append("content", JSON.stringify(fileContent));
+        formData.append("file", newFile as any);
+        await axios.post(
+          process.env.EXPO_PUBLIC_BASE_URL + "/message/send",
+          formData,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+              Authorization: `${token}`,
+            },
+          }
+        );
+      }
+    } else {
+      const formData = new FormData();
+      formData.append("boxId", boxId);
+      formData.append("content", `"${content}"`);
+      const response = await axios.post(
+        process.env.EXPO_PUBLIC_BASE_URL + "/message/send",
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+            Authorization: `${token}`,
+          },
+        }
+      );
+
+      return response.data;
+    }
+  } catch (error) {
+    console.error("Error sending message:", error);
     throw error;
   }
 };

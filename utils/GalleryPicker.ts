@@ -31,6 +31,7 @@ export const pickMedia = async () => {
     const selectedAssets = result.assets.map((asset) => ({
       uri: asset.uri,
       type: asset.type || "unknown",
+      name:asset.fileName
     }));
 
     console.log("Selected Assets: ", selectedAssets);

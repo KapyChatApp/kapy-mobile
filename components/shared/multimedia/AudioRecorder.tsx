@@ -16,13 +16,14 @@ import Animated, {
 import Icon from "@/components/ui/Icon";
 import { IconURL } from "@/constants/IconURL";
 import { textLight0Dark500 } from "@/styles/theme";
+import { generateRandomNumberString } from "@/utils/Random";
 
 const { width: SCREEN_WIDTH } = Dimensions.get("window");
 
 const AudioRecorder = ({
   setSelectedMedia,
 }: {
-  setSelectedMedia: (uri: string, type: string) => void;
+  setSelectedMedia: (uri: string, type: string, name:string) => void;
 }) => {
   const [recording, setRecording] = useState<Audio.Recording | null>(null);
   const [isRecording, setIsRecording] = useState(false);
@@ -102,7 +103,7 @@ const AudioRecorder = ({
       if (uri) {
        
         console.log("Recording URI:", uri);
-        setSelectedMedia(uri, "audio");
+        setSelectedMedia(uri, "audio", generateRandomNumberString(10) + '.mp3' );
   
         // Create sound from recording
         const { sound } = await recording.createNewLoadedSoundAsync();
@@ -125,7 +126,7 @@ const AudioRecorder = ({
     }
   };
   
-
+  
   const playSound = async () => {
     setIsPlaying(true);
     if (sound) {

@@ -58,8 +58,9 @@ const MessageDetailPage = () => {
   const [isCameraOpen, setIsCameraOpen] = useState(false);
   const [isMicroOpen, setIsMicroOpen] = useState(false);
   const [selectedMedia, setSelectedMedia] = useState<
-    { uri: string; type: string }[]
+    { uri: string; type: string, name:string | null |undefined }[]
   >([]);
+
 
   const scrollViewRef = useRef<ScrollView>(null);
   const handlePickMedia = async () => {
@@ -153,8 +154,8 @@ const MessageDetailPage = () => {
             <ExpoCamera
               onClose={() => setIsCameraOpen(false)}
               onSend={handleSendMessage}
-              setSelectedMedia={(uri: string, type: string) =>
-                setSelectedMedia([{ uri: uri, type: type }])
+              setSelectedMedia={(uri: string, type: string, name:string) =>
+                setSelectedMedia([{ uri: uri, type: type, name:name } ])
               }
             />
           </View>
@@ -233,8 +234,8 @@ const MessageDetailPage = () => {
           {isMicroOpen ? (
             <View ref={ref}>
               <AudioRecorder
-                setSelectedMedia={(uri: string, type: string) =>
-                  setSelectedMedia([{ uri: uri, type: type }])
+                setSelectedMedia={(uri: string, type: string,name:string) =>
+                  setSelectedMedia([{ uri: uri, type: type, name }])
                 }
               />
             </View>
