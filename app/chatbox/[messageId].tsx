@@ -137,7 +137,10 @@ const MessageDetailPage = () => {
         setMessages((prevMessages) => [...prevMessages, data]);
         markAsRead(messageId.toString());
       });
-
+      pusherClient.bind("revoke-message",(data:any)=>{
+        console.log("revoke: ", data) ;
+        handleRevokeMessage(data.id);
+      })
       markAsRead(messageId.toString());
     };
     getAllMessageFUNC();
