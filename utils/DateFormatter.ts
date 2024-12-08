@@ -16,3 +16,10 @@ export const formatDate = (dateString: string) => {
   
     return formatDistance(utcDate, nowUtc, { addSuffix: true });
   };
+
+  export const millisToMMSS = (timeInMillis: number) => {
+    const totalSeconds = Math.floor(timeInMillis / 1000);
+    const minutes = Math.floor(totalSeconds / 60);
+    const seconds = totalSeconds % 60;
+    return `${minutes < 10 ? "0" : ""}${minutes}:${seconds < 10 ? "0" : ""}${seconds}`;
+  };

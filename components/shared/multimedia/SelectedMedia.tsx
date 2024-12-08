@@ -2,6 +2,7 @@ import { View, Text, FlatList, Pressable, Image, TouchableOpacity } from "react-
 import React from "react";
 import Icon from "@/components/ui/Icon";
 import { IconURL } from "@/constants/IconURL";
+import VideoPlayer from "./VideoPlayer";
 
 const SelectedMedia = ({ selectedMedia, setSelectedMedia }: any) => {
   return (
@@ -12,10 +13,11 @@ const SelectedMedia = ({ selectedMedia, setSelectedMedia }: any) => {
         keyExtractor={(item, index) => `${item.uri}-${index}`}
         renderItem={({ item, index }) => (
           <View className="p-[10px]">
-            <Image
+            <View className="w-[140px] h-[140px] rounded-xl flex items-center justify-center bg-light-340 dark:bg-dark-20">
+            {item.type==="image"?  <Image
               source={{ uri: item.uri }}
-              className="w-[140px] h-[140px] rounded-xl"
-            />
+            />: (item.type==="video"?<VideoPlayer videoSource={item.uri}/> :<Icon iconURL={IconURL.voice} size={70}/>)}
+            </View>
             <TouchableOpacity
               onPress={() =>
                 setSelectedMedia((prev:any) => prev.filter((_:any, i:any) => i !== index))

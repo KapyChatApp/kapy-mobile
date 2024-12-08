@@ -3,7 +3,6 @@ import {
   View,
   Text,
   TouchableOpacity,
-  Dimensions,
   StyleSheet,
 } from "react-native";
 import { Audio } from "expo-av";
@@ -15,16 +14,11 @@ import Animated, {
 } from "react-native-reanimated";
 import Icon from "@/components/ui/Icon";
 import { IconURL } from "@/constants/IconURL";
+import { millisToMMSS } from "@/utils/DateFormatter";
 
-const { width: SCREEN_WIDTH } = Dimensions.get("window");
+const MAX_PROGRESS_WIDTH = 150; // Chiều rộng tối đa của progress bar
 
-const AudioPlayer = ({
-  audioUri,
-  isSender,
-}: {
-  audioUri: string;
-  isSender: boolean;
-}) => {
+const AudioPlayer = ({ audioUri, isSender }: { audioUri: string; isSender: boolean }) => {
   const [sound, setSound] = useState<Audio.Sound | null>(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [isFinished, setIsFinished] = useState(false);
@@ -59,25 +53,27 @@ const AudioPlayer = ({
 
       const status = await newSound.getStatusAsync();
       if (status.isLoaded) {
-        setDuration(status.durationMillis || 0);
+        setDuration(status.durationMillis || 0); // Lưu tổng thời gian
+        setPosition(0); // Đặt vị trí ban đầu
         setIsFinished(false);
       }
 
+      // Cập nhật trạng thái âm thanh
       newSound.setOnPlaybackStatusUpdate((status) => {
         if (status.isLoaded) {
-          setPosition(status.positionMillis || 0);
-          const currentProgress = (status.positionMillis || 0) / duration;
-
+          setPosition(status.positionMillis || 0); // Cập nhật vị trí hiện tại
+          const currentProgress = (status.positionMillis || 0) / (status.durationMillis || 1);
           progress.value = withSpring(currentProgress, {
-            damping: 20, // Làm mượt, di chuyển chậm hơn
-            stiffness: 70, // Giảm cứng để di chuyển chậm
-            mass: 20, // Tăng khối lượng để hiệu ứng chậm hơn
+            damping: 20,
+            stiffness: 50,
+            mass: 10,
           });
 
+          // Nếu phát xong
           if ("didJustFinish" in status && status.didJustFinish) {
             setIsPlaying(false);
             setIsFinished(true);
-            progress.value = 0; // Reset progress bar
+            progress.value = 1; // Dừng thanh tiến trình tại vị trí cuối
           }
         }
       });
@@ -91,10 +87,11 @@ const AudioPlayer = ({
       try {
         const status = await sound.getStatusAsync();
 
+        // Khi âm thanh kết thúc, nhấn replay để phát lại từ đầu
         if (isFinished || ("didJustFinish" in status && status.didJustFinish)) {
-          await sound.setPositionAsync(0); // Đặt lại vị trí phát về đầu
+          await sound.setPositionAsync(0); // Đặt lại vị trí về 0
           setIsFinished(false);
-          progress.value = 0; // Reset progress bar khi replay
+          progress.value = 0; // Đặt lại thanh tiến trình về đầu
         }
 
         setIsPlaying(true);
@@ -119,18 +116,24 @@ const AudioPlayer = ({
   const seekPosition = async (newPosition: number) => {
     if (sound) {
       try {
-        const seekTime = (newPosition / SCREEN_WIDTH) * duration;
+        const seekTime = (newPosition / MAX_PROGRESS_WIDTH) * duration;
         await sound.setPositionAsync(seekTime);
         setPosition(seekTime);
         progress.value = withSpring(seekTime / duration, {
-          damping: 20, // Làm mượt khi seek
-          stiffness: 70, // Giảm cứng khi seek
+          damping: 20,
+          stiffness: 70,
         });
-
+  
         const status = await sound.getStatusAsync();
         if ("didJustFinish" in status && status.didJustFinish) {
           setIsPlaying(false);
           setIsFinished(false);
+        } else {
+          // Tiếp tục phát ngay sau khi tìm vị trí mới
+          if (!isPlaying) {
+            await sound.playAsync();
+            setIsPlaying(true);
+          }
         }
       } catch (error) {
         console.error("Error seeking position:", error);
@@ -139,10 +142,10 @@ const AudioPlayer = ({
   };
 
   const animatedStyle = useAnimatedStyle(() => ({
-    width: progress.value * SCREEN_WIDTH,
-    backgroundColor: "#F57602",
+    width: progress.value * MAX_PROGRESS_WIDTH,
+    backgroundColor: "#FFFFFF",
     transition: {
-      easing: Easing.out(Easing.ease), // Sử dụng easing để mượt hơn
+      easing: Easing.out(Easing.linear),
     },
   }));
 
@@ -150,14 +153,15 @@ const AudioPlayer = ({
     <View
       className={`w-full h-[50px] ${
         isSender ? "bg-cardinal" : "bg-ios-light-340 dark:bg-ios-dark-330"
-      } py-[4px] px-[20px] rounded-3xl flex flex-row items-center  justify-between`} style={{columnGap:8}}
+      } py-[4px] px-[20px] rounded-3xl flex flex-row items-center justify-between`}
+      style={{ columnGap: 16 }}
     >
       <View>
         <TouchableOpacity onPress={isPlaying ? pauseSound : playSound}>
-          <Icon iconURL={isPlaying ? IconURL.pause : IconURL.play} size={20} />
+          <Icon iconURL={isPlaying ? IconURL.pause : IconURL.play} size={30} />
         </TouchableOpacity>
       </View>
-      <View className="flex-1 " style={{rowGap:4}}>
+      <View className="flex-1" style={{ rowGap: 4 }}>
         <TouchableOpacity
           style={styles.progressContainer}
           activeOpacity={1}
@@ -168,12 +172,8 @@ const AudioPlayer = ({
         >
           <Animated.View style={[styles.progressBar, animatedStyle]} />
         </TouchableOpacity>
-        <Text
-          className={`${
-            isSender ? "text-white" : "text-black"
-          } text-10 font-helvetica-light absolute top-[8px]`}
-        >
-          {Math.floor(position / 1000)}s / {Math.floor(duration / 1000)}s
+        <Text className={`absolute text-10 font-helvetica-light ${isSender? "text-white":"text-dark-320"} right-[2px] top-[10px]`}>
+        {millisToMMSS(position)}
         </Text>
       </View>
     </View>
@@ -182,18 +182,28 @@ const AudioPlayer = ({
 
 const styles = StyleSheet.create({
   progressContainer: {
-    width: "100%",
+    width: MAX_PROGRESS_WIDTH,
     height: 6,
-    backgroundColor: "#ddd",
+    backgroundColor: "#D7D7D7",
     borderRadius: 5,
-    overflow: "hidden",
+    position: "relative",
   },
   progressBar: {
     height: "100%",
+    backgroundColor: "#FFFFFF",
+    position: "absolute",
+    left: 0,
+    top: 0,
+    borderRadius:5
   },
   time: {
-    color: "#333",
-    fontSize: 14,
+    width: MAX_PROGRESS_WIDTH,
+    color: "#FFFFFF",
+    fontSize: 10,
+    fontWeight: "300",
+    position: "absolute",
+    bottom: -10,
+    right: 5,
   },
 });
 
