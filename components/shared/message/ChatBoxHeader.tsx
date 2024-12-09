@@ -13,13 +13,14 @@ import { TouchableOpacity } from "react-native-gesture-handler";
 import { IconURL } from "@/constants/IconURL";
 import Icon from "@/components/ui/Icon";
 import { ChatBoxHeaderProps, MessageBoxProps } from "@/types/message";
+import UserAvatarLink from "@/components/ui/UserAvatarLink";
 
 const ChatBoxHeader = (props:MessageBoxProps) => {
   const navigation = useNavigation();
   const router = useRouter();
   const [avatarURL, setAvatarURL] = useState("");
   const [fullName, setFullName] = useState("");
-
+  const [userId, setUserId] = useState("");
 useEffect(()=>{
   if(props.receiverIds?.[0] && props.receiverIds?.[1]){
   const receiverIds = props.receiverIds ?? []; 
@@ -33,7 +34,10 @@ useEffect(()=>{
   setAvatarURL(avatarURL);
 const fullName = props.groupName? props.groupName : (receiver?._id===props.localUserId? `${otherReceiver?.firstName} ${otherReceiver?.lastName}` : `${receiver?.firstName} ${receiver?.lastName}`);
 setFullName(fullName);
+const id = receiver?._id === props.localUserId? otherReceiver?._id : receiver._id;
+setUserId(id);
 }
+
 },[props])
   return (
     <View
@@ -42,9 +46,10 @@ setFullName(fullName);
       <View className="flex flex-row items-center">
         <Previous navigation={navigation} isAbsolute={false}></Previous>
         <View className="flex flex-row items-center" style={{ columnGap: 9 }}>
-          <UserAvatar   avatarURL={{
+          {props.groupName? <UserAvatar size={54} avatarURL={{uri:avatarURL}} />:   <UserAvatarLink   avatarURL={{
           uri:avatarURL
-        }} size={54} />
+        }} size={54} userId={userId}/>}
+       
           {Platform.OS === "ios" ? (
             <View className="flex h-fit" style={{ rowGap: 4 }}>
               <Text

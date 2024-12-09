@@ -10,6 +10,7 @@ import VideoPlayer from "../multimedia/VideoPlayer";
 import AudioPlayer from "../multimedia/AudioPlayer";
 import { useActionSheet } from "@expo/react-native-action-sheet";
 import { deleteMessage, revokeMessage } from "@/lib/message-request";
+import UserAvatarLink from "@/components/ui/UserAvatarLink";
 
 const Message = (props: MessageProps) => {
   const [position, setPosition] = useState(props.position);
@@ -108,7 +109,7 @@ const Message = (props: MessageProps) => {
         onLongPress={handleLongPress}
       >
         {!props.isSender && (position === "bottom" || position === "free") ? (
-          <UserAvatar avatarURL={{ uri: props.avatar }} size={36} />
+          <UserAvatarLink avatarURL={{ uri: props.avatar }} size={36} userId={props.createBy} />
         ) : (
           <View className="w-[36px] h-[36px] bg-transparent-"></View>
         )}

@@ -44,6 +44,8 @@ import { uriToFile } from "@/utils/File";
 import ExpoCamera from "@/components/shared/multimedia/ExpoCamera";
 import AudioRecorder from "@/components/shared/multimedia/AudioRecorder";
 import TypingAnimation from "@/components/ui/TypingAnimation";
+import UserAvatar from "@/components/ui/UserAvatar";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const MessageDetailPage = () => {
   const { messageId } = useLocalSearchParams();
@@ -55,16 +57,16 @@ const MessageDetailPage = () => {
   const [messages, setMessages] = useState<MessageProps[]>([]);
   const [localUserId, setLocalUserId] = useState("");
   const [chatBoxHeader, setChatBoxHeader] = useState<MessageBoxProps>();
-  const [avatar, setAvatar] = useState("");
   const [messageText, setMessageText] = useState("");
   const [messageBox, setMessageBox] = useState<MessageBoxProps>();
   const [isCameraOpen, setIsCameraOpen] = useState(false);
   const [isMicroOpen, setIsMicroOpen] = useState(false);
   const [selectedMedia, setSelectedMedia] = useState<
-    { uri: string; type: string, name:string | null |undefined }[]
+    { uri: string; type: string; name: string | null | undefined }[]
   >([]);
-  const [isTypingMessage, setIsTypingMessage]=useState(false);
+  const [isTypingMessage, setIsTypingMessage] = useState(false);
   const typingTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+
 
   const scrollViewRef = useRef<ScrollView>(null);
   const handlePickMedia = async () => {
@@ -81,24 +83,25 @@ const MessageDetailPage = () => {
 
   const handleTextChange = (text: string) => {
     setMessageText(text);
-  
+
     handleTexting();
     if (typingTimeoutRef.current) {
       clearTimeout(typingTimeoutRef.current);
     }
-  
+
     typingTimeoutRef.current = setTimeout(() => {
       handleDisableTexting();
     }, 1500);
   };
 
-  const handleTexting = async()=>{
+  const handleTexting = async () => {
     await texting(messageId.toString());
-  }
-  const handleDisableTexting = async ()=>{
+  };
+  const handleDisableTexting = async () => {
     await disableTexting(messageId.toString());
-  }
+  };
   const handleSendMessage = async () => {
+    handleDisableTexting();
     const messageTextData = messageText;
     let mediaData = selectedMedia[0];
     setSelectedMedia([]);
@@ -119,18 +122,19 @@ const MessageDetailPage = () => {
           avatar: "",
           boxId: "",
         },
-      ])
+      ]);
       await sendMessage(messageId.toString(), messageText, selectedMedia);
     }
   };
   const handleDeleteMessage = (id: string) => {
-    setMessages((prevMessages) => prevMessages.filter((message) => message.id !== id));
+    setMessages((prevMessages) =>
+      prevMessages.filter((message) => message.id !== id)
+    );
   };
   const handleRevokeMessage = (id: string) => {
     setMessages((prevMessages) =>
-      prevMessages?.map((message:MessageProps) =>
-        message.id === id
-          ? { ...message, text: "Message revoked" } : message
+      prevMessages?.map((message: MessageProps) =>
+        message.id === id ? { ...message, text: "Message revoked" } : message
       )
     );
   };
@@ -145,6 +149,7 @@ const MessageDetailPage = () => {
       const messages = await getAllMessages(messageId);
       setMessages(messages);
       setLocalUserId(_id);
+
       const channel = pusherClient.subscribe(`private-${messageId}`);
       channel.bind("pusher:subscription_succeeded", () => {
         console.log(`Subscribed to channel private-${messageId} successfully!`);
@@ -160,16 +165,15 @@ const MessageDetailPage = () => {
         setMessages((prevMessages) => [...prevMessages, data]);
         markAsRead(messageId.toString());
       });
-      pusherClient.bind("revoke-message",(data:any)=>{
-        console.log("revoke: ", data) ;
+      pusherClient.bind("revoke-message", (data: any) => {
+        console.log("revoke: ", data);
         handleRevokeMessage(data.id);
-      })
-      pusherClient.bind("texting-status",(data:any)=>{
-        console.log(data.userId, " ", localUserId);
-        if(data.userId.toString()!==localUserId.toString()){
+      });
+      pusherClient.bind("texting-status", (data: any) => {
+        if (data.userId !== _id) {
           setIsTypingMessage(data.texting);
         }
-      })
+      });
       markAsRead(messageId.toString());
     };
     getAllMessageFUNC();
@@ -186,8 +190,8 @@ const MessageDetailPage = () => {
             <ExpoCamera
               onClose={() => setIsCameraOpen(false)}
               onSend={handleSendMessage}
-              setSelectedMedia={(uri: string, type: string, name:string) =>
-                setSelectedMedia([{ uri: uri, type: type, name:name } ])
+              setSelectedMedia={(uri: string, type: string, name: string) =>
+                setSelectedMedia([{ uri: uri, type: type, name: name }])
               }
             />
           </View>
@@ -246,8 +250,11 @@ const MessageDetailPage = () => {
                 />
               );
             })}
-            {isTypingMessage? <TypingAnimation />:null}
-           
+            {isTypingMessage ? (
+              <View className="flex flex-row ml-[40px]" style={{columnGap:4}}>
+                <TypingAnimation />
+              </View>
+            ) : null}
           </ScrollView>
         </View>
         <View collapsable={false} ref={ref}>
@@ -268,7 +275,7 @@ const MessageDetailPage = () => {
           {isMicroOpen ? (
             <View ref={ref}>
               <AudioRecorder
-                setSelectedMedia={(uri: string, type: string,name:string) =>
+                setSelectedMedia={(uri: string, type: string, name: string) =>
                   setSelectedMedia([{ uri: uri, type: type, name }])
                 }
               />

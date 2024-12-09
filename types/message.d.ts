@@ -34,6 +34,7 @@ export interface MessageProps {
   isSender:boolean;
   avatar:string;
   boxId:string;
+  createBy:string;
   deleteMessage?:(id:string)=>void;
   revokeMessage?:(id:string)=>void;
 }

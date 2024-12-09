@@ -49,7 +49,7 @@ const TypingIndicator = () => {
   }));
 
   return (
-    <View className="flex-1 items-start justify-center ml-[40px]">
+    <View className="flex-1 items-start justify-center">
       <View className=" bg-ios-light-340 dark:bg-ios-dark-330 w-[60px] h-[34px] rounded-full items-center justify-center flex flex-row p-[8px]" style={{columnGap:4}}>
         <Animated.View style={[styles.dot, animatedStyle1]} />
         <Animated.View style={[styles.dot, animatedStyle2]} />
