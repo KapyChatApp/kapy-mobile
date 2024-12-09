@@ -215,3 +215,31 @@ export const sendMessage = async (
     throw error;
   }
 };
+
+export const texting = async (boxId:string)=>{
+  try{
+    const {token} = await getLocalAuth();
+    const response = await axios.post(process.env.EXPO_PUBLIC_BASE_URL + "/message/texting", {boxId:boxId},{headers:{
+      "Content-Type":"application/json",
+      Authorization:`${token}`
+    }});
+    return response.data;
+  }catch(error){
+    console.log(error);
+    throw error;
+  }
+}
+
+export const disableTexting = async (boxId:string)=>{
+  try{
+    const {token} = await getLocalAuth();
+    const response = await axios.post(process.env.EXPO_PUBLIC_BASE_URL + "/message/disable-texting", {boxId:boxId},{headers:{
+      "Content-Type":"application/json",
+      Authorization:`${token}`
+    }});
+    return response.data;
+  }catch(error){
+    console.log(error);
+    throw error;
+  }
+}

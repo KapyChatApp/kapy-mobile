@@ -23,7 +23,7 @@ const TypingSpace = ({
   handlePickMedia,
   setIsCameraOpen,
   setIsMicroOpen,
-}: any) => {
+}: {isTyping:boolean, setIsTypeping:any, onChangeText:(text:string)=>void, value:any,onPress:any, handlePickMedia:any, setIsCameraOpen:any, setIsMicroOpen:any }) => {
   const { theme } = useTheme();
   const [isMoreOpen, setIsMoreOpen] = useState(false);
   const ref = useClickOutside<View>(()=>setIsMoreOpen(false));

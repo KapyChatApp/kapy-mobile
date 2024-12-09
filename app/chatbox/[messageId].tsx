@@ -25,10 +25,12 @@ import {
   MessageProps,
 } from "@/types/message";
 import {
+  disableTexting,
   getAllMessages,
   getAMessageBox,
   markRead,
   sendMessage,
+  texting,
 } from "@/lib/message-request";
 import Message from "@/components/shared/message/Message";
 import { getLocalAuth } from "@/lib/local-auth";
@@ -41,6 +43,7 @@ import SelectedMedia from "@/components/shared/multimedia/SelectedMedia";
 import { uriToFile } from "@/utils/File";
 import ExpoCamera from "@/components/shared/multimedia/ExpoCamera";
 import AudioRecorder from "@/components/shared/multimedia/AudioRecorder";
+import TypingAnimation from "@/components/ui/TypingAnimation";
 
 const MessageDetailPage = () => {
   const { messageId } = useLocalSearchParams();
@@ -60,7 +63,8 @@ const MessageDetailPage = () => {
   const [selectedMedia, setSelectedMedia] = useState<
     { uri: string; type: string, name:string | null |undefined }[]
   >([]);
-
+  const [isTypingMessage, setIsTypingMessage]=useState(false);
+  const typingTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   const scrollViewRef = useRef<ScrollView>(null);
   const handlePickMedia = async () => {
@@ -75,6 +79,25 @@ const MessageDetailPage = () => {
   const receiver = receiverIds[0];
   const otherReceiver = receiverIds[1];
 
+  const handleTextChange = (text: string) => {
+    setMessageText(text);
+  
+    handleTexting();
+    if (typingTimeoutRef.current) {
+      clearTimeout(typingTimeoutRef.current);
+    }
+  
+    typingTimeoutRef.current = setTimeout(() => {
+      handleDisableTexting();
+    }, 1500);
+  };
+
+  const handleTexting = async()=>{
+    await texting(messageId.toString());
+  }
+  const handleDisableTexting = async ()=>{
+    await disableTexting(messageId.toString());
+  }
   const handleSendMessage = async () => {
     const messageTextData = messageText;
     let mediaData = selectedMedia[0];
@@ -140,6 +163,12 @@ const MessageDetailPage = () => {
       pusherClient.bind("revoke-message",(data:any)=>{
         console.log("revoke: ", data) ;
         handleRevokeMessage(data.id);
+      })
+      pusherClient.bind("texting-status",(data:any)=>{
+        console.log(data.userId, " ", localUserId);
+        if(data.userId.toString()!==localUserId.toString()){
+          setIsTypingMessage(data.texting);
+        }
       })
       markAsRead(messageId.toString());
     };
@@ -217,6 +246,8 @@ const MessageDetailPage = () => {
                 />
               );
             })}
+            {isTypingMessage? <TypingAnimation />:null}
+           
           </ScrollView>
         </View>
         <View collapsable={false} ref={ref}>
@@ -228,7 +259,7 @@ const MessageDetailPage = () => {
             handlePickMedia={handlePickMedia}
             isTyping={isTyping}
             setIsTypeping={setIsTypeping}
-            onChangeText={setMessageText}
+            onChangeText={handleTextChange}
             value={messageText}
             onPress={handleSendMessage}
             setIsCameraOpen={() => setIsCameraOpen(true)}
