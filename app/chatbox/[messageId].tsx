@@ -66,7 +66,7 @@ const MessageDetailPage = () => {
   >([]);
   const [isTypingMessage, setIsTypingMessage] = useState(false);
   const typingTimeoutRef = useRef<NodeJS.Timeout | null>(null);
-
+  const [textingAvatar, setTextingAvatar] = useState("");
 
   const scrollViewRef = useRef<ScrollView>(null);
   const handlePickMedia = async () => {
@@ -171,7 +171,8 @@ const MessageDetailPage = () => {
       });
       pusherClient.bind("texting-status", (data: any) => {
         if (data.userId !== _id) {
-          setIsTypingMessage(data.texting);
+          setTextingAvatar(data.avatar);
+          setTimeout(()=>setIsTypingMessage(data.texting),200);
         }
       });
       markAsRead(messageId.toString());
@@ -252,6 +253,7 @@ const MessageDetailPage = () => {
             })}
             {isTypingMessage ? (
               <View className="flex flex-row ml-[40px]" style={{columnGap:4}}>
+                <UserAvatar size={30} avatarURL={setTextingAvatar}/>
                 <TypingAnimation />
               </View>
             ) : null}

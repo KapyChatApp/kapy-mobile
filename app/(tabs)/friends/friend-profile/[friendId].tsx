@@ -63,6 +63,7 @@ const FriendProfilePage = () => {
           background,
           relation,
           point,
+          mutualFriends,
           ..._bio
         } = friendData;
         setHeaderProps({
@@ -73,6 +74,7 @@ const FriendProfilePage = () => {
           avatar,
           background,
           point,
+          mutualFriends,
         });
         setBioProps(_bio);
         setRelation(relation);

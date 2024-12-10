@@ -19,6 +19,7 @@ const HeadProfile = (props:HeadProfileProps) => {
           <Text className={`text-14 font-helvetica-light ${textLight0Dark500}`}>Community Point: </Text>
           <Text className="text-18 font-helvetica-bold text-cardinal">{props.point}</Text>
         </View>
+        {props.mutualFriends!=0? <Text className={`${textLight0Dark500} font-helvetica-light text-14`}>{props.mutualFriends} mutual friends</Text>:null}
         <Text className={`text-16 font-helvetica-light my-[8px] ${textLight0Dark500}`}>{props.bio}</Text>
 
       </View>

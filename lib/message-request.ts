@@ -1,8 +1,9 @@
 import axios from "axios";
 import { getLocalAuth } from "./local-auth";
-import { CreateChatBoxProps} from "@/types/message";
+import { CreateChatBoxProps } from "@/types/message";
 import { generateRandomNumberString } from "@/utils/Random";
 import * as FileSystem from "expo-file-system";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 export const getMyChatBoxes = async () => {
   try {
     const { token } = await getLocalAuth();
@@ -135,7 +136,7 @@ export const revokeMessage = async (messageId: string) => {
 export const deleteMessage = async (messageId: string) => {
   try {
     const { token } = await getLocalAuth();
-    console.log("Deleting: ",messageId);
+    console.log("Deleting: ", messageId);
     const response = await axios.delete(
       process.env.EXPO_PUBLIC_BASE_URL + "/message/delete",
       {
@@ -156,29 +157,29 @@ export const deleteMessage = async (messageId: string) => {
 export const sendMessage = async (
   boxId: string,
   content: string,
-  files: { uri: string; type: string , name:string|undefined|null}[]
+  files: { uri: string; type: string; name: string | undefined | null }[]
 ) => {
   try {
     const { token } = await getLocalAuth();
-    console.log("files: ",files);
+    console.log("files: ", files);
     if (files.length != 0) {
       for (const file of files) {
         const formData = new FormData();
-       const fileContent:any = {
-        fileName: file.name,
-        url:"",
-        publicId:"",
-        bytes:"",
-        width:"0",
-        height:"0",
-        format:file.name?.split(".").pop(),
-        type:file.type 
-       }
-       const newFile = {
-        uri:file.uri,
-        type:"image/jpeg",
-        name:file.name?.split(".").pop()
-       }
+        const fileContent: any = {
+          fileName: file.name,
+          url: "",
+          publicId: "",
+          bytes: "",
+          width: "0",
+          height: "0",
+          format: file.name?.split(".").pop(),
+          type: file.type,
+        };
+        const newFile = {
+          uri: file.uri,
+          type: "image/jpeg",
+          name: file.name?.split(".").pop(),
+        };
         formData.append("boxId", boxId);
         formData.append("content", JSON.stringify(fileContent));
         formData.append("file", newFile as any);
@@ -216,30 +217,46 @@ export const sendMessage = async (
   }
 };
 
-export const texting = async (boxId:string)=>{
-  try{
-    const {token} = await getLocalAuth();
-    const response = await axios.post(process.env.EXPO_PUBLIC_BASE_URL + "/message/texting", {boxId:boxId},{headers:{
-      "Content-Type":"application/json",
-      Authorization:`${token}`
-    }});
+export const texting = async (boxId: string) => {
+  try {
+    const { token } = await getLocalAuth();
+    const user = await AsyncStorage.getItem("user");
+    const avatar = JSON.parse(user!).avatar;
+    const response = await axios.post(
+      process.env.EXPO_PUBLIC_BASE_URL + "/message/texting",
+      { boxId: boxId, avatar: avatar ? avatar : "" },
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `${token}`,
+        },
+      }
+    );
     return response.data;
-  }catch(error){
+  } catch (error) {
     console.log(error);
     throw error;
   }
-}
+};
 
-export const disableTexting = async (boxId:string)=>{
-  try{
-    const {token} = await getLocalAuth();
-    const response = await axios.post(process.env.EXPO_PUBLIC_BASE_URL + "/message/disable-texting", {boxId:boxId},{headers:{
-      "Content-Type":"application/json",
-      Authorization:`${token}`
-    }});
+export const disableTexting = async (boxId: string) => {
+  try {
+    const { token } = await getLocalAuth();
+    const user = await AsyncStorage.getItem("user");
+    const avatar = JSON.parse(user!).avatar;
+    const response = await axios.post(
+      process.env.EXPO_PUBLIC_BASE_URL + "/message/disable-texting",
+      { boxId: boxId, avatar: avatar ? avatar : "" },
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `${token}`,
+        },
+      }
+    );
     return response.data;
-  }catch(error){
+  } catch (error) {
     console.log(error);
     throw error;
   }
-}
+};

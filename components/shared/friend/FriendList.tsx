@@ -21,6 +21,7 @@ const FriendList = () => {
         const friends = await getMyFriends();
         setMyFriends(groupFriendsByFirstLetter(friends));
         setMyFriends(sortFriendsAscending(groupFriendsByFirstLetter(friends)));
+        console.log("friends: ",friends);
       };
       getMyFriendsFUNC();
     }, [])
