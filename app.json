@@ -63,7 +63,7 @@
       [
         "expo-document-picker",
         {
-          "iCloudContainerEnvironment": "Production"
+          "iCloudContainerEnvironment": "Development"
         }
       ],
       "expo-asset",

@@ -4,6 +4,7 @@ import { CreateChatBoxProps } from "@/types/message";
 import { generateRandomNumberString } from "@/utils/Random";
 import * as FileSystem from "expo-file-system";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { prepareFileForUpload } from "@/utils/File";
 export const getMyChatBoxes = async () => {
   try {
     const { token } = await getLocalAuth();
@@ -175,11 +176,27 @@ export const sendMessage = async (
           format: file.name?.split(".").pop(),
           type: file.type,
         };
-        const newFile = {
-          uri: file.uri,
-          type: "image/jpeg",
-          name: file.name?.split(".").pop(),
-        };
+        let newFile = null;
+        if (
+          file.type === "image" ||
+          file.type === "video" ||
+          file.type === "audio"
+        ) {
+          newFile = {
+            uri: file.uri,
+            type: "image/jpeg",
+            name: file.name?.split(".").pop(),
+          };
+        } else {
+          console.log("type: ", file.name?.split(".").pop());
+          const tempUri = await prepareFileForUpload(file.uri, file.name!);
+          console.log("prepare uri: ",tempUri);
+          newFile = {
+            uri: tempUri,
+            type: file.name?.split(".").pop(),
+            name: file.name,
+          };
+        }
         formData.append("boxId", boxId);
         formData.append("content", JSON.stringify(fileContent));
         formData.append("file", newFile as any);

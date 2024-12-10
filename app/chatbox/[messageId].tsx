@@ -46,6 +46,7 @@ import AudioRecorder from "@/components/shared/multimedia/AudioRecorder";
 import TypingAnimation from "@/components/ui/TypingAnimation";
 import UserAvatar from "@/components/ui/UserAvatar";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { pickDocument } from "@/utils/DoucmentPicker";
 
 const MessageDetailPage = () => {
   const { messageId } = useLocalSearchParams();
@@ -72,8 +73,12 @@ const MessageDetailPage = () => {
   const handlePickMedia = async () => {
     const media = await pickMedia();
     setSelectedMedia((prev) => [...prev, ...media]);
-    console.log(selectedMedia);
   };
+
+  const handlePickDocument = async () =>{
+    const document = await pickDocument();
+    setSelectedMedia((prev) => [...prev, ...document]);
+  }
 
   const { markAsRead, unreadMessages } = useMarkReadContext();
 
@@ -266,6 +271,7 @@ const MessageDetailPage = () => {
           />
           <TypingSpace
             handlePickMedia={handlePickMedia}
+            handlePickDocument={handlePickDocument}
             isTyping={isTyping}
             setIsTypeping={setIsTypeping}
             onChangeText={handleTextChange}
