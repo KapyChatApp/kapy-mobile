@@ -148,18 +148,24 @@ const Message = (props: MessageProps) => {
                 <View className="flex" style={{ rowGap: 4 }}>
                   <View className="flex flex-row w-[140px]">
                     <Text
-                      className={`${textLight0Dark500} font-helvetica-bold text-12 flex-1 flex-grow text-ellipsis`}
+                      className={`${
+                        props.isSender ? "text-white" : "text-black"
+                      } font-helvetica-bold text-12 flex-1 flex-grow text-ellipsis`}
                     >
                       {props.contentId.fileName}
                     </Text>
                   </View>
                   <Text
-                    className={`${textLight0Dark500} font-helvetica-light text-10`}
+                    className={`${
+                      props.isSender ? "text-white" : "text-black"
+                    } font-helvetica-light text-10`}
                   >
                     {props.contentId.url.split(".").pop()?.toUpperCase()}
                   </Text>
                   <Text
-                    className={`${textLight0Dark500} font-helvetica-light text-10`}
+                    className={`${
+                      props.isSender ? "text-white" : "text-black"
+                    } font-helvetica-light text-10`}
                   >
                     {0.001 * props.contentId.bytes!}kB
                   </Text>
@@ -186,18 +192,24 @@ const Message = (props: MessageProps) => {
                 <View className="flex" style={{ rowGap: 4 }}>
                   <View className="flex flex-row w-[140px]">
                     <Text
-                      className={`${textLight0Dark500} font-helvetica-bold text-12 flex-1 flex-grow text-ellipsis`}
+                      className={`${
+                        props.isSender ? "text-white" : "text-black"
+                      } font-helvetica-bold text-12 flex-1 flex-grow text-ellipsis`}
                     >
                       {props.contentId.fileName}
                     </Text>
                   </View>
                   <Text
-                    className={`${textLight0Dark500} font-helvetica-light text-10`}
+                    className={`${
+                      props.isSender ? "text-white" : "text-black"
+                    } font-helvetica-light text-10`}
                   >
                     {props.contentId.url.split(".").pop()?.toUpperCase()}
                   </Text>
                   <Text
-                    className={`${textLight0Dark500} font-helvetica-light text-10`}
+                    className={`${
+                      props.isSender ? "text-white" : "text-black"
+                    }font-helvetica-light text-10`}
                   >
                     {0.001 * props.contentId.bytes!}kB
                   </Text>
@@ -224,18 +236,24 @@ const Message = (props: MessageProps) => {
                 <View className="flex" style={{ rowGap: 4 }}>
                   <View className="flex flex-row w-[140px]">
                     <Text
-                      className={`${textLight0Dark500} font-helvetica-bold text-12 flex-1 flex-grow text-ellipsis`}
+                      className={`${
+                        props.isSender ? "text-white" : "text-black"
+                      } font-helvetica-bold text-12 flex-1 flex-grow text-ellipsis`}
                     >
                       {props.contentId.fileName}
                     </Text>
                   </View>
                   <Text
-                    className={`${textLight0Dark500} font-helvetica-light text-10`}
+                    className={`${
+                      props.isSender ? "text-white" : "text-black"
+                    } font-helvetica-light text-10`}
                   >
                     {props.contentId.url.split(".").pop()?.toUpperCase()}
                   </Text>
                   <Text
-                    className={`${textLight0Dark500} font-helvetica-light text-10`}
+                    className={`${
+                      props.isSender ? "text-white" : "text-black"
+                    } font-helvetica-light text-10`}
                   >
                     {0.001 * props.contentId.bytes!}kB
                   </Text>
@@ -263,18 +281,24 @@ const Message = (props: MessageProps) => {
                 <View className="flex" style={{ rowGap: 4 }}>
                   <View className="flex flex-row w-[140px]">
                     <Text
-                      className={`${textLight0Dark500} font-helvetica-bold text-12 flex-1 flex-grow text-ellipsis`}
+                      className={`${
+                        props.isSender ? "text-white" : "text-black"
+                      } font-helvetica-bold text-12 flex-1 flex-grow text-ellipsis`}
                     >
                       {props.contentId.fileName}
                     </Text>
                   </View>
                   <Text
-                    className={`${textLight0Dark500} font-helvetica-light text-10`}
+                    className={`${
+                      props.isSender ? "text-white" : "text-black"
+                    } font-helvetica-light text-10`}
                   >
                     {props.contentId.url.split(".").pop()?.toUpperCase()}
                   </Text>
                   <Text
-                    className={`${textLight0Dark500} font-helvetica-light text-10`}
+                    className={`${
+                      props.isSender ? "text-white" : "text-black"
+                    } font-helvetica-light text-10`}
                   >
                     {0.001 * props.contentId.bytes!}kB
                   </Text>
@@ -297,13 +321,17 @@ const Message = (props: MessageProps) => {
                 <View className="flex" style={{ rowGap: 4 }}>
                   <View className="flex flex-row w-[140px]">
                     <Text
-                      className={`${textLight0Dark500} font-helvetica-bold text-12 flex-1 flex-grow text-ellipsis`}
+                      className={`${
+                        props.isSender ? "text-white" : "text-black"
+                      } font-helvetica-bold text-12 flex-1 flex-grow text-ellipsis`}
                     >
                       {props.contentId.fileName}
                     </Text>
                   </View>
                   <Text
-                    className={`${textLight0Dark500} font-helvetica-light text-10`}
+                    className={`${
+                      props.isSender ? "text-white" : "text-black"
+                    } font-helvetica-light text-10`}
                   >
                     {props.contentId?.url
                       ?.split(".")
@@ -311,7 +339,9 @@ const Message = (props: MessageProps) => {
                       ?.toLocaleUpperCase()}
                   </Text>
                   <Text
-                    className={`${textLight0Dark500} font-helvetica-light text-10`}
+                    className={`${
+                      props.isSender ? "text-white" : "text-black"
+                    } font-helvetica-light text-10`}
                   >
                     {0.001 * props.contentId.bytes!}kB
                   </Text>
