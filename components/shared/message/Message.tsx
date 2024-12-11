@@ -11,6 +11,9 @@ import AudioPlayer from "../multimedia/AudioPlayer";
 import { useActionSheet } from "@expo/react-native-action-sheet";
 import { deleteMessage, revokeMessage } from "@/lib/message-request";
 import UserAvatarLink from "@/components/ui/UserAvatarLink";
+import { IconURL } from "@/constants/IconURL";
+import Icon from "@/components/ui/Icon";
+import { getPathWithConventionsCollapsed } from "expo-router/build/fork/getPathFromState-forks";
 
 const Message = (props: MessageProps) => {
   const [position, setPosition] = useState(props.position);
@@ -96,6 +99,202 @@ const Message = (props: MessageProps) => {
       }
     );
   };
+
+  const renderContent = () => {
+    switch (props.contentId.type) {
+      case "Image":
+        return (
+          <Pressable
+            onPress={() => props?.handleViewImage(props.contentId.url!)}
+          >
+            <Image
+              source={{ uri: props.contentId.url }}
+              className="w-full h-full rounded-2xl"
+            />
+          </Pressable>
+        );
+      case "Video":
+        return (
+          <View className="rounded-2xl flex-1">
+            <VideoPlayer videoSource={props.contentId.url!} />
+          </View>
+        );
+      case "Audio":
+        return (
+          <AudioPlayer
+            audioUri={props.contentId.url!}
+            isSender={props.isSender}
+          />
+        );
+      default:
+        console.log("aaaaa");
+        switch (props.contentId.url?.split(".").pop()) {
+          case "docx":
+            return (
+              <Pressable
+                className={`flex flex-row p-[10px]  ${
+                  props.isSender
+                    ? "bg-cardinal"
+                    : " bg-ios-light-340 dark:bg-ios-dark-330"
+                } ${
+                  props.isSender ? roundedValueSender() : roundedValueReceiver()
+                }`}
+                style={{ columnGap: 4 }}
+              >
+                <View className={`flex items-center justify-center rounded-2xl bg-light- p-[10px] bg-light-510`}><Icon iconURL={IconURL.docx} size={40} /></View>
+                <View className="flex" style={{ rowGap: 4 }}>
+                  <Text
+                    className={`${textLight0Dark500} font-helvetica-bold text-12`}
+                  >
+                    {props.contentId.fileName}
+                  </Text>
+                  <Text
+                    className={`${textLight0Dark500} font-helvetica-ultra-light text-10`}
+                  >
+                    {props.contentId.type}
+                  </Text>
+                  <Text
+                    className={`${textLight0Dark500} font-helvetica-ultra-light text-10`}
+                  >
+                    {0.001 * props.contentId.bytes!}kB
+                  </Text>
+                </View>
+              </Pressable>
+            );
+          case "xls":
+            return (
+              <Pressable
+                className={`flex flex-row p-[10px]  ${
+                  props.isSender
+                    ? "bg-cardinal"
+                    : " bg-ios-light-340 dark:bg-ios-dark-330"
+                } ${
+                  props.isSender ? roundedValueSender() : roundedValueReceiver()
+                }`}
+                style={{ columnGap: 4 }}
+              >
+                 <View className={`flex items-center justify-center rounded-2xl bg-light- p-[10px]bg-light-510`}><Icon iconURL={IconURL.xls} size={40} /></View>
+                <View className="flex" style={{ rowGap: 4 }}>
+                  <Text
+                    className={`${textLight0Dark500} font-helvetica-bold text-12`}
+                  >
+                    {props.contentId.fileName}
+                  </Text>
+                  <Text
+                    className={`${textLight0Dark500} font-helvetica-ultra-light text-10`}
+                  >
+                    {props.contentId.type}
+                  </Text>
+                  <Text
+                    className={`${textLight0Dark500} font-helvetica-ultra-light text-10`}
+                  >
+                    {0.001 * props.contentId.bytes!}kB
+                  </Text>
+                </View>
+              </Pressable>
+            );
+          case "ppt":
+            return (
+              <Pressable
+                className={`flex flex-row p-[10px]  ${
+                  props.isSender
+                    ? "bg-cardinal"
+                    : " bg-ios-light-340 dark:bg-ios-dark-330"
+                } ${
+                  props.isSender ? roundedValueSender() : roundedValueReceiver()
+                }`}
+                style={{ columnGap: 4 }}
+              >
+                 <View className={`flex items-center justify-center rounded-2xl bg-light- p-[10px]bg-light-510`}><Icon iconURL={IconURL.ppt} size={40} /></View>
+                <View className="flex" style={{ rowGap: 4 }}>
+                  <Text
+                    className={`${textLight0Dark500} font-helvetica-bold text-12`}
+                  >
+                    {props.contentId.fileName}
+                  </Text>
+                  <Text
+                    className={`${textLight0Dark500} font-helvetica-ultra-light text-10`}
+                  >
+                    {props.contentId.type}
+                  </Text>
+                  <Text
+                    className={`${textLight0Dark500} font-helvetica-ultra-light text-10`}
+                  >
+                    {0.001 * props.contentId.bytes!}kB
+                  </Text>
+                </View>
+              </Pressable>
+            );
+          case "pdf":
+            return (
+              <Pressable
+                className={`flex flex-row p-[10px]  ${
+                  props.isSender
+                    ? "bg-cardinal"
+                    : " bg-ios-light-340 dark:bg-ios-dark-330"
+                } ${
+                  props.isSender ? roundedValueSender() : roundedValueReceiver()
+                }`}
+                style={{ columnGap: 4 }}
+              >
+                <View className={`flex items-center justify-center rounded-2xl bg-light- p-[10px] bg-light-510`}>
+                  <Icon iconURL={IconURL.pdf} size={40} />
+                </View>
+                <View className="flex" style={{ rowGap: 4 }}>
+                  <Text
+                    className={`${textLight0Dark500} font-helvetica-bold text-12`}
+                  >
+                    {props.contentId.fileName}
+                  </Text>
+                  <Text
+                    className={`${textLight0Dark500} font-helvetica-ultra-light text-10`}
+                  >
+                    {props.contentId.type}
+                  </Text>
+                  <Text
+                    className={`${textLight0Dark500} font-helvetica-ultra-light text-10`}
+                  >
+                    {0.001 * props.contentId.bytes!}kB
+                  </Text>
+                </View>
+              </Pressable>
+            );
+          default:
+            console.log(props.contentId.url?.split(".").pop());
+            return (
+              <Pressable
+                className={`flex flex-row p-[10px] ${
+                  props.isSender
+                    ? "bg-cardinal"
+                    : " bg-ios-light-340 dark:bg-ios-dark-330"
+                } ${
+                  props.isSender ? roundedValueSender() : roundedValueReceiver()
+                }`}
+                style={{ columnGap: 4 }}
+              >
+                <Icon iconURL={IconURL.my_document} size={40} />
+                <View className="flex" style={{ rowGap: 4 }}>
+                  <Text
+                    className={`${textLight0Dark500} font-helvetica-bold text-12`}
+                  >
+                    {props.contentId.fileName}
+                  </Text>
+                  <Text
+                    className={`${textLight0Dark500} font-helvetica-ultra-light text-10`}
+                  >
+                    {props.contentId.type}
+                  </Text>
+                  <Text
+                    className={`${textLight0Dark500} font-helvetica-ultra-light text-10`}
+                  >
+                    {0.001 * props.contentId.bytes!}kB
+                  </Text>
+                </View>
+              </Pressable>
+            );
+        }
+    }
+  };
   return (
     <View
       className={`flex-1 flex ${props.isSender ? "items-end" : "items-start"}`}
@@ -126,23 +325,7 @@ const Message = (props: MessageProps) => {
               aspectRatio: props.contentId.width! / props.contentId.height!,
             }}
           >
-            {props.contentId.type === "Image" ? (
-              <Pressable onPress={()=>props?.handleViewImage(props.contentId.url!)}>
-                <Image
-                  source={{ uri: props.contentId.url }}
-                  className="w-full h-full rounded-2xl"
-                />
-              </Pressable>
-            ) : props.contentId.type === "Video" ? (
-              <View className="rounded-2xl flex-1">
-                <VideoPlayer videoSource={props.contentId.url!} />
-              </View>
-            ) : props.contentId.type === "Audio" ? (
-              <AudioPlayer
-                audioUri={props.contentId.url!}
-                isSender={props.isSender}
-              />
-            ) : null}
+            {renderContent()}
           </View>
         ) : (
           <View

@@ -36,6 +36,9 @@ import AudioRecorder from "@/components/shared/multimedia/AudioRecorder";
 import TypingAnimation from "@/components/ui/TypingAnimation";
 import { pickDocument } from "@/utils/DoucmentPicker";
 import ImageViewing from 'react-native-image-viewing';
+import FileViewer from "@/components/shared/multimedia/FileViewing";
+import { FileProps } from "@/types/file";
+import FileViewing from "@/components/shared/multimedia/FileViewing";
 const MessageDetailPage = () => {
   const { messageId } = useLocalSearchParams();
   const ref = useClickOutside<View>(() => {
@@ -50,8 +53,13 @@ const MessageDetailPage = () => {
   const [messageBox, setMessageBox] = useState<MessageBoxProps>();
   const [isCameraOpen, setIsCameraOpen] = useState(false);
   const [isMicroOpen, setIsMicroOpen] = useState(false);
+
   const [isImageViewOpen, setIsImageViewOpen] = useState(false);
   const [viewingImage, setViewingImage] = useState("");
+
+  const [isFileViewOpen, setIsFileViewOpen] = useState(false);
+  const [viewingFile, setViewingFile] = useState<FileProps>();
+
   const [selectedMedia, setSelectedMedia] = useState<
     { uri: string; type: string; name: string | null | undefined }[]
   >([]);
@@ -79,8 +87,13 @@ const MessageDetailPage = () => {
   }
 
   const handleViewImage = (imageURL:string)=>{
-    setIsImageViewOpen(true);
     setViewingImage(imageURL);
+    setIsImageViewOpen(true);
+  }
+
+  const handleViewFile = (file:FileProps)=>{
+    setViewingFile(file);
+    setIsFileViewOpen(true);
   }
 
   const { markAsRead, unreadMessages } = useMarkReadContext();
@@ -129,7 +142,8 @@ const MessageDetailPage = () => {
           isSender: true,
           avatar: "",
           boxId: "",
-          handleViewImage:()=>{handleViewImage(mediaData.uri)}
+          handleViewImage:()=>{handleViewImage(mediaData.uri)},
+          handleViewFile:()=>{handleViewFile(mediaData)},
         },
       ]);
       await sendMessage(messageId.toString(), messageText, selectedMedia);
@@ -211,6 +225,7 @@ const MessageDetailPage = () => {
             />
           </View>
         ) : null}
+      
         <View ref={ref}>
           <ChatBoxHeader {...chatBoxHeader} />
         </View>

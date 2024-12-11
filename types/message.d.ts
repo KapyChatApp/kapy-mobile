@@ -38,6 +38,7 @@ export interface MessageProps {
   deleteMessage?:(id:string)=>void;
   revokeMessage?:(id:string)=>void;
   handleViewImage:(imageURL:string)=>void;
+  handleViewFile:(file:FileProps)=>void;
 }
 
 export interface MessageBoxProps {
