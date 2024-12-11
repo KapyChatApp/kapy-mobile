@@ -16,7 +16,7 @@ const SelectedMedia = ({ selectedMedia, setSelectedMedia }: any) => {
             <View className="w-[140px] h-[140px] rounded-xl flex items-center justify-center bg-light-340 dark:bg-dark-20">
             {item.type==="image"?  <Image
               source={{ uri: item.uri }}
-            />: (item.type==="video"?<VideoPlayer videoSource={item.uri}/> :<Icon iconURL={IconURL.voice} size={70}/>)}
+            />: (item.type==="video"?<VideoPlayer videoSource={item.uri}/> :(item.type==="audio"? <Icon iconURL={IconURL.voice} size={70}/>:(null)))}
             </View>
             <TouchableOpacity
               onPress={() =>

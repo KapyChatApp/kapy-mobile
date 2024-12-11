@@ -109,7 +109,11 @@ const Message = (props: MessageProps) => {
         onLongPress={handleLongPress}
       >
         {!props.isSender && (position === "bottom" || position === "free") ? (
-          <UserAvatarLink avatarURL={{ uri: props.avatar }} size={36} userId={props.createBy} />
+          <UserAvatarLink
+            avatarURL={{ uri: props.avatar }}
+            size={36}
+            userId={props.createBy}
+          />
         ) : (
           <View className="w-[36px] h-[36px] bg-transparent-"></View>
         )}
@@ -123,16 +127,21 @@ const Message = (props: MessageProps) => {
             }}
           >
             {props.contentId.type === "Image" ? (
-              <Image
-                source={{ uri: props.contentId.url }}
-                className="w-full h-full rounded-2xl"
-              />
+              <Pressable onPress={()=>props?.handleViewImage(props.contentId.url!)}>
+                <Image
+                  source={{ uri: props.contentId.url }}
+                  className="w-full h-full rounded-2xl"
+                />
+              </Pressable>
             ) : props.contentId.type === "Video" ? (
               <View className="rounded-2xl flex-1">
                 <VideoPlayer videoSource={props.contentId.url!} />
               </View>
             ) : props.contentId.type === "Audio" ? (
-              <AudioPlayer audioUri={props.contentId.url!} isSender={props.isSender}/>
+              <AudioPlayer
+                audioUri={props.contentId.url!}
+                isSender={props.isSender}
+              />
             ) : null}
           </View>
         ) : (

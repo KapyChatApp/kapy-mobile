@@ -1,12 +1,8 @@
 import {
   View,
-  Text,
   SafeAreaView,
   KeyboardAvoidingView,
   Platform,
-  Pressable,
-  FlatList,
-  Image,
 } from "react-native";
 import React, { useEffect, useRef, useState } from "react";
 import { useLocalSearchParams } from "expo-router";
@@ -15,12 +11,9 @@ import TypingSpace from "@/components/shared/message/TypingSpace";
 import { ScrollView } from "react-native-gesture-handler";
 import { bgLight500Dark10 } from "@/styles/theme";
 import {
-  ClickOutsideProvider,
   useClickOutside,
 } from "react-native-click-outside";
-import MessageBox from "@/components/shared/message/MessageBox";
 import {
-  ChatBoxHeaderProps,
   MessageBoxProps,
   MessageProps,
 } from "@/types/message";
@@ -36,18 +29,13 @@ import Message from "@/components/shared/message/Message";
 import { getLocalAuth } from "@/lib/local-auth";
 import { pusherClient } from "@/lib/pusher";
 import { pickMedia } from "@/utils/GalleryPicker";
-import GalleryPickerBox from "@/components/ui/GalleryPickerBox";
-import { Video } from "expo-av";
 import { useMarkReadContext } from "@/context/MarkReadProvider";
 import SelectedMedia from "@/components/shared/multimedia/SelectedMedia";
-import { uriToFile } from "@/utils/File";
 import ExpoCamera from "@/components/shared/multimedia/ExpoCamera";
 import AudioRecorder from "@/components/shared/multimedia/AudioRecorder";
 import TypingAnimation from "@/components/ui/TypingAnimation";
-import UserAvatar from "@/components/ui/UserAvatar";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { pickDocument } from "@/utils/DoucmentPicker";
-
+import ImageViewing from 'react-native-image-viewing';
 const MessageDetailPage = () => {
   const { messageId } = useLocalSearchParams();
   const ref = useClickOutside<View>(() => {
@@ -62,6 +50,8 @@ const MessageDetailPage = () => {
   const [messageBox, setMessageBox] = useState<MessageBoxProps>();
   const [isCameraOpen, setIsCameraOpen] = useState(false);
   const [isMicroOpen, setIsMicroOpen] = useState(false);
+  const [isImageViewOpen, setIsImageViewOpen] = useState(false);
+  const [viewingImage, setViewingImage] = useState("");
   const [selectedMedia, setSelectedMedia] = useState<
     { uri: string; type: string; name: string | null | undefined }[]
   >([]);
@@ -77,7 +67,20 @@ const MessageDetailPage = () => {
 
   const handlePickDocument = async () =>{
     const document = await pickDocument();
-    setSelectedMedia((prev) => [...prev, ...document]);
+    if (document) {
+      setSelectedMedia((prev) => [
+        ...prev,
+        ...document.map((item) => ({
+          ...item,
+          type: item.type ?? 'defaultType', 
+        })),
+      ]);
+    }
+  }
+
+  const handleViewImage = (imageURL:string)=>{
+    setIsImageViewOpen(true);
+    setViewingImage(imageURL);
   }
 
   const { markAsRead, unreadMessages } = useMarkReadContext();
@@ -126,6 +129,7 @@ const MessageDetailPage = () => {
           isSender: true,
           avatar: "",
           boxId: "",
+          handleViewImage:()=>{handleViewImage(mediaData.uri)}
         },
       ]);
       await sendMessage(messageId.toString(), messageText, selectedMedia);
@@ -191,6 +195,11 @@ const MessageDetailPage = () => {
       style={{ flex: 1 }}
     >
       <SafeAreaView className="flex-1 ">
+        {isImageViewOpen? <ImageViewing  images={[{uri:viewingImage}]}
+        imageIndex={0}
+        visible={isImageViewOpen}
+        onRequestClose={() => setIsImageViewOpen(false)}
+        doubleTapToZoomEnabled={true}/>:null}
         {isCameraOpen ? (
           <View className="fixed w-screen h-screen">
             <ExpoCamera
@@ -253,12 +262,12 @@ const MessageDetailPage = () => {
                   position={position}
                   deleteMessage={handleDeleteMessage}
                   revokeMessage={handleRevokeMessage}
+                  handleViewImage={handleViewImage}
                 />
               );
             })}
             {isTypingMessage ? (
-              <View className="flex flex-row ml-[40px]" style={{columnGap:4}}>
-                <UserAvatar size={30} avatarURL={setTextingAvatar}/>
+              <View className="flex flex-row ml-[34px]" style={{columnGap:4}}>
                 <TypingAnimation />
               </View>
             ) : null}

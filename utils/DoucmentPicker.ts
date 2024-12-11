@@ -22,7 +22,6 @@ export const pickDocument = async () => {
       type: asset.mimeType,
       name: asset.name,
     }));
-
     return selectedAssets;
   } catch (error) {
     console.error("Error picking document:", error);
