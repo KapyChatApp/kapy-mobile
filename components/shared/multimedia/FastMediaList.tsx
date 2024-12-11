@@ -12,7 +12,7 @@ const FastMediaList = ({ label, contents, data, type }: any) => {
         {label}
       </Text>
       <View className="flex flex-row gap-x-1 translate-x-3 justify-start items-start w-full">
-        {type === "image"
+        {type === "image" && data
           ? data.map((item: any, index: any) => {
               if (index <= 4)
                 return (
@@ -22,7 +22,7 @@ const FastMediaList = ({ label, contents, data, type }: any) => {
                   />
                 );
             })
-          : type === "video"
+          : type === "video" && data
           ? data.map((item: any, index: any) => {
               if (index <= 4) {
                 return (

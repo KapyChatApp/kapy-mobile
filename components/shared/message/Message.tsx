@@ -127,7 +127,6 @@ const Message = (props: MessageProps) => {
           />
         );
       default:
-        console.log("aaaaa");
         switch (props.contentId.url?.split(".").pop()) {
           case "docx":
             return (
@@ -141,20 +140,26 @@ const Message = (props: MessageProps) => {
                 }`}
                 style={{ columnGap: 4 }}
               >
-                <View className={`flex items-center justify-center rounded-2xl bg-light- p-[10px] bg-light-510`}><Icon iconURL={IconURL.docx} size={40} /></View>
+                <View
+                  className={`flex items-center justify-center rounded-2xl bg-light- p-[10px] bg-light-510`}
+                >
+                  <Icon iconURL={IconURL.docx} size={40} />
+                </View>
                 <View className="flex" style={{ rowGap: 4 }}>
+                  <View className="flex flex-row w-[140px]">
+                    <Text
+                      className={`${textLight0Dark500} font-helvetica-bold text-12 flex-1 flex-grow text-ellipsis`}
+                    >
+                      {props.contentId.fileName}
+                    </Text>
+                  </View>
                   <Text
-                    className={`${textLight0Dark500} font-helvetica-bold text-12`}
+                    className={`${textLight0Dark500} font-helvetica-light text-10`}
                   >
-                    {props.contentId.fileName}
+                    {props.contentId.url.split(".").pop()?.toUpperCase()}
                   </Text>
                   <Text
-                    className={`${textLight0Dark500} font-helvetica-ultra-light text-10`}
-                  >
-                    {props.contentId.type}
-                  </Text>
-                  <Text
-                    className={`${textLight0Dark500} font-helvetica-ultra-light text-10`}
+                    className={`${textLight0Dark500} font-helvetica-light text-10`}
                   >
                     {0.001 * props.contentId.bytes!}kB
                   </Text>
@@ -173,20 +178,26 @@ const Message = (props: MessageProps) => {
                 }`}
                 style={{ columnGap: 4 }}
               >
-                 <View className={`flex items-center justify-center rounded-2xl bg-light- p-[10px]bg-light-510`}><Icon iconURL={IconURL.xls} size={40} /></View>
+                <View
+                  className={`flex items-center justify-center rounded-2xl bg-light- p-[10px]bg-light-510`}
+                >
+                  <Icon iconURL={IconURL.xls} size={40} />
+                </View>
                 <View className="flex" style={{ rowGap: 4 }}>
+                  <View className="flex flex-row w-[140px]">
+                    <Text
+                      className={`${textLight0Dark500} font-helvetica-bold text-12 flex-1 flex-grow text-ellipsis`}
+                    >
+                      {props.contentId.fileName}
+                    </Text>
+                  </View>
                   <Text
-                    className={`${textLight0Dark500} font-helvetica-bold text-12`}
+                    className={`${textLight0Dark500} font-helvetica-light text-10`}
                   >
-                    {props.contentId.fileName}
+                    {props.contentId.url.split(".").pop()?.toUpperCase()}
                   </Text>
                   <Text
-                    className={`${textLight0Dark500} font-helvetica-ultra-light text-10`}
-                  >
-                    {props.contentId.type}
-                  </Text>
-                  <Text
-                    className={`${textLight0Dark500} font-helvetica-ultra-light text-10`}
+                    className={`${textLight0Dark500} font-helvetica-light text-10`}
                   >
                     {0.001 * props.contentId.bytes!}kB
                   </Text>
@@ -205,20 +216,26 @@ const Message = (props: MessageProps) => {
                 }`}
                 style={{ columnGap: 4 }}
               >
-                 <View className={`flex items-center justify-center rounded-2xl bg-light- p-[10px]bg-light-510`}><Icon iconURL={IconURL.ppt} size={40} /></View>
+                <View
+                  className={`flex items-center justify-center rounded-2xl bg-light- p-[10px]bg-light-510`}
+                >
+                  <Icon iconURL={IconURL.ppt} size={40} />
+                </View>
                 <View className="flex" style={{ rowGap: 4 }}>
+                  <View className="flex flex-row w-[140px]">
+                    <Text
+                      className={`${textLight0Dark500} font-helvetica-bold text-12 flex-1 flex-grow text-ellipsis`}
+                    >
+                      {props.contentId.fileName}
+                    </Text>
+                  </View>
                   <Text
-                    className={`${textLight0Dark500} font-helvetica-bold text-12`}
+                    className={`${textLight0Dark500} font-helvetica-light text-10`}
                   >
-                    {props.contentId.fileName}
+                    {props.contentId.url.split(".").pop()?.toUpperCase()}
                   </Text>
                   <Text
-                    className={`${textLight0Dark500} font-helvetica-ultra-light text-10`}
-                  >
-                    {props.contentId.type}
-                  </Text>
-                  <Text
-                    className={`${textLight0Dark500} font-helvetica-ultra-light text-10`}
+                    className={`${textLight0Dark500} font-helvetica-light text-10`}
                   >
                     {0.001 * props.contentId.bytes!}kB
                   </Text>
@@ -236,23 +253,28 @@ const Message = (props: MessageProps) => {
                   props.isSender ? roundedValueSender() : roundedValueReceiver()
                 }`}
                 style={{ columnGap: 4 }}
+                onPress={() => props.handleViewPdf(props.contentId)}
               >
-                <View className={`flex items-center justify-center rounded-2xl bg-light- p-[10px] bg-light-510`}>
+                <View
+                  className={`flex items-center justify-center rounded-2xl bg-light- p-[10px] bg-light-510`}
+                >
                   <Icon iconURL={IconURL.pdf} size={40} />
                 </View>
                 <View className="flex" style={{ rowGap: 4 }}>
+                  <View className="flex flex-row w-[140px]">
+                    <Text
+                      className={`${textLight0Dark500} font-helvetica-bold text-12 flex-1 flex-grow text-ellipsis`}
+                    >
+                      {props.contentId.fileName}
+                    </Text>
+                  </View>
                   <Text
-                    className={`${textLight0Dark500} font-helvetica-bold text-12`}
+                    className={`${textLight0Dark500} font-helvetica-light text-10`}
                   >
-                    {props.contentId.fileName}
+                    {props.contentId.url.split(".").pop()?.toUpperCase()}
                   </Text>
                   <Text
-                    className={`${textLight0Dark500} font-helvetica-ultra-light text-10`}
-                  >
-                    {props.contentId.type}
-                  </Text>
-                  <Text
-                    className={`${textLight0Dark500} font-helvetica-ultra-light text-10`}
+                    className={`${textLight0Dark500} font-helvetica-light text-10`}
                   >
                     {0.001 * props.contentId.bytes!}kB
                   </Text>
@@ -260,7 +282,6 @@ const Message = (props: MessageProps) => {
               </Pressable>
             );
           default:
-            console.log(props.contentId.url?.split(".").pop());
             return (
               <Pressable
                 className={`flex flex-row p-[10px] ${
@@ -274,18 +295,23 @@ const Message = (props: MessageProps) => {
               >
                 <Icon iconURL={IconURL.my_document} size={40} />
                 <View className="flex" style={{ rowGap: 4 }}>
+                  <View className="flex flex-row w-[140px]">
+                    <Text
+                      className={`${textLight0Dark500} font-helvetica-bold text-12 flex-1 flex-grow text-ellipsis`}
+                    >
+                      {props.contentId.fileName}
+                    </Text>
+                  </View>
                   <Text
-                    className={`${textLight0Dark500} font-helvetica-bold text-12`}
+                    className={`${textLight0Dark500} font-helvetica-light text-10`}
                   >
-                    {props.contentId.fileName}
+                    {props.contentId?.url
+                      ?.split(".")
+                      .pop()
+                      ?.toLocaleUpperCase()}
                   </Text>
                   <Text
-                    className={`${textLight0Dark500} font-helvetica-ultra-light text-10`}
-                  >
-                    {props.contentId.type}
-                  </Text>
-                  <Text
-                    className={`${textLight0Dark500} font-helvetica-ultra-light text-10`}
+                    className={`${textLight0Dark500} font-helvetica-light text-10`}
                   >
                     {0.001 * props.contentId.bytes!}kB
                   </Text>

@@ -10,13 +10,8 @@ import ChatBoxHeader from "@/components/shared/message/ChatBoxHeader";
 import TypingSpace from "@/components/shared/message/TypingSpace";
 import { ScrollView } from "react-native-gesture-handler";
 import { bgLight500Dark10 } from "@/styles/theme";
-import {
-  useClickOutside,
-} from "react-native-click-outside";
-import {
-  MessageBoxProps,
-  MessageProps,
-} from "@/types/message";
+import { useClickOutside } from "react-native-click-outside";
+import { MessageBoxProps, MessageProps } from "@/types/message";
 import {
   disableTexting,
   getAllMessages,
@@ -35,10 +30,11 @@ import ExpoCamera from "@/components/shared/multimedia/ExpoCamera";
 import AudioRecorder from "@/components/shared/multimedia/AudioRecorder";
 import TypingAnimation from "@/components/ui/TypingAnimation";
 import { pickDocument } from "@/utils/DoucmentPicker";
-import ImageViewing from 'react-native-image-viewing';
+import ImageViewing from "react-native-image-viewing";
 import FileViewer from "@/components/shared/multimedia/FileViewing";
 import { FileProps } from "@/types/file";
 import FileViewing from "@/components/shared/multimedia/FileViewing";
+import PdfViewer from "@/components/shared/multimedia/PdfViewer";
 const MessageDetailPage = () => {
   const { messageId } = useLocalSearchParams();
   const ref = useClickOutside<View>(() => {
@@ -60,6 +56,8 @@ const MessageDetailPage = () => {
   const [isFileViewOpen, setIsFileViewOpen] = useState(false);
   const [viewingFile, setViewingFile] = useState<FileProps>();
 
+  const [isPdfViewerOpen, setIsPdfViewerOpen] = useState(false);
+
   const [selectedMedia, setSelectedMedia] = useState<
     { uri: string; type: string; name: string | null | undefined }[]
   >([]);
@@ -73,28 +71,33 @@ const MessageDetailPage = () => {
     setSelectedMedia((prev) => [...prev, ...media]);
   };
 
-  const handlePickDocument = async () =>{
+  const handlePickDocument = async () => {
     const document = await pickDocument();
     if (document) {
       setSelectedMedia((prev) => [
         ...prev,
         ...document.map((item) => ({
           ...item,
-          type: item.type ?? 'defaultType', 
+          type: item.type ?? "defaultType",
         })),
       ]);
     }
-  }
+  };
 
-  const handleViewImage = (imageURL:string)=>{
+  const handleViewImage = (imageURL: string) => {
     setViewingImage(imageURL);
     setIsImageViewOpen(true);
-  }
+  };
 
-  const handleViewFile = (file:FileProps)=>{
+  const handleViewFile = (file: FileProps) => {
     setViewingFile(file);
     setIsFileViewOpen(true);
-  }
+  };
+
+  const handleViewPdf = (file: FileProps) => {
+    setViewingFile(file);
+    setIsPdfViewerOpen(true);
+  };
 
   const { markAsRead, unreadMessages } = useMarkReadContext();
 
@@ -142,8 +145,13 @@ const MessageDetailPage = () => {
           isSender: true,
           avatar: "",
           boxId: "",
-          handleViewImage:()=>{handleViewImage(mediaData.uri)},
-          handleViewFile:()=>{handleViewFile(mediaData)},
+          handleViewImage: () => {
+            handleViewImage(mediaData.uri);
+          },
+          handleViewFile: () => {
+            handleViewFile(mediaData);
+          },
+          handleViewPdf:()=> handleViewPdf(mediaData)
         },
       ]);
       await sendMessage(messageId.toString(), messageText, selectedMedia);
@@ -195,7 +203,7 @@ const MessageDetailPage = () => {
       pusherClient.bind("texting-status", (data: any) => {
         if (data.userId !== _id) {
           setTextingAvatar(data.avatar);
-          setTimeout(()=>setIsTypingMessage(data.texting),200);
+          setTimeout(() => setIsTypingMessage(data.texting), 200);
         }
       });
       markAsRead(messageId.toString());
@@ -209,11 +217,16 @@ const MessageDetailPage = () => {
       style={{ flex: 1 }}
     >
       <SafeAreaView className="flex-1 ">
-        {isImageViewOpen? <ImageViewing  images={[{uri:viewingImage}]}
-        imageIndex={0}
-        visible={isImageViewOpen}
-        onRequestClose={() => setIsImageViewOpen(false)}
-        doubleTapToZoomEnabled={true}/>:null}
+        {isPdfViewerOpen? <PdfViewer fileUri={viewingFile?.url!}/>:null}
+        {isImageViewOpen ? (
+          <ImageViewing
+            images={[{ uri: viewingImage }]}
+            imageIndex={0}
+            visible={isImageViewOpen}
+            onRequestClose={() => setIsImageViewOpen(false)}
+            doubleTapToZoomEnabled={true}
+          />
+        ) : null}
         {isCameraOpen ? (
           <View className="fixed w-screen h-screen">
             <ExpoCamera
@@ -225,7 +238,7 @@ const MessageDetailPage = () => {
             />
           </View>
         ) : null}
-      
+
         <View ref={ref}>
           <ChatBoxHeader {...chatBoxHeader} />
         </View>
@@ -278,11 +291,15 @@ const MessageDetailPage = () => {
                   deleteMessage={handleDeleteMessage}
                   revokeMessage={handleRevokeMessage}
                   handleViewImage={handleViewImage}
+                  handleViewPdf={handleViewPdf}
                 />
               );
             })}
             {isTypingMessage ? (
-              <View className="flex flex-row ml-[34px]" style={{columnGap:4}}>
+              <View
+                className="flex flex-row ml-[34px]"
+                style={{ columnGap: 4 }}
+              >
                 <TypingAnimation />
               </View>
             ) : null}
