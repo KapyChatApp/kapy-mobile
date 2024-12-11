@@ -1,47 +1,178 @@
-import { View, Text, TouchableHighlight, TouchableOpacity } from "react-native";
-import React, { useCallback, useEffect, useState } from "react";
+import { View, Text, TouchableOpacity } from "react-native";
+import React, { useCallback, useState } from "react";
 import { bgLight500Dark10, textLight0Dark500 } from "@/styles/theme";
 import Previous from "@/components/ui/Previous";
-import { useFocusEffect, useLocalSearchParams, useNavigation } from "expo-router";
-import { SafeAreaView } from "react-native";
-import { FileProps } from "@/types/file";
-import { FlatList, ScrollView } from "react-native-gesture-handler";
-import { allAudiosOfMessageBox, allFilesOfMessageBox, allImagesOfMessageBox, allVideosOfMessageBox } from "@/lib/media";
+import {
+  useFocusEffect,
+  useLocalSearchParams,
+  useNavigation,
+} from "expo-router";
+import { SafeAreaView, FlatList, Dimensions } from "react-native";
 import { Image } from "react-native";
 import VideoPlayer from "@/components/shared/multimedia/VideoPlayer";
+import { getFilesOfAMessageBox } from "@/lib/media";
+import { FileProps } from "@/types/file";
+import { IconURL } from "@/constants/IconURL";
+import Icon from "@/components/ui/Icon";
+import ImageViewing from "react-native-image-viewing";
 
 const ChatMultimediaPage = () => {
-   const {boxId} = useLocalSearchParams();
-   const navigation = useNavigation();
+  const { boxId } = useLocalSearchParams();
+  const navigation = useNavigation();
   const [selected, setSelected] = useState("images");
   const [images, setImages] = useState<FileProps[]>([]);
   const [videos, setVideos] = useState<FileProps[]>([]);
-  const [files, setFiles] = useState<FileProps[]>([]);
   const [audios, setAudios] = useState<FileProps[]>([]);
-  useFocusEffect(useCallback(()=>{
-    const getMultimediaFUNC = async ()=>{
-        const images = await allImagesOfMessageBox(boxId.toString());
+  const [others, setOthers] = useState<FileProps[]>([]);
+
+  const screenWidth = Dimensions.get("window").width;
+  const numColumns = 4;
+  const mediaSize = screenWidth / numColumns - 10;
+
+  const [isImageViewingOpen, setIsImageViewingOpen] = useState(false);
+  const [imageViewing, setImageViewing] = useState("");
+
+  useFocusEffect(
+    useCallback(() => {
+      const getMultimediaFUNC = async () => {
+        const files: FileProps[] = await getFilesOfAMessageBox(
+          boxId.toString()
+        );
+        const images = files.filter((item) => item.type === "Image");
+        const videos = files.filter((item) => item.type === "Video");
+        const audios = files.filter((item) => item.type === "Audio");
+        const others = files.filter(
+          (item) =>
+            item.type !== "Image" &&
+            item.type !== "Video" &&
+            item.type !== "Audio"
+        );
         setImages(images);
-        const videos = await allVideosOfMessageBox(boxId.toString());
         setVideos(videos);
-        const audios = await allAudiosOfMessageBox(boxId.toString());
         setAudios(audios);
-        const files = await allFilesOfMessageBox(boxId.toString());
-        setFiles(files);
+        setOthers(others);
+      };
+      getMultimediaFUNC();
+    }, [boxId])
+  );
+
+  const renderImageItem = ({ item }: { item: FileProps }) => (
+    <TouchableOpacity onPress={()=>{setImageViewing(item.url!); setIsImageViewingOpen(true)}}>
+      <Image
+        source={{ uri: item.url }}
+        style={{
+          width: mediaSize,
+          height: mediaSize,
+          margin: 5,
+          borderRadius: 8,
+        }}
+      />
+    </TouchableOpacity>
+  );
+
+  const renderVideoItem = ({ item }: { item: FileProps }) => (
+    <TouchableOpacity
+      style={{
+        width: mediaSize,
+        height: mediaSize,
+        margin: 5,
+        borderRadius: 8,
+      }}
+    >
+      <VideoPlayer videoSource={item.url!} />
+    </TouchableOpacity>
+  );
+
+  const renderAudioItem = ({ item }: { item: FileProps }) => (
+    <TouchableOpacity
+      className={`flex items-center justify-center`}
+      style={{
+        width:mediaSize,
+        margin: 5,
+        borderRadius: 8,
+        rowGap:4,
+      }}
+    >
+      <View className=" bg-light-300 dark:bg-dark-20 flex-1 w-full rounded-2xl items-center justify-center" style={{width:mediaSize, height:mediaSize}}><Icon iconURL={IconURL.voice} size={40} /></View>
+        <View className="w-full" style={{rowGap:2}}>
+          <View>
+            <Text
+              className={`${textLight0Dark500} text-12 font-helvetica-bold`}
+            >
+              {item.fileName}
+            </Text>
+          </View>
+          <Text className={`${textLight0Dark500} text-10 font-helvetica-light`}>
+            {item.bytes! * 0.001}KB
+          </Text>
+        </View>
+    </TouchableOpacity>
+  );
+
+  const renderFileItem = ({ item }: { item: FileProps }) => (
+    <TouchableOpacity  className={`flex items-center justify-center `}
+    style={{
+      width: mediaSize,
+      margin: 5,
+      borderRadius: 8,
+      rowGap:4
+    }}>
+       <View className=" bg-light-300 dark:bg-dark-20 flex-1 w-full rounded-2xl items-center justify-center" style={{width:mediaSize, height:mediaSize}}> <Icon
+        size={40}
+        iconURL={renderFileIcon(item.url?.split(".").pop()!)}
+      /></View>
+       <View className="w-full" style={{rowGap:2}}>
+          <View>
+            <Text
+              className={`${textLight0Dark500} text-12 font-helvetica-bold`}
+            >
+              {item.fileName}
+            </Text>
+          </View>
+          <Text className={`${textLight0Dark500} text-10 font-helvetica-light`}>
+            {item.bytes! * 0.001}KB
+          </Text>
+        </View>
+    </TouchableOpacity>
+  );
+
+  const renderFileIcon = (type: string) => {
+    switch (type) {
+      case "docx":
+        return IconURL.docx;
+      case "xls":
+        return IconURL.xls;
+      case "ppt":
+        return IconURL.ppt;
+      case "pdf":
+        return IconURL.pdf;
+      default:
+        return IconURL.my_document;
     }
-   getMultimediaFUNC();
-  },[images, videos,audios,files]))
+  };
+
   return (
-    <SafeAreaView className={`${bgLight500Dark10} flex-1`} style={{rowGap:10}}>
+    <SafeAreaView
+      className={`${bgLight500Dark10} flex-1`}
+      style={{ rowGap: 10 }}
+    >
+       {isImageViewingOpen ? (
+          <ImageViewing
+            images={[{ uri: imageViewing }]}
+            imageIndex={0}
+            visible={isImageViewingOpen}
+            onRequestClose={() => setIsImageViewingOpen(false)}
+            doubleTapToZoomEnabled={true}
+          />
+        ) : null}
       <View className="mt-[10px] ml-[10px]">
         <Previous navigation={navigation} header="Multimedia" />
       </View>
       <View className="w-full flex flex-row justify-between items-center p-[10px]">
         <TouchableOpacity
-          onPress={() => {
-            setSelected("images");
-          }}
-          className="flex-1 flex items-center justify-center" style={{rowGap:12}}
+          onPress={() => setSelected("images")}
+          className="flex-1 flex items-center justify-center"
+          style={{ rowGap: 12 }}
         >
           <Text className="text-cardinal text-16 font-helvetica-bold text-center">
             Images
@@ -51,52 +182,68 @@ const ChatMultimediaPage = () => {
           ) : null}
         </TouchableOpacity>
         <TouchableOpacity
-          onPress={() => {
-            setSelected("videos");
-          }}
-          className="flex-1 flex items-center justify-center" style={{rowGap:12}}
+          onPress={() => setSelected("videos")}
+          className="flex-1 flex items-center justify-center"
+          style={{ rowGap: 12 }}
         >
           <Text className="text-cardinal text-16 font-helvetica-bold text-center">
             Videos
           </Text>
-          {selected==="videos"?<View className="w-[80px] h-[2px] bg-cardinal"></View> :null}
+          {selected === "videos" ? (
+            <View className="w-[80px] h-[2px] bg-cardinal"></View>
+          ) : null}
         </TouchableOpacity>
         <TouchableOpacity
-          onPress={() => {
-            setSelected("audios");
-          }}
-          className="flex-1 flex items-center justify-center" style={{rowGap:12}}
+          onPress={() => setSelected("audios")}
+          className="flex-1 flex items-center justify-center"
+          style={{ rowGap: 12 }}
         >
           <Text className="text-cardinal text-16 font-helvetica-bold text-center">
             Audios
           </Text>
-          {selected==="audios"?<View className="w-[80px] h-[2px] bg-cardinal"></View> :null}
+          {selected === "audios" ? (
+            <View className="w-[80px] h-[2px] bg-cardinal"></View>
+          ) : null}
         </TouchableOpacity>
         <TouchableOpacity
           onPress={() => setSelected("files")}
-          className="flex-1 flex items-center justify-center" style={{rowGap:12}}
+          className="flex-1 flex items-center justify-center"
+          style={{ rowGap: 12 }}
         >
           <Text className="text-cardinal text-16 font-helvetica-bold text-center">
             Files
           </Text>
-          {selected==="files"?<View className="w-[80px] h-[2px] bg-cardinal"></View> :null}
+          {selected === "files" ? (
+            <View className="w-[80px] h-[2px] bg-cardinal"></View>
+          ) : null}
         </TouchableOpacity>
       </View>
-      <View>
-        {selected==="images"?   <FlatList  data={images}
-      renderItem={({ item }) => (
-        <TouchableOpacity className="flex-1 w-[70px] h-[70px]"><Image source={{uri:item.url}}/></TouchableOpacity>
-      )}
-      keyExtractor={(item) => item._id!}
-      numColumns={4}  
-      /> : ( selected==="videos"?<FlatList  data={videos}
-        renderItem={({ item }) => (
-          <TouchableOpacity><VideoPlayer videoSource={item.url!}/></TouchableOpacity>
+      <View className="flex-1">
+        {selected === "images" ? (
+          <FlatList
+            data={images}
+            renderItem={renderImageItem}
+            numColumns={numColumns}
+          />
+        ) : selected === "videos" ? (
+          <FlatList
+            data={videos}
+            renderItem={renderVideoItem}
+            numColumns={numColumns}
+          />
+        ) : selected === "audios" ? (
+          <FlatList
+            data={audios}
+            renderItem={renderAudioItem}
+            numColumns={numColumns}
+          />
+        ) : (
+          <FlatList
+            data={others}
+            renderItem={renderFileItem}
+            numColumns={numColumns}
+          />
         )}
-        keyExtractor={(item) => item._id!}
-        numColumns={4}  
-        />:(selected==="audios"? <View></View> : <View></View>))}
-       
       </View>
     </SafeAreaView>
   );

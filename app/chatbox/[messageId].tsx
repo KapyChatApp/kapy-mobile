@@ -31,9 +31,7 @@ import AudioRecorder from "@/components/shared/multimedia/AudioRecorder";
 import TypingAnimation from "@/components/ui/TypingAnimation";
 import { pickDocument } from "@/utils/DoucmentPicker";
 import ImageViewing from "react-native-image-viewing";
-import FileViewer from "@/components/shared/multimedia/FileViewing";
 import { FileProps } from "@/types/file";
-import FileViewing from "@/components/shared/multimedia/FileViewing";
 import PdfViewer from "@/components/shared/multimedia/PdfViewer";
 const MessageDetailPage = () => {
   const { messageId } = useLocalSearchParams();
