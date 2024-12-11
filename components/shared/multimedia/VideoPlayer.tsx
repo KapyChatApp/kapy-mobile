@@ -5,8 +5,7 @@ import { StyleSheet, View, Button } from 'react-native';
 
 const VideoPlayer = ({videoSource}:{videoSource:string}) =>  {
   const player = useVideoPlayer(videoSource, player => {
-    player.loop = true;
-    player.play();
+    player.loop = false;
   });
 
   return (
