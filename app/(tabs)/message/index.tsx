@@ -55,7 +55,7 @@ const OutSideMessagePage = () => {
           box._id === boxId
             ? {
                 ...box,
-                lastMessage: data,
+                responseLastMessage: data,
                 updatedAt: new Date().toISOString(),
                 readStatus:false,
               }

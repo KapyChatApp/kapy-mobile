@@ -67,7 +67,7 @@ export default function RootLayout() {
   if (!fontsLoaded && !error) return null;
 
   return (
-    <GestureHandlerRootView>
+    <GestureHandlerRootView className="flex-1">
       <EventProvider>
         <ThemeProvider>
           <MarkReadProvider>

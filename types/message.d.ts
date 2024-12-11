@@ -23,10 +23,10 @@ export interface ResponseMessageDTO {
 }
 
 export interface MessageProps {
-  _id: string;
+  id: string;
   isReact: boolean;
   readedId: string[];
-  contentId: FileProps[];
+  contentId: FileProps;
   text: string;
   createAt: string;
   createBy: string;
@@ -34,7 +34,12 @@ export interface MessageProps {
   isSender:boolean;
   avatar:string;
   boxId:string;
-
+  createBy:string;
+  deleteMessage?:(id:string)=>void;
+  revokeMessage?:(id:string)=>void;
+  handleViewImage:(imageURL:string)=>void;
+  handleViewFile:(file:FileProps)=>void;
+  handleViewPdf:(file:FileProps)=>void;
 }
 
 export interface MessageBoxProps {
@@ -43,7 +48,7 @@ export interface MessageBoxProps {
   groupAva?: string;
   receiverIds?: ReceiverProps[];
   createAt?: string;
-  lastMessage?: MessageProps;
+  responseLastMessage?: MessageProps;
   localUserId?:string;
   setLastMessage?:(message:string)=>void;
   readStatus?:boolean;

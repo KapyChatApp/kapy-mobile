@@ -60,6 +60,12 @@
           "microphonePermission": "Allow Kapy ChatApp to access your microphone."
         }
       ],
+      [
+        "expo-document-picker",
+        {
+          "iCloudContainerEnvironment": "Development"
+        }
+      ],
       "expo-asset",
       "expo-secure-store",
       "expo-video",

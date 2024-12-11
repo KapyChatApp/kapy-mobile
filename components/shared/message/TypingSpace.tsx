@@ -1,5 +1,5 @@
-import { View, Text, Platform } from "react-native";
-import React, { useState } from "react";
+import { View, Text, Platform, Modal } from "react-native";
+import React, { useRef, useState } from "react";
 import {
   bgLight500Dark0,
   bgLight500Dark10,
@@ -12,6 +12,7 @@ import { IconURL } from "@/constants/IconURL";
 import Icon from "@/components/ui/Icon";
 import { useTheme } from "@/context/ThemeProviders";
 import Popover, { PopoverPlacement } from "react-native-popover-view";
+import { useClickOutside } from "react-native-click-outside";
 
 const TypingSpace = ({
   isTyping,
@@ -20,10 +21,36 @@ const TypingSpace = ({
   value,
   onPress,
   handlePickMedia,
+  handlePickDocument,
   setIsCameraOpen,
   setIsMicroOpen,
-}: any) => {
+}: {
+  isTyping: boolean;
+  setIsTypeping: any;
+  onChangeText: (text: string) => void;
+  value: any;
+  onPress: any;
+  handlePickMedia: any;
+  handlePickDocument: any;
+  setIsCameraOpen: any;
+  setIsMicroOpen: any;
+}) => {
   const { theme } = useTheme();
+  const [isMoreOpen, setIsMoreOpen] = useState(false);
+  const ref = useClickOutside<View>(() => setIsMoreOpen(false));
+  const buttonRef = useRef<View | null>(null);
+
+  const [popoverPosition, setPopoverPosition] = useState({
+    bottom: 0,
+    left: 0,
+  });
+
+  const handleToggle = () => {
+    buttonRef.current?.measure((fx, fy, width, height, px, py) => {
+      setPopoverPosition({ bottom: fy + height, left: 0 });
+      setIsMoreOpen(true);
+    });
+  };
   return (
     <View
       className={`w-full h-[66] bg-light-500 dark:bg-dark-0 flex flex-row justify-between items-center px-[10px]`}
@@ -34,13 +61,9 @@ const TypingSpace = ({
           className="flex flex-row items-center justify-between"
           style={{ columnGap: 11 }}
         >
-          <Popover
-            offset={Platform.OS === "ios" ? 10 : 40}
-            arrowSize={{ width: -2, height: -2 }}
-            placement={PopoverPlacement.TOP}
-            backgroundStyle={{ backgroundColor: "transparent" }}
-            from={
-              <TouchableOpacity>
+          {/* <View ref={ref}>
+            <TouchableOpacity onPress={handleToggle}>
+              <View ref={buttonRef}>
                 <Icon
                   iconURL={
                     theme === "light"
@@ -48,41 +71,76 @@ const TypingSpace = ({
                       : IconURL.chat_func_more_d
                   }
                   size={28}
-                ></Icon>
-              </TouchableOpacity>
-            }
-          >
-            <TouchableOpacity>
-              <View
-                className={`flex flex-row items-center  ${bgLight500Dark10} p-[13px]`}
-                style={{ columnGap: 12 }}
-              >
-                <Icon
-                  iconURL={
-                    theme === "light" ? IconURL.attach_l : IconURL.attach_d
-                  }
-                  size={28}
                 />
-                <Text className={`${textLight0Dark500} text-12`}>
-                  Attachment
-                </Text>
               </View>
             </TouchableOpacity>
-            <TouchableOpacity>
-              <View
-                className={`flex flex-row items-center  ${bgLight500Dark10} p-[13px]`}
-                style={{ columnGap: 12 }}
+            {isMoreOpen ? (
+              <Modal
+                transparent={true}
+                visible={isMoreOpen}
+                onRequestClose={() => setIsMoreOpen(false)}
+                animationType="fade"
               >
-                <Icon
-                  iconURL={
-                    theme === "light" ? IconURL.location_l : IconURL.location_d
-                  }
-                  size={28}
-                />
-                <Text className={`${textLight0Dark500} text-12`}>Location</Text>
-              </View>
-            </TouchableOpacity>
-          </Popover>
+                <View
+                  className={`w-[140px] bg-light-510 dark:bg-dark-20 absolute`}
+                  style={{
+                    bottom: popoverPosition.bottom + 38,
+                    left: popoverPosition.left,
+                  }}
+                >
+                  <View className="flex-1">
+                    <TouchableOpacity
+                      className={`flex flex-row items-center  ${bgLight500Dark10} p-[13px]`}
+                      style={{ columnGap: 12 }}
+                      onPress={() => console.log("press!")}
+                    >
+                      <Icon
+                        iconURL={
+                          theme === "light"
+                            ? IconURL.attach_l
+                            : IconURL.attach_d
+                        }
+                        size={28}
+                      />
+                      <Text className={`${textLight0Dark500} text-12`}>
+                        Attachment
+                      </Text>
+                    </TouchableOpacity>
+                  </View>
+                  <View>
+                    <TouchableOpacity
+                      className={`flex flex-row items-center  ${bgLight500Dark10} p-[13px]`}
+                      style={{ columnGap: 12 }}
+                    >
+                      <Icon
+                        iconURL={
+                          theme === "light"
+                            ? IconURL.location_l
+                            : IconURL.location_d
+                        }
+                        size={28}
+                      />
+                      <Text className={`${textLight0Dark500} text-12`}>
+                        Location
+                      </Text>
+                    </TouchableOpacity>
+                  </View>
+                </View>
+              </Modal>
+            ) : null}
+          </View> */}
+           <TouchableOpacity onPress={handlePickDocument}>
+            <Icon
+              iconURL={theme === "light" ? IconURL.attach_l : IconURL.attach_d}
+              size={28}
+            ></Icon>
+          </TouchableOpacity>
+          <TouchableOpacity>
+            <Icon
+              iconURL={theme === "light" ? IconURL.location_l : IconURL.location_d}
+              size={28}
+            ></Icon>
+          </TouchableOpacity>
           <TouchableOpacity onPress={setIsMicroOpen}>
             <Icon
               iconURL={theme === "light" ? IconURL.mic_l : IconURL.mic_d}
@@ -124,13 +182,12 @@ const TypingSpace = ({
           value={value}
         ></TextInput>
       </View>
-   
-        <View>
-          <TouchableOpacity  onPress={onPress} >
-            <Icon iconURL={IconURL.send} size={30}/>
-          </TouchableOpacity>
-        </View>
-      
+
+      <View>
+        <TouchableOpacity onPress={onPress}>
+          <Icon iconURL={IconURL.send} size={30} />
+        </TouchableOpacity>
+      </View>
     </View>
   );
 };

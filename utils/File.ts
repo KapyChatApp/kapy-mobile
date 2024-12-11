@@ -1,5 +1,15 @@
-export const uriToFile = async (uri: string, type: string): Promise<File> => {
-    const fileData = await fetch(uri); // Lấy dữ liệu từ URI
-    const blob = await fileData.blob(); // Chuyển đổi thành Blob
-    return new File([blob], "fileName", { type });
-  };
+import * as FileSystem from 'expo-file-system';
+
+export const prepareFileForUpload = async (fileUri:string, fileName:string) => {
+  try {
+    const newUri = `${FileSystem.cacheDirectory}${fileName}`;
+    await FileSystem.copyAsync({
+      from: fileUri,
+      to: newUri,
+    });
+    return newUri;
+  } catch (error) {
+    console.error('Error preparing file:', error);
+    throw error;
+  }
+};

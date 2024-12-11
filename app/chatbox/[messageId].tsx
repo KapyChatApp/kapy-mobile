@@ -1,12 +1,8 @@
 import {
   View,
-  Text,
   SafeAreaView,
   KeyboardAvoidingView,
   Platform,
-  Pressable,
-  FlatList,
-  Image,
 } from "react-native";
 import React, { useEffect, useRef, useState } from "react";
 import { useLocalSearchParams } from "expo-router";
@@ -14,34 +10,29 @@ import ChatBoxHeader from "@/components/shared/message/ChatBoxHeader";
 import TypingSpace from "@/components/shared/message/TypingSpace";
 import { ScrollView } from "react-native-gesture-handler";
 import { bgLight500Dark10 } from "@/styles/theme";
+import { useClickOutside } from "react-native-click-outside";
+import { MessageBoxProps, MessageProps } from "@/types/message";
 import {
-  ClickOutsideProvider,
-  useClickOutside,
-} from "react-native-click-outside";
-import MessageBox from "@/components/shared/message/MessageBox";
-import {
-  ChatBoxHeaderProps,
-  MessageBoxProps,
-  MessageProps,
-} from "@/types/message";
-import {
+  disableTexting,
   getAllMessages,
   getAMessageBox,
   markRead,
   sendMessage,
+  texting,
 } from "@/lib/message-request";
 import Message from "@/components/shared/message/Message";
 import { getLocalAuth } from "@/lib/local-auth";
 import { pusherClient } from "@/lib/pusher";
 import { pickMedia } from "@/utils/GalleryPicker";
-import GalleryPickerBox from "@/components/ui/GalleryPickerBox";
-import { Video } from "expo-av";
 import { useMarkReadContext } from "@/context/MarkReadProvider";
 import SelectedMedia from "@/components/shared/multimedia/SelectedMedia";
-import { uriToFile } from "@/utils/File";
 import ExpoCamera from "@/components/shared/multimedia/ExpoCamera";
 import AudioRecorder from "@/components/shared/multimedia/AudioRecorder";
-
+import TypingAnimation from "@/components/ui/TypingAnimation";
+import { pickDocument } from "@/utils/DoucmentPicker";
+import ImageViewing from "react-native-image-viewing";
+import { FileProps } from "@/types/file";
+import PdfViewer from "@/components/shared/multimedia/PdfViewer";
 const MessageDetailPage = () => {
   const { messageId } = useLocalSearchParams();
   const ref = useClickOutside<View>(() => {
@@ -52,20 +43,58 @@ const MessageDetailPage = () => {
   const [messages, setMessages] = useState<MessageProps[]>([]);
   const [localUserId, setLocalUserId] = useState("");
   const [chatBoxHeader, setChatBoxHeader] = useState<MessageBoxProps>();
-  const [avatar, setAvatar] = useState("");
   const [messageText, setMessageText] = useState("");
   const [messageBox, setMessageBox] = useState<MessageBoxProps>();
   const [isCameraOpen, setIsCameraOpen] = useState(false);
   const [isMicroOpen, setIsMicroOpen] = useState(false);
+
+  const [isImageViewOpen, setIsImageViewOpen] = useState(false);
+  const [viewingImage, setViewingImage] = useState("");
+
+  const [isFileViewOpen, setIsFileViewOpen] = useState(false);
+  const [viewingFile, setViewingFile] = useState<FileProps>();
+
+  const [isPdfViewerOpen, setIsPdfViewerOpen] = useState(false);
+
   const [selectedMedia, setSelectedMedia] = useState<
-    { uri: string; type: string }[]
+    { uri: string; type: string; name: string | null | undefined }[]
   >([]);
+  const [isTypingMessage, setIsTypingMessage] = useState(false);
+  const typingTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const [textingAvatar, setTextingAvatar] = useState("");
 
   const scrollViewRef = useRef<ScrollView>(null);
   const handlePickMedia = async () => {
     const media = await pickMedia();
     setSelectedMedia((prev) => [...prev, ...media]);
-    console.log(selectedMedia);
+  };
+
+  const handlePickDocument = async () => {
+    const document = await pickDocument();
+    if (document) {
+      setSelectedMedia((prev) => [
+        ...prev,
+        ...document.map((item) => ({
+          ...item,
+          type: item.type ?? "defaultType",
+        })),
+      ]);
+    }
+  };
+
+  const handleViewImage = (imageURL: string) => {
+    setViewingImage(imageURL);
+    setIsImageViewOpen(true);
+  };
+
+  const handleViewFile = (file: FileProps) => {
+    setViewingFile(file);
+    setIsFileViewOpen(true);
+  };
+
+  const handleViewPdf = (file: FileProps) => {
+    setViewingFile(file);
+    setIsPdfViewerOpen(true);
   };
 
   const { markAsRead, unreadMessages } = useMarkReadContext();
@@ -74,20 +103,39 @@ const MessageDetailPage = () => {
   const receiver = receiverIds[0];
   const otherReceiver = receiverIds[1];
 
+  const handleTextChange = (text: string) => {
+    setMessageText(text);
+
+    handleTexting();
+    if (typingTimeoutRef.current) {
+      clearTimeout(typingTimeoutRef.current);
+    }
+
+    typingTimeoutRef.current = setTimeout(() => {
+      handleDisableTexting();
+    }, 1500);
+  };
+
+  const handleTexting = async () => {
+    await texting(messageId.toString());
+  };
+  const handleDisableTexting = async () => {
+    await disableTexting(messageId.toString());
+  };
   const handleSendMessage = async () => {
-    console.log("data: ",selectedMedia);
+    handleDisableTexting();
     const messageTextData = messageText;
-    let mediaData = selectedMedia;
+    let mediaData = selectedMedia[0];
     setSelectedMedia([]);
     setMessageText("");
-    if (messageTextData != "" || mediaData.length != 0) {
+    if (messageTextData != "" || selectedMedia.length != 0) {
       setMessages((prevMessages) => [
         ...prevMessages,
         {
-          _id: "",
+          id: "",
           isReact: false,
           readedId: [],
-          contentId: selectedMedia,
+          contentId: mediaData,
           text: messageText,
           createAt: new Date().toString(),
           createBy: localUserId,
@@ -95,22 +143,42 @@ const MessageDetailPage = () => {
           isSender: true,
           avatar: "",
           boxId: "",
+          handleViewImage: () => {
+            handleViewImage(mediaData.uri);
+          },
+          handleViewFile: () => {
+            handleViewFile(mediaData);
+          },
+          handleViewPdf:()=> handleViewPdf(mediaData)
         },
       ]);
-      await sendMessage(messageId.toString(), messageText, mediaData);
+      await sendMessage(messageId.toString(), messageText, selectedMedia);
     }
+  };
+  const handleDeleteMessage = (id: string) => {
+    setMessages((prevMessages) =>
+      prevMessages.filter((message) => message.id !== id)
+    );
+  };
+  const handleRevokeMessage = (id: string) => {
+    setMessages((prevMessages) =>
+      prevMessages?.map((message: MessageProps) =>
+        message.id === id ? { ...message, text: "Message revoked" } : message
+      )
+    );
   };
   useEffect(() => {
     const getAllMessageFUNC = async () => {
       const { _id } = await getLocalAuth();
       await markRead(messageId.toString());
-      const messageBox:MessageBoxProps = await getAMessageBox(messageId);
-      messageBox.localUserId=_id;
+      const messageBox: MessageBoxProps = await getAMessageBox(messageId);
+      messageBox.localUserId = _id;
       setChatBoxHeader(messageBox);
       setMessageBox(messageBox);
       const messages = await getAllMessages(messageId);
       setMessages(messages);
       setLocalUserId(_id);
+
       const channel = pusherClient.subscribe(`private-${messageId}`);
       channel.bind("pusher:subscription_succeeded", () => {
         console.log(`Subscribed to channel private-${messageId} successfully!`);
@@ -126,7 +194,16 @@ const MessageDetailPage = () => {
         setMessages((prevMessages) => [...prevMessages, data]);
         markAsRead(messageId.toString());
       });
-
+      pusherClient.bind("revoke-message", (data: any) => {
+        console.log("revoke: ", data);
+        handleRevokeMessage(data.id);
+      });
+      pusherClient.bind("texting-status", (data: any) => {
+        if (data.userId !== _id) {
+          setTextingAvatar(data.avatar);
+          setTimeout(() => setIsTypingMessage(data.texting), 200);
+        }
+      });
       markAsRead(messageId.toString());
     };
     getAllMessageFUNC();
@@ -138,17 +215,28 @@ const MessageDetailPage = () => {
       style={{ flex: 1 }}
     >
       <SafeAreaView className="flex-1 ">
+        {isPdfViewerOpen? <PdfViewer fileUri={viewingFile?.url!}/>:null}
+        {isImageViewOpen ? (
+          <ImageViewing
+            images={[{ uri: viewingImage }]}
+            imageIndex={0}
+            visible={isImageViewOpen}
+            onRequestClose={() => setIsImageViewOpen(false)}
+            doubleTapToZoomEnabled={true}
+          />
+        ) : null}
         {isCameraOpen ? (
           <View className="fixed w-screen h-screen">
             <ExpoCamera
               onClose={() => setIsCameraOpen(false)}
               onSend={handleSendMessage}
-              setSelectedMedia={(uri: string, type: string) =>
-                setSelectedMedia([{ uri: uri, type: type }])
+              setSelectedMedia={(uri: string, type: string, name: string) =>
+                setSelectedMedia([{ uri: uri, type: type, name: name }])
               }
             />
           </View>
         ) : null}
+
         <View ref={ref}>
           <ChatBoxHeader {...chatBoxHeader} />
         </View>
@@ -198,12 +286,23 @@ const MessageDetailPage = () => {
                   }
                   isSender={localUserId === item.createBy.toString()}
                   position={position}
+                  deleteMessage={handleDeleteMessage}
+                  revokeMessage={handleRevokeMessage}
+                  handleViewImage={handleViewImage}
+                  handleViewPdf={handleViewPdf}
                 />
               );
             })}
+            {isTypingMessage ? (
+              <View
+                className="flex flex-row ml-[34px]"
+                style={{ columnGap: 4 }}
+              >
+                <TypingAnimation />
+              </View>
+            ) : null}
           </ScrollView>
         </View>
-
         <View collapsable={false} ref={ref}>
           <SelectedMedia
             selectedMedia={selectedMedia}
@@ -211,9 +310,10 @@ const MessageDetailPage = () => {
           />
           <TypingSpace
             handlePickMedia={handlePickMedia}
+            handlePickDocument={handlePickDocument}
             isTyping={isTyping}
             setIsTypeping={setIsTypeping}
-            onChangeText={setMessageText}
+            onChangeText={handleTextChange}
             value={messageText}
             onPress={handleSendMessage}
             setIsCameraOpen={() => setIsCameraOpen(true)}
@@ -222,8 +322,8 @@ const MessageDetailPage = () => {
           {isMicroOpen ? (
             <View ref={ref}>
               <AudioRecorder
-                setSelectedMedia={(uri: string, type: string) =>
-                  setSelectedMedia([{ uri: uri, type: type }])
+                setSelectedMedia={(uri: string, type: string, name: string) =>
+                  setSelectedMedia([{ uri: uri, type: type, name }])
                 }
               />
             </View>

@@ -126,5 +126,10 @@ export const IconURL = {
   video_call: require("../assets/icons/video_call.png"),
   visit_card_l: require("../assets/icons/visit_card_l.png"),
   visit_card_d: require("../assets/icons/visit_card_d.png"),
+  voice:require("../assets/icons/voice.png"),
   showlist: require("../assets/icons/showlist.png"),
+  docx:require("../assets/icons/docx.png"),
+  xls:require("../assets/icons/xls.png"),
+  ppt:require("../assets/icons/ppt.png"),
+  pdf:require("../assets/icons/pdf.png")
 };

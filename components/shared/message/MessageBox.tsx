@@ -52,7 +52,7 @@ const fullName = receiver
           numberOfLines={1}
           className={` text-14 overflow-ellipsis ${textLight0Dark500} ${isReaded? "font-helvetica-light" :"font-helvetica-bold"} flex-wrap`}
         >
-          {props.lastMessage?.createBy === props.localUserId? "You: " + (props.lastMessage?.contentId.length!=0? "Sent a file": props.lastMessage?.text) : (props.lastMessage?.contentId.length!=0? "Sent a file" :props.lastMessage?.text) }
+          {props.responseLastMessage?.createBy === props.localUserId? "You: " + (props.responseLastMessage?.contentId? "Sent a file": props.responseLastMessage?.text) : (props.responseLastMessage?.contentId? "Sent a file" :props.responseLastMessage?.text) }
         </Text>
         {!isReaded? <Icon size={8} iconURL={IconURL.circle}/>:null}
         </View>
@@ -61,7 +61,7 @@ const fullName = receiver
           ellipsizeMode="tail"
           className="font-helvetica-light text-12 text-deny"
         >
-          {formatDateDistance(props.lastMessage?.createAt? props.lastMessage?.createAt : new Date().toString())}
+          {formatDateDistance(props.responseLastMessage?.createAt? props.responseLastMessage?.createAt : new Date().toString())}
         </Text>
       </View>
     </TouchableOpacity>

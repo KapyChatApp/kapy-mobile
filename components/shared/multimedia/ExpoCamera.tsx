@@ -21,6 +21,7 @@ import { Video } from "expo-av";
 import VideoPlayer from "./VideoPlayer";
 import { SafeAreaView } from "react-native-safe-area-context";
 import * as ScreenOrientation from "expo-screen-orientation";
+import { generateRandomNumberString } from "@/utils/Random";
 
 const ExpoCamera = ({
   onClose,
@@ -29,7 +30,7 @@ const ExpoCamera = ({
 }: {
   onClose: () => void;
   onSend: () => void;
-  setSelectedMedia: (uri: string, type: string) => void;
+  setSelectedMedia: (uri: string, type: string, name:string) => void;
 }) => {
   const [facing, setFacing] = useState<CameraType>("back");
   const [permission, requestPermission] = useCameraPermissions();
@@ -77,7 +78,7 @@ const ExpoCamera = ({
           base64: true, // Optional: Get the base64 encoded image
         });
         setPhotoUri(photo?.uri);
-        setSelectedMedia(photo?.uri!, "image");
+        setSelectedMedia(photo?.uri!, "image",generateRandomNumberString(10)!);
         console.log("Photo taken: ", photo?.uri);
       }
     } catch (error) {
@@ -103,7 +104,7 @@ const ExpoCamera = ({
           codec: "avc1",
         });
         setVideoUri(video?.uri);
-        setSelectedMedia(video?.uri!, "video");
+        setSelectedMedia(video?.uri!, "video", generateRandomNumberString(10)!);
         console.log("Video recording started: ", video?.uri);
       } catch (error) {
         console.error("Error starting video recording: ", error);
@@ -148,7 +149,6 @@ const ExpoCamera = ({
               <VideoPlayer videoSource={videoUri!} />
             </View>
           )}
-
           <View className="absolute top-[20px] left-[20px]">
             <TouchableOpacity
               onPress={() => {
