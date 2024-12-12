@@ -8,7 +8,6 @@ import { useClickOutside } from "react-native-click-outside";
 import { useRouter } from "expo-router";
 
 const MoreProfileOption = ({
-  setIsReportOpen,
   friendId,
   setStartLoading,
   setEndLoading,
@@ -56,7 +55,7 @@ const MoreProfileOption = ({
             <TouchableOpacity className="flex items-center justify-center w-full h-[50px]  border-border border-y-[0.5px]"
               onPress={() => {
                 setModalVisible(false);
-                router.push({pathname:"/report"})
+                router.push({pathname:"/report", params:{targetId:friendId, targetType:"User"}})
               }}
             >
               <Text className={`${textLight0Dark500} font-helvetica-light text-14 text-center`}>Report</Text>
