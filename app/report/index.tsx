@@ -15,29 +15,50 @@ const ReportPage = () => {
       <Text
         className={`text-cardinal font-helvetica-bold text-[24px] m-[20px]`}
       >
-        Why you report it?
+        Why do you report it?
       </Text>
       <View className="px-[12px]">
         <TouchableOpacity className="flex px-[10px] border-y-[0.5px] border-border  py-[14px]">
           <Text className={`${textLight0Dark500} font-helvetica-light text-14`}>
-            Copyright infringement or plagiarism.
+            Copyright infringement or plagiarism
           </Text>
         </TouchableOpacity>
         <TouchableOpacity className="flex px-[10px] border-y-[0.5px] border-border  py-[14px]">
           <Text className={`${textLight0Dark500} font-helvetica-light text-14`}>
-            Harassment or bullying.
+            Harassment or bullying
           </Text>
         </TouchableOpacity>
         <TouchableOpacity className="flex px-[10px] border-y-[0.5px] border-border  py-[14px]">
           <Text className={`${textLight0Dark500} font-helvetica-light text-14`}>
-            Posting sensitive or private information.
+            Posting sensitive or private information
           </Text>
         </TouchableOpacity>
         <TouchableOpacity className="flex px-[10px] border-y-[0.5px] border-border  py-[14px]">
           <Text className={`${textLight0Dark500} font-helvetica-light text-14`}>
-            Spamming or scam activities.
+            Spamming or scam activities
           </Text>
         </TouchableOpacity>
+        <TouchableOpacity className="flex px-[10px] border-y-[0.5px] border-border  py-[14px]">
+          <Text className={`${textLight0Dark500} font-helvetica-light text-14`}>
+          Nudity and Sexual Content
+          </Text>
+        </TouchableOpacity>
+        <TouchableOpacity className="flex px-[10px] border-y-[0.5px] border-border  py-[14px]">
+          <Text className={`${textLight0Dark500} font-helvetica-light text-14`}>
+          Terrorism and Extremism
+          </Text>
+        </TouchableOpacity>
+        <TouchableOpacity className="flex px-[10px] border-y-[0.5px] border-border  py-[14px]">
+          <Text className={`${textLight0Dark500} font-helvetica-light text-14`}>
+          Hate Speech
+          </Text>
+        </TouchableOpacity>
+        <TouchableOpacity className="flex px-[10px] border-y-[0.5px] border-border  py-[14px]">
+          <Text className={`${textLight0Dark500} font-helvetica-light text-14`}>
+          Child Exploitation
+          </Text>
+        </TouchableOpacity>
+     
       </View>
     </SafeAreaView>
   );
