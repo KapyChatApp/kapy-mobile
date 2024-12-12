@@ -15,6 +15,7 @@ import { FileProps } from "@/types/file";
 import { IconURL } from "@/constants/IconURL";
 import Icon from "@/components/ui/Icon";
 import ImageViewing from "react-native-image-viewing";
+import { openWebFile } from "@/utils/File";
 
 const ChatMultimediaPage = () => {
   const { boxId } = useLocalSearchParams();
@@ -116,7 +117,7 @@ const ChatMultimediaPage = () => {
       margin: 5,
       borderRadius: 8,
       rowGap:4
-    }}>
+    }} onPress={async ()=>await openWebFile(item.url!)}>
        <View className=" bg-light-300 dark:bg-dark-20 flex-1 w-full rounded-2xl items-center justify-center" style={{width:mediaSize, height:mediaSize}}> <Icon
         size={40}
         iconURL={renderFileIcon(item.url?.split(".").pop()!)}
