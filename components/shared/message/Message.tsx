@@ -142,7 +142,7 @@ const Message = (props: MessageProps) => {
                 onPress={() => props.handleViewFile(props.contentId)}
               >
                 <View
-                  className={`flex items-center justify-center rounded-2xl bg-light- p-[10px] bg-light-510`}
+                  className={`flex items-center justify-center rounded-2xl p-[10px] bg-light-510`}
                 >
                   <Icon iconURL={IconURL.docx} size={40} />
                 </View>
@@ -188,7 +188,7 @@ const Message = (props: MessageProps) => {
                 onPress={() => props.handleViewFile(props.contentId)}
               >
                 <View
-                  className={`flex items-center justify-center rounded-2xl bg-light- p-[10px]bg-light-510`}
+                  className={`flex items-center justify-center rounded-2xl p-[10px] bg-light-510`}
                 >
                   <Icon iconURL={IconURL.xls} size={40} />
                 </View>
@@ -220,7 +220,7 @@ const Message = (props: MessageProps) => {
                 </View>
               </Pressable>
             );
-          case "ppt":
+          case "pptx":
             return (
               <Pressable
                 className={`flex flex-row p-[10px]  ${
@@ -234,7 +234,7 @@ const Message = (props: MessageProps) => {
                 onPress={() => props.handleViewFile(props.contentId)}
               >
                 <View
-                  className={`flex items-center justify-center rounded-2xl bg-light- p-[10px]bg-light-510`}
+                  className={`flex items-center justify-center rounded-2xl bg-light- p-[10px]  bg-light-510`}
                 >
                   <Icon iconURL={IconURL.ppt} size={40} />
                 </View>
