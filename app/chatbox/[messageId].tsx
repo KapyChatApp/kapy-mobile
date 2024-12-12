@@ -32,7 +32,7 @@ import TypingAnimation from "@/components/ui/TypingAnimation";
 import { pickDocument } from "@/utils/DoucmentPicker";
 import ImageViewing from "react-native-image-viewing";
 import { FileProps } from "@/types/file";
-import PdfViewer from "@/components/shared/multimedia/PdfViewer";
+import { openWebFile } from "@/utils/File";
 const MessageDetailPage = () => {
   const { messageId } = useLocalSearchParams();
   const ref = useClickOutside<View>(() => {
@@ -53,8 +53,6 @@ const MessageDetailPage = () => {
 
   const [isFileViewOpen, setIsFileViewOpen] = useState(false);
   const [viewingFile, setViewingFile] = useState<FileProps>();
-
-  const [isPdfViewerOpen, setIsPdfViewerOpen] = useState(false);
 
   const [selectedMedia, setSelectedMedia] = useState<
     { uri: string; type: string; name: string | null | undefined }[]
@@ -87,15 +85,11 @@ const MessageDetailPage = () => {
     setIsImageViewOpen(true);
   };
 
-  const handleViewFile = (file: FileProps) => {
+  const handleViewFile = async (file: FileProps) => {
     setViewingFile(file);
-    setIsFileViewOpen(true);
+    await openWebFile(file.url!);
   };
 
-  const handleViewPdf = (file: FileProps) => {
-    setViewingFile(file);
-    setIsPdfViewerOpen(true);
-  };
 
   const { markAsRead, unreadMessages } = useMarkReadContext();
 
@@ -149,7 +143,7 @@ const MessageDetailPage = () => {
           handleViewFile: () => {
             handleViewFile(mediaData);
           },
-          handleViewPdf:()=> handleViewPdf(mediaData)
+          handleViewPdf:()=> handleViewFile(mediaData)
         },
       ]);
       await sendMessage(messageId.toString(), messageText, selectedMedia);
@@ -215,7 +209,6 @@ const MessageDetailPage = () => {
       style={{ flex: 1 }}
     >
       <SafeAreaView className="flex-1 ">
-        {isPdfViewerOpen? <PdfViewer fileUri={viewingFile?.url!}/>:null}
         {isImageViewOpen ? (
           <ImageViewing
             images={[{ uri: viewingImage }]}
@@ -289,7 +282,7 @@ const MessageDetailPage = () => {
                   deleteMessage={handleDeleteMessage}
                   revokeMessage={handleRevokeMessage}
                   handleViewImage={handleViewImage}
-                  handleViewPdf={handleViewPdf}
+                  handleViewFile={handleViewFile}
                 />
               );
             })}

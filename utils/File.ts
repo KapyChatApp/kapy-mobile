@@ -1,4 +1,5 @@
 import * as FileSystem from 'expo-file-system';
+import * as WebBrowser from 'expo-web-browser';
 
 export const prepareFileForUpload = async (fileUri:string, fileName:string) => {
   try {
@@ -13,3 +14,11 @@ export const prepareFileForUpload = async (fileUri:string, fileName:string) => {
     throw error;
   }
 };
+
+export const openWebFile = async (fileUrl:string)=>{
+    try {
+      await WebBrowser.openBrowserAsync(fileUrl);
+    } catch (error) {
+      console.error('Error opening PDF:', error);
+    }
+  };

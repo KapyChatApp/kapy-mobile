@@ -139,6 +139,7 @@ const Message = (props: MessageProps) => {
                   props.isSender ? roundedValueSender() : roundedValueReceiver()
                 }`}
                 style={{ columnGap: 4 }}
+                onPress={()=>props.handleViewFile(props.contentId)}
               >
                 <View
                   className={`flex items-center justify-center rounded-2xl bg-light- p-[10px] bg-light-510`}
@@ -183,6 +184,7 @@ const Message = (props: MessageProps) => {
                   props.isSender ? roundedValueSender() : roundedValueReceiver()
                 }`}
                 style={{ columnGap: 4 }}
+                onPress={()=>props.handleViewFile(props.contentId)}
               >
                 <View
                   className={`flex items-center justify-center rounded-2xl bg-light- p-[10px]bg-light-510`}
@@ -227,6 +229,7 @@ const Message = (props: MessageProps) => {
                   props.isSender ? roundedValueSender() : roundedValueReceiver()
                 }`}
                 style={{ columnGap: 4 }}
+                onPress={()=>props.handleViewFile(props.contentId)}
               >
                 <View
                   className={`flex items-center justify-center rounded-2xl bg-light- p-[10px]bg-light-510`}
@@ -271,7 +274,7 @@ const Message = (props: MessageProps) => {
                   props.isSender ? roundedValueSender() : roundedValueReceiver()
                 }`}
                 style={{ columnGap: 4 }}
-                onPress={() => props.handleViewPdf(props.contentId)}
+                onPress={() => props.handleViewFile(props.contentId)}
               >
                 <View
                   className={`flex items-center justify-center rounded-2xl bg-light- p-[10px] bg-light-510`}
