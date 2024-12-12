@@ -24,6 +24,7 @@ const SocialPost = (props: SocialPostProps) => {
   const [liked, setIsliked] = useState(
     props.likedIds.includes(userId.toString()) ? true : false
   );
+  const isMyPost = props.userId.toString() === userId;
   useFocusEffect(
     useCallback(() => {
       console.log(props.contents);
@@ -58,11 +59,10 @@ const SocialPost = (props: SocialPostProps) => {
     await deletePost(props._id, () => Alert.alert("Deleted"));
   };
   const handleLongPress = async () => {
-    const options =
-      props.userId.toString() === userId
-        ? ["Delete the post", "Edit the post", "Cancel"]
-        : ["Report this port", "Cancel"];
-    const cancelButtonIndex = props.userId.toString() === userId ? 2 : 1;
+    const options = isMyPost
+      ? ["Delete the post", "Edit the post", "Cancel"]
+      : ["Report this port", "Cancel"];
+    const cancelButtonIndex = isMyPost ? 2 : 1;
     showActionSheetWithOptions(
       {
         options,
@@ -71,7 +71,14 @@ const SocialPost = (props: SocialPostProps) => {
       (selectedIndex: number | undefined) => {
         switch (selectedIndex) {
           case 0:
-            handleDeletePost();
+            if (isMyPost) {
+              handleDeletePost();
+            } else {
+              router.push({
+                pathname: "/report",
+                params: { targetId: props._id, targetType: "Post" },
+              });
+            }
             break;
           case 1:
             break;
@@ -110,7 +117,7 @@ const SocialPost = (props: SocialPostProps) => {
         {props.contents.map((item) =>
           item.type === "Video" ? (
             <Video
-              source={{ uri: item.url? item.url : "" }}
+              source={{ uri: item.url ? item.url : "" }}
               style={{
                 width: "auto",
                 height: "auto",
