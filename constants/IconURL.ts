@@ -131,5 +131,7 @@ export const IconURL = {
   docx:require("../assets/icons/docx.png"),
   xls:require("../assets/icons/xls.png"),
   ppt:require("../assets/icons/ppt.png"),
-  pdf:require("../assets/icons/pdf.png")
+  pdf:require("../assets/icons/pdf.png"),
+  play_orange:require("../assets/icons/play_orange.png"),
+  pause_orange:require("../assets/icons/pause_orange.png"),
 };

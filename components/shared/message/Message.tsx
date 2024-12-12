@@ -139,9 +139,10 @@ const Message = (props: MessageProps) => {
                   props.isSender ? roundedValueSender() : roundedValueReceiver()
                 }`}
                 style={{ columnGap: 4 }}
+                onPress={() => props.handleViewFile(props.contentId)}
               >
                 <View
-                  className={`flex items-center justify-center rounded-2xl bg-light- p-[10px] bg-light-510`}
+                  className={`flex items-center justify-center rounded-2xl p-[10px] bg-light-510`}
                 >
                   <Icon iconURL={IconURL.docx} size={40} />
                 </View>
@@ -151,6 +152,7 @@ const Message = (props: MessageProps) => {
                       className={`${
                         props.isSender ? "text-white" : "text-black"
                       } font-helvetica-bold text-12 flex-1 flex-grow text-ellipsis`}
+                      numberOfLines={3}
                     >
                       {props.contentId.fileName}
                     </Text>
@@ -183,9 +185,10 @@ const Message = (props: MessageProps) => {
                   props.isSender ? roundedValueSender() : roundedValueReceiver()
                 }`}
                 style={{ columnGap: 4 }}
+                onPress={() => props.handleViewFile(props.contentId)}
               >
                 <View
-                  className={`flex items-center justify-center rounded-2xl bg-light- p-[10px]bg-light-510`}
+                  className={`flex items-center justify-center rounded-2xl p-[10px] bg-light-510`}
                 >
                   <Icon iconURL={IconURL.xls} size={40} />
                 </View>
@@ -195,6 +198,7 @@ const Message = (props: MessageProps) => {
                       className={`${
                         props.isSender ? "text-white" : "text-black"
                       } font-helvetica-bold text-12 flex-1 flex-grow text-ellipsis`}
+                      numberOfLines={3}
                     >
                       {props.contentId.fileName}
                     </Text>
@@ -216,7 +220,7 @@ const Message = (props: MessageProps) => {
                 </View>
               </Pressable>
             );
-          case "ppt":
+          case "pptx":
             return (
               <Pressable
                 className={`flex flex-row p-[10px]  ${
@@ -227,9 +231,10 @@ const Message = (props: MessageProps) => {
                   props.isSender ? roundedValueSender() : roundedValueReceiver()
                 }`}
                 style={{ columnGap: 4 }}
+                onPress={() => props.handleViewFile(props.contentId)}
               >
                 <View
-                  className={`flex items-center justify-center rounded-2xl bg-light- p-[10px]bg-light-510`}
+                  className={`flex items-center justify-center rounded-2xl bg-light- p-[10px]  bg-light-510`}
                 >
                   <Icon iconURL={IconURL.ppt} size={40} />
                 </View>
@@ -239,6 +244,7 @@ const Message = (props: MessageProps) => {
                       className={`${
                         props.isSender ? "text-white" : "text-black"
                       } font-helvetica-bold text-12 flex-1 flex-grow text-ellipsis`}
+                      numberOfLines={3}
                     >
                       {props.contentId.fileName}
                     </Text>
@@ -271,7 +277,7 @@ const Message = (props: MessageProps) => {
                   props.isSender ? roundedValueSender() : roundedValueReceiver()
                 }`}
                 style={{ columnGap: 4 }}
-                onPress={() => props.handleViewPdf(props.contentId)}
+                onPress={() => props.handleViewFile(props.contentId)}
               >
                 <View
                   className={`flex items-center justify-center rounded-2xl bg-light- p-[10px] bg-light-510`}
@@ -284,6 +290,7 @@ const Message = (props: MessageProps) => {
                       className={`${
                         props.isSender ? "text-white" : "text-black"
                       } font-helvetica-bold text-12 flex-1 flex-grow text-ellipsis`}
+                      numberOfLines={3}
                     >
                       {props.contentId.fileName}
                     </Text>
@@ -324,6 +331,7 @@ const Message = (props: MessageProps) => {
                       className={`${
                         props.isSender ? "text-white" : "text-black"
                       } font-helvetica-bold text-12 flex-1 flex-grow text-ellipsis`}
+                      numberOfLines={3}
                     >
                       {props.contentId.fileName}
                     </Text>
