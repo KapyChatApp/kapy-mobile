@@ -15,7 +15,8 @@ import { FileProps } from "@/types/file";
 import { IconURL } from "@/constants/IconURL";
 import Icon from "@/components/ui/Icon";
 import ImageViewing from "react-native-image-viewing";
-import { openWebFile } from "@/utils/File";
+import { openWebFile, playSound } from "@/utils/File";
+import AudioViewer from "@/components/shared/multimedia/AudioViewer";
 
 const ChatMultimediaPage = () => {
   const { boxId } = useLocalSearchParams();
@@ -33,6 +34,9 @@ const ChatMultimediaPage = () => {
   const [isImageViewingOpen, setIsImageViewingOpen] = useState(false);
   const [imageViewing, setImageViewing] = useState("");
 
+  const [isAudioViewingOpen, setIsAudioViewingOpen] = useState(false);
+  const [audioViewing, setAudioViewing] = useState("");
+  const [audioViewingName, setAudioViewingName] = useState("");
   useFocusEffect(
     useCallback(() => {
       const getMultimediaFUNC = async () => {
@@ -56,6 +60,7 @@ const ChatMultimediaPage = () => {
       getMultimediaFUNC();
     }, [boxId])
   );
+
 
   const renderImageItem = ({ item }: { item: FileProps }) => (
     <TouchableOpacity onPress={()=>{setImageViewing(item.url!); setIsImageViewingOpen(true)}}>
@@ -93,6 +98,8 @@ const ChatMultimediaPage = () => {
         borderRadius: 8,
         rowGap:4,
       }}
+      onPress={()=>{setAudioViewing(item.url!); setAudioViewingName(item.fileName!
+      ); setIsAudioViewingOpen(true); }}
     >
       <View className=" bg-light-300 dark:bg-dark-20 flex-1 w-full rounded-2xl items-center justify-center" style={{width:mediaSize, height:mediaSize}}><Icon iconURL={IconURL.voice} size={40} /></View>
         <View className="w-full" style={{rowGap:2}}>
@@ -126,6 +133,7 @@ const ChatMultimediaPage = () => {
           <View>
             <Text
               className={`${textLight0Dark500} text-12 font-helvetica-bold`}
+              numberOfLines={2}
             >
               {item.fileName}
             </Text>
@@ -157,6 +165,7 @@ const ChatMultimediaPage = () => {
       className={`${bgLight500Dark10} flex-1`}
       style={{ rowGap: 10 }}
     >
+      {isAudioViewingOpen? <AudioViewer uri={audioViewing} fileName={audioViewingName} onClose={()=>setIsAudioViewingOpen(false)}/>:null}
        {isImageViewingOpen ? (
           <ImageViewing
             images={[{ uri: imageViewing }]}

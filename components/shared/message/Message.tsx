@@ -139,7 +139,7 @@ const Message = (props: MessageProps) => {
                   props.isSender ? roundedValueSender() : roundedValueReceiver()
                 }`}
                 style={{ columnGap: 4 }}
-                onPress={()=>props.handleViewFile(props.contentId)}
+                onPress={() => props.handleViewFile(props.contentId)}
               >
                 <View
                   className={`flex items-center justify-center rounded-2xl bg-light- p-[10px] bg-light-510`}
@@ -152,6 +152,7 @@ const Message = (props: MessageProps) => {
                       className={`${
                         props.isSender ? "text-white" : "text-black"
                       } font-helvetica-bold text-12 flex-1 flex-grow text-ellipsis`}
+                      numberOfLines={3}
                     >
                       {props.contentId.fileName}
                     </Text>
@@ -184,7 +185,7 @@ const Message = (props: MessageProps) => {
                   props.isSender ? roundedValueSender() : roundedValueReceiver()
                 }`}
                 style={{ columnGap: 4 }}
-                onPress={()=>props.handleViewFile(props.contentId)}
+                onPress={() => props.handleViewFile(props.contentId)}
               >
                 <View
                   className={`flex items-center justify-center rounded-2xl bg-light- p-[10px]bg-light-510`}
@@ -197,6 +198,7 @@ const Message = (props: MessageProps) => {
                       className={`${
                         props.isSender ? "text-white" : "text-black"
                       } font-helvetica-bold text-12 flex-1 flex-grow text-ellipsis`}
+                      numberOfLines={3}
                     >
                       {props.contentId.fileName}
                     </Text>
@@ -229,7 +231,7 @@ const Message = (props: MessageProps) => {
                   props.isSender ? roundedValueSender() : roundedValueReceiver()
                 }`}
                 style={{ columnGap: 4 }}
-                onPress={()=>props.handleViewFile(props.contentId)}
+                onPress={() => props.handleViewFile(props.contentId)}
               >
                 <View
                   className={`flex items-center justify-center rounded-2xl bg-light- p-[10px]bg-light-510`}
@@ -242,6 +244,7 @@ const Message = (props: MessageProps) => {
                       className={`${
                         props.isSender ? "text-white" : "text-black"
                       } font-helvetica-bold text-12 flex-1 flex-grow text-ellipsis`}
+                      numberOfLines={3}
                     >
                       {props.contentId.fileName}
                     </Text>
@@ -287,6 +290,7 @@ const Message = (props: MessageProps) => {
                       className={`${
                         props.isSender ? "text-white" : "text-black"
                       } font-helvetica-bold text-12 flex-1 flex-grow text-ellipsis`}
+                      numberOfLines={3}
                     >
                       {props.contentId.fileName}
                     </Text>
@@ -327,6 +331,7 @@ const Message = (props: MessageProps) => {
                       className={`${
                         props.isSender ? "text-white" : "text-black"
                       } font-helvetica-bold text-12 flex-1 flex-grow text-ellipsis`}
+                      numberOfLines={3}
                     >
                       {props.contentId.fileName}
                     </Text>
