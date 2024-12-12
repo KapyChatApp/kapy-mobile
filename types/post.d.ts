@@ -27,6 +27,7 @@ export interface CommentProps {
   replieds: CommentProps[];
   caption: string;
   createAt: string;
+  createBy:string;
   content: FileProps;
   replyName?:string;
   setReplyName:(name:string)=>void;
