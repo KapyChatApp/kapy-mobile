@@ -8,10 +8,10 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { ScrollView } from "react-native-gesture-handler";
 import Comment from "@/components/shared/community/Comment";
 import CommentTyping from "@/components/shared/community/CommentTyping";
-import { commentsData } from "@/data/CommentData";
 import { getAPost } from "@/lib/post";
 import { CommentProps, SocialPostProps } from "@/types/post";
 import { deleteComment } from "@/lib/comment-request";
+import ImageViewing from "react-native-image-viewing";
 
 const PostDetailPage = () => {
   const { postId } = useLocalSearchParams();
@@ -21,6 +21,10 @@ const PostDetailPage = () => {
   const [replyName, setReplyName] = useState("");
   const [replyCommentId, setReplyCommentId] = useState("");
   const [targetType, setTargetType] = useState("post");
+
+  const [isImageViewingOpen, setIsImageViewingOpen] = useState(false);
+  const [viewingImage, setViewingImage] = useState("");
+
   useEffect(() => {
     const getPostDetail = async () => {
       const result = await getAPost(postId.toString(), () =>
@@ -95,12 +99,19 @@ const PostDetailPage = () => {
       };
     });
   };
+
+  const handleImageViewing = (uri:string)=>{
+    setViewingImage(uri);
+    console.log("Viewing: ",uri);
+    setIsImageViewingOpen(true);
+  }
   return (
     <KeyboardAvoidingView
       className="flex-1"
       behavior={Platform.OS === "ios" ? "padding" : "height"}
     >
       <SafeAreaView className={`flex-1 ${bgLight500Dark10}`}>
+        {isImageViewingOpen? <ImageViewing images={[{uri:viewingImage}]} imageIndex={0} visible={isImageViewingOpen} onRequestClose={()=>setIsImageViewingOpen(false)} doubleTapToZoomEnabled={true}/>:null}
         <ScrollView
           className="flex-1"
           contentContainerStyle={{ rowGap: 20, paddingHorizontal: 10 }}
@@ -108,7 +119,7 @@ const PostDetailPage = () => {
           <View className="ml-[10px] mt-[10px]">
             <Previous navigation={navigation} isAbsolute={false} />
           </View>
-          {post ? <SocialPost {...post} isDetail={true} /> : null}
+          {post ? <SocialPost {...post} isDetail={true} handleImageViewing={handleImageViewing} /> : null}
 
           <Text className={`${textLight0Dark500} font-helvetica-light text-14`}>
             Comments
@@ -126,6 +137,7 @@ const PostDetailPage = () => {
                   index === post.comments.length - 1 ? true : false
                 }
                 handleDelete={handleDeleteComment}
+                handleImageViewing={handleImageViewing}
               />
             ))}
           </View>

@@ -52,7 +52,7 @@ const Comment = (props: CommentProps) => {
   const renderContent = ()=>{
     switch(props.content.type){
       case "Image":
-        return <Pressable>
+        return <Pressable onPress={()=>props.handleImageViewing(props.content.url!)}>
           <Image source={{uri:props.content.url}} width={50} height={100}/>
         </Pressable>
         case "Video":

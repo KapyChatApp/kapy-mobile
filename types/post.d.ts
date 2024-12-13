@@ -14,6 +14,7 @@ export interface SocialPostProps {
   createAt: string;
   contents: FileProps[];
   isDetail?: boolean;
+  handleImageViewing:(uri:string)=>void;
 }
 
 export interface CommentProps {
@@ -36,4 +37,5 @@ export interface CommentProps {
   isReply?:boolean;
   isLastComment?:boolean;
   handleDelete?:(id:string)=>void;
+  handleImageViewing:(uri:string)=>void;
 }

@@ -93,7 +93,6 @@ const SocialPost = (props: SocialPostProps) => {
     <Pressable
       className="flex border border-border rounded-3xl p-[16px] w-full pb-[50px]"
       style={{ rowGap: 8 }}
-      pointerEvents="box-none"
       onLongPress={handleLongPress}
     >
       <View className="flex flex-row" style={{ columnGap: 8 }}>
@@ -119,6 +118,8 @@ const SocialPost = (props: SocialPostProps) => {
           item.type === "Video" ? (
             <VideoPlayer videoSource={item.url!}/>
           ) : item.type === "Image" ? (
+            <View className="z-10">
+            <Pressable className="w-fit h-fit" onPress={()=>props.handleImageViewing?.(item.url!)}>
             <Image
               source={{ uri: item.url }}
               style={{
@@ -130,6 +131,8 @@ const SocialPost = (props: SocialPostProps) => {
               }}
               resizeMode="cover"
             />
+            </Pressable>
+            </View>
           ) : null
         )}
       </View>
