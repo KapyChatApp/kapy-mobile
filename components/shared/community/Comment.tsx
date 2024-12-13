@@ -4,23 +4,26 @@ import UserAvatarLink from "@/components/ui/UserAvatarLink";
 import Reply from "@/components/ui/Reply";
 import { textLight0Dark500 } from "@/styles/theme";
 import CommentLove from "@/components/ui/CommentLove";
-import { TouchableOpacity } from "react-native-gesture-handler";
+import {TouchableOpacity } from "react-native-gesture-handler";
 import { CommentProps } from "@/types/post";
 import { formatDate } from "@/utils/DateFormatter";
 import { getLocalAuth } from "@/lib/local-auth";
-import { disLikeComment, likeComment } from "@/lib/comment-request";
+import { deleteComment, disLikeComment, likeComment } from "@/lib/comment-request";
 import VideoPlayer from "../multimedia/VideoPlayer";
 import AudioPlayer from "../multimedia/AudioPlayer";
 import File from "@/components/ui/File";
 
+import { useActionSheet } from "@expo/react-native-action-sheet";
+import { useRouter } from "expo-router";
 const Comment = (props: CommentProps) => {
   const [isShowReply, setIsShowReply] = useState(false);
   const haveReplies = props.replieds && props.replieds.length > 0;
   const [liked, setLiked] = useState(false);
-
+  const [localUserId, setLocalUserId] = useState("");
   const [totalLike, setTotalLike] = useState(props.likedIds.length);
   const [totalReply, setTotalReply] = useState(props.replieds.length);
-
+  const {showActionSheetWithOptions} = useActionSheet();
+  const router = useRouter();
   const handleLike = async () => {
     if (liked) {
       setTotalLike(totalLike - 1);
@@ -33,9 +36,12 @@ const Comment = (props: CommentProps) => {
     }
   };
 
+
+  
   useEffect(() => {
     const render = async () => {
       const { _id } = await getLocalAuth();
+      setLocalUserId(_id);
       if (props.likedIds.includes(_id.toString())) {
         setLiked(true);
       }
@@ -46,7 +52,6 @@ const Comment = (props: CommentProps) => {
   const renderContent = ()=>{
     switch(props.content.type){
       case "Image":
-        console.log("image")
         return <Pressable>
           <Image source={{uri:props.content.url}} width={50} height={100}/>
         </Pressable>
@@ -58,11 +63,44 @@ const Comment = (props: CommentProps) => {
         return <File isSender={false} position="middle" file={props.content}/>
     }
   }
+  const handleLongPress = async () => {
+    const isMyComment = props.createBy.toString() === localUserId.toString()
+    const options = isMyComment
+      ? ["Delete comment", "Edit comment", "Cancel"]
+      : ["Report comment", "Cancel"];
+    const cancelButtonIndex = isMyComment ? 2 : 1;
+    showActionSheetWithOptions(
+      {
+        options,
+        cancelButtonIndex,
+      },
+      (selectedIndex: number | undefined) => {
+        switch (selectedIndex) {
+          case 0:
+            if (isMyComment) {
+              props.handleDelete?.(props._id!);
+            } else {
+              router.push({
+                pathname: "/report",
+                params: { targetId: props._id, targetType: "Comment" },
+              });
+            }
+            break;
+          case 1:
+            break;
+
+          case cancelButtonIndex:
+        }
+      }
+    );
+  };
+
   return (
-    <View
+    <Pressable
       className={`flex ${
         props.isLastComment ? "" : "border-l-[1px]"
       } border-border ${props.isReply ? "ml-[18px]" : ""}`}
+      onLongPress={()=>handleLongPress()}
     >
       <View className="flex flex-row">
         <View />
@@ -150,7 +188,7 @@ const Comment = (props: CommentProps) => {
             />
           ))}
       </View>
-    </View>
+    </Pressable>
   );
 };
 

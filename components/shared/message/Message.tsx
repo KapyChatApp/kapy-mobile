@@ -14,6 +14,7 @@ import UserAvatarLink from "@/components/ui/UserAvatarLink";
 import { IconURL } from "@/constants/IconURL";
 import Icon from "@/components/ui/Icon";
 import { getPathWithConventionsCollapsed } from "expo-router/build/fork/getPathFromState-forks";
+import { useRouter } from "expo-router";
 
 const Message = (props: MessageProps) => {
   const [position, setPosition] = useState(props.position);
@@ -21,6 +22,8 @@ const Message = (props: MessageProps) => {
     position === "bottom" ? true : false
   );
   const ref = useClickOutside<View>(() => setIsShowTime(false));
+
+  const router = useRouter();
   const roundedValueReceiver = () => {
     switch (position) {
       case "top":
@@ -71,11 +74,12 @@ const Message = (props: MessageProps) => {
       { cancelable: true }
     );
   };
+
   const { showActionSheetWithOptions } = useActionSheet();
   const handleLongPress = async () => {
     const options = props.isSender
       ? ["Revoke message", "Delete message", "Cancel"]
-      : ["Report this rate", "Delete message", "Cancel"];
+      : ["Report message", "Delete message", "Cancel"];
     const cancelButtonIndex = 2;
     showActionSheetWithOptions(
       {
@@ -88,7 +92,7 @@ const Message = (props: MessageProps) => {
             if (props.isSender) {
               handleRevokeMessage();
             } else {
-              console.log("report");
+              router.push({pathname:"/report",params:{targetId:props.id,targetType:"Message"}});
             }
             break;
           case 1:

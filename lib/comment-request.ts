@@ -90,3 +90,17 @@ export const disLikeComment = async (commentId: string) => {
     throw error;
   }
 };
+
+export const deleteComment = async (commentId:string)=>{
+  try{
+      const {token} = await getLocalAuth();
+      const response = await axios.delete(process.env.EXPO_PUBLIC_BASE_URL + "/post/comment/delete",{headers:{
+        "Content-Type":"application/json",
+        Authorization:`${token}`
+      },params:{commentId:commentId}});
+      return response.data;
+  }catch(error){
+    console.log(error);
+    throw error;
+  }
+}

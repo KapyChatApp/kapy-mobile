@@ -27,6 +27,7 @@ export interface CommentProps {
   replieds: CommentProps[];
   caption: string;
   createAt: string;
+  createBy:string;
   content: FileProps;
   replyName?:string;
   setReplyName:(name:string)=>void;
@@ -34,4 +35,5 @@ export interface CommentProps {
   setTargetType:(type:string)=>void;
   isReply?:boolean;
   isLastComment?:boolean;
+  handleDelete?:(id:string)=>void;
 }

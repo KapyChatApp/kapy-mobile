@@ -11,6 +11,7 @@ import CommentTyping from "@/components/shared/community/CommentTyping";
 import { commentsData } from "@/data/CommentData";
 import { getAPost } from "@/lib/post";
 import { CommentProps, SocialPostProps } from "@/types/post";
+import { deleteComment } from "@/lib/comment-request";
 
 const PostDetailPage = () => {
   const { postId } = useLocalSearchParams();
@@ -41,6 +42,28 @@ const PostDetailPage = () => {
     });
   };
   
+  const handleDeleteComment = async (id: string) => {
+    const deleteCommentRecursively = (comments: CommentProps[]): CommentProps[] => {
+      return comments
+        .filter((comment) => comment._id !== id) 
+        .map((comment) => ({
+          ...comment,
+          replieds: deleteCommentRecursively(comment.replieds || []),
+        }));
+    };
+  
+    setPost((prevPost) => {
+      if (!prevPost) return prevPost;
+  
+      return {
+        ...prevPost,
+        comments: deleteCommentRecursively(prevPost.comments || []),
+      };
+    });
+
+    await deleteComment(id);
+  };
+
   const addReplyToComment = (parentCommentId: string, newReply: CommentProps) => {
     const addReplyRecursively = (comments: CommentProps[]): CommentProps[] => {
       return comments.map((comment) => {
@@ -102,6 +125,7 @@ const PostDetailPage = () => {
                 isLastComment={
                   index === post.comments.length - 1 ? true : false
                 }
+                handleDelete={handleDeleteComment}
               />
             ))}
           </View>
