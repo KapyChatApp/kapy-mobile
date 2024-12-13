@@ -13,6 +13,7 @@ import { deletePost, disLike, like } from "@/lib/post";
 import { getLocalAuth } from "@/lib/local-auth";
 import { useActionSheet } from "@expo/react-native-action-sheet";
 import * as Sharing from "expo-sharing";
+import VideoPlayer from "../multimedia/VideoPlayer";
 const SocialPost = (props: SocialPostProps) => {
   const [isShowComment, setIsShowComment] = useState(false);
   const router = useRouter();
@@ -109,19 +110,7 @@ const SocialPost = (props: SocialPostProps) => {
         </Text>
         {props.contents.map((item) =>
           item.type === "Video" ? (
-            <Video
-              source={{ uri: item.url? item.url : "" }}
-              style={{
-                width: "auto",
-                height: "auto",
-                borderRadius: 10,
-                marginBottom: 10,
-                aspectRatio: Number(item.width) / Number(item.height),
-              }}
-              shouldPlay={false}
-              isLooping={false}
-              useNativeControls
-            />
+            <VideoPlayer videoSource={item.url!}/>
           ) : item.type === "Image" ? (
             <Image
               source={{ uri: item.url }}
