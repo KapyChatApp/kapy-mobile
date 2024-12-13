@@ -14,3 +14,16 @@ export const PrivacyItems = [
   {index:0, label:"Public", value:"public"},
   {index:1, label:"Private", value:"Private"},
 ]
+
+export const ReportContents = [
+  "Hate Speech",
+  "Harassment and Bullying",
+  "Misinformation and Fake News",
+  "Graphic Violence or Gore",
+  "Child Exploitation",
+  "Spam and Scams",
+  "Nudity and Sexual Content",
+  "Promoting Illegal Activities",
+  "Impersonation and Fake Profiles",
+  "Terrorism and Extremism"
+]

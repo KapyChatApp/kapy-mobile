@@ -9,7 +9,6 @@ import Previous from "@/components/ui/Previous";
 import UserBio from "@/components/shared/community/UserBio";
 import UnblockPostView from "@/components/shared/community/UnblockPostView";
 import MoreProfileOption from "@/components/shared/community/MoreProfileOption";
-import ReportForm from "@/components/form/ReportForm";
 import { HeadProfileProps, UserBioProps } from "@/types/user";
 import CustomButton from "@/components/ui/CustomButton";
 import DenyButton from "@/components/ui/DenyButton";
@@ -26,12 +25,10 @@ import SocialSkeletonLoader from "@/components/ui/PostSkeletonLoader";
 import { RateProps } from "@/types/rate";
 import { getRatesOfUser } from "@/lib/rate";
 import RecentRate from "@/components/shared/community/RecentRate";
-import { getLocalAuth } from "@/lib/local-auth";
 const FriendProfilePage = () => {
   const { friendId } = useLocalSearchParams();
   const navigation = useNavigation();
   const router = useRouter();
-  const [isReportOpen, setIsReportOpen] = useState(false);
   const [headerProps, setHeaderProps] = useState<
     HeadProfileProps | undefined
   >();
@@ -281,7 +278,6 @@ const FriendProfilePage = () => {
         )}
         <Previous navigation={navigation} isAbsolute={true} />
         <MoreProfileOption
-          setIsReportOpen={setIsReportOpen}
           setStartLoading={() => setLoading(true)}
           setEndLoading={() => setLoading(false)}
           setIsLoading={() => setIsLoading(true)}
@@ -346,14 +342,6 @@ const FriendProfilePage = () => {
           <View className="w-full h-[60px]"></View>
         </View>
       </ScrollView>
-      {isReportOpen ? (
-          <ReportForm
-            onClose={() => {
-              setIsReportOpen(false);
-              console.log(isReportOpen);
-            }}
-          />
-      ) : null}
       {loading ? <LoadingSpinner loading={isLoading} /> : null}
     </SafeAreaView>
   );
