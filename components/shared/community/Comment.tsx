@@ -1,4 +1,4 @@
-import { View, Text } from "react-native";
+import { View, Text, Image, Pressable } from "react-native";
 import React, { useEffect, useState } from "react";
 import UserAvatarLink from "@/components/ui/UserAvatarLink";
 import Reply from "@/components/ui/Reply";
@@ -9,6 +9,9 @@ import { CommentProps } from "@/types/post";
 import { formatDate } from "@/utils/DateFormatter";
 import { getLocalAuth } from "@/lib/local-auth";
 import { disLikeComment, likeComment } from "@/lib/comment-request";
+import VideoPlayer from "../multimedia/VideoPlayer";
+import AudioPlayer from "../multimedia/AudioPlayer";
+import File from "@/components/ui/File";
 
 const Comment = (props: CommentProps) => {
   const [isShowReply, setIsShowReply] = useState(false);
@@ -40,6 +43,21 @@ const Comment = (props: CommentProps) => {
     render();
   }, []);
 
+  const renderContent = ()=>{
+    switch(props.content.type){
+      case "Image":
+        console.log("image")
+        return <Pressable>
+          <Image source={{uri:props.content.url}} width={50} height={100}/>
+        </Pressable>
+        case "Video":
+        return <VideoPlayer videoSource={props.content.url!}/>
+        case "Audio":
+        return <AudioPlayer audioUri={props.content.url!} isSender={true}/>
+        default: 
+        return <File isSender={false} position="middle" file={props.content}/>
+    }
+  }
   return (
     <View
       className={`flex ${
@@ -60,7 +78,7 @@ const Comment = (props: CommentProps) => {
             }  ${props.isReply ? "py-2" : "py-2"} min-w-[200px] pb-[26px]`}
           >
             <View
-              className="flex flex-row items-center w-fit "
+              className="flex flex-row w-fit "
               style={{ columnGap: 10 }}
             >
               <UserAvatarLink
@@ -82,6 +100,9 @@ const Comment = (props: CommentProps) => {
                 >
                   {props.caption}
                 </Text>
+                <View>
+                  {props.content? renderContent(): null}
+                </View>
               </View>
             </View>
             <View
