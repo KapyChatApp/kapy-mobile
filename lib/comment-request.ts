@@ -27,7 +27,7 @@ export const createComment = async (
     formData.append("file", newFile as any);
 
     const response = await axios.post(
-      process.env.EXPO_PUBLIC_BASE_URL + "/post/comment",
+      process.env.EXPO_PUBLIC_BASE_URL + "/post/comment/add",
       formData,
       {
         headers: {
@@ -53,7 +53,7 @@ export const likeComment = async (commentId: string) => {
     const { token } = await getLocalAuth();
 
     const response = axios.post(
-      process.env.EXPO_PUBLIC_BASE_URL + "/post/like-comment",{},
+      process.env.EXPO_PUBLIC_BASE_URL + "/post/comment/like",{},
       {
         headers: {
           "Content-Type": "application/json",
@@ -75,7 +75,7 @@ export const disLikeComment = async (commentId: string) => {
     const { token } = await getLocalAuth();
 
     const response = axios.post(
-      process.env.EXPO_PUBLIC_BASE_URL + "/post/dislike-comment",{},
+      process.env.EXPO_PUBLIC_BASE_URL + "/post/comment/dislike",{},
       {
         headers: {
           "Content-Type": "application/json",
