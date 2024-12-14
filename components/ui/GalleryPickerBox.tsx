@@ -1,22 +1,26 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { View, FlatList, Image, Dimensions } from "react-native";
 import { Video as ExpoVideo } from "expo-av";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import Icon from "./Icon"; // Đường dẫn đến component Icon của bạn
 import { IconURL } from "@/constants/IconURL"; // Đường dẫn đến IconURL của bạn
+import VideoPlayer from "../shared/multimedia/VideoPlayer";
 
 const screenWidth = Dimensions.get("window").width;
 
 const GalleryPickerBox = ({
   selectedMedia,
   setSelectedMedia,
+  handleDeleteRemainIds
 }: {
-  selectedMedia: { uri: string; type: string }[];
-  setSelectedMedia: (media: { uri: string; type: string }[]) => void;
+  selectedMedia: { uri: string; type: string;name:string }[];
+  setSelectedMedia: (media: { uri: string; type: string;name:string }[]) => void;
+  handleDeleteRemainIds?:({uri, type, name}:{uri:string,type:string, name:string})=>void;
 }) => {
   const handleDelete = (index: number) => {
     const updatedMedia = selectedMedia.filter((_, i) => i !== index);
     setSelectedMedia(updatedMedia);
+    handleDeleteRemainIds?.(selectedMedia.filter((item,i)=> i === index)[0]);
   };
 
   const renderItem = ({
@@ -28,7 +32,7 @@ const GalleryPickerBox = ({
   }) => (
     <View style={{ marginHorizontal: 5, width: screenWidth * 0.8 }}>
       <View style={{ position: "relative" }}>
-        {item.type.startsWith("image") ? (
+        {item.type.startsWith("image")|| item.type==="Image" ? (
           <View>
             <Image
               source={{ uri: item.uri }}
@@ -52,16 +56,7 @@ const GalleryPickerBox = ({
           </View>
         ) : (
           <View>
-            <ExpoVideo
-              source={{ uri: item.uri }}
-              style={{
-                width: screenWidth,
-                height: screenWidth, // Tỉ lệ 16:9 cho video
-                borderRadius: 10,
-              }}
-              useNativeControls
-              isLooping
-            />
+            <VideoPlayer videoSource={item.uri}/>
             <View
               className="flex-1  absolute top-[4px] right-[4px]"
               style={{ zIndex: 20 }}
@@ -77,7 +72,8 @@ const GalleryPickerBox = ({
       </View>
     </View>
   );
-
+  console.log("selected: ",selectedMedia);
+  useEffect(()=>{},[selectedMedia]);
   return (
     <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
       <FlatList

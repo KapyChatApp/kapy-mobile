@@ -5,7 +5,7 @@ import { IconURL } from "@/constants/IconURL";
 import Icon from "./Icon";
 import CustomButton from "./CustomButton";
 
-const PostTyping = ({handleGalleryPicker, handleCreatePost}:{handleGalleryPicker:()=>void,handleCreatePost:()=>void}) => {
+const PostTyping = ({handleGalleryPicker, handlePostAction}:{handleGalleryPicker:()=>void,handlePostAction:()=>void}) => {
   const { theme } = useTheme();
   return (
     <View
@@ -32,7 +32,7 @@ const PostTyping = ({handleGalleryPicker, handleCreatePost}:{handleGalleryPicker
           ></Icon>
         </TouchableOpacity>
       </View>
-      <CustomButton label="Post" width={80} height={40} onPress={handleCreatePost}/>
+      <CustomButton label="Post" width={80} height={40} onPress={handlePostAction}/>
     </View>
   );
 };

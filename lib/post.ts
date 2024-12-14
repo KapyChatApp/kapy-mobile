@@ -192,3 +192,27 @@ export const disLike = async  (postId: string) => {
     throw error;
   }
 };
+
+export const editPost = async (postId:string,caption:string,selectedMedias: {uri:string, type:string, name:string|null|undefined}[], remainMediaIds:string[] ) =>{
+  try{
+    const {token} = await getLocalAuth();
+    const formData = new FormData();
+    formData.append("caption",caption);
+    formData.append("remainContentIds", JSON.stringify(remainMediaIds));
+    formData.append("contents", JSON.stringify(selectedMedias));
+
+    const response = await axios.patch(process.env.EXPO_PUBLIC_BASE_URL + "/post/edit",formData, {
+      headers:{
+        "Content-Type":"multipart/form-data",
+        Authorization:`${token}`
+      },
+      params:{postId:postId}
+    });
+    if(response.status===200 || response.status ==201){
+      Alert.alert("Edited!");
+    }
+  } catch(error){
+    console.log(error);
+    throw error;
+  } 
+}

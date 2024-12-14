@@ -35,11 +35,18 @@ const CreatePostPage = () => {
   const [isTyping, setIsTyping] = useState(false);
   const ref = useClickOutside<View>(() => setIsTyping(false));
   const [selectedMedia, setSelectedMedia] = useState<
-    { uri: string; type: string }[]
+    { uri: string; type: string;name:string }[]
   >([]);
   const handlePickMedia = async () => {
     const media = await pickMedia();
-    setSelectedMedia((prev) => [...prev, ...media]);
+    setSelectedMedia((prev) => [
+      ...prev,
+      ...media.map((item) => ({
+        uri: item.uri,
+        type: item.type,
+        name: item.name || "", 
+      }))
+    ]);
   };
 
   useEffect(() => {
@@ -127,7 +134,7 @@ const CreatePostPage = () => {
         <View ref={ref}>
           <PostTyping
             handleGalleryPicker={handlePickMedia}
-            handleCreatePost={async () =>
+            handlePostAction={async () =>
               await createPost(caption, selectedMedia, () => {
                 Alert.alert(
                   "Your post is being created and will be done soon!"

@@ -82,6 +82,7 @@ const SocialPost = (props: SocialPostProps) => {
             }
             break;
           case 1:
+            router.push({pathname:"/community/edit-post",params:{postId:props._id}});
             break;
 
           case cancelButtonIndex:
