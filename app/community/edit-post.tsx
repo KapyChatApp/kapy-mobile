@@ -27,6 +27,8 @@ import {
   import { createPost, editPost, getAPost } from "@/lib/post";
 import { SocialPostProps } from "@/types/post";
 import { FileProps } from "@/types/file";
+import ExpoCamera from "@/components/shared/multimedia/ExpoCamera";
+import AudioRecorder from "@/components/shared/multimedia/AudioRecorder";
   
   const EditPostPage = () => {
     const {postId} = useLocalSearchParams();
@@ -38,6 +40,10 @@ import { FileProps } from "@/types/file";
     const [remainMedias, setRemainMedias] = useState(new Map());
     const [isTyping, setIsTyping] = useState(false);
     const ref = useClickOutside<View>(() => setIsTyping(false));
+
+    const [isCameraOpen, setIsCameraOpen] = useState(false);
+    const [isMicroOpen, setIsMicroOpen] = useState(false);
+
     const [selectedMedia, setSelectedMedia] = useState<
       { uri: string; type: string; name:string}[]
     >([]);
@@ -75,6 +81,7 @@ import { FileProps } from "@/types/file";
           behavior={Platform.OS === "ios" ? "padding" : "height"}
           style={{ flex: 1 }}
         >
+          {isCameraOpen?<View className="fixed w-screen h-screen"> <ExpoCamera onClose={()=>setIsCameraOpen(false)} isSendNow={false} setSelectedMedia={(uri:string,  type:string,name:string)=>setSelectedMedia([{uri:uri, type:type, name:name}])}/></View>:null}
           <View className="pl-[10px] pt-[10px] mb-[10px]">
             <Previous header="Edit a post" navigation={navigation} />
           </View>
@@ -146,7 +153,12 @@ import { FileProps } from "@/types/file";
               handlePostAction={async () =>
               await editPost(postId.toString(), caption,selectedMedia, Array.from(remainMedias.values()))
               }
+              handleOpenCamera={()=>setIsCameraOpen(true)}
+              handleOpenMicro={()=>setIsMicroOpen(true)}
             />
+             {isMicroOpen? <View ref={ref}>
+          <AudioRecorder setSelectedMedia={(uri,type,name)=>setSelectedMedia((prev)=>[...prev,{uri:uri,type:type,name:name}])}/>
+        </View> : null}
           </View>
         </KeyboardAvoidingView>
       </SafeAreaView>

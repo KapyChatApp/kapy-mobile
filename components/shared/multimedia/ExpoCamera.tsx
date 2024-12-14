@@ -25,11 +25,13 @@ import { generateRandomNumberString } from "@/utils/Random";
 
 const ExpoCamera = ({
   onClose,
+  isSendNow,
   onSend,
   setSelectedMedia,
 }: {
   onClose: () => void;
-  onSend: () => void;
+  isSendNow?:boolean,
+  onSend?: () => void;
   setSelectedMedia: (uri: string, type: string, name:string) => void;
 }) => {
   const [facing, setFacing] = useState<CameraType>("back");
@@ -160,14 +162,15 @@ const ExpoCamera = ({
             </TouchableOpacity>
           </View>
           <View className="absolute bottom-[40px] right-[20px]">
-            <TouchableOpacity
+            {isSendNow?<TouchableOpacity
               onPress={() => {
-                onSend();
+                onSend?.();
                 onClose();
               }}
             >
               <Icon size={40} iconURL={IconURL.send} />
-            </TouchableOpacity>
+            </TouchableOpacity> :<TouchableOpacity onPress={onClose}><Icon iconURL={IconURL.tick} size={40}/></TouchableOpacity>}
+            
           </View>
         </View>
       ) : (
@@ -184,7 +187,7 @@ const ExpoCamera = ({
               </TouchableOpacity>
               <TouchableOpacity onPress={toggleCameraFacing}>
                 <Icon size={30} iconURL={IconURL.change_cam} />
-              </TouchableOpacity>
+              </TouchableOpacity>l
             </View>
             <View
               className="flex items-center justify-between mb-[40px]"

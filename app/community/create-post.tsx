@@ -25,9 +25,15 @@ import PostTyping from "@/components/ui/PostTyping";
 import GalleryPickerBox from "@/components/ui/GalleryPickerBox";
 import { pickMedia } from "@/utils/GalleryPicker";
 import { createPost } from "@/lib/post";
+import ExpoCamera from "@/components/shared/multimedia/ExpoCamera";
+import AudioRecorder from "@/components/shared/multimedia/AudioRecorder";
 
 const CreatePostPage = () => {
   const navigation = useNavigation();
+
+  const [isCameraOpen, setIsCameraOpen] = useState(false);
+  const [isMicroOpen, setIsMicroOpen] = useState(false);
+
   const [isPrivate, setIsPrivate] = useState(false);
   const [name, setName] = useState("");
   const [avatar, setAvatar] = useState("");
@@ -68,10 +74,12 @@ const CreatePostPage = () => {
         behavior={Platform.OS === "ios" ? "padding" : "height"}
         style={{ flex: 1 }}
       >
+         {isCameraOpen?<View className="fixed w-screen h-screen"> <ExpoCamera onClose={()=>setIsCameraOpen(false)} isSendNow={false} setSelectedMedia={(uri:string,  type:string,name:string)=>setSelectedMedia([{uri:uri, type:type, name:name}])}/></View>:null}
         <View className="pl-[10px] pt-[10px] mb-[10px]">
           <Previous header="Create a post" navigation={navigation} />
         </View>
-
+       
+        
         <ScrollView
           className={`${bgLight500Dark10}`}
           contentContainerStyle={{ padding: 10, rowGap: 8 }}
@@ -142,7 +150,12 @@ const CreatePostPage = () => {
                 navigation.goBack();
               })
             }
+            handleOpenCamera={()=>setIsCameraOpen(true)}
+            handleOpenMicro={()=>setIsMicroOpen(true)}
           />
+           {isMicroOpen? <View ref={ref}>
+          <AudioRecorder setSelectedMedia={(uri,type,name)=>setSelectedMedia((prev)=>[...prev,{uri:uri,type:type,name:name}])}/>
+        </View> : null}
         </View>
       </KeyboardAvoidingView>
     </SafeAreaView>

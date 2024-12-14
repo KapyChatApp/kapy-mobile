@@ -226,6 +226,7 @@ const MessageDetailPage = () => {
               setSelectedMedia={(uri: string, type: string, name: string) =>
                 setSelectedMedia([{ uri: uri, type: type, name: name }])
               }
+              isSendNow={true}
             />
           </View>
         ) : null}

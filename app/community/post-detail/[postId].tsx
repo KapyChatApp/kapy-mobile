@@ -12,9 +12,17 @@ import { getAPost } from "@/lib/post";
 import { CommentProps, SocialPostProps } from "@/types/post";
 import { deleteComment } from "@/lib/comment";
 import ImageViewing from "react-native-image-viewing";
+import GalleryPickerBox from "@/components/ui/GalleryPickerBox";
+import SingleGalleryPickerBox from "@/components/ui/SingleGalleryPicker";
+import ExpoCamera from "@/components/shared/multimedia/ExpoCamera";
+import { useClickOutside } from "react-native-click-outside";
+import AudioRecorder from "@/components/shared/multimedia/AudioRecorder";
 
 const PostDetailPage = () => {
   const { postId } = useLocalSearchParams();
+
+  const ref = useClickOutside<View>(()=>setIsMicroOpen(false));
+
   const [post, setPost] = useState<SocialPostProps>();
   const router = useRouter();
   const navigation = useNavigation();
@@ -25,6 +33,13 @@ const PostDetailPage = () => {
   const [isImageViewingOpen, setIsImageViewingOpen] = useState(false);
   const [viewingImage, setViewingImage] = useState("");
 
+  const [isCameraOpen, setIsCameraOpen] = useState(false);
+  const [isMicroOpen, setIsMicroOpen] = useState(false);
+
+
+  const [selectedMedia, setSelectedMedia] = useState<
+    { uri: string; type: string; name: string }
+  >();
   useEffect(() => {
     const getPostDetail = async () => {
       const result = await getAPost(postId.toString(), () =>
@@ -124,9 +139,10 @@ const PostDetailPage = () => {
             doubleTapToZoomEnabled={true}
           />
         ) : null}
+        {isCameraOpen?<View className="fixed w-screen h-screen"> <ExpoCamera onClose={()=>setIsCameraOpen(false)} isSendNow={false} setSelectedMedia={(uri:string,  type:string,name:string)=>setSelectedMedia({uri:uri, type:type, name:name})}/></View>:null}
         <ScrollView
           className="flex-1"
-          contentContainerStyle={{ rowGap: 20, paddingHorizontal: 10 }}
+          contentContainerStyle={{ rowGap: 20, paddingHorizontal: 10}}
         >
           <View className="ml-[10px] mt-[10px]">
             <Previous navigation={navigation} isAbsolute={false} />
@@ -160,6 +176,11 @@ const PostDetailPage = () => {
             ))}
           </View>
         </ScrollView>
+        {selectedMedia? (
+          <View className="h-[100px]">
+            <SingleGalleryPickerBox selectedMedia={selectedMedia} setSelectedMedia={setSelectedMedia}/>
+          </View>
+        ) : null}
         <CommentTyping
           replyId={replyName.length == 0 ? post?._id : replyCommentId}
           replyName={replyName}
@@ -171,7 +192,14 @@ const PostDetailPage = () => {
               ? addCommentToPost(newComment)
               : addReplyToComment(replyCommentId, newComment)
           }
+          handleOpenCamera={() => setIsCameraOpen(true)}
+          handleOpenMicro={()=>setIsMicroOpen(true)}
+          selectedMedia={selectedMedia}
+          setSelectedMedia={setSelectedMedia}
         />
+        {isMicroOpen? <View ref={ref}>
+          <AudioRecorder setSelectedMedia={(uri,type,name)=>setSelectedMedia({uri:uri,type:type,name:name})}/>
+        </View> : null}
       </SafeAreaView>
     </KeyboardAvoidingView>
   );

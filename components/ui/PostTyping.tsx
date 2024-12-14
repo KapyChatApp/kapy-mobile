@@ -5,7 +5,7 @@ import { IconURL } from "@/constants/IconURL";
 import Icon from "./Icon";
 import CustomButton from "./CustomButton";
 
-const PostTyping = ({handleGalleryPicker, handlePostAction}:{handleGalleryPicker:()=>void,handlePostAction:()=>void}) => {
+const PostTyping = ({handleGalleryPicker, handlePostAction, handleOpenCamera, handleOpenMicro}:{handleGalleryPicker:()=>void,handlePostAction:()=>void, handleOpenCamera:any, handleOpenMicro:any}) => {
   const { theme } = useTheme();
   return (
     <View
@@ -25,7 +25,7 @@ const PostTyping = ({handleGalleryPicker, handlePostAction}:{handleGalleryPicker
             size={28}
           ></Icon>
         </TouchableOpacity>
-        <TouchableOpacity>
+        <TouchableOpacity onPress={handleOpenCamera}>
           <Icon
             iconURL={theme === "light" ? IconURL.opencam_l : IconURL.opencam_d}
             size={28}

@@ -17,6 +17,10 @@ const CommentTyping = ({
   targetType,
   setTargetType,
   createNewComment,
+  handleOpenCamera,
+  handleOpenMicro,
+  selectedMedia,
+  setSelectedMedia
 }: {
   replyId: string | undefined;
   replyName: string;
@@ -24,12 +28,12 @@ const CommentTyping = ({
   setTargetType: (type: string) => void;
   targetType: string;
   createNewComment: (newComment: CommentProps) => void;
+  handleOpenCamera:any;
+  handleOpenMicro:any;
+  selectedMedia:any;
+  setSelectedMedia:any;
 }) => {
   const { theme } = useTheme();
-  const [selectedMedia, setSelectedMedia] = useState<{
-    uri: string;
-    type: string;
-  } | null>(null);
   const [caption, setCaption] = useState("");
   const handlePickMedia = async () => {
     const media = await singlePickMedia();
@@ -37,16 +41,7 @@ const CommentTyping = ({
   };
 
   return (
-    <View className={`${selectedMedia ? "h-[230px]" : ""}`}>
-      {selectedMedia ? (
-        <View className="flex-1 bg-light-310  dark:bg-dark-20">
-          <SingleGalleryPickerBox
-            selectedMedia={selectedMedia}
-            setSelectedMedia={setSelectedMedia}
-          />
-        </View>
-      ) : null}
-
+    <View >
       {replyName != "" ? (
         <View
           className=" flex flex-row p-[10px] items-center"
@@ -65,16 +60,25 @@ const CommentTyping = ({
 
       <View
         className="flex flex-row items-center justify-center py-[12px] bg-white dark:bg-dark-0 px-[10px]"
-        style={{ columnGap: 4 }}
+        style={{ columnGap: 14 }}
       >
+        <TouchableOpacity onPress={handleOpenMicro}>
+          <Icon
+            iconURL={theme === "light" ? IconURL.mic_l: IconURL.mic_d}
+            size={34}
+          />
+        </TouchableOpacity>
         <TouchableOpacity onPress={() => handlePickMedia()}>
           <Icon
             iconURL={theme === "light" ? IconURL.image_l : IconURL.image_d}
             size={34}
           />
         </TouchableOpacity>
-        <TouchableOpacity>
-          <Icon iconURL={IconURL.icon} size={34} />
+        <TouchableOpacity onPress={handleOpenCamera}>
+          <Icon
+            iconURL={theme === "light" ? IconURL.opencam_l : IconURL.opencam_d}
+            size={34}
+          />
         </TouchableOpacity>
         <TextInput
           placeholder="Type..."

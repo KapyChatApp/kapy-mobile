@@ -9,8 +9,8 @@ const SingleGalleryPickerBox = ({
   selectedMedia,
   setSelectedMedia,
 }: {
-    selectedMedia: { uri: string; type: string } | null;
-    setSelectedMedia: (media: { uri: string; type: string } | null) => void;
+    selectedMedia: { uri: string; type: string }|null;
+    setSelectedMedia:any
 }) => {
   const handleDelete = () => {
     setSelectedMedia(null);
