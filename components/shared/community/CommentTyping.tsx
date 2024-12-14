@@ -7,7 +7,7 @@ import { IconURL } from "@/constants/IconURL";
 import { textLight0Dark500 } from "@/styles/theme";
 import SingleGalleryPickerBox from "@/components/ui/SingleGalleryPicker";
 import { pickMedia, singlePickMedia } from "@/utils/GalleryPicker";
-import { createComment } from "@/lib/comment-request";
+import { createComment } from "@/lib/comment";
 import { CommentProps } from "@/types/post";
 
 const CommentTyping = ({
@@ -23,7 +23,7 @@ const CommentTyping = ({
   setReplyName: (name: string) => void;
   setTargetType: (type: string) => void;
   targetType: string;
-  createNewComment: (newComment:CommentProps) => void;
+  createNewComment: (newComment: CommentProps) => void;
 }) => {
   const { theme } = useTheme();
   const [selectedMedia, setSelectedMedia] = useState<{
@@ -92,7 +92,6 @@ const CommentTyping = ({
               targetType
             );
             createNewComment(newComment);
-            
           }}
         >
           <Icon iconURL={IconURL.send} size={34} />

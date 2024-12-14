@@ -199,7 +199,13 @@ export const editPost = async (postId:string,caption:string,selectedMedias: {uri
     const formData = new FormData();
     formData.append("caption",caption);
     formData.append("remainContentIds", JSON.stringify(remainMediaIds));
-    formData.append("contents", JSON.stringify(selectedMedias));
+    selectedMedias.forEach(media => {
+      formData.append("file", {
+        uri: media.uri,
+        type: media.type,
+        name: media.name,
+      } as any);
+    });
 
     const response = await axios.patch(process.env.EXPO_PUBLIC_BASE_URL + "/post/edit",formData, {
       headers:{

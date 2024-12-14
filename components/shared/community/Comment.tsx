@@ -4,11 +4,11 @@ import UserAvatarLink from "@/components/ui/UserAvatarLink";
 import Reply from "@/components/ui/Reply";
 import { textLight0Dark500 } from "@/styles/theme";
 import CommentLove from "@/components/ui/CommentLove";
-import {TouchableOpacity } from "react-native-gesture-handler";
+import { TouchableOpacity } from "react-native-gesture-handler";
 import { CommentProps } from "@/types/post";
 import { formatDate } from "@/utils/DateFormatter";
 import { getLocalAuth } from "@/lib/local-auth";
-import { deleteComment, disLikeComment, likeComment } from "@/lib/comment-request";
+import { deleteComment, disLikeComment, likeComment } from "@/lib/comment";
 import VideoPlayer from "../multimedia/VideoPlayer";
 import AudioPlayer from "../multimedia/AudioPlayer";
 import File from "@/components/ui/File";
@@ -22,7 +22,7 @@ const Comment = (props: CommentProps) => {
   const [localUserId, setLocalUserId] = useState("");
   const [totalLike, setTotalLike] = useState(props.likedIds.length);
   const [totalReply, setTotalReply] = useState(props.replieds.length);
-  const {showActionSheetWithOptions} = useActionSheet();
+  const { showActionSheetWithOptions } = useActionSheet();
   const router = useRouter();
   const handleLike = async () => {
     if (liked) {
@@ -36,8 +36,6 @@ const Comment = (props: CommentProps) => {
     }
   };
 
-
-  
   useEffect(() => {
     const render = async () => {
       const { _id } = await getLocalAuth();
@@ -49,22 +47,30 @@ const Comment = (props: CommentProps) => {
     render();
   }, []);
 
-  const renderContent = ()=>{
-    switch(props.content.type){
+  const renderContent = () => {
+    switch (props.content.type) {
       case "Image":
-        return <Pressable onPress={()=>props.handleImageViewing(props.content.url!)}>
-          <Image source={{uri:props.content.url}} width={50} height={100}/>
-        </Pressable>
-        case "Video":
-        return <VideoPlayer videoSource={props.content.url!}/>
-        case "Audio":
-        return <AudioPlayer audioUri={props.content.url!} isSender={true}/>
-        default: 
-        return <File isSender={false} position="middle" file={props.content}/>
+        return (
+          <Pressable
+            onPress={() => props.handleImageViewing(props.content.url!)}
+          >
+            <Image
+              source={{ uri: props.content.url }}
+              width={50}
+              height={100}
+            />
+          </Pressable>
+        );
+      case "Video":
+        return <VideoPlayer videoSource={props.content.url!} />;
+      case "Audio":
+        return <AudioPlayer audioUri={props.content.url!} isSender={true} />;
+      default:
+        return <File isSender={false} position="middle" file={props.content} />;
     }
-  }
+  };
   const handleLongPress = async () => {
-    const isMyComment = props.createBy.toString() === localUserId.toString()
+    const isMyComment = props.createBy.toString() === localUserId.toString();
     const options = isMyComment
       ? ["Delete comment", "Edit comment", "Cancel"]
       : ["Report comment", "Cancel"];
@@ -100,7 +106,7 @@ const Comment = (props: CommentProps) => {
       className={`flex ${
         props.isLastComment ? "" : "border-l-[1px]"
       } border-border ${props.isReply ? "ml-[18px]" : ""}`}
-      onLongPress={()=>handleLongPress()}
+      onLongPress={() => handleLongPress()}
     >
       <View className="flex flex-row">
         <View />
@@ -115,10 +121,7 @@ const Comment = (props: CommentProps) => {
               props.isReply ? "rounded-2xl" : "rounded-3xl"
             }  ${props.isReply ? "py-2" : "py-2"} min-w-[200px] pb-[26px]`}
           >
-            <View
-              className="flex flex-row w-fit "
-              style={{ columnGap: 10 }}
-            >
+            <View className="flex flex-row w-fit " style={{ columnGap: 10 }}>
               <UserAvatarLink
                 avatarURL={{ uri: props.avatar }}
                 size={props.isReply ? 30 : 40}
@@ -138,9 +141,7 @@ const Comment = (props: CommentProps) => {
                 >
                   {props.caption}
                 </Text>
-                <View>
-                  {props.content? renderContent(): null}
-                </View>
+                <View>{props.content ? renderContent() : null}</View>
               </View>
             </View>
             <View

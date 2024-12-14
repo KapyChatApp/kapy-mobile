@@ -40,10 +40,45 @@ export const createComment = async (
         },
       }
     );
-      goOn();
-      return response.data;
+    goOn();
+    return response.data;
   } catch (error) {
     console.error("Error creating comment:", error);
+    throw error;
+  }
+};
+
+export const editComment = async (
+  commentId: string,
+  caption: string,
+  keepOldContent: boolean,
+  selectedMedia: { uri: string; type: string; name: string }
+) => {
+  try {
+    const { token } = await getLocalAuth();
+    const formData = new FormData();
+    formData.append("caption", caption);
+    formData.append("keepOldContent", keepOldContent as any);
+    formData.append("file", selectedMedia as any);
+    const response = await axios.patch(
+      process.env.EXPO_PUBLIC_BASE_URL + "/comment/edit",
+      formData,
+      {
+        headers: {
+          "Content-Type": "multipart/formdata",
+          Authorization: `${token}`,
+        },
+        params: { commentId: commentId },
+      }
+    );
+    if (response.status === 200 || response.status === 201) {
+      Alert.alert("Updated!");
+      return response.data;
+    } else {
+      Alert.alert("Cannot update now!");
+    }
+  } catch (error) {
+    console.log(error);
     throw error;
   }
 };
@@ -53,7 +88,8 @@ export const likeComment = async (commentId: string) => {
     const { token } = await getLocalAuth();
 
     const response = axios.post(
-      process.env.EXPO_PUBLIC_BASE_URL + "/post/comment/like",{},
+      process.env.EXPO_PUBLIC_BASE_URL + "/post/comment/like",
+      {},
       {
         headers: {
           "Content-Type": "application/json",
@@ -68,14 +104,14 @@ export const likeComment = async (commentId: string) => {
     throw error;
   }
 };
-
 
 export const disLikeComment = async (commentId: string) => {
   try {
     const { token } = await getLocalAuth();
 
     const response = axios.post(
-      process.env.EXPO_PUBLIC_BASE_URL + "/post/comment/dislike",{},
+      process.env.EXPO_PUBLIC_BASE_URL + "/post/comment/dislike",
+      {},
       {
         headers: {
           "Content-Type": "application/json",
@@ -91,16 +127,22 @@ export const disLikeComment = async (commentId: string) => {
   }
 };
 
-export const deleteComment = async (commentId:string)=>{
-  try{
-      const {token} = await getLocalAuth();
-      const response = await axios.delete(process.env.EXPO_PUBLIC_BASE_URL + "/post/comment/delete",{headers:{
-        "Content-Type":"application/json",
-        Authorization:`${token}`
-      },params:{commentId:commentId}});
-      return response.data;
-  }catch(error){
+export const deleteComment = async (commentId: string) => {
+  try {
+    const { token } = await getLocalAuth();
+    const response = await axios.delete(
+      process.env.EXPO_PUBLIC_BASE_URL + "/post/comment/delete",
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `${token}`,
+        },
+        params: { commentId: commentId },
+      }
+    );
+    return response.data;
+  } catch (error) {
     console.log(error);
     throw error;
   }
-}
+};

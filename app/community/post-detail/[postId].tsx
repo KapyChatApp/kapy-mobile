@@ -10,7 +10,7 @@ import Comment from "@/components/shared/community/Comment";
 import CommentTyping from "@/components/shared/community/CommentTyping";
 import { getAPost } from "@/lib/post";
 import { CommentProps, SocialPostProps } from "@/types/post";
-import { deleteComment } from "@/lib/comment-request";
+import { deleteComment } from "@/lib/comment";
 import ImageViewing from "react-native-image-viewing";
 
 const PostDetailPage = () => {
@@ -37,28 +37,30 @@ const PostDetailPage = () => {
 
   const addCommentToPost = (newComment: CommentProps) => {
     setPost((prevPost) => {
-      if (!prevPost) return prevPost; 
-      
+      if (!prevPost) return prevPost;
+
       return {
         ...prevPost,
-        comments: [...(prevPost.comments || []), newComment], 
+        comments: [...(prevPost.comments || []), newComment],
       };
     });
   };
-  
+
   const handleDeleteComment = async (id: string) => {
-    const deleteCommentRecursively = (comments: CommentProps[]): CommentProps[] => {
+    const deleteCommentRecursively = (
+      comments: CommentProps[]
+    ): CommentProps[] => {
       return comments
-        .filter((comment) => comment._id !== id) 
+        .filter((comment) => comment._id !== id)
         .map((comment) => ({
           ...comment,
           replieds: deleteCommentRecursively(comment.replieds || []),
         }));
     };
-  
+
     setPost((prevPost) => {
       if (!prevPost) return prevPost;
-  
+
       return {
         ...prevPost,
         comments: deleteCommentRecursively(prevPost.comments || []),
@@ -68,50 +70,60 @@ const PostDetailPage = () => {
     await deleteComment(id);
   };
 
-  const addReplyToComment = (parentCommentId: string, newReply: CommentProps) => {
+  const addReplyToComment = (
+    parentCommentId: string,
+    newReply: CommentProps
+  ) => {
     const addReplyRecursively = (comments: CommentProps[]): CommentProps[] => {
       return comments.map((comment) => {
         if (comment._id === parentCommentId) {
-        
           return {
             ...comment,
-            replieds: [...comment.replieds, newReply], 
+            replieds: [...comment.replieds, newReply],
           };
         }
-  
+
         if (comment.replieds && comment.replieds.length > 0) {
           return {
             ...comment,
             replieds: addReplyRecursively(comment.replieds),
           };
         }
-  
+
         return comment;
       });
     };
-  
+
     setPost((prevPost) => {
       if (!prevPost) return prevPost;
-  
+
       return {
         ...prevPost,
-        comments: addReplyRecursively(prevPost.comments), 
+        comments: addReplyRecursively(prevPost.comments),
       };
     });
   };
 
-  const handleImageViewing = (uri:string)=>{
+  const handleImageViewing = (uri: string) => {
     setViewingImage(uri);
-    console.log("Viewing: ",uri);
+    console.log("Viewing: ", uri);
     setIsImageViewingOpen(true);
-  }
+  };
   return (
     <KeyboardAvoidingView
       className="flex-1"
       behavior={Platform.OS === "ios" ? "padding" : "height"}
     >
       <SafeAreaView className={`flex-1 ${bgLight500Dark10}`}>
-        {isImageViewingOpen? <ImageViewing images={[{uri:viewingImage}]} imageIndex={0} visible={isImageViewingOpen} onRequestClose={()=>setIsImageViewingOpen(false)} doubleTapToZoomEnabled={true}/>:null}
+        {isImageViewingOpen ? (
+          <ImageViewing
+            images={[{ uri: viewingImage }]}
+            imageIndex={0}
+            visible={isImageViewingOpen}
+            onRequestClose={() => setIsImageViewingOpen(false)}
+            doubleTapToZoomEnabled={true}
+          />
+        ) : null}
         <ScrollView
           className="flex-1"
           contentContainerStyle={{ rowGap: 20, paddingHorizontal: 10 }}
@@ -119,7 +131,13 @@ const PostDetailPage = () => {
           <View className="ml-[10px] mt-[10px]">
             <Previous navigation={navigation} isAbsolute={false} />
           </View>
-          {post ? <SocialPost {...post} isDetail={true} handleImageViewing={handleImageViewing} /> : null}
+          {post ? (
+            <SocialPost
+              {...post}
+              isDetail={true}
+              handleImageViewing={handleImageViewing}
+            />
+          ) : null}
 
           <Text className={`${textLight0Dark500} font-helvetica-light text-14`}>
             Comments
@@ -148,7 +166,11 @@ const PostDetailPage = () => {
           setReplyName={setReplyName}
           targetType={targetType}
           setTargetType={setTargetType}
-          createNewComment={(newComment:CommentProps)=> replyName===""? addCommentToPost(newComment): addReplyToComment(replyCommentId, newComment)}
+          createNewComment={(newComment: CommentProps) =>
+            replyName === ""
+              ? addCommentToPost(newComment)
+              : addReplyToComment(replyCommentId, newComment)
+          }
         />
       </SafeAreaView>
     </KeyboardAvoidingView>
