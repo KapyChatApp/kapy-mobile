@@ -53,7 +53,7 @@ const ChatBoxDetailPage = () => {
     getAMessageBoxFUNC();
   }, []);
   return (
-    <SafeAreaView className={`${bgLight500Dark10} flex-1`}>
+    <View className={`${bgLight500Dark10} flex-1`}>
       <ScrollView
         className="flex-1"
         contentContainerStyle={{
@@ -103,7 +103,7 @@ const ChatBoxDetailPage = () => {
           />
         </View>
       </ScrollView>
-    </SafeAreaView>
+    </View>
   );
 };
 

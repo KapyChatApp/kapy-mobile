@@ -76,7 +76,7 @@ import AudioRecorder from "@/components/shared/multimedia/AudioRecorder";
       }, []);
   
     return (
-      <SafeAreaView className={`bg-white dark:bg-black flex-1`}>
+      <View className={`bg-white dark:bg-black flex-1`}>
         <KeyboardAvoidingView
           behavior={Platform.OS === "ios" ? "padding" : "height"}
           style={{ flex: 1 }}
@@ -161,7 +161,7 @@ import AudioRecorder from "@/components/shared/multimedia/AudioRecorder";
         </View> : null}
           </View>
         </KeyboardAvoidingView>
-      </SafeAreaView>
+      </View>
     );
   };
   

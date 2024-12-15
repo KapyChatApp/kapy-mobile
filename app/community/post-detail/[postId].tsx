@@ -129,7 +129,7 @@ const PostDetailPage = () => {
       className="flex-1"
       behavior={Platform.OS === "ios" ? "padding" : "height"}
     >
-      <SafeAreaView className={`flex-1 ${bgLight500Dark10}`}>
+      <View className={`flex-1 ${bgLight500Dark10}`}>
         {isImageViewingOpen ? (
           <ImageViewing
             images={[{ uri: viewingImage }]}
@@ -200,7 +200,7 @@ const PostDetailPage = () => {
         {isMicroOpen? <View ref={ref}>
           <AudioRecorder setSelectedMedia={(uri,type,name)=>setSelectedMedia({uri:uri,type:type,name:name})}/>
         </View> : null}
-      </SafeAreaView>
+      </View>
     </KeyboardAvoidingView>
   );
 };

@@ -269,7 +269,7 @@ const FriendProfilePage = () => {
     }
   };
   return (
-    <SafeAreaView className={`flex-1 ${bgLight500Dark10}`}>
+    <View className={`flex-1 ${bgLight500Dark10}`}>
       <ScrollView>
         {isProfileLoading ? (
           <HeadProfileSkeletonLoader />
@@ -343,7 +343,7 @@ const FriendProfilePage = () => {
         </View>
       </ScrollView>
       {loading ? <LoadingSpinner loading={isLoading} /> : null}
-    </SafeAreaView>
+    </View>
   );
 };
 

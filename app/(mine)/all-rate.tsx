@@ -21,7 +21,7 @@ const AllRatePage = () => {
     getAllRatesFUNC();
   }, []);
   return (
-    <SafeAreaView className={`flex-1 ${bgLight500Dark10}`}>
+    <View className={`flex-1 ${bgLight500Dark10}`}>
       <View className="mt-[10px] ml-[10px]">
         <Previous navigation={navigation} />
       </View>
@@ -30,7 +30,7 @@ const AllRatePage = () => {
           <Rate key={item._id} {...item} />
         ))}
       </ScrollView>
-    </SafeAreaView>
+    </View>
   );
 };
 

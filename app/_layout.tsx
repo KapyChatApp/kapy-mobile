@@ -1,4 +1,4 @@
-import React, { Children } from "react";
+import React, { Children, useState } from "react";
 import * as SecureStore from "expo-secure-store";
 import { ClerkProvider, ClerkLoaded } from "@clerk/clerk-expo";
 import {
@@ -19,7 +19,7 @@ import { EventProvider } from "react-native-outside-press";
 import { ThemeProvider } from "@/context/ThemeProviders";
 import { ClickOutsideProvider } from "react-native-click-outside";
 import { Drawer } from "expo-router/drawer";
-import { DrawerLayoutAndroidBase } from "react-native";
+import { Dimensions, DrawerLayoutAndroidBase, SafeAreaView } from "react-native";
 import TopBar from "@/components/navigator/Topbar/TopBar";
 import BFFListPage from "./(mine)/bff-list";
 import ActionSheet from "react-native-actions-sheet";
@@ -28,6 +28,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { CommonActions } from "@react-navigation/native";
 import axios from "axios";
 import { MarkReadProvider } from "@/context/MarkReadProvider";
+import { View } from "react-native";
 SplashScreen.preventAutoHideAsync();
 export default function RootLayout() {
   const [fontsLoaded, error] = useFonts({
@@ -67,9 +68,10 @@ export default function RootLayout() {
   if (!fontsLoaded && !error) return null;
 
   return (
-    <GestureHandlerRootView className="flex-1">
+    <GestureHandlerRootView className="flex-1 bg-white dark:bg-black">
       <EventProvider>
         <ThemeProvider>
+          <SafeAreaView className="flex-1" >
           <MarkReadProvider>
             <ClickOutsideProvider>
               <ActionSheetProvider>
@@ -130,6 +132,8 @@ export default function RootLayout() {
               </ActionSheetProvider>
             </ClickOutsideProvider>
           </MarkReadProvider>
+          </SafeAreaView>
+          <View className="bg-cardinal w-full h-[36px]"/>
         </ThemeProvider>
       </EventProvider>
     </GestureHandlerRootView>

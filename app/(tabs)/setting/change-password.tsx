@@ -22,7 +22,7 @@ const ChangePasswordPage = () => {
   };
   const {theme} = useTheme();
   return (
-    <SafeAreaView className={`flex items-center ${bgLight500Dark10} flex-1`} style={{ rowGap: 12 }}>
+    <View className={`flex items-center ${bgLight500Dark10} flex-1`} style={{ rowGap: 12 }}>
       <Previous navigation={navigation} header="Change password" isAbsolute={true}/>
       <View className="flex items-center mt-[60px]" style={{ rowGap: 16 }}>
         <SecretInput iconURL={theme==="light"? IconURL.password_l:IconURL.password_d} placeHolder="Enter your old password"/>
@@ -46,7 +46,7 @@ const ChangePasswordPage = () => {
           goOn={handleSubmitChangePassword}
         ></NoticeCard>
       ) : null}
-    </SafeAreaView>
+    </View>
   );
 };
 

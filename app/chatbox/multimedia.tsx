@@ -161,7 +161,7 @@ const ChatMultimediaPage = () => {
   };
 
   return (
-    <SafeAreaView
+    <View
       className={`${bgLight500Dark10} flex-1`}
       style={{ rowGap: 10 }}
     >
@@ -255,7 +255,7 @@ const ChatMultimediaPage = () => {
           />
         )}
       </View>
-    </SafeAreaView>
+    </View>
   );
 };
 

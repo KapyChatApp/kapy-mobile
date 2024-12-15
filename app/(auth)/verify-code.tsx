@@ -85,7 +85,7 @@ const VerifyCodePage = () => {
   }, [countDown]);
 
   return (
-    <SafeAreaView
+    <View
       className={`flex items-center h-full w-full flex-1 ${bgLight500Dark10}`}
     >
       <Previous navigation={navigation} isAbsolute={true} />
@@ -146,7 +146,7 @@ const VerifyCodePage = () => {
           console.log("total:" + num1 + num2 + num3 + num4 + num5 + num6)
         }
       />
-    </SafeAreaView>
+    </View>
   );
 };
 

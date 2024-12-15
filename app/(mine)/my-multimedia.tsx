@@ -14,7 +14,7 @@ const MyMultimediaPage = () => {
   const navigation = useNavigation();
   const { theme } = useTheme();
   return (
-    <SafeAreaView className={`${bgLight500Dark10} flex-1`}>
+    <View className={`${bgLight500Dark10} flex-1`}>
       <ScrollView className="flex-1"
         contentContainerStyle={{
           display: "flex",
@@ -86,7 +86,7 @@ const MyMultimediaPage = () => {
           </View>
         </View>
       </ScrollView>
-    </SafeAreaView>
+    </View>
   );
 };
 

@@ -21,7 +21,7 @@ const BFFListPage = () => {
     getMyBFFFunc();
   }, []);
   return (
-    <SafeAreaView className={`${bgLight500Dark10} flex-1`}>
+    <View className={`${bgLight500Dark10} flex-1`}>
       <Previous
         navigation={navigation}
         isAbsolute={true}
@@ -35,7 +35,7 @@ const BFFListPage = () => {
           ))}
         </ScrollView>
       </View>
-    </SafeAreaView>
+    </View>
   );
 };
 

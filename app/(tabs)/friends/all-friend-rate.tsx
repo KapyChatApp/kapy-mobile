@@ -58,7 +58,7 @@ const AllFriendRatePage = () => {
     );
   };
   return (
-    <SafeAreaView className={` ${bgLight500Dark10} flex-1`}>
+    <View className={` ${bgLight500Dark10} flex-1`}>
       <View className="mt-[10px] mx-[10px] flex flex-row justify-between items-center">
         <Previous navigation={navigation} isAbsolute={false} />
         <CustomButton
@@ -98,7 +98,7 @@ const AllFriendRatePage = () => {
         ))}
       </ScrollView>
       {loading ? <LoadingSpinner loading={isLoading} /> : null}
-    </SafeAreaView>
+    </View>
   );
 };
 
