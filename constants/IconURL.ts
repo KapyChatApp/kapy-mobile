@@ -134,4 +134,12 @@ export const IconURL = {
   pdf:require("../assets/icons/pdf.png"),
   play_orange:require("../assets/icons/play_orange.png"),
   pause_orange:require("../assets/icons/pause_orange.png"),
+  chat_non_select:require("../assets/icons/chat_non-select.png"),
+  chat_select:require("../assets/icons/chat_select.png"),
+  friends_non_select:require("../assets/icons/friends_non-select.png"),
+  friends_select:require("../assets/icons/friends_select.png"),
+  map_non_select:require("../assets/icons/map_non-select.png"),
+  map_select:require("../assets/icons/map_select.png"),
+  setting_non_select:require("../assets/icons/setting_non-select.png"),
+  setting_select:require("../assets/icons/setting_select.png")
 };

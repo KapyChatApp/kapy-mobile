@@ -4,6 +4,8 @@ export const pickDocument = async () => {
   try {
     const result = await DocumentPicker.getDocumentAsync({
       type: "*/*",
+      multiple:true,
+      
     });
 
     if (!result || typeof result.canceled === "undefined") {

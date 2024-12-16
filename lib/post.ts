@@ -81,7 +81,7 @@ export const getFriendPosts = async (friendId: string) => {
 
 export const createPost = async (
   caption: string,
-  selectedMedia: { uri: string; type: string }[],
+  selectedMedia: { uri: string; type: string;name:string }[],
   goOn: () => void
 ) => {
   try {
@@ -94,10 +94,9 @@ export const createPost = async (
     selectedMedia.forEach((media, index) => {
       const newFile: any = {
         uri: media.uri,
-        type: media.type === "image" ? "image/jpeg" : media.type,
-        name: generateRandomNumberString(10)?.toString(),
+        type: "image/jpeg",
+        name: media.name,
       };
-
       formData.append("file", newFile as any);
     });
     const response = await axios.post(

@@ -5,7 +5,7 @@ import { IconURL } from "@/constants/IconURL";
 import Icon from "./Icon";
 import CustomButton from "./CustomButton";
 
-const PostTyping = ({handleGalleryPicker, handlePostAction, handleOpenCamera, handleOpenMicro}:{handleGalleryPicker:()=>void,handlePostAction:()=>void, handleOpenCamera:any, handleOpenMicro:any}) => {
+const PostTyping = ({handleGalleryPicker,handleFilePicker, handlePostAction, handleOpenCamera, handleOpenMicro}:{handleGalleryPicker:()=>void,handleFilePicker:()=>void,handlePostAction:()=>void, handleOpenCamera:any, handleOpenMicro:any}) => {
   const { theme } = useTheme();
   return (
     <View
@@ -13,7 +13,13 @@ const PostTyping = ({handleGalleryPicker, handlePostAction, handleOpenCamera, ha
       style={{ columnGap: 8 }}
     >
       <View className="flex flex-row" style={{columnGap:20}}>
-        <TouchableOpacity>
+      <TouchableOpacity onPress={handleFilePicker}>
+          <Icon
+            iconURL={theme === "light" ? IconURL.attach_l : IconURL.attach_d}
+            size={28}
+          ></Icon>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={handleOpenMicro}>
           <Icon
             iconURL={theme === "light" ? IconURL.mic_l : IconURL.mic_d}
             size={28}

@@ -133,7 +133,6 @@ export default function RootLayout() {
             </ClickOutsideProvider>
           </MarkReadProvider>
           </SafeAreaView>
-          <View className="bg-cardinal w-full h-[36px]"/>
         </ThemeProvider>
       </EventProvider>
     </GestureHandlerRootView>

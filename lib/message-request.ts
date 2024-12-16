@@ -185,7 +185,7 @@ export const sendMessage = async (
           newFile = {
             uri: file.uri,
             type: "image/jpeg",
-            name: file.name?.split(".").pop(),
+            name: file.name,
           };
         } else {
           console.log("type: ", file.name?.split(".").pop());

@@ -14,6 +14,9 @@ import { getLocalAuth } from "@/lib/local-auth";
 import { useActionSheet } from "@expo/react-native-action-sheet";
 import * as Sharing from "expo-sharing";
 import VideoPlayer from "../multimedia/VideoPlayer";
+import AudioPlayer from "../multimedia/AudioPlayer";
+import PostAudioPlayer from "../multimedia/PostAudioPlayer";
+import File from "@/components/ui/File";
 const SocialPost = (props: SocialPostProps) => {
   const [isShowComment, setIsShowComment] = useState(false);
   const router = useRouter();
@@ -134,7 +137,9 @@ const SocialPost = (props: SocialPostProps) => {
             />
             </Pressable>
             </View>
-          ) : null
+          ) : (
+            item.type==="Audio"? <PostAudioPlayer audioUri={item.url!}/>:<File file={item} isSender={false} position="free"/>
+          )
         )}
       </View>
       <View

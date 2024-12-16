@@ -27,6 +27,7 @@ import { pickMedia } from "@/utils/GalleryPicker";
 import { createPost } from "@/lib/post";
 import ExpoCamera from "@/components/shared/multimedia/ExpoCamera";
 import AudioRecorder from "@/components/shared/multimedia/AudioRecorder";
+import { pickDocument } from "@/utils/DoucmentPicker";
 
 const CreatePostPage = () => {
   const navigation = useNavigation();
@@ -40,9 +41,11 @@ const CreatePostPage = () => {
   const [caption, setCaption] = useState("");
   const [isTyping, setIsTyping] = useState(false);
   const ref = useClickOutside<View>(() => setIsTyping(false));
+
   const [selectedMedia, setSelectedMedia] = useState<
     { uri: string; type: string;name:string }[]
   >([]);
+  
   const handlePickMedia = async () => {
     const media = await pickMedia();
     setSelectedMedia((prev) => [
@@ -53,6 +56,20 @@ const CreatePostPage = () => {
         name: item.name || "", 
       }))
     ]);
+  };
+
+  const handlePickDocument = async () => {
+    const media = await pickDocument();
+    if (media) {
+      setSelectedMedia((prev) => [
+        ...prev,
+        ...media.map((item) => ({
+          uri: item.uri,
+          type: item.type || "", 
+          name: item.name || "", 
+        })),
+      ]);
+    }
   };
 
   useEffect(() => {
@@ -152,6 +169,7 @@ const CreatePostPage = () => {
             }
             handleOpenCamera={()=>setIsCameraOpen(true)}
             handleOpenMicro={()=>setIsMicroOpen(true)}
+            handleFilePicker={handlePickDocument}
           />
            {isMicroOpen? <View ref={ref}>
           <AudioRecorder setSelectedMedia={(uri,type,name)=>setSelectedMedia((prev)=>[...prev,{uri:uri,type:type,name:name}])}/>
