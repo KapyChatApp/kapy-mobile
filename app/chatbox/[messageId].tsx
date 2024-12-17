@@ -41,6 +41,7 @@ const MessageDetailPage = () => {
   });
 
   const [isTyping, setIsTypeping] = useState(false);
+  const [sendStatus, setSendStatus] = useState("non-send");
   const [messages, setMessages] = useState<MessageProps[]>([]);
   const [localUserId, setLocalUserId] = useState("");
   const [chatBoxHeader, setChatBoxHeader] = useState<MessageBoxProps>();
@@ -118,10 +119,12 @@ const MessageDetailPage = () => {
   };
   const handleSendMessage = async () => {
     handleDisableTexting();
+    setSendStatus("sending");
     const messageTextData = messageText;
     let mediaData = selectedMedia[0];
     setSelectedMedia([]);
     setMessageText("");
+    console.log("media data: ", mediaData);
     if (messageTextData != "" || selectedMedia.length != 0) {
       setMessages((prevMessages) => [
         ...prevMessages,
@@ -129,7 +132,7 @@ const MessageDetailPage = () => {
           id: "",
           isReact: [],
           readedId: [],
-          contentId: mediaData,
+          contentId:selectedMedia[0]? {url:selectedMedia[0].uri, type:selectedMedia[0].type, fileName:selectedMedia[0].name!}:undefined,
           text: messageText,
           createAt: new Date().toString(),
           createBy: localUserId,
@@ -146,7 +149,7 @@ const MessageDetailPage = () => {
           handleViewPdf: () => handleViewFile(mediaData),
         },
       ]);
-      await sendMessage(messageId.toString(), messageText, selectedMedia);
+      await sendMessage(messageId.toString(), messageText, selectedMedia,(status)=>setSendStatus(status));
     }
   };
   const handleDeleteMessage = (id: string) => {

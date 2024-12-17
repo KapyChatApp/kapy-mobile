@@ -158,7 +158,8 @@ export const deleteMessage = async (messageId: string) => {
 export const sendMessage = async (
   boxId: string,
   content: string,
-  files: { uri: string; type: string; name: string | undefined | null }[]
+  files: { uri: string; type: string; name: string | undefined | null }[],
+  goOn:(status:string)=>void
 ) => {
   try {
     const { token } = await getLocalAuth();
@@ -225,8 +226,16 @@ export const sendMessage = async (
           },
         }
       );
-
-      return response.data;
+      if(response.status === 200 || response.status===201){
+        goOn("success");
+        const timer = setTimeout(()=>goOn("non-send"),2000);
+        return clearTimeout(timer);
+      }
+      else{
+        goOn("fail");
+        const timer = setTimeout(()=>goOn("non-send"),2000);
+        return clearTimeout(timer);
+      }
     }
   } catch (error) {
     console.error("Error sending message:", error);

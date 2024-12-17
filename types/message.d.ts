@@ -40,6 +40,7 @@ export interface MessageProps {
   revokeMessage?:(id:string)=>void;
   handleViewImage:(imageURL:string)=>void;
   handleViewFile:(file:FileProps)=>void;
+  sendStatus?:string;
 }
 
 export interface MessageBoxProps {

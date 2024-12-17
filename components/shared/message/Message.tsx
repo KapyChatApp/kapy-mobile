@@ -167,6 +167,7 @@ const Message = (props: MessageProps) => {
   const renderContent = () => {
     switch (props.contentId?.type) {
       case "Image":
+        case "image":
         return (
           <Pressable
             onPress={() => props?.handleViewImage(props.contentId?.url!)}
@@ -179,6 +180,7 @@ const Message = (props: MessageProps) => {
           </Pressable>
         );
       case "Video":
+        case "video":
         return (
           <Pressable className="rounded-2xl flex-1"
           onLongPress={handleLongPress}>
@@ -186,6 +188,7 @@ const Message = (props: MessageProps) => {
           </Pressable>
         );
       case "Audio":
+        case "audio":
         return (
           <AudioPlayer
             audioUri={props.contentId.url!}
@@ -430,6 +433,18 @@ const Message = (props: MessageProps) => {
         }
     }
   };
+
+  const renderSendStatus =  ()=>{
+    switch (props.sendStatus){
+      case "sending":
+        return "Sending...";
+        case "success":
+          return "Sent ✓"
+          case "fail":
+            return "Fail ×";
+    }
+
+  }
 
   const handleLike = async () => {
     setIsLiked(!isLiked);
@@ -680,6 +695,7 @@ const Message = (props: MessageProps) => {
           {formatDateDistance(props.createAt)}
         </Text>
       ) : null}
+      {props.sendStatus!="non-send"? <Text className="text-deny font-helvetica-light text-10">{renderSendStatus()}</Text>:null}
     </View>
   );
 };
