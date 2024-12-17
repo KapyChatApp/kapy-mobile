@@ -42,6 +42,7 @@ const Message = (props: MessageProps) => {
 
   const [isLiked, setIsLiked] = useState(false);
   const [totalLike, setTotalLike] = useState(0);
+  const [timeLikes, setTimeLikes] = useState(0);
 
   const [modalPosition, setModalPosition] = useState({
     x: 0,
@@ -418,15 +419,42 @@ const Message = (props: MessageProps) => {
     }
   };
 
-  useEffect(()=>{
-    const setUpMessage = async ()=>{
-      setTotalLike(props.isReact.length);
-      if(props.isReact.includes(props.localUserId!)){
-        setIsLiked(true);
-      }
+  const handleLike = async () => {
+    setIsLiked(!isLiked);
+    if ((timeLikes + 1) % 2 != 0) {
+      setTotalLike(totalLike + 1);
+      setTimeLikes(timeLikes + 1);
+    } else {
+      setTotalLike(totalLike - 1);
+      setTimeLikes(timeLikes + 1);
     }
+    await react(props.id);
+  };
+
+  const [lastTap, setLastTap] = useState(0);
+
+  const handleDoubleTapPress = () => {
+    const currentTime = Date.now();
+    const timeDifference = currentTime - lastTap;
+
+    if (timeDifference >= 300 || timeDifference <= 0) {
+      if (position !== "bottom") setIsShowTime(!isShowTime);
+    } else {
+      handleLike();
+    }
+    setLastTap(currentTime);
+  };
+
+  useEffect(() => {
+    const setUpMessage = async () => {
+      setTotalLike(props.isReact.length);
+      if (props.isReact.includes(props.localUserId!)) {
+        setIsLiked(true);
+        setTimeLikes(1);
+      }
+    };
     setUpMessage();
-  },[]);
+  }, []);
   return (
     <View
       className={`flex-1 flex ${props.isSender ? "items-end" : "items-start"}`}
@@ -468,13 +496,7 @@ const Message = (props: MessageProps) => {
                 <TouchableOpacity
                   className="flex items-center justify-center w-[30px] h-[30px] bg-light-510 dark:bg-dark-20 rounded-full"
                   onPress={async () => {
-                    setIsLiked(!isLiked);
-                    if(isLiked){
-                      setTotalLike(totalLike+1);
-                    }else{
-                      setTotalLike(totalLike-1);
-                    }
-                    await react(props.id);
+                    handleLike();
                     setIsModalVisible(false);
                   }}
                 >
@@ -530,13 +552,7 @@ const Message = (props: MessageProps) => {
                 <TouchableOpacity
                   className="flex items-center justify-center w-[30px] h-[30px] bg-light-510 dark:bg-dark-20 rounded-full"
                   onPress={async () => {
-                    setIsLiked(!isLiked);
-                    if(isLiked){
-                      setTotalLike(totalLike+1);
-                    }else{
-                      setTotalLike(totalLike-1);
-                    }
-                    await react(props.id);
+                    await handleLike();
                     setIsModalVisible(false);
                   }}
                 >
@@ -582,9 +598,7 @@ const Message = (props: MessageProps) => {
       <Pressable
         className="flex flex-row"
         style={{ columnGap: 4 }}
-        onPress={() => {
-          if (position !== "bottom") setIsShowTime(!isShowTime);
-        }}
+        onPress={handleDoubleTapPress}
         onLongPress={handleLongPress}
       >
         {!props.isSender && (position === "bottom" || position === "free") ? (
@@ -633,21 +647,21 @@ const Message = (props: MessageProps) => {
             </Text>
           </View>
         )}
-        {totalLike>0?
-       <View
-          className={`absolute -bottom-[16px] ${
-            props.isSender ? "left-[42px]" : "right-0"
-          }`}
-        >
-          <MessageLove
-            onPress={handleLikeMessage}
-            totalLike={totalLike}
-            isLiked={isLiked}
-          />
-        
-        </View>:null}
+        {totalLike > 0 ? (
+          <View
+            className={`absolute -bottom-[16px] ${
+              props.isSender ? "left-[42px]" : "right-0"
+            }`}
+          >
+            <MessageLove
+              onPress={handleLike}
+              totalLike={totalLike}
+              isLiked={isLiked}
+            />
+          </View>
+        ) : null}
       </Pressable>
-          {totalLike>0 ? <View className="w-full h-[14px]"/>:null}
+      {totalLike > 0 ? <View className="w-full h-[14px]" /> : null}
       {position === "bottom" || isShowTime ? (
         <Text className="text-deny font-helvetica-light text-10 ml-[40px]">
           {formatDateDistance(props.createAt)}
