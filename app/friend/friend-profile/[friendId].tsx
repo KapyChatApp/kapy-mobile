@@ -297,7 +297,7 @@ const FriendProfilePage = () => {
         >
           <View className="px-[10px]">
             <RecentRate
-              path="/(tabs)/friends/all-friend-rate"
+              path="/friend/all-friend-rate"
               userId={friendId.toString()}
               recentRates={recentRates}
             />

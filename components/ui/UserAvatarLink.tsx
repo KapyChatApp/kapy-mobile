@@ -10,7 +10,7 @@ const UserAvatarLink = ({avatarURL,size,userId}:any) => {
   const imageSource = avatarURL && avatarURL.uri ? avatarURL : DefaultAva.user;
   return (
     <TouchableOpacity className="flex" onPress={()=>router.push({
-      pathname:"/friend-profile/[friendId]",params:{friendId:userId}
+      pathname:"/friend/friend-profile/[friendId]",params:{friendId:userId}
     })}>
       <Image
         source={imageSource}

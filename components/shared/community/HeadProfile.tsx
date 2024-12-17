@@ -22,7 +22,8 @@ const HeadProfile = (props:HeadProfileProps) => {
         {props.mutualFriends?.length!=0? 
         <Pressable className="flex flex-row items-center justify-center" style={{columnGap:5}}>
           {props.mutualFriends?.map((item, index)=>index<=2?<UserAvatar key={index} size={20} avatarURL={{uri:item.avatar}}/>:null)}
-          <View className="w-[20px] h-[20px] bg-light-330 flex items-center justify-center rounded-full"><Text className="text-white font-helvetica-light text-10">{props.mutualFriends?.length! - 3}+</Text></View>
+          {props.mutualFriends?.length!>3?<View className="w-[20px] h-[20px] bg-light-330 flex items-center justify-center rounded-full"><Text className="text-white font-helvetica-light text-10">{props.mutualFriends?.length! - 3}+</Text></View>:null}
+          
           <Text className={`${textLight0Dark500}  font-helvetica-light text-12`}>{props.mutualFriends?.length!>1? "mutual friends":"mutual friend"}</Text>
         </Pressable>:null}
         <Text className={`text-16 font-helvetica-light my-[8px] ${textLight0Dark500}`}>{props.bio}</Text>

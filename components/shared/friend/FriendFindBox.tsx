@@ -52,7 +52,7 @@ const FriendFindBox = (props: FriendBoxProps) => {
     <TouchableOpacity
       onPress={() =>
         router.push({
-          pathname: "/friend-profile/[friendId]",
+          pathname: "/friend/friend-profile/[friendId]",
           params: { friendId: props._id },
         })
       }

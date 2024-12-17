@@ -135,10 +135,7 @@ export default function RootLayout() {
                       name="report"
                       options={{ headerShown: false }}
                     />
-                    <Stack.Screen
-                      name="friend-profile/[friendId]"
-                      options={{ headerShown: false }}
-                    />
+                    <Stack.Screen name="friend" options={{headerShown:false}}/>
                   </Stack>
                 </ActionSheetProvider>
               </ClickOutsideProvider>
