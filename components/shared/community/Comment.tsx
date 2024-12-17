@@ -151,7 +151,7 @@ const Comment = (props: CommentProps) => {
               <Text className="text-dark-330 text-10">
                 {formatDate(props.createAt)}
               </Text>
-              <CommentLove totalLike={totalLike} onPress={handleLike} />
+              <CommentLove totalLike={totalLike} onPress={handleLike} isLiked={liked}/>
               <Reply
                 totalReply={totalReply}
                 onPress={() => {

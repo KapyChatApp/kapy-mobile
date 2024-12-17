@@ -25,7 +25,7 @@ const SocialPost = (props: SocialPostProps) => {
   const [totalShare, setTotalShare] = useState(props.shares.length);
   const { showActionSheetWithOptions } = useActionSheet();
   const [userId, setUserId] = useState("");
-  const [liked, setIsliked] = useState(
+  const [isLiked, setIsliked] = useState(
     props.likedIds.includes(userId.toString()) ? true : false
   );
   const isMyPost = props.userId.toString() === userId;
@@ -47,8 +47,8 @@ const SocialPost = (props: SocialPostProps) => {
   );
 
   const handleLikeFunction = async () => {
-    console.log(liked);
-    if (liked) {
+    console.log(isLiked);
+    if (isLiked) {
       setTotalLike(totalLike - 1);
       setIsliked(false);
       await disLike(props._id);
@@ -146,7 +146,7 @@ const SocialPost = (props: SocialPostProps) => {
         className="flex flex-row absolute -bottom-[14px] left-[20px]"
         style={{ columnGap: 8 }}
       >
-        <Love totalLike={totalLike} onPress={handleLikeFunction} />
+        <Love totalLike={totalLike} onPress={handleLikeFunction} isLoved={isLiked}/>
         <Comment
           totalComment={totalComment}
           onPress={
