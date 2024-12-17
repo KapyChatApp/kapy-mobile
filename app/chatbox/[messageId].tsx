@@ -238,7 +238,7 @@ const MessageDetailPage = () => {
           <ScrollView
             ref={scrollViewRef}
             className={` ${bgLight500Dark10} flex-1 flex`}
-            contentContainerStyle={{ rowGap: 3, padding: 2 }}
+            contentContainerStyle={{ rowGap: 4, padding: 2 }}
             onContentSizeChange={() =>
               scrollViewRef.current?.scrollToEnd({ animated: true })
             }
