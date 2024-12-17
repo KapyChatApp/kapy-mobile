@@ -52,6 +52,7 @@ export interface MessageBoxProps {
   localUserId?:string;
   setLastMessage?:(message:string)=>void;
   readStatus?:boolean;
+  isOnline?:boolean;
 }
 
 export interface ChatBoxHeaderProps {

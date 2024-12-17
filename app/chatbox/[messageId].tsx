@@ -39,6 +39,7 @@ const MessageDetailPage = () => {
     setIsTypeping(false);
     setIsMicroOpen(false);
   });
+
   const [isTyping, setIsTypeping] = useState(false);
   const [messages, setMessages] = useState<MessageProps[]>([]);
   const [localUserId, setLocalUserId] = useState("");
@@ -90,7 +91,6 @@ const MessageDetailPage = () => {
     await openWebFile(file.url!);
   };
 
-
   const { markAsRead, unreadMessages } = useMarkReadContext();
 
   const receiverIds = messageBox?.receiverIds ?? [];
@@ -127,7 +127,7 @@ const MessageDetailPage = () => {
         ...prevMessages,
         {
           id: "",
-          isReact:[],
+          isReact: [],
           readedId: [],
           contentId: mediaData,
           text: messageText,
@@ -143,7 +143,7 @@ const MessageDetailPage = () => {
           handleViewFile: () => {
             handleViewFile(mediaData);
           },
-          handleViewPdf:()=> handleViewFile(mediaData)
+          handleViewPdf: () => handleViewFile(mediaData),
         },
       ]);
       await sendMessage(messageId.toString(), messageText, selectedMedia);
@@ -232,7 +232,7 @@ const MessageDetailPage = () => {
         ) : null}
 
         <View ref={ref}>
-          <ChatBoxHeader {...chatBoxHeader} />
+          <ChatBoxHeader {...chatBoxHeader}/>
         </View>
         <View className="flex-1">
           <ScrollView

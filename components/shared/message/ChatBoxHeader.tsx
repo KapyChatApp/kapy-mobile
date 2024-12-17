@@ -14,31 +14,47 @@ import { IconURL } from "@/constants/IconURL";
 import Icon from "@/components/ui/Icon";
 import { ChatBoxHeaderProps, MessageBoxProps } from "@/types/message";
 import UserAvatarLink from "@/components/ui/UserAvatarLink";
+import { pusherClient } from "@/lib/pusher";
 
-const ChatBoxHeader = (props:MessageBoxProps) => {
+const ChatBoxHeader = (props: MessageBoxProps) => {
   const navigation = useNavigation();
   const router = useRouter();
   const [avatarURL, setAvatarURL] = useState("");
   const [fullName, setFullName] = useState("");
   const [userId, setUserId] = useState("");
-useEffect(()=>{
-  if(props.receiverIds?.[0] && props.receiverIds?.[1]){
-  const receiverIds = props.receiverIds ?? []; 
-  const receiver = receiverIds[0];  
-  const otherReceiver = receiverIds[1];  
-  const avatarURL = props.groupAva
-  ? props.groupAva
-  : receiver && receiver._id === props.localUserId
-  ? otherReceiver?.avatar 
-  :receiver?.avatar;  
-  setAvatarURL(avatarURL);
-const fullName = props.groupName? props.groupName : (receiver?._id===props.localUserId? `${otherReceiver?.firstName} ${otherReceiver?.lastName}` : `${receiver?.firstName} ${receiver?.lastName}`);
-setFullName(fullName);
-const id = receiver?._id === props.localUserId? otherReceiver?._id : receiver._id;
-setUserId(id);
-}
-
-},[props])
+  const [isOnline, setIsOnline] = useState(false);
+  useEffect(() => {
+    if (props.receiverIds?.[0] && props.receiverIds?.[1]) {
+      const receiverIds = props.receiverIds ?? [];
+      const receiver = receiverIds[0];
+      const otherReceiver = receiverIds[1];
+      const avatarURL = props.groupAva
+        ? props.groupAva
+        : receiver && receiver._id === props.localUserId
+        ? otherReceiver?.avatar
+        : receiver?.avatar;
+      setAvatarURL(avatarURL);
+      const fullName = props.groupName
+        ? props.groupName
+        : receiver?._id === props.localUserId
+        ? `${otherReceiver?.firstName} ${otherReceiver?.lastName}`
+        : `${receiver?.firstName} ${receiver?.lastName}`;
+      setFullName(fullName);
+      const id =
+        receiver?._id === props.localUserId ? otherReceiver?._id : receiver._id;
+      setUserId(id);
+      pusherClient.subscribe(`private-${id}`);
+    pusherClient.bind("online-status", (data:any)=>{
+      console.log("change statusssssssssss");
+      setIsOnline(data.online);
+    });
+    pusherClient.bind("offline-status", (data:any)=>{
+      console.log("change statusssssssssss");
+      setIsOnline(data.online);
+    });
+    }
+    
+  }, [props]);
   return (
     <View
       className={`bg-light-500 dark:bg-dark-0 w-full h-[82px] flex flex-row items-center justify-between px-[8px]`}
@@ -46,19 +62,27 @@ setUserId(id);
       <View className="flex flex-row items-center">
         <Previous navigation={navigation} isAbsolute={false}></Previous>
         <View className="flex flex-row items-center" style={{ columnGap: 9 }}>
-          {props.groupName? <UserAvatar size={54} avatarURL={{uri:avatarURL}} />:   <UserAvatarLink   avatarURL={{
-          uri:avatarURL
-        }} size={54} userId={userId}/>}
-       
+          {props.groupName ? (
+            <UserAvatar size={54} avatarURL={{ uri: avatarURL }} />
+          ) : (
+            <UserAvatarLink
+              avatarURL={{
+                uri: avatarURL,
+              }}
+              size={54}
+              userId={userId}
+            />
+          )}
+
           {Platform.OS === "ios" ? (
             <View className="flex h-fit" style={{ rowGap: 4 }}>
               <Text
                 className={`font-helvetica-bold ${textLight0Dark500} text-14 `}
               >
-                 {fullName}
+                {fullName}
               </Text>
               <Text className="font-helvetica-light text-10 text-cardinal">
-                Online
+                {isOnline ? "Online" : "Offline"}
               </Text>
             </View>
           ) : (
@@ -66,10 +90,10 @@ setUserId(id);
               <Text
                 className={`font-helvetica-bold ${textLight0Dark500} text-14 top-1`}
               >
-                 {fullName}
+                {fullName}
               </Text>
               <Text className="font-helvetica-light text-10 text-cardinal botton-1">
-                Online
+                {isOnline ? "Online" : "Offline"}
               </Text>
             </View>
           )}
@@ -86,7 +110,7 @@ setUserId(id);
           <Icon iconURL={IconURL.video_call} size={30}></Icon>
         </TouchableOpacity>
         <TouchableOpacity
-           onPress={() => {
+          onPress={() => {
             if (props._id) {
               router.push({
                 pathname: "/chatbox/chatbox-detail/[chatboxDetailId]",
