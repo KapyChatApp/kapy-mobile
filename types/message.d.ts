@@ -26,7 +26,7 @@ export interface MessageProps {
   id: string;
   isReact: string[];
   readedId: string[];
-  contentId: FileProps;
+  contentId?: FileProps;
   text: string;
   createAt: string;
   createBy: string;

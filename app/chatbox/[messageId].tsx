@@ -157,7 +157,7 @@ const MessageDetailPage = () => {
   const handleRevokeMessage = (id: string) => {
     setMessages((prevMessages) =>
       prevMessages?.map((message: MessageProps) =>
-        message.id === id ? { ...message, text: "Message revoked" } : message
+        message.id === id ? { ...message, text: "Message revoked", contentId:undefined } : message
       )
     );
   };

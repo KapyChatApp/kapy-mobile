@@ -55,6 +55,7 @@ const Message = (props: MessageProps) => {
   const handleLongPress = () => {
     if (pressableRef.current) {
       pressableRef.current.measure((fx, fy, width, height, px, py) => {
+        console.log("h: ",py+height,"w: ",screenWidth - 300 )
         if (py + height < screenHeight / 2) {
           setModalPosition({
             x: props.isSender ? screenWidth - 300 : px,
@@ -73,10 +74,11 @@ const Message = (props: MessageProps) => {
     }
   };
 
-  const handleLikeMessage = async () => {};
-
   const router = useRouter();
   const roundedValueReceiver = () => {
+    if(props.contentId){
+      return "rounded-3xl";
+    }
     switch (position) {
       case "top":
         return "rounded-t-2xl rounded-bl-sm rounded-tr-3xl rounded-br-3xl";
@@ -89,6 +91,9 @@ const Message = (props: MessageProps) => {
     }
   };
   const roundedValueSender = () => {
+    if(props.contentId){
+      return "rounded-3xl";
+    }
     switch (position) {
       case "top":
         return "rounded-tl-3xl rounded-bl-3xl rounded-tr-2xl rounded-br-sm";
@@ -160,11 +165,12 @@ const Message = (props: MessageProps) => {
   // };
 
   const renderContent = () => {
-    switch (props.contentId.type) {
+    switch (props.contentId?.type) {
       case "Image":
         return (
           <Pressable
-            onPress={() => props?.handleViewImage(props.contentId.url!)}
+            onPress={() => props?.handleViewImage(props.contentId?.url!)}
+            onLongPress={handleLongPress}
           >
             <Image
               source={{ uri: props.contentId.url }}
@@ -186,7 +192,7 @@ const Message = (props: MessageProps) => {
           />
         );
       default:
-        switch (props.contentId.url?.split(".").pop()) {
+        switch (props.contentId?.url?.split(".").pop()) {
           case "docx":
             return (
               <Pressable
@@ -198,7 +204,7 @@ const Message = (props: MessageProps) => {
                   props.isSender ? roundedValueSender() : roundedValueReceiver()
                 }`}
                 style={{ columnGap: 4 }}
-                onPress={() => props.handleViewFile(props.contentId)}
+                onPress={() => props.handleViewFile(props.contentId!)}
               >
                 <View
                   className={`flex items-center justify-center rounded-2xl p-[10px] bg-light-510`}
@@ -244,7 +250,7 @@ const Message = (props: MessageProps) => {
                   props.isSender ? roundedValueSender() : roundedValueReceiver()
                 }`}
                 style={{ columnGap: 4 }}
-                onPress={() => props.handleViewFile(props.contentId)}
+                onPress={() => props.handleViewFile(props.contentId!)}
               >
                 <View
                   className={`flex items-center justify-center rounded-2xl p-[10px] bg-light-510`}
@@ -290,7 +296,7 @@ const Message = (props: MessageProps) => {
                   props.isSender ? roundedValueSender() : roundedValueReceiver()
                 }`}
                 style={{ columnGap: 4 }}
-                onPress={() => props.handleViewFile(props.contentId)}
+                onPress={() => props.handleViewFile(props.contentId!)}
               >
                 <View
                   className={`flex items-center justify-center rounded-2xl bg-light- p-[10px]  bg-light-510`}
@@ -336,7 +342,7 @@ const Message = (props: MessageProps) => {
                   props.isSender ? roundedValueSender() : roundedValueReceiver()
                 }`}
                 style={{ columnGap: 4 }}
-                onPress={() => props.handleViewFile(props.contentId)}
+                onPress={() => props.handleViewFile(props.contentId!)}
               >
                 <View
                   className={`flex items-center justify-center rounded-2xl bg-light- p-[10px] bg-light-510`}
@@ -392,7 +398,7 @@ const Message = (props: MessageProps) => {
                       } font-helvetica-bold text-12 flex-1 flex-grow text-ellipsis`}
                       numberOfLines={3}
                     >
-                      {props.contentId.fileName}
+                      {props.contentId?.fileName}
                     </Text>
                   </View>
                   <Text
@@ -410,7 +416,7 @@ const Message = (props: MessageProps) => {
                       props.isSender ? "text-white" : "text-black"
                     } font-helvetica-light text-10`}
                   >
-                    {0.001 * props.contentId.bytes!}kB
+                    {0.001 * props.contentId?.bytes!}kB
                   </Text>
                 </View>
               </Pressable>
@@ -600,6 +606,7 @@ const Message = (props: MessageProps) => {
         style={{ columnGap: 4 }}
         onPress={handleDoubleTapPress}
         onLongPress={handleLongPress}
+        delayLongPress={1000}
       >
         {!props.isSender && (position === "bottom" || position === "free") ? (
           <UserAvatarLink
