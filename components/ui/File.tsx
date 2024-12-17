@@ -228,6 +228,7 @@ const File = ({ file, isSender, position }: { file: FileProps, isSender:boolean,
                 isSender ? roundedValueSender() : roundedValueReceiver()
               }`}
               style={{ columnGap: 4 }}
+              onPress={async() => openWebFile(file.url!)}
             >
               <Icon iconURL={IconURL.my_document} size={40} />
               <View className="flex" style={{ rowGap: 4 }}>

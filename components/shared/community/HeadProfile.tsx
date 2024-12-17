@@ -1,4 +1,4 @@
-import { View, Text, Image } from "react-native";
+import { View, Text, Image, Pressable } from "react-native";
 import React from "react";
 import Previous from "@/components/ui/Previous";
 import { useNavigation } from "expo-router";
@@ -19,7 +19,12 @@ const HeadProfile = (props:HeadProfileProps) => {
           <Text className={`text-14 font-helvetica-light ${textLight0Dark500}`}>Community Point: </Text>
           <Text className="text-18 font-helvetica-bold text-cardinal">{props.point}</Text>
         </View>
-        {props.mutualFriends!=0? <Text className={`${textLight0Dark500} font-helvetica-light text-14`}>{props.mutualFriends} mutual friends</Text>:null}
+        {props.mutualFriends?.length!=0? 
+        <Pressable className="flex flex-row items-center justify-center" style={{columnGap:5}}>
+          {props.mutualFriends?.map((item, index)=>index<=2?<UserAvatar key={index} size={20} avatarURL={{uri:item.avatar}}/>:null)}
+          <View className="w-[20px] h-[20px] bg-light-330 flex items-center justify-center rounded-full"><Text className="text-white font-helvetica-light text-10">{props.mutualFriends?.length! - 3}+</Text></View>
+          <Text className={`${textLight0Dark500}  font-helvetica-light text-12`}>{props.mutualFriends?.length!>1? "mutual friends":"mutual friend"}</Text>
+        </Pressable>:null}
         <Text className={`text-16 font-helvetica-light my-[8px] ${textLight0Dark500}`}>{props.bio}</Text>
 
       </View>

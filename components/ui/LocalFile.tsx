@@ -8,26 +8,26 @@ import Icon from "./Icon";
 import { openWebFile } from "@/utils/File";
 import { textLight0Dark500 } from "@/styles/theme";
 
-const renderFileIcon = (type:string)=>{
+const renderFileIcon = (type:string, iconSize:number)=>{
     switch(type){
         case "docx":
-            return <Icon iconURL={IconURL.docx} size={60}/>
+            return <Icon iconURL={IconURL.docx} size={iconSize}/>
         case "xlsx":
-            return <Icon iconURL ={IconURL.xls} size={60}/>
+            return <Icon iconURL ={IconURL.xls} size={iconSize}/>
             case "pptx":
-                return <Icon iconURL = {IconURL.ppt} size={60}/>
+                return <Icon iconURL = {IconURL.ppt} size={iconSize}/>
                 case "pdf":
-                    return  <Icon iconURL = {IconURL.pdf} size={60}/>
+                    return  <Icon iconURL = {IconURL.pdf} size={iconSize}/>
                     default:
-                        return <Icon iconURL={IconURL.my_document} size={60}/>
+                        return <Icon iconURL={IconURL.my_document} size={iconSize}/>
      }
 }
 
-const LocalFile = ({ file }: { file: {uri:string, type:string, name:string}}) => {
+const LocalFile = ({ file, size, iconSize }: { file: {uri:string, type:string, name:string}, size:number, iconSize:number}) => {
     return(
-        <Pressable className=" flex w-[200px]  " style={{rowGap:10}} onPress={async()=>await openWebFile(file.uri)}>
-            <View className="w-[200px] h-[200px] flex items-center justify-center bg-whitesmoke dark:bg-dark-20 rounded-2xl p-[20px]">
-                {renderFileIcon(file.uri?.split(".").pop()!)}
+        <Pressable className=" flex " style={{rowGap:10, width:size}} onPress={async()=>await openWebFile(file.uri)}>
+            <View className=" flex items-center justify-center bg-whitesmoke dark:bg-dark-20 rounded-2xl p-[20px]" style={{width:size, height:size}}>
+                {renderFileIcon(file.uri?.split(".").pop()!,iconSize)}
             </View>
             <View>
                 <Text className={`${textLight0Dark500} font-helvetica-bold`}>{file.name}</Text>

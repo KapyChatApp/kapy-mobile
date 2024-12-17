@@ -28,7 +28,7 @@ export interface HeadProfileProps {
 avatar?:string;
 background?:string;
 point?:string;
-mutualFriends?:number;
+mutualFriends?:ShortUserProps[];
 }
 export interface UserBioProps {
   gender?: boolean;

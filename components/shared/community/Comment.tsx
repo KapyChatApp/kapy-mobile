@@ -66,7 +66,7 @@ const Comment = (props: CommentProps) => {
       case "Audio":
         return <AudioPlayer audioUri={props.content.url!} isSender={true} />;
       default:
-        return <File isSender={false} position="middle" file={props.content} />;
+        return <File isSender={false} position="free" file={props.content} />;
     }
   };
   const handleLongPress = async () => {

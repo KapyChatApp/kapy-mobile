@@ -52,7 +52,7 @@ const FriendFindBox = (props: FriendBoxProps) => {
     <TouchableOpacity
       onPress={() =>
         router.push({
-          pathname: "/(tabs)/friends/friend-profile/[friendId]",
+          pathname: "/friend-profile/[friendId]",
           params: { friendId: props._id },
         })
       }
@@ -64,7 +64,7 @@ const FriendFindBox = (props: FriendBoxProps) => {
           {props.firstName + " " + props.lastName}
         </Text>
         <Text className={`font-helvetica-light text-12 ${textLight0Dark500}`}>
-          {props.mutualFriends} mutual friends
+          {props.mutualFriends?.length} mutual friends
         </Text>
         <Text className="font-helvetica-light text-[10px] text-cardinal">
           {props.onlineTime} min ago

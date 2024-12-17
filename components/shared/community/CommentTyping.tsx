@@ -19,6 +19,7 @@ const CommentTyping = ({
   createNewComment,
   handleOpenCamera,
   handleOpenMicro,
+  handleFilePicker,
   selectedMedia,
   setSelectedMedia
 }: {
@@ -30,6 +31,7 @@ const CommentTyping = ({
   createNewComment: (newComment: CommentProps) => void;
   handleOpenCamera:any;
   handleOpenMicro:any;
+  handleFilePicker:any;
   selectedMedia:any;
   setSelectedMedia:any;
 }) => {
@@ -62,6 +64,12 @@ const CommentTyping = ({
         className="flex flex-row items-center justify-center py-[12px] bg-white dark:bg-dark-0 px-[10px]"
         style={{ columnGap: 14 }}
       >
+        <TouchableOpacity onPress={handleFilePicker}>
+          <Icon
+            iconURL={theme === "light" ? IconURL.attach_l: IconURL.attach_d}
+            size={34}
+          />
+        </TouchableOpacity>
         <TouchableOpacity onPress={handleOpenMicro}>
           <Icon
             iconURL={theme === "light" ? IconURL.mic_l: IconURL.mic_d}

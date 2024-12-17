@@ -90,7 +90,7 @@ const GalleryPickerBox = ({
           </View>
         ) : (
           <View>
-            <LocalFile file={item} />
+            <LocalFile file={item} size={200} iconSize={60} />
             <View
               className="flex-1  absolute top-[4px] right-[4px]"
               style={{ zIndex: 20 }}
@@ -106,7 +106,7 @@ const GalleryPickerBox = ({
   );
   useEffect(() => {}, [selectedMedia]);
   return (
-    <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
+    <View style={{ flex: 1 }}>
       <FlatList
         data={selectedMedia}
         renderItem={renderItem}

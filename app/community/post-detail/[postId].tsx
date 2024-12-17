@@ -17,11 +17,13 @@ import SingleGalleryPickerBox from "@/components/ui/SingleGalleryPicker";
 import ExpoCamera from "@/components/shared/multimedia/ExpoCamera";
 import { useClickOutside } from "react-native-click-outside";
 import AudioRecorder from "@/components/shared/multimedia/AudioRecorder";
+import { ScreenRatio } from "@/utils/Device";
+import { pickDocument, singlePickDocument } from "@/utils/DoucmentPicker";
 
 const PostDetailPage = () => {
   const { postId } = useLocalSearchParams();
 
-  const ref = useClickOutside<View>(()=>setIsMicroOpen(false));
+  const ref = useClickOutside<View>(() => setIsMicroOpen(false));
 
   const [post, setPost] = useState<SocialPostProps>();
   const router = useRouter();
@@ -36,10 +38,11 @@ const PostDetailPage = () => {
   const [isCameraOpen, setIsCameraOpen] = useState(false);
   const [isMicroOpen, setIsMicroOpen] = useState(false);
 
-
-  const [selectedMedia, setSelectedMedia] = useState<
-    { uri: string; type: string; name: string }
-  >();
+  const [selectedMedia, setSelectedMedia] = useState<{
+    uri: string;
+    type: string;
+    name: string;
+  }>();
   useEffect(() => {
     const getPostDetail = async () => {
       const result = await getAPost(postId.toString(), () =>
@@ -124,84 +127,118 @@ const PostDetailPage = () => {
     console.log("Viewing: ", uri);
     setIsImageViewingOpen(true);
   };
+
+  const handleFilePicker = async () => {
+    const file = await singlePickDocument();
+    if (!file || Array.isArray(file)) {
+      setSelectedMedia(undefined);
+    } else {
+      setSelectedMedia({
+        uri: file.uri,
+        type: file.type || "",
+        name: file.name,
+      });
+    }
+  };
   return (
-    <KeyboardAvoidingView
-      className="flex-1"
-      behavior={Platform.OS === "ios" ? "padding" : "height"}
-    >
-      <View className={`flex-1 ${bgLight500Dark10}`}>
-        {isImageViewingOpen ? (
-          <ImageViewing
-            images={[{ uri: viewingImage }]}
-            imageIndex={0}
-            visible={isImageViewingOpen}
-            onRequestClose={() => setIsImageViewingOpen(false)}
-            doubleTapToZoomEnabled={true}
-          />
-        ) : null}
-        {isCameraOpen?<View className="fixed w-screen h-screen"> <ExpoCamera onClose={()=>setIsCameraOpen(false)} isSendNow={false} setSelectedMedia={(uri:string,  type:string,name:string)=>setSelectedMedia({uri:uri, type:type, name:name})}/></View>:null}
-        <ScrollView
-          className="flex-1"
-          contentContainerStyle={{ rowGap: 20, paddingHorizontal: 10}}
-        >
-          <View className="ml-[10px] mt-[10px]">
-            <Previous navigation={navigation} isAbsolute={false} />
-          </View>
-          {post ? (
-            <SocialPost
-              {...post}
-              isDetail={true}
-              handleImageViewing={handleImageViewing}
+      <KeyboardAvoidingView
+        className="flex-1"
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        style={{ paddingBottom: Platform.OS === "android" ? 0 : 10 }}
+        keyboardVerticalOffset={Platform.OS === "ios" ? (ScreenRatio >1.8? 56:14) : 0}
+      >
+        <View className={`flex-1 ${bgLight500Dark10}`}>
+          {isImageViewingOpen ? (
+            <ImageViewing
+              images={[{ uri: viewingImage }]}
+              imageIndex={0}
+              visible={isImageViewingOpen}
+              onRequestClose={() => setIsImageViewingOpen(false)}
+              doubleTapToZoomEnabled={true}
             />
           ) : null}
-
-          <Text className={`${textLight0Dark500} font-helvetica-light text-14`}>
-            Comments
-          </Text>
-          <View className="px-[10px]">
-            {post?.comments.map((item, index) => (
-              <Comment
-                key={item._id}
-                {...item}
-                setReplyName={setReplyName}
-                replyName={replyName}
-                setReplyCommentId={setReplyCommentId}
-                setTargetType={setTargetType}
-                isLastComment={
-                  index === post.comments.length - 1 ? true : false
+          {isCameraOpen ? (
+            <View className="fixed w-screen h-screen">
+              <ExpoCamera
+                onClose={() => setIsCameraOpen(false)}
+                isSendNow={false}
+                setSelectedMedia={(uri: string, type: string, name: string) =>
+                  setSelectedMedia({ uri: uri, type: type, name: name })
                 }
-                handleDelete={handleDeleteComment}
+              />
+            </View>
+          ) : null}
+          <ScrollView
+            className="flex-1"
+            contentContainerStyle={{ rowGap: 20, paddingHorizontal: 10 }}
+          >
+            <View className="ml-[10px] mt-[10px]">
+              <Previous navigation={navigation} isAbsolute={false} />
+            </View>
+            {post ? (
+              <SocialPost
+                {...post}
+                isDetail={true}
                 handleImageViewing={handleImageViewing}
               />
-            ))}
-          </View>
-        </ScrollView>
-        {selectedMedia? (
-          <View className="h-[100px]">
-            <SingleGalleryPickerBox selectedMedia={selectedMedia} setSelectedMedia={setSelectedMedia}/>
-          </View>
-        ) : null}
-        <CommentTyping
-          replyId={replyName.length == 0 ? post?._id : replyCommentId}
-          replyName={replyName}
-          setReplyName={setReplyName}
-          targetType={targetType}
-          setTargetType={setTargetType}
-          createNewComment={(newComment: CommentProps) =>
-            replyName === ""
-              ? addCommentToPost(newComment)
-              : addReplyToComment(replyCommentId, newComment)
-          }
-          handleOpenCamera={() => setIsCameraOpen(true)}
-          handleOpenMicro={()=>setIsMicroOpen(true)}
-          selectedMedia={selectedMedia}
-          setSelectedMedia={setSelectedMedia}
-        />
-        {isMicroOpen? <View ref={ref}>
-          <AudioRecorder setSelectedMedia={(uri,type,name)=>setSelectedMedia({uri:uri,type:type,name:name})}/>
-        </View> : null}
-      </View>
-    </KeyboardAvoidingView>
+            ) : null}
+
+            <Text
+              className={`${textLight0Dark500} font-helvetica-light text-14`}
+            >
+              Comments
+            </Text>
+            <View className="px-[10px]">
+              {post?.comments.map((item, index) => (
+                <Comment
+                  key={item._id}
+                  {...item}
+                  setReplyName={setReplyName}
+                  replyName={replyName}
+                  setReplyCommentId={setReplyCommentId}
+                  setTargetType={setTargetType}
+                  isLastComment={
+                    index === post.comments.length - 1 ? true : false
+                  }
+                  handleDelete={handleDeleteComment}
+                  handleImageViewing={handleImageViewing}
+                />
+              ))}
+            </View>
+          </ScrollView>
+          {selectedMedia? (
+            <View className="h-[100px]">
+              <SingleGalleryPickerBox selectedMedia={selectedMedia} setSelectedMedia={setSelectedMedia}/>
+            </View>
+          ) : null}
+          <CommentTyping
+            replyId={replyName.length == 0 ? post?._id : replyCommentId}
+            replyName={replyName}
+            setReplyName={setReplyName}
+            targetType={targetType}
+            setTargetType={setTargetType}
+            createNewComment={(newComment: CommentProps) =>
+              replyName === ""
+                ? addCommentToPost(newComment)
+                : addReplyToComment(replyCommentId, newComment)
+            }
+            handleOpenCamera={() => setIsCameraOpen(true)}
+            handleOpenMicro={() => setIsMicroOpen(true)}
+            selectedMedia={selectedMedia}
+            setSelectedMedia={setSelectedMedia}
+            handleFilePicker={handleFilePicker}
+          />
+          {isMicroOpen ? (
+            <View ref={ref}>
+              <AudioRecorder
+                setSelectedMedia={(uri, type, name) =>
+                  setSelectedMedia({ uri: uri, type: type, name: name })
+                }
+              />
+            </View>
+          ) : null}
+        </View>
+      </KeyboardAvoidingView>
   );
 };
 
