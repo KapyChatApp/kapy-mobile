@@ -24,7 +24,7 @@ export interface ResponseMessageDTO {
 
 export interface MessageProps {
   id: string;
-  isReact: boolean;
+  isReact: string[];
   readedId: string[];
   contentId: FileProps;
   text: string;
@@ -35,6 +35,7 @@ export interface MessageProps {
   avatar:string;
   boxId:string;
   createBy:string;
+  localUserId?:string;
   deleteMessage?:(id:string)=>void;
   revokeMessage?:(id:string)=>void;
   handleViewImage:(imageURL:string)=>void;

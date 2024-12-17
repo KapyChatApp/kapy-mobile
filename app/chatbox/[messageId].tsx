@@ -127,7 +127,7 @@ const MessageDetailPage = () => {
         ...prevMessages,
         {
           id: "",
-          isReact: false,
+          isReact:[],
           readedId: [],
           contentId: mediaData,
           text: messageText,
@@ -280,6 +280,7 @@ const MessageDetailPage = () => {
                   }
                   isSender={localUserId === item.createBy.toString()}
                   position={position}
+                  localUserId={localUserId}
                   deleteMessage={handleDeleteMessage}
                   revokeMessage={handleRevokeMessage}
                   handleViewImage={handleViewImage}

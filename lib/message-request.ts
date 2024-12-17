@@ -190,7 +190,7 @@ export const sendMessage = async (
         } else {
           console.log("type: ", file.name?.split(".").pop());
           const tempUri = await prepareFileForUpload(file.uri, file.name!);
-          console.log("prepare uri: ",tempUri);
+          console.log("prepare uri: ", tempUri);
           newFile = {
             uri: tempUri,
             type: file.name?.split(".").pop(),
@@ -272,6 +272,25 @@ export const disableTexting = async (boxId: string) => {
       }
     );
     return response.data;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};
+
+export const react = async (messageId: string) => {
+  try {
+    const { token } = await getLocalAuth();
+    await axios.post(
+      process.env.EXPO_PUBLIC_BASE_URL + "/message/react",
+      { messageId: messageId },
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `${token}`,
+        },
+      }
+    );
   } catch (error) {
     console.log(error);
     throw error;

@@ -8,7 +8,7 @@ import {
   Platform,
   Dimensions,
 } from "react-native";
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   bgLight340Dark330,
   bgLight500Dark10,
@@ -22,13 +22,14 @@ import { Image } from "react-native";
 import VideoPlayer from "../multimedia/VideoPlayer";
 import AudioPlayer from "../multimedia/AudioPlayer";
 import { useActionSheet } from "@expo/react-native-action-sheet";
-import { deleteMessage, revokeMessage } from "@/lib/message-request";
+import { deleteMessage, react, revokeMessage } from "@/lib/message-request";
 import UserAvatarLink from "@/components/ui/UserAvatarLink";
 import { IconURL } from "@/constants/IconURL";
 import Icon from "@/components/ui/Icon";
 import { getPathWithConventionsCollapsed } from "expo-router/build/fork/getPathFromState-forks";
 import { useRouter } from "expo-router";
 import MessageLove from "@/components/ui/MessageLove";
+import { getLocalAuth } from "@/lib/local-auth";
 
 const Message = (props: MessageProps) => {
   const [position, setPosition] = useState(props.position);
@@ -416,6 +417,16 @@ const Message = (props: MessageProps) => {
         }
     }
   };
+
+  useEffect(()=>{
+    const setUpMessage = async ()=>{
+      setTotalLike(props.isReact.length);
+      if(props.isReact.includes(props.localUserId!)){
+        setIsLiked(true);
+      }
+    }
+    setUpMessage();
+  },[]);
   return (
     <View
       className={`flex-1 flex ${props.isSender ? "items-end" : "items-start"}`}
@@ -456,7 +467,14 @@ const Message = (props: MessageProps) => {
               >
                 <TouchableOpacity
                   className="flex items-center justify-center w-[30px] h-[30px] bg-light-510 dark:bg-dark-20 rounded-full"
-                  onPress={() => {
+                  onPress={async () => {
+                    setIsLiked(!isLiked);
+                    if(isLiked){
+                      setTotalLike(totalLike+1);
+                    }else{
+                      setTotalLike(totalLike-1);
+                    }
+                    await react(props.id);
                     setIsModalVisible(false);
                   }}
                 >
@@ -511,7 +529,14 @@ const Message = (props: MessageProps) => {
               >
                 <TouchableOpacity
                   className="flex items-center justify-center w-[30px] h-[30px] bg-light-510 dark:bg-dark-20 rounded-full"
-                  onPress={() => {
+                  onPress={async () => {
+                    setIsLiked(!isLiked);
+                    if(isLiked){
+                      setTotalLike(totalLike+1);
+                    }else{
+                      setTotalLike(totalLike-1);
+                    }
+                    await react(props.id);
                     setIsModalVisible(false);
                   }}
                 >
