@@ -21,6 +21,7 @@ export interface UserLoginProps {
   password: string;
 }
 export interface HeadProfileProps {
+  _id?:string;
   firstName?: string;
   lastName?: string;
   nickName?: string;

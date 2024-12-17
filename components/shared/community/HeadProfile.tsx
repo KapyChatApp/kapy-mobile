@@ -1,12 +1,13 @@
 import { View, Text, Image, Pressable } from "react-native";
 import React from "react";
 import Previous from "@/components/ui/Previous";
-import { useNavigation } from "expo-router";
+import { useNavigation, useRouter } from "expo-router";
 import UserAvatar from "@/components/ui/UserAvatar";
 import { textLight0Dark500 } from "@/styles/theme";
 import { HeadProfileProps } from "@/types/user";
 
 const HeadProfile = (props:HeadProfileProps) => {
+  const router = useRouter();
   return (
     <View className="flex items-center justify-center relative">
       <Image source={{uri:props.background}} className="w-screen h-[200px] bg-deny "></Image>
@@ -20,7 +21,7 @@ const HeadProfile = (props:HeadProfileProps) => {
           <Text className="text-18 font-helvetica-bold text-cardinal">{props.point}</Text>
         </View>
         {props.mutualFriends?.length!=0? 
-        <Pressable className="flex flex-row items-center justify-center" style={{columnGap:5}}>
+        <Pressable className="flex flex-row items-center justify-center" style={{columnGap:5}}  onPress={()=>router.push({pathname:"/friend/mutual-friends",params:{friendId:props._id}})}>
           {props.mutualFriends?.map((item, index)=>index<=2?<UserAvatar key={index} size={20} avatarURL={{uri:item.avatar}}/>:null)}
           {props.mutualFriends?.length!>3?<View className="w-[20px] h-[20px] bg-light-330 flex items-center justify-center rounded-full"><Text className="text-white font-helvetica-light text-10">{props.mutualFriends?.length! - 3}+</Text></View>:null}
           

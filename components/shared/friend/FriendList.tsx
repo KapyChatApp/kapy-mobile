@@ -17,6 +17,7 @@ const FriendList = () => {
   const [myFriends, setMyFriends] = useState<FriendBoxProps[][]>([]);
   useFocusEffect(
     useCallback(() => {
+      console.log("aaa");
       const getMyFriendsFUNC = async () => {
         const friends = await getMyFriends();
         setMyFriends(groupFriendsByFirstLetter(friends));

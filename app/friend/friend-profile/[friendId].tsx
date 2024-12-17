@@ -64,6 +64,7 @@ const FriendProfilePage = () => {
           ..._bio
         } = friendData;
         setHeaderProps({
+          _id,
           firstName,
           lastName,
           nickName,
@@ -274,7 +275,7 @@ const FriendProfilePage = () => {
         {isProfileLoading ? (
           <HeadProfileSkeletonLoader />
         ) : (
-          <HeadProfile {...headerProps} />
+          <HeadProfile {...headerProps}  />
         )}
         <Previous navigation={navigation} isAbsolute={true} />
         <MoreProfileOption
