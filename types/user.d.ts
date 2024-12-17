@@ -21,6 +21,7 @@ export interface UserLoginProps {
   password: string;
 }
 export interface HeadProfileProps {
+  _id?:string;
   firstName?: string;
   lastName?: string;
   nickName?: string;
@@ -28,7 +29,7 @@ export interface HeadProfileProps {
 avatar?:string;
 background?:string;
 point?:string;
-mutualFriends?:number;
+mutualFriends?:ShortUserProps[];
 }
 export interface UserBioProps {
   gender?: boolean;

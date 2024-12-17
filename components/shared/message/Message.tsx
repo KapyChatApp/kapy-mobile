@@ -178,7 +178,7 @@ const Message = (props: MessageProps) => {
                 </View>
               </Pressable>
             );
-          case "xls":
+          case "xlsx":
             return (
               <Pressable
                 className={`flex flex-row p-[10px]  ${
@@ -217,7 +217,7 @@ const Message = (props: MessageProps) => {
                   <Text
                     className={`${
                       props.isSender ? "text-white" : "text-black"
-                    }font-helvetica-light text-10`}
+                    } font-helvetica-light text-10`}
                   >
                     {0.001 * props.contentId.bytes!}kB
                   </Text>

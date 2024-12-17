@@ -46,7 +46,7 @@ const UpdateProfilePage = () => {
     fetchData();
   }, [reload]);
   return (
-    <SafeAreaView className={`${bgLight500Dark10} flex-1`}>
+    <View className={`${bgLight500Dark10} flex-1`}>
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : "height"}
         style={{ flex: 1 }}
@@ -75,7 +75,7 @@ const UpdateProfilePage = () => {
         </ScrollView>
         {loading ? <LoadingSpinner loading={isLoading} /> : null}
       </KeyboardAvoidingView>
-    </SafeAreaView>
+    </View>
   );
 };
 

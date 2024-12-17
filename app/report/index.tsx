@@ -31,7 +31,7 @@ const ReportPage = () => {
       behavior={Platform.OS === "ios" ? "padding" : "height"}
       style={{ flex: 1 }}
     >
-      <SafeAreaView className={`${bgLight500Dark10} flex-1`}>
+      <View className={`${bgLight500Dark10} flex-1`}>
         <ScrollView
           contentContainerStyle={{
             display: "flex",
@@ -139,7 +139,7 @@ const ReportPage = () => {
           />
         </ScrollView>
         {isLoad ? <LoadingSpinner loading={isLoading} /> : null}
-      </SafeAreaView>
+      </View>
     </KeyboardAvoidingView>
   );
 };

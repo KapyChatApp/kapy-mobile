@@ -67,7 +67,7 @@ const OutSideMessagePage = () => {
   };
 
   return (
-    <SafeAreaView className={`${bgLight500Dark10} flex-1 `}>
+    <View className={`${bgLight500Dark10} flex-1 `}>
       <MainHeader></MainHeader>
       <TouchableOpacity onPress={() => router.push("/message/search")}>
         <View pointerEvents="box-none">
@@ -81,7 +81,7 @@ const OutSideMessagePage = () => {
           ))}
         </ScrollView>
       ) : null}
-    </SafeAreaView>
+    </View>
   );
 };
 

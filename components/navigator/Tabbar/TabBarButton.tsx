@@ -1,5 +1,5 @@
 import { View, Text, Pressable } from "react-native";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import TabIcon from "../../ui/TabIcon";
 import Animated, {
   interpolate,
@@ -8,13 +8,27 @@ import Animated, {
   withSpring,
 } from "react-native-reanimated";
 import { IconURL } from "@/constants/IconURL";
+
 const TabIcons = {
-  message: <TabIcon iconURL={IconURL.message_d}></TabIcon>,
-  friends: <TabIcon iconURL={IconURL.friends_d}></TabIcon>,
-  livemap: <TabIcon iconURL={IconURL.livemap_d}></TabIcon>,
-  setting: <TabIcon iconURL={IconURL.setting_d}></TabIcon>,
+  message: {
+    nonSelected: <TabIcon iconURL={IconURL.chat_non_select} />,
+    selected: <TabIcon iconURL={IconURL.chat_select} />,
+  },
+  friends: {
+    nonSelected: <TabIcon iconURL={IconURL.friends_non_select} />,
+    selected: <TabIcon iconURL={IconURL.friends_select} />,
+  },
+  livemap: {
+    nonSelected: <TabIcon iconURL={IconURL.map_non_select} />,
+    selected: <TabIcon iconURL={IconURL.map_select} />,
+  },
+  setting: {
+    nonSelected: <TabIcon iconURL={IconURL.setting_non_select} />,
+    selected: <TabIcon iconURL={IconURL.setting_select} />,
+  },
 };
 type RouteName = keyof typeof TabIcons;
+
 const TabBarButton = ({
   onPress,
   onLongPress,
@@ -23,18 +37,16 @@ const TabBarButton = ({
 }: {
   onPress: any;
   onLongPress: any;
-  isFocused: any;
+  isFocused: boolean; // Đảm bảo isFocused là boolean
   routeName: RouteName;
 }) => {
-  const scale = useSharedValue(1); // Giá trị ban đầu của scale là 1
+  const scale = useSharedValue(1);
 
   const handlePressIn = () => {
-    // Thu nhỏ icon khi nhấn vào
     scale.value = withSpring(0.7, { stiffness: 300, damping: 15 });
   };
 
   const handlePressOut = () => {
-    // Trở lại kích thước ban đầu sau khi nhả
     scale.value = withSpring(1, { stiffness: 300, damping: 15 });
   };
 
@@ -53,7 +65,10 @@ const TabBarButton = ({
       className="justify-center items-center z-10"
     >
       <Animated.View style={animatedIconStyle}>
-        {TabIcons[routeName]}
+        {isFocused
+          ? TabIcons[routeName].selected // Hiển thị icon đã chọn
+          : TabIcons[routeName].nonSelected // Hiển thị icon chưa chọn
+        }
       </Animated.View>
     </Pressable>
   );

@@ -23,14 +23,14 @@ const FriendsPage = () => {
   }, []);
 
   return (
-    <SafeAreaView className={`${bgLight500Dark10} flex-1`}>
+    <View className={`${bgLight500Dark10} flex-1`}>
       <FriendMainHeader />
       <Search onChangeText={setQuery} />
       <View className="flex-1">
         <FastRequestList />
         <FriendList />
       </View>
-    </SafeAreaView>
+    </View>
   );
 };
 

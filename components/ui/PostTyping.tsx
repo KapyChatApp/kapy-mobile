@@ -5,7 +5,7 @@ import { IconURL } from "@/constants/IconURL";
 import Icon from "./Icon";
 import CustomButton from "./CustomButton";
 
-const PostTyping = ({handleGalleryPicker, handleCreatePost}:{handleGalleryPicker:()=>void,handleCreatePost:()=>void}) => {
+const PostTyping = ({handleGalleryPicker,handleFilePicker, handlePostAction, handleOpenCamera, handleOpenMicro}:{handleGalleryPicker:()=>void,handleFilePicker:()=>void,handlePostAction:()=>void, handleOpenCamera:any, handleOpenMicro:any}) => {
   const { theme } = useTheme();
   return (
     <View
@@ -13,7 +13,13 @@ const PostTyping = ({handleGalleryPicker, handleCreatePost}:{handleGalleryPicker
       style={{ columnGap: 8 }}
     >
       <View className="flex flex-row" style={{columnGap:20}}>
-        <TouchableOpacity>
+      <TouchableOpacity onPress={handleFilePicker}>
+          <Icon
+            iconURL={theme === "light" ? IconURL.attach_l : IconURL.attach_d}
+            size={28}
+          ></Icon>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={handleOpenMicro}>
           <Icon
             iconURL={theme === "light" ? IconURL.mic_l : IconURL.mic_d}
             size={28}
@@ -25,14 +31,14 @@ const PostTyping = ({handleGalleryPicker, handleCreatePost}:{handleGalleryPicker
             size={28}
           ></Icon>
         </TouchableOpacity>
-        <TouchableOpacity>
+        <TouchableOpacity onPress={handleOpenCamera}>
           <Icon
             iconURL={theme === "light" ? IconURL.opencam_l : IconURL.opencam_d}
             size={28}
           ></Icon>
         </TouchableOpacity>
       </View>
-      <CustomButton label="Post" width={80} height={40} onPress={handleCreatePost}/>
+      <CustomButton label="Post" width={80} height={40} onPress={handlePostAction}/>
     </View>
   );
 };

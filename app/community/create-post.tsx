@@ -25,21 +25,51 @@ import PostTyping from "@/components/ui/PostTyping";
 import GalleryPickerBox from "@/components/ui/GalleryPickerBox";
 import { pickMedia } from "@/utils/GalleryPicker";
 import { createPost } from "@/lib/post";
+import ExpoCamera from "@/components/shared/multimedia/ExpoCamera";
+import AudioRecorder from "@/components/shared/multimedia/AudioRecorder";
+import { pickDocument } from "@/utils/DoucmentPicker";
 
 const CreatePostPage = () => {
   const navigation = useNavigation();
+
+  const [isCameraOpen, setIsCameraOpen] = useState(false);
+  const [isMicroOpen, setIsMicroOpen] = useState(false);
+
   const [isPrivate, setIsPrivate] = useState(false);
   const [name, setName] = useState("");
   const [avatar, setAvatar] = useState("");
   const [caption, setCaption] = useState("");
   const [isTyping, setIsTyping] = useState(false);
   const ref = useClickOutside<View>(() => setIsTyping(false));
+
   const [selectedMedia, setSelectedMedia] = useState<
-    { uri: string; type: string }[]
+    { uri: string; type: string;name:string }[]
   >([]);
+  
   const handlePickMedia = async () => {
     const media = await pickMedia();
-    setSelectedMedia((prev) => [...prev, ...media]);
+    setSelectedMedia((prev) => [
+      ...prev,
+      ...media.map((item) => ({
+        uri: item.uri,
+        type: item.type,
+        name: item.name || "", 
+      }))
+    ]);
+  };
+
+  const handlePickDocument = async () => {
+    const media = await pickDocument();
+    if (media) {
+      setSelectedMedia((prev) => [
+        ...prev,
+        ...media.map((item) => ({
+          uri: item.uri,
+          type: item.type || "", 
+          name: item.name || "", 
+        })),
+      ]);
+    }
   };
 
   useEffect(() => {
@@ -56,15 +86,17 @@ const CreatePostPage = () => {
   }, []);
 
   return (
-    <SafeAreaView className={`bg-white dark:bg-black flex-1`}>
+    <View className={`bg-white dark:bg-black flex-1`}>
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : "height"}
         style={{ flex: 1 }}
       >
+         {isCameraOpen?<View className="fixed w-screen h-screen"> <ExpoCamera onClose={()=>setIsCameraOpen(false)} isSendNow={false} setSelectedMedia={(uri:string,  type:string,name:string)=>setSelectedMedia([{uri:uri, type:type, name:name}])}/></View>:null}
         <View className="pl-[10px] pt-[10px] mb-[10px]">
           <Previous header="Create a post" navigation={navigation} />
         </View>
-
+       
+        
         <ScrollView
           className={`${bgLight500Dark10}`}
           contentContainerStyle={{ padding: 10, rowGap: 8 }}
@@ -127,7 +159,7 @@ const CreatePostPage = () => {
         <View ref={ref}>
           <PostTyping
             handleGalleryPicker={handlePickMedia}
-            handleCreatePost={async () =>
+            handlePostAction={async () =>
               await createPost(caption, selectedMedia, () => {
                 Alert.alert(
                   "Your post is being created and will be done soon!"
@@ -135,10 +167,16 @@ const CreatePostPage = () => {
                 navigation.goBack();
               })
             }
+            handleOpenCamera={()=>setIsCameraOpen(true)}
+            handleOpenMicro={()=>setIsMicroOpen(true)}
+            handleFilePicker={handlePickDocument}
           />
+           {isMicroOpen? <View ref={ref}>
+          <AudioRecorder setSelectedMedia={(uri,type,name)=>setSelectedMedia((prev)=>[...prev,{uri:uri,type:type,name:name}])}/>
+        </View> : null}
         </View>
       </KeyboardAvoidingView>
-    </SafeAreaView>
+    </View>
   );
 };
 

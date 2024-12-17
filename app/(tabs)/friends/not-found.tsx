@@ -10,7 +10,7 @@ import PreviousDouble from '@/components/ui/PreviousDouble'
 const NotFoundPage = () => {
     const navigation = useNavigation();
   return (
-    <SafeAreaView className={`flex-1 flex items-center justify-center ${bgLight500Dark10}`}>
+    <View className={`flex-1 flex items-center justify-center ${bgLight500Dark10}`}>
       <View className='top-[30px] left-[10px] absolute'>
       <PreviousDouble navigation={navigation}/>
       </View>
@@ -18,7 +18,7 @@ const NotFoundPage = () => {
         <Icon iconURL={IconURL.not_found} size={100}/>
         <Text className='text-cardinal text-14 font-helvetica-bold'>Your require is not found!</Text>
       </View>
-    </SafeAreaView>
+    </View>
   )
 }
 

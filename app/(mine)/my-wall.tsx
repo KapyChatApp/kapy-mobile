@@ -67,7 +67,7 @@ const MyWallPage = () => {
   );
 
   return (
-    <SafeAreaView className={`flex-1 ${bgLight500Dark10}`}>
+    <View className={`flex-1 ${bgLight500Dark10}`}>
       <ScrollView className="px-[10px]">
         {isProfileLoading ? (
           <HeadProfileSkeletonLoader />
@@ -94,7 +94,7 @@ const MyWallPage = () => {
           <View className="w-full h-[200px]"></View>
         </View>
       </ScrollView>
-    </SafeAreaView>
+    </View>
   );
 };
 

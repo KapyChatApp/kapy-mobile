@@ -4,13 +4,16 @@ import { Video as ExpoVideo } from "expo-av";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import Icon from "./Icon";
 import { IconURL } from "@/constants/IconURL";
+import VideoPlayer from "../shared/multimedia/VideoPlayer";
+import File from "./File";
+import LocalFile from "./LocalFile";
 
 const SingleGalleryPickerBox = ({
   selectedMedia,
   setSelectedMedia,
 }: {
-    selectedMedia: { uri: string; type: string } | null;
-    setSelectedMedia: (media: { uri: string; type: string } | null) => void;
+    selectedMedia: { uri: string; type: string , name:string}|null;
+    setSelectedMedia:any
 }) => {
   const handleDelete = () => {
     setSelectedMedia(null);
@@ -42,24 +45,30 @@ const SingleGalleryPickerBox = ({
               </TouchableOpacity>
             </View>
           ) : (
+            selectedMedia.type==="Video"?
             <View className="flex items-start flex-row justify-start">
-              <ExpoVideo
-                source={{ uri: selectedMedia.uri }}
-                style={{
-                  width: 50,
-                  height: 50,
-                  borderRadius: 10,
-                }}
-                useNativeControls
-                isLooping
-              />
+              <VideoPlayer videoSource={selectedMedia.uri}/>
               <TouchableOpacity
                 onPress={handleDelete}
               >
                 <Icon iconURL={IconURL.close} size={16} />
               </TouchableOpacity>
             </View>
-          )}
+          :(selectedMedia.type==="Audio"? <View className="flex items-center flex-row justify-center">
+            <Icon iconURL={IconURL.voice} size={50}/>
+            <TouchableOpacity
+              onPress={handleDelete}
+            >
+              <Icon iconURL={IconURL.close} size={16} />
+            </TouchableOpacity>
+          </View>: <View className="flex items-start flex-row justify-start">
+          <LocalFile file={selectedMedia} size={100} iconSize={30}/>
+            <TouchableOpacity
+              onPress={handleDelete}
+            >   
+                 <Icon iconURL={IconURL.close} size={16} />
+            </TouchableOpacity>
+          </View> ))}
         </View>
       ) : null}
     </View>

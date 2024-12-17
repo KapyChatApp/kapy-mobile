@@ -38,7 +38,7 @@ const NewFriendPage = () => {
   }, [query]);
 
   return (
-    <SafeAreaView className={`${bgLight500Dark10} flex-1`}>
+    <View className={`${bgLight500Dark10} flex-1`}>
       <View className="ml-[10px] mt-[10px]">
         <Previous navigation={navigation} header="New friend" />
       </View>
@@ -48,7 +48,7 @@ const NewFriendPage = () => {
           <FriendFindBox {...friend} />
         </View>
       ) : null}
-    </SafeAreaView>
+    </View>
   );
 };
 

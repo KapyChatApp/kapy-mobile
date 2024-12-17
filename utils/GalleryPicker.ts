@@ -57,6 +57,7 @@ export const singlePickMedia = async ()=>{
     const selectedAssets = result.assets.map((asset) => ({
       uri: asset.uri,
       type: asset.type || "unknown", 
+      name:asset.fileName
     }));
     
     return selectedAssets;

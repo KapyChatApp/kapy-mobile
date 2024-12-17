@@ -13,6 +13,10 @@ import { deletePost, disLike, like } from "@/lib/post";
 import { getLocalAuth } from "@/lib/local-auth";
 import { useActionSheet } from "@expo/react-native-action-sheet";
 import * as Sharing from "expo-sharing";
+import VideoPlayer from "../multimedia/VideoPlayer";
+import AudioPlayer from "../multimedia/AudioPlayer";
+import PostAudioPlayer from "../multimedia/PostAudioPlayer";
+import File from "@/components/ui/File";
 const SocialPost = (props: SocialPostProps) => {
   const [isShowComment, setIsShowComment] = useState(false);
   const router = useRouter();
@@ -21,7 +25,7 @@ const SocialPost = (props: SocialPostProps) => {
   const [totalShare, setTotalShare] = useState(props.shares.length);
   const { showActionSheetWithOptions } = useActionSheet();
   const [userId, setUserId] = useState("");
-  const [liked, setIsliked] = useState(
+  const [isLiked, setIsliked] = useState(
     props.likedIds.includes(userId.toString()) ? true : false
   );
   const isMyPost = props.userId.toString() === userId;
@@ -43,8 +47,8 @@ const SocialPost = (props: SocialPostProps) => {
   );
 
   const handleLikeFunction = async () => {
-    console.log(liked);
-    if (liked) {
+    console.log(isLiked);
+    if (isLiked) {
       setTotalLike(totalLike - 1);
       setIsliked(false);
       await disLike(props._id);
@@ -81,6 +85,7 @@ const SocialPost = (props: SocialPostProps) => {
             }
             break;
           case 1:
+            router.push({pathname:"/community/edit-post",params:{postId:props._id}});
             break;
 
           case cancelButtonIndex:
@@ -92,7 +97,6 @@ const SocialPost = (props: SocialPostProps) => {
     <Pressable
       className="flex border border-border rounded-3xl p-[16px] w-full pb-[50px]"
       style={{ rowGap: 8 }}
-      pointerEvents="box-none"
       onLongPress={handleLongPress}
     >
       <View className="flex flex-row" style={{ columnGap: 8 }}>
@@ -116,20 +120,10 @@ const SocialPost = (props: SocialPostProps) => {
         </Text>
         {props.contents.map((item) =>
           item.type === "Video" ? (
-            <Video
-              source={{ uri: item.url ? item.url : "" }}
-              style={{
-                width: "auto",
-                height: "auto",
-                borderRadius: 10,
-                marginBottom: 10,
-                aspectRatio: Number(item.width) / Number(item.height),
-              }}
-              shouldPlay={false}
-              isLooping={false}
-              useNativeControls
-            />
+            <VideoPlayer videoSource={item.url!}/>
           ) : item.type === "Image" ? (
+            <View className="z-10">
+            <Pressable className="w-fit h-fit" onPress={()=>props.handleImageViewing?.(item.url!)}>
             <Image
               source={{ uri: item.url }}
               style={{
@@ -141,14 +135,18 @@ const SocialPost = (props: SocialPostProps) => {
               }}
               resizeMode="cover"
             />
-          ) : null
+            </Pressable>
+            </View>
+          ) : (
+            item.type==="Audio"? <PostAudioPlayer audioUri={item.url!}/>:<File file={item} isSender={false} position="free"/>
+          )
         )}
       </View>
       <View
         className="flex flex-row absolute -bottom-[14px] left-[20px]"
         style={{ columnGap: 8 }}
       >
-        <Love totalLike={totalLike} onPress={handleLikeFunction} />
+        <Love totalLike={totalLike} onPress={handleLikeFunction} isLoved={isLiked}/>
         <Comment
           totalComment={totalComment}
           onPress={

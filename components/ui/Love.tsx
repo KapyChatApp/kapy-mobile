@@ -5,7 +5,7 @@ import { IconURL } from "@/constants/IconURL";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { bgLight500Dark10 } from "@/styles/theme";
 
-const Love = ({ onPress, totalLike }: {onPress:()=>void, totalLike:number}) => {
+const Love = ({ onPress, totalLike, isLoved }: {onPress:()=>void, totalLike:number, isLoved:boolean}) => {
   return (
     <View>
       <Text className="text-cardinal text-12 font-helvetica-bold m-[2px] ml-[16px]">
@@ -16,7 +16,7 @@ const Love = ({ onPress, totalLike }: {onPress:()=>void, totalLike:number}) => {
         style={{ columnGap: 6 }}
         onPress={onPress}
       >
-        <Icon iconURL={IconURL.heart} size={16} />
+        <Icon iconURL={isLoved? IconURL.loved : IconURL.love} size={16} />
         <Text className="text-cardinal font-helvetica-light text-12">Love</Text>
       </TouchableOpacity>
     </View>

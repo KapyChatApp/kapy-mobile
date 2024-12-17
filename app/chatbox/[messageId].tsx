@@ -208,7 +208,7 @@ const MessageDetailPage = () => {
       behavior={Platform.OS === "ios" ? "padding" : "height"}
       style={{ flex: 1 }}
     >
-      <SafeAreaView className="flex-1 ">
+      <View className="flex-1 ">
         {isImageViewOpen ? (
           <ImageViewing
             images={[{ uri: viewingImage }]}
@@ -226,6 +226,7 @@ const MessageDetailPage = () => {
               setSelectedMedia={(uri: string, type: string, name: string) =>
                 setSelectedMedia([{ uri: uri, type: type, name: name }])
               }
+              isSendNow={true}
             />
           </View>
         ) : null}
@@ -322,7 +323,7 @@ const MessageDetailPage = () => {
             </View>
           ) : null}
         </View>
-      </SafeAreaView>
+      </View>
     </KeyboardAvoidingView>
   );
 };

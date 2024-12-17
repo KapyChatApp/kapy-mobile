@@ -9,7 +9,7 @@ import { bgLight100Dark0, bgLight500Dark10 } from '@/styles/theme'
 const NotificationPage = () => {
   const navigation = useNavigation();
     return (
-    <SafeAreaView className={`${bgLight500Dark10} flex-1`}>
+    <View className={`${bgLight500Dark10} flex-1`}>
         <View className='mt-[10px] ml-[10px]'>
             <Previous navigation={navigation} header="Notification"/>
         </View>
@@ -26,7 +26,7 @@ const NotificationPage = () => {
             <NotificationBox/>
             <NotificationBox/>
         </ScrollView>
-    </SafeAreaView>
+    </View>
   )
 }
 

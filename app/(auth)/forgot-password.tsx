@@ -20,7 +20,7 @@ const ForgotPasswordPage = () => {
   };
   const {theme} = useTheme();
   return (
-    <SafeAreaView className={`${bgLight500Dark10} flex-1`}>
+    <View className={`${bgLight500Dark10} flex-1`}>
       <Previous navigation={navigation} header="Forgot password" isAbsolute={true}></Previous>
       <View className="flex items-center top-28" style={{ gap: 26 }}>
         <DataInputBig
@@ -34,7 +34,7 @@ const ForgotPasswordPage = () => {
           onPress={handleGetCode}
         ></SubmitButton>
       </View>
-    </SafeAreaView>
+    </View>
   );
 };
 

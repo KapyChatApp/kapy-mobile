@@ -78,7 +78,7 @@ const FastRequestBox = (props: RequestedProps) => {
     <View className="flex-1">
       {isReloadAndHide? null:(<TouchableOpacity
       className={`w-[209px] h-[97px] flex flex-row border border-border rounded-3xl items-center justify-center p-[13px] ${bgLight510Dark20}`}
-      onPress={()=> router.push({pathname:"/(tabs)/friends/friend-profile/[friendId]", params:{friendId:props._id}})}
+      onPress={()=> router.push({pathname:"/friend/friend-profile/[friendId]", params:{friendId:props._id}})}
     >
       <UserAvatar avatarURL={{ uri: props.avatar }} size={70}></UserAvatar>
       <View className="info-container flex ml-[16px]">

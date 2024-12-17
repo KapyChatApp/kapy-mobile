@@ -20,6 +20,7 @@ import { useTheme } from "@/context/ThemeProviders";
 const TabBar = ({ state, descriptors, navigation }: BottomTabBarProps) => {
   const { theme } = useTheme();
   const [dimensions, setDimensions] = useState({ height: 70, width: 250 });
+  const [selected, setSelected] = useState("message");
   const buttonWidth = dimensions.width / state.routes.length;
   const onTabbarLayout = (e: LayoutChangeEvent) => {
     setDimensions({
@@ -37,16 +38,16 @@ const TabBar = ({ state, descriptors, navigation }: BottomTabBarProps) => {
     <View
       onLayout={onTabbarLayout}
       style={{ flexDirection: "row" }}
-      className={`h-[56px]  flex flex-row items-center justify-around bg-cardinal dark:bg-black `}
+      className={`h-[70px]  flex flex-row items-center justify-around bg-white dark:bg-black border-t-[0.25px] border-border`}
     >
       <Animated.View
         style={[
           animatedStyle,
           {
             position: "absolute",
-            backgroundColor: theme === "light" ? "#F57602" : "#000000",
-            borderColor: "#FFFFFF",
-            borderWidth: 4,
+            backgroundColor: theme === "light" ? "#FFFFFF" : "#000000",
+            borderColor: "#F57602",
+            borderWidth: 3,
             borderRadius: 90,
             marginLeft: -14,
             height: 56,
@@ -75,7 +76,7 @@ const TabBar = ({ state, descriptors, navigation }: BottomTabBarProps) => {
             target: route.key,
             canPreventDefault: true,
           });
-
+          setSelected(route.name);
           if (!isFocused && !event.defaultPrevented) {
             navigation.navigate(route.name, route.params);
           }

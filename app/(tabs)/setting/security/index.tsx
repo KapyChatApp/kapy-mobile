@@ -8,10 +8,10 @@ import { bgLight500Dark10 } from "@/styles/theme";
 const index = () => {
   const navigation = useNavigation();
   return (
-    <SafeAreaView className={`${bgLight500Dark10} w-full h-full`}>
+    <View className={`${bgLight500Dark10} w-full h-full`}>
       <Previous navigation={navigation} header="Security" />
       <SecurityList />
-    </SafeAreaView>
+    </View>
   );
 };
 

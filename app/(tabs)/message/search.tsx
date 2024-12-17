@@ -44,7 +44,7 @@ const SearchPage = () => {
     };
   }, [q]);
   return (
-    <SafeAreaView
+    <View
       className={`flex-1 flex ${bgLight500Dark10}`}
       style={{ rowGap: 8 }}
     >
@@ -71,7 +71,7 @@ const SearchPage = () => {
           </TouchableOpacity>
         ))}
       </ScrollView>
-    </SafeAreaView>
+    </View>
   );
 };
 

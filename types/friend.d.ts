@@ -1,9 +1,11 @@
+import { ShortUserProps } from "./user";
+
 export interface FriendBoxProps{
     _id:string;
     avatar?:string;
     firstName?:string;
     lastName?:string;
-    mutualFriends?:string;
+    mutualFriends?:ShortUserProps[];
     onlineTime?:string;    
     relation?:string;
 }

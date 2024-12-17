@@ -10,13 +10,13 @@ import InvitrList from '@/components/shared/group/InviteList';
 const InviteGroupPage = () => {
     const navigation = useNavigation();
   return (
-    <SafeAreaView className={`${bgLight500Dark10} flex-1`}>
+    <View className={`${bgLight500Dark10} flex-1`}>
       <View className='ml-[10px] mt-[10px]'>
         <Previous navigation={navigation}/>
       </View>
       <Search/>
       <InvitrList/>
-    </SafeAreaView>
+    </View>
   )
 }
 

@@ -64,6 +64,7 @@ const FriendProfilePage = () => {
           ..._bio
         } = friendData;
         setHeaderProps({
+          _id,
           firstName,
           lastName,
           nickName,
@@ -269,12 +270,12 @@ const FriendProfilePage = () => {
     }
   };
   return (
-    <SafeAreaView className={`flex-1 ${bgLight500Dark10}`}>
+    <View className={`flex-1 ${bgLight500Dark10}`}>
       <ScrollView>
         {isProfileLoading ? (
           <HeadProfileSkeletonLoader />
         ) : (
-          <HeadProfile {...headerProps} />
+          <HeadProfile {...headerProps}  />
         )}
         <Previous navigation={navigation} isAbsolute={true} />
         <MoreProfileOption
@@ -297,7 +298,7 @@ const FriendProfilePage = () => {
         >
           <View className="px-[10px]">
             <RecentRate
-              path="/(tabs)/friends/all-friend-rate"
+              path="/friend/all-friend-rate"
               userId={friendId.toString()}
               recentRates={recentRates}
             />
@@ -343,7 +344,7 @@ const FriendProfilePage = () => {
         </View>
       </ScrollView>
       {loading ? <LoadingSpinner loading={isLoading} /> : null}
-    </SafeAreaView>
+    </View>
   );
 };
 

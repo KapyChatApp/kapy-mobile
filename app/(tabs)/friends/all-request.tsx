@@ -17,18 +17,12 @@ const AllRequestPage = () => {
   const navigation = useNavigation();
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   return (
-    <SafeAreaView className={`${bgLight500Dark10} flex-1`}>
+    <View className={`${bgLight500Dark10} flex-1`}>
       <Previous navigation={navigation} isAbsolute={true}></Previous>
       <TopBarWithoutSideBar></TopBarWithoutSideBar>
       <Search></Search>
         <DetailRequestList></DetailRequestList>
-      {/* <View className="flex absolute top-[130px] items-end justify-center w-screen">
-        <FriendFilter
-          isOpen={isFilterOpen}
-          setIsOpen={setIsFilterOpen}
-        ></FriendFilter>
-      </View> */}
-    </SafeAreaView>
+    </View>
   );
 };
 

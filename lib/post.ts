@@ -81,7 +81,7 @@ export const getFriendPosts = async (friendId: string) => {
 
 export const createPost = async (
   caption: string,
-  selectedMedia: { uri: string; type: string }[],
+  selectedMedia: { uri: string; type: string;name:string }[],
   goOn: () => void
 ) => {
   try {
@@ -94,10 +94,9 @@ export const createPost = async (
     selectedMedia.forEach((media, index) => {
       const newFile: any = {
         uri: media.uri,
-        type: media.type === "image" ? "image/jpeg" : media.type,
-        name: generateRandomNumberString(10)?.toString(),
+        type: "image/jpeg",
+        name: media.name,
       };
-
       formData.append("file", newFile as any);
     });
     const response = await axios.post(
@@ -192,3 +191,33 @@ export const disLike = async  (postId: string) => {
     throw error;
   }
 };
+
+export const editPost = async (postId:string,caption:string,selectedMedias: {uri:string, type:string, name:string|null|undefined}[], remainMediaIds:string[] ) =>{
+  try{
+    const {token} = await getLocalAuth();
+    const formData = new FormData();
+    formData.append("caption",caption);
+    formData.append("remainContentIds", JSON.stringify(remainMediaIds));
+    selectedMedias.forEach(media => {
+      formData.append("file", {
+        uri: media.uri,
+        type: media.type,
+        name: media.name,
+      } as any);
+    });
+
+    const response = await axios.patch(process.env.EXPO_PUBLIC_BASE_URL + "/post/edit",formData, {
+      headers:{
+        "Content-Type":"multipart/form-data",
+        Authorization:`${token}`
+      },
+      params:{postId:postId}
+    });
+    if(response.status===200 || response.status ==201){
+      Alert.alert("Edited!");
+    }
+  } catch(error){
+    console.log(error);
+    throw error;
+  } 
+}
