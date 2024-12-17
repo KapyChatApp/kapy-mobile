@@ -57,19 +57,19 @@ const ChatBoxHeader = (props: MessageBoxProps) => {
   }, [props]);
   return (
     <View
-      className={`bg-light-500 dark:bg-dark-0 w-full h-[82px] flex flex-row items-center justify-between px-[8px]`}
+      className={`bg-light-500 dark:bg-dark-0 w-full h-[82px] flex flex-row items-center justify-between  px-[16px]`}
     >
-      <View className="flex flex-row items-center">
+      <View className="flex flex-row items-center" style={{columnGap:12}}>
         <Previous navigation={navigation} isAbsolute={false}></Previous>
-        <View className="flex flex-row items-center" style={{ columnGap: 9 }}>
+        <View className="flex flex-row items-center" style={{ columnGap:8 }}>
           {props.groupName ? (
-            <UserAvatar size={54} avatarURL={{ uri: avatarURL }} />
+            <UserAvatar size={46} avatarURL={{ uri: avatarURL }} />
           ) : (
             <UserAvatarLink
               avatarURL={{
                 uri: avatarURL,
               }}
-              size={54}
+              size={46}
               userId={userId}
             />
           )}
@@ -101,7 +101,7 @@ const ChatBoxHeader = (props: MessageBoxProps) => {
       </View>
       <View
         className="flex flex-row items-center justify-center"
-        style={{ columnGap: 7 }}
+        style={{ columnGap: 10 }}
       >
         <TouchableOpacity>
           <Icon iconURL={IconURL.call} size={30}></Icon>
@@ -123,7 +123,7 @@ const ChatBoxHeader = (props: MessageBoxProps) => {
             }
           }}
         >
-          <Icon iconURL={IconURL.information} size={20}></Icon>
+          <Icon iconURL={IconURL.information} size={24}></Icon>
         </TouchableOpacity>
       </View>
     </View>

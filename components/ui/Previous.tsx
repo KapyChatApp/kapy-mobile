@@ -14,12 +14,13 @@ const Previous = ({ navigation, header, isAbsolute }: any) => {
       pointerEvents="auto"
       className={`${
         isAbsolute ? "absolute top-[20px] left-[20px]" : ""
-      }  flex flex-row items-center gap-4`}
+      }  flex flex-row items-center`}
+      style={{columnGap:12}}
     >
       <TouchableOpacity onPress={() => navigation.goBack()}>
-        <Image source={IconURL.previous} className="w-[40px] h-[40px]"></Image>
+        <Image source={IconURL.previous} className="w-[30px] h-[30px]"></Image>
       </TouchableOpacity>
-      <View className="flex gap-y-[4px]">
+      {header? <View className="flex gap-y-[4px] ">
         <Text
           onLayout={handleTextLayout}
           className="text-18 font-helvetica-bold text-cardinal "
@@ -28,7 +29,7 @@ const Previous = ({ navigation, header, isAbsolute }: any) => {
         </Text>
         {header?  <View className={`w-[${textWidth}px] h-[2px] bg-cardinal`}/>:null}
        
-      </View>
+      </View> :null}
     </View>
   );
 };
