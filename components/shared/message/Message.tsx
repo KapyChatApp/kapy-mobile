@@ -180,9 +180,10 @@ const Message = (props: MessageProps) => {
         );
       case "Video":
         return (
-          <View className="rounded-2xl flex-1">
+          <Pressable className="rounded-2xl flex-1"
+          onLongPress={handleLongPress}>
             <VideoPlayer videoSource={props.contentId.url!} />
-          </View>
+          </Pressable>
         );
       case "Audio":
         return (
@@ -205,6 +206,7 @@ const Message = (props: MessageProps) => {
                 }`}
                 style={{ columnGap: 4 }}
                 onPress={() => props.handleViewFile(props.contentId!)}
+                onLongPress={handleLongPress}
               >
                 <View
                   className={`flex items-center justify-center rounded-2xl p-[10px] bg-light-510`}
@@ -251,6 +253,7 @@ const Message = (props: MessageProps) => {
                 }`}
                 style={{ columnGap: 4 }}
                 onPress={() => props.handleViewFile(props.contentId!)}
+                onLongPress={handleLongPress}
               >
                 <View
                   className={`flex items-center justify-center rounded-2xl p-[10px] bg-light-510`}
@@ -297,6 +300,7 @@ const Message = (props: MessageProps) => {
                 }`}
                 style={{ columnGap: 4 }}
                 onPress={() => props.handleViewFile(props.contentId!)}
+                onLongPress={handleLongPress}
               >
                 <View
                   className={`flex items-center justify-center rounded-2xl bg-light- p-[10px]  bg-light-510`}
@@ -343,6 +347,7 @@ const Message = (props: MessageProps) => {
                 }`}
                 style={{ columnGap: 4 }}
                 onPress={() => props.handleViewFile(props.contentId!)}
+                onLongPress={handleLongPress}
               >
                 <View
                   className={`flex items-center justify-center rounded-2xl bg-light- p-[10px] bg-light-510`}
@@ -388,6 +393,7 @@ const Message = (props: MessageProps) => {
                   props.isSender ? roundedValueSender() : roundedValueReceiver()
                 }`}
                 style={{ columnGap: 4 }}
+                onLongPress={handleLongPress}
               >
                 <Icon iconURL={IconURL.my_document} size={40} />
                 <View className="flex" style={{ rowGap: 4 }}>
