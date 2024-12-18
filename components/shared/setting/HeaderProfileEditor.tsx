@@ -4,14 +4,24 @@ import UserAvatar from "@/components/ui/UserAvatar";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import Icon from "@/components/ui/Icon";
 import { IconURL } from "@/constants/IconURL";
-import ImagePickerBox from "@/components/ui/ImagePicker";
 import { useActionSheet } from "@expo/react-native-action-sheet";
 import { HeaderProfileEditorProps } from "@/types/user";
+import { pickMedia, singlePickMedia } from "@/utils/GalleryPicker";
+import { uploadAvatar, uploadBackground } from "@/lib/my-profile";
+import ExpoCamera from "../multimedia/ExpoCamera";
 
 const HeaderProfileEditor = (props: HeaderProfileEditorProps) => {
-  const [isUpdateAvatarOpen, setIsUpdateAvatarOpen] = useState(false);
-  const [isUpdateBackgroundOpen, setIsUpdateBackgroundOpen] = useState(false);
   const { showActionSheetWithOptions } = useActionSheet();
+
+  const handleUploadAvatarFromGallery = async ()=>{
+    const avatar = await singlePickMedia();
+    await uploadAvatar(avatar[0].uri, props.setStartLoading,props.setIsLoading, props.setEndLoading, props.setNotIsLoading, props.setReload);
+  }
+
+  const handleUploadBackgroundFromGallery = async ()=>{
+    const background = await singlePickMedia();
+    await uploadBackground(background[0].uri, props.setStartLoading,props.setIsLoading, props.setEndLoading, props.setNotIsLoading, props.setReload);
+  }
 
   const onPressAvatar = () => {
     const options = [
@@ -29,9 +39,10 @@ const HeaderProfileEditor = (props: HeaderProfileEditorProps) => {
       (selectedIndex: number | undefined) => {
         switch (selectedIndex) {
           case 0:
-            setIsUpdateAvatarOpen(true);
+            handleUploadAvatarFromGallery();
             break;
           case 1:
+            props.setIsAvatarCameraOpen?.(true);
             break;
 
           case cancelButtonIndex:
@@ -56,9 +67,10 @@ const HeaderProfileEditor = (props: HeaderProfileEditorProps) => {
       (selectedIndex: number | undefined) => {
         switch (selectedIndex) {
           case 0:
-            setIsUpdateBackgroundOpen(true);
+            handleUploadBackgroundFromGallery();
             break;
           case 1:
+            props.setIsBgCameraOpen?.(true);
             break;
 
           case cancelButtonIndex:
@@ -70,6 +82,7 @@ const HeaderProfileEditor = (props: HeaderProfileEditorProps) => {
 
   return (
     <View className="flex items-center justify-center relative">
+     
       <View>
         <Image
           source={{ uri: props.background }}
@@ -91,34 +104,7 @@ const HeaderProfileEditor = (props: HeaderProfileEditorProps) => {
               <Icon iconURL={IconURL.change_image} size={35} />
             </TouchableOpacity>
           </View>
-          {isUpdateAvatarOpen ? (
-            <View className="absolute">
-              <ImagePickerBox
-                toEndPoint="/media/upload-avatar"
-                setIsOpen={setIsUpdateAvatarOpen}
-                aspect={[4,3]}
-                setStartLoading={props.setStartLoading}
-                setEndLoading={props.setEndLoading}
-                setIsLoading={props.setIsLoading}
-                setNotIsLoading={props.setNotIsLoading}
-                setReload={props.setReload}
-              />
-            </View>
-          ) : null}
-          {isUpdateBackgroundOpen? (
-            <View className="absolute">
-              <ImagePickerBox
-                toEndPoint="/media/upload-background"
-                setIsOpen={setIsUpdateBackgroundOpen}
-                aspect={[16,9]}
-                setStartLoading={props.setStartLoading}
-                setEndLoading={props.setEndLoading}
-                setIsLoading={props.setIsLoading}
-                setNotIsLoading={props.setNotIsLoading}
-                setReload={props.setReload}
-              />
-            </View>
-          ) : null}
+
         </View>
       </View>
     </View>

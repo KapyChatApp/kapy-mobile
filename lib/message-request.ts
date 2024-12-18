@@ -158,7 +158,8 @@ export const deleteMessage = async (messageId: string) => {
 export const sendMessage = async (
   boxId: string,
   content: string,
-  files: { uri: string; type: string; name: string | undefined | null }[]
+  files: { uri: string; type: string; name: string | undefined | null }[],
+  goOn:(status:string)=>void
 ) => {
   try {
     const { token } = await getLocalAuth();
@@ -190,7 +191,7 @@ export const sendMessage = async (
         } else {
           console.log("type: ", file.name?.split(".").pop());
           const tempUri = await prepareFileForUpload(file.uri, file.name!);
-          console.log("prepare uri: ",tempUri);
+          console.log("prepare uri: ", tempUri);
           newFile = {
             uri: tempUri,
             type: file.name?.split(".").pop(),
@@ -225,8 +226,16 @@ export const sendMessage = async (
           },
         }
       );
-
-      return response.data;
+      if(response.status === 200 || response.status===201){
+        goOn("success");
+        const timer = setTimeout(()=>goOn("non-send"),2000);
+        return clearTimeout(timer);
+      }
+      else{
+        goOn("fail");
+        const timer = setTimeout(()=>goOn("non-send"),2000);
+        return clearTimeout(timer);
+      }
     }
   } catch (error) {
     console.error("Error sending message:", error);
@@ -272,6 +281,25 @@ export const disableTexting = async (boxId: string) => {
       }
     );
     return response.data;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};
+
+export const react = async (messageId: string) => {
+  try {
+    const { token } = await getLocalAuth();
+    await axios.post(
+      process.env.EXPO_PUBLIC_BASE_URL + "/message/react",
+      { messageId: messageId },
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `${token}`,
+        },
+      }
+    );
   } catch (error) {
     console.log(error);
     throw error;

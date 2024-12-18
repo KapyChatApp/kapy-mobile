@@ -24,9 +24,9 @@ export interface ResponseMessageDTO {
 
 export interface MessageProps {
   id: string;
-  isReact: boolean;
+  isReact: string[];
   readedId: string[];
-  contentId: FileProps;
+  contentId?: FileProps;
   text: string;
   createAt: string;
   createBy: string;
@@ -35,10 +35,12 @@ export interface MessageProps {
   avatar:string;
   boxId:string;
   createBy:string;
+  localUserId?:string;
   deleteMessage?:(id:string)=>void;
   revokeMessage?:(id:string)=>void;
   handleViewImage:(imageURL:string)=>void;
   handleViewFile:(file:FileProps)=>void;
+  sendStatus?:string;
 }
 
 export interface MessageBoxProps {
@@ -51,6 +53,7 @@ export interface MessageBoxProps {
   localUserId?:string;
   setLastMessage?:(message:string)=>void;
   readStatus?:boolean;
+  isOnline?:boolean;
 }
 
 export interface ChatBoxHeaderProps {

@@ -46,11 +46,13 @@ export interface UserBioProps {
 export interface HeaderProfileEditorProps{
   avatar?:string;
   background?:string;
-  setStartLoading: () => void,
-  setEndLoading: () => void,
-  setIsLoading: () => void,
-  setNotIsLoading: () => void
-  setReload:()=>void
+  setStartLoading: () => void;
+  setEndLoading: () => void;
+  setIsLoading: () => void;
+  setNotIsLoading: () => void;
+  setReload:()=>void;
+  setIsAvatarCameraOpen?:(value:boolean)=>void;
+  setIsBgCameraOpen?:(value:boolean)=>void;
 }
 
 export interface BioEditorProps {

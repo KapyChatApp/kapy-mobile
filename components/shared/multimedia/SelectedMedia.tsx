@@ -15,9 +15,18 @@ import { textLight0Dark500 } from "@/styles/theme";
 const SelectedMedia = ({ selectedMedia, setSelectedMedia }: any) => {
   const renderMediaItem = (item: any) => {
     console.log(item.type);
+    console.log(item.uri);
     switch (item.type) {
       case "image":
-        return <Image source={{ uri: item.uri }} />;
+        return  <Image
+        source={{ uri: item.uri }}
+        style={{
+          width: "100%", 
+          height: "100%", 
+          aspectRatio: item.width / item.height, 
+          resizeMode: "contain", 
+        }}
+      />
       case "video":
         return <VideoPlayer videoSource={item.uri} />;
       case "audio":

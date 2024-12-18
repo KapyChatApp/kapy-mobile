@@ -39,7 +39,9 @@ const MessageDetailPage = () => {
     setIsTypeping(false);
     setIsMicroOpen(false);
   });
+
   const [isTyping, setIsTypeping] = useState(false);
+  const [sendStatus, setSendStatus] = useState("non-send");
   const [messages, setMessages] = useState<MessageProps[]>([]);
   const [localUserId, setLocalUserId] = useState("");
   const [chatBoxHeader, setChatBoxHeader] = useState<MessageBoxProps>();
@@ -90,7 +92,6 @@ const MessageDetailPage = () => {
     await openWebFile(file.url!);
   };
 
-
   const { markAsRead, unreadMessages } = useMarkReadContext();
 
   const receiverIds = messageBox?.receiverIds ?? [];
@@ -118,18 +119,20 @@ const MessageDetailPage = () => {
   };
   const handleSendMessage = async () => {
     handleDisableTexting();
+    setSendStatus("sending");
     const messageTextData = messageText;
     let mediaData = selectedMedia[0];
     setSelectedMedia([]);
     setMessageText("");
+    console.log("media data: ", mediaData);
     if (messageTextData != "" || selectedMedia.length != 0) {
       setMessages((prevMessages) => [
         ...prevMessages,
         {
           id: "",
-          isReact: false,
+          isReact: [],
           readedId: [],
-          contentId: mediaData,
+          contentId:selectedMedia[0]? {url:selectedMedia[0].uri, type:selectedMedia[0].type, fileName:selectedMedia[0].name!, width:150, height:150}:undefined,
           text: messageText,
           createAt: new Date().toString(),
           createBy: localUserId,
@@ -143,10 +146,10 @@ const MessageDetailPage = () => {
           handleViewFile: () => {
             handleViewFile(mediaData);
           },
-          handleViewPdf:()=> handleViewFile(mediaData)
+          handleViewPdf: () => handleViewFile(mediaData),
         },
       ]);
-      await sendMessage(messageId.toString(), messageText, selectedMedia);
+      await sendMessage(messageId.toString(), messageText, selectedMedia,(status)=>setSendStatus(status));
     }
   };
   const handleDeleteMessage = (id: string) => {
@@ -157,7 +160,7 @@ const MessageDetailPage = () => {
   const handleRevokeMessage = (id: string) => {
     setMessages((prevMessages) =>
       prevMessages?.map((message: MessageProps) =>
-        message.id === id ? { ...message, text: "Message revoked" } : message
+        message.id === id ? { ...message, text: "Message revoked", contentId:undefined } : message
       )
     );
   };
@@ -232,13 +235,13 @@ const MessageDetailPage = () => {
         ) : null}
 
         <View ref={ref}>
-          <ChatBoxHeader {...chatBoxHeader} />
+          <ChatBoxHeader {...chatBoxHeader}/>
         </View>
         <View className="flex-1">
           <ScrollView
             ref={scrollViewRef}
             className={` ${bgLight500Dark10} flex-1 flex`}
-            contentContainerStyle={{ rowGap: 3, padding: 2 }}
+            contentContainerStyle={{ rowGap: 4, padding: 2 }}
             onContentSizeChange={() =>
               scrollViewRef.current?.scrollToEnd({ animated: true })
             }
@@ -280,6 +283,7 @@ const MessageDetailPage = () => {
                   }
                   isSender={localUserId === item.createBy.toString()}
                   position={position}
+                  localUserId={localUserId}
                   deleteMessage={handleDeleteMessage}
                   revokeMessage={handleRevokeMessage}
                   handleViewImage={handleViewImage}
