@@ -182,7 +182,7 @@ const Message = (props: MessageProps) => {
       case "Video":
         case "video":
         return (
-          <Pressable className="rounded-2xl flex-1"
+          <Pressable className="rounded-2xl flex-1 w-full h-full"
           onLongPress={handleLongPress}>
             <VideoPlayer videoSource={props.contentId.url!} />
           </Pressable>

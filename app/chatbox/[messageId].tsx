@@ -132,7 +132,7 @@ const MessageDetailPage = () => {
           id: "",
           isReact: [],
           readedId: [],
-          contentId:selectedMedia[0]? {url:selectedMedia[0].uri, type:selectedMedia[0].type, fileName:selectedMedia[0].name!}:undefined,
+          contentId:selectedMedia[0]? {url:selectedMedia[0].uri, type:selectedMedia[0].type, fileName:selectedMedia[0].name!, width:150, height:150}:undefined,
           text: messageText,
           createAt: new Date().toString(),
           createBy: localUserId,
