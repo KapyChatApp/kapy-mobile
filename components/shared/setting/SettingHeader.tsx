@@ -34,8 +34,8 @@ const SettingHeader = () => {
   return (
     <View className="flex flex-row items-center justify-between py-[17px] px-[19px]">
       <View className="flex flex-row">
-        <MyAvatar size={72}/>
-        <View className={`flex ml-[12px] justify-center `}>
+        <MyAvatar size={60}/>
+        <View className={`flex ml-[12px] justify-center `} style={{rowGap:2}}>
           <Text
             className={`text-16 font-helvetica-bold text-light-0 dark:text-dark-500 ${textLight0Dark500} `}
           >
