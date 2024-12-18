@@ -17,8 +17,10 @@ import Animated, {
 import TabBarButton from "./TabBarButton";
 import { bgLight100Dark0 } from "@/styles/theme";
 import { useTheme } from "@/context/ThemeProviders";
+import { useCamera } from "@/context/CameraContext";
 const TabBar = ({ state, descriptors, navigation }: BottomTabBarProps) => {
   const { theme } = useTheme();
+  const {isCameraOpen} = useCamera();
   const [dimensions, setDimensions] = useState({ height: 70, width: 250 });
   const [selected, setSelected] = useState("message");
   const buttonWidth = dimensions.width / state.routes.length;
@@ -37,7 +39,7 @@ const TabBar = ({ state, descriptors, navigation }: BottomTabBarProps) => {
   return (
     <View
       onLayout={onTabbarLayout}
-      style={{ flexDirection: "row" }}
+      style={{ flexDirection: "row", display:isCameraOpen? "none":"flex" }}
       className={`h-[70px]  flex flex-row items-center justify-around bg-white dark:bg-black border-t-[0.25px] border-border`}
     >
       <Animated.View
