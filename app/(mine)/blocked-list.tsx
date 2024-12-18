@@ -1,4 +1,4 @@
-import { View, Text } from "react-native";
+import { View, Text, RefreshControl } from "react-native";
 import React, { useEffect, useState } from "react";
 import { useNavigation } from "expo-router";
 import Previous from "@/components/ui/Previous";
@@ -13,11 +13,13 @@ import { getMyBlocks } from "@/lib/my-blocks";
 const BlockedListPage = () => {
   const navigation = useNavigation();
   const [blocks, setBlocks] = useState<FriendBoxProps[]>();
+  const [refreshing, setRefreshing] = useState(false);
+  const getMyBlocksFunc = async () => {
+    const blockedListResponse = await getMyBlocks();
+    setBlocks(blockedListResponse);
+    setRefreshing(false);
+  };
   useEffect(() => {
-    const getMyBlocksFunc = async () => {
-      const blockedListResponse = await getMyBlocks();
-      setBlocks(blockedListResponse);
-    };
     getMyBlocksFunc();
   }, []);
   return (
@@ -29,7 +31,7 @@ const BlockedListPage = () => {
       ></Previous>
       <View className="mt-[60px] flex flex-1" style={{ rowGap: 4 }}>
         <Search></Search>
-        <ScrollView className="flex-1 " contentContainerStyle={{ rowGap: 4 }}>
+        <ScrollView className="flex-1 " contentContainerStyle={{ rowGap: 4 }} refreshControl={<RefreshControl refreshing={refreshing} onRefresh={getMyBlocksFunc}/>}>
           {blocks?.map((item) => (
             <BlockedUserBox key={item._id} {...item} />
           ))}

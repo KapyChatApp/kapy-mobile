@@ -1,6 +1,6 @@
 import { View, Text } from "react-native";
 import React, { useCallback, useEffect, useState } from "react";
-import { ScrollView } from "react-native-gesture-handler";
+import { RefreshControl, ScrollView } from "react-native-gesture-handler";
 import { FriendBoxProps } from "@/types/friend";
 import { textLight0Dark500 } from "@/styles/theme";
 import { useFocusEffect } from "expo-router";
@@ -13,17 +13,17 @@ import {
   sortFriendsDescending,
 } from "@/utils/Filter";
 
-const FriendList = () => {
+const FriendList = ({refreshing, setRefreshing}:any) => {
   const [myFriends, setMyFriends] = useState<FriendBoxProps[][]>([]);
+  const getMyFriendsFUNC = async () => {
+    const friends = await getMyFriends();
+    setMyFriends(groupFriendsByFirstLetter(friends));
+    setMyFriends(sortFriendsAscending(groupFriendsByFirstLetter(friends)));
+    setRefreshing(false);
+  };
   useFocusEffect(
     useCallback(() => {
       console.log("aaa");
-      const getMyFriendsFUNC = async () => {
-        const friends = await getMyFriends();
-        setMyFriends(groupFriendsByFirstLetter(friends));
-        setMyFriends(sortFriendsAscending(groupFriendsByFirstLetter(friends)));
-        console.log("friends: ",friends);
-      };
       getMyFriendsFUNC();
     }, [])
   );
@@ -70,6 +70,9 @@ const FriendList = () => {
       <ScrollView
         className="flex-1 px-[20px]"
         contentContainerStyle={{ rowGap: 4 }}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={getMyFriendsFUNC} />
+        }
       >
         {myFriends.map((friendsGroup) => friendsGroup.map((item, index)=><View key={index} className="w-full flex" style={{rowGap:4}}>{index==0? <Text className={`${textLight0Dark500} font-helvetica-light text-12`}>{item.lastName?.split(" ").reverse()[0][0].toUpperCase()}</Text>:null}<FriendBox {...item}/> </View>))}
       </ScrollView>

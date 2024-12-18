@@ -1,4 +1,4 @@
-import { View, Text, Platform } from "react-native";
+import { View, Text, Platform, RefreshControl } from "react-native";
 import React, { useCallback, useEffect, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useFocusEffect, useNavigation } from "expo-router";
@@ -11,7 +11,6 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { HeadProfileProps, UserBioProps } from "@/types/user";
 import axios from "axios";
 import CreatePost from "@/components/ui/CreatePost";
-import MyPostList from "@/components/shared/community/MyPostList";
 import SocialSkeletonLoader from "@/components/ui/PostSkeletonLoader";
 import HeadProfileSkeletonLoader from "@/components/ui/HeadProfileSkeletonLoader";
 import BioSkeletonLoader from "@/components/ui/BioSkeletonLoader";
@@ -19,6 +18,9 @@ import RecentRate from "@/components/shared/community/RecentRate";
 import { getLocalAuth } from "@/lib/local-auth";
 import { RateProps } from "@/types/rate";
 import { getRatesOfUser } from "@/lib/rate";
+import { SocialPostProps } from "@/types/post";
+import { getMyPosts } from "@/lib/post";
+import SocialPost from "@/components/shared/community/SocialPost";
 
 const MyWallPage = () => {
   const navigation = useNavigation();
@@ -27,48 +29,58 @@ const MyWallPage = () => {
   const [isProfileLoading, setIsProfileLoading] = useState(true);
   const [_id, set_id] = useState("");
   const [recentRates, setRecentRates] = useState<RateProps[]>([]);
+  const [refreshing, setRefreshing] = useState(false);
+  const [postsData, setPostsData] = useState<SocialPostProps[]>([]);
+    const [isLoading, setIsLoading] = useState(true);
+  const disPlayUserData = async () => {
+    const user = await AsyncStorage.getItem("user");
+    if (!user) {
+      throw new Error("You are unauthenticated!");
+    }
+
+    const {
+      _id,
+      firstName,
+      lastName,
+      nickName,
+      bio,
+      avatar,
+      background,
+      point,
+      ..._bio
+    } = JSON.parse(user);
+    set_id(_id);
+    setHeaderProps({
+      firstName,
+      lastName,
+      nickName,
+      bio,
+      avatar,
+      background,
+      point,
+    });
+    const postsData: SocialPostProps[] = await getMyPosts(() =>
+      setIsLoading(false)
+    );
+    setPostsData(postsData.reverse());
+    setBioProps(_bio);
+    const recentRates = await getRatesOfUser(_id);
+    setRecentRates(recentRates);
+    setIsProfileLoading(false);
+    setRefreshing(false);
+  };
+
   useFocusEffect(
     useCallback(() => {
-      const disPlayUserData = async () => {
-        const user = await AsyncStorage.getItem("user");
-        if (!user) {
-          throw new Error("You are unauthenticated!");
-        }
-
-        const {
-          _id,
-          firstName,
-          lastName,
-          nickName,
-          bio,
-          avatar,
-          background,
-          point,
-          ..._bio
-        } = JSON.parse(user);
-        set_id(_id);
-        setHeaderProps({
-          firstName,
-          lastName,
-          nickName,
-          bio,
-          avatar,
-          background,
-          point,
-        });
-        setBioProps(_bio);
-        const recentRates = await getRatesOfUser(_id);
-        setRecentRates(recentRates);
-        setIsProfileLoading(false);
-      };
-
       disPlayUserData();
     }, [])
   );
 
   return (
     <View className={`flex-1 ${bgLight500Dark10}`}>
-      <ScrollView className="px-[10px]">
+      <ScrollView className="px-[10px]" refreshControl={
+                <RefreshControl refreshing={refreshing} onRefresh={disPlayUserData} />
+              }>
         {isProfileLoading ? (
           <HeadProfileSkeletonLoader />
         ) : (
@@ -90,7 +102,18 @@ const MyWallPage = () => {
           </Text>
           <CreatePost avatarURL={headerProps?.avatar} />
           <View className="w-full h-[30px]"></View>
-          <MyPostList />
+          <View className="flex-1 items-center justify-center" style={{ rowGap: 20 }}>
+      {postsData.length > 0 ? (
+        !isLoading ? (
+          postsData.map((item) => <SocialPost key={item._id} {...item} />)
+        ) : (
+          <View className="w-full" style={{ rowGap: 30 }}>
+            <SocialSkeletonLoader />
+            <SocialSkeletonLoader />
+          </View>
+        )
+      ) : null}
+    </View>
           <View className="w-full h-[200px]"></View>
         </View>
       </ScrollView>

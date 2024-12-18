@@ -1,4 +1,4 @@
-import { View, Text } from "react-native";
+import { View, Text, RefreshControl } from "react-native";
 import React, { useEffect, useState } from "react";
 import { useNavigation } from "expo-router";
 import Previous from "@/components/ui/Previous";
@@ -13,11 +13,13 @@ import { FriendBoxProps } from "@/types/friend";
 const BFFListPage = () => {
   const navigation = useNavigation();
   const [myBFFs, setMyBFFs] = useState<FriendBoxProps[]>();
+  const [refreshing, setRefreshing] = useState(false);
+  const getMyBFFFunc = async () => {
+    const myBFFResponse = await getMyBFFs();
+    setMyBFFs(myBFFResponse);
+    setRefreshing(false);
+  };
   useEffect(() => {
-    const getMyBFFFunc = async () => {
-      const myBFFResponse = await getMyBFFs();
-      setMyBFFs(myBFFResponse);
-    };
     getMyBFFFunc();
   }, []);
   return (
@@ -29,7 +31,7 @@ const BFFListPage = () => {
       ></Previous>
       <View className="mt-[60px] flex flex-1" style={{ rowGap: 4 }}>
         <Search></Search>
-        <ScrollView className=" flex-1" contentContainerStyle={{ rowGap: 4 }}>
+        <ScrollView className=" flex-1" contentContainerStyle={{ rowGap: 4 }} refreshControl={<RefreshControl refreshing={refreshing} onRefresh={getMyBFFFunc}/>}>
           {myBFFs?.map((item: any) => (
             <BestFriendBox key={item._id} {...item} />
           ))}

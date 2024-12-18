@@ -4,6 +4,7 @@ import {
   ScrollView,
   TouchableOpacity,
   SafeAreaView,
+  RefreshControl,
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import Previous from "@/components/ui/Previous";
@@ -33,17 +34,19 @@ const AllFriendRatePage = () => {
   const [deletePoint, setDeletePoint] = useState("");
   const [loading, setLoading] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [refreshing, setRefreshing] = useState(false);
+  const getAllRatesFUNC = async () => {
+    const { _id } = await getLocalAuth();
+    const result = await getRatesOfUser(userId.toString());
+    const rates = result.map((rate: RateProps) => ({
+      ...rate,
+      localUserId: _id,
+    }));
+    console.log(rates);
+    setRates(rates);
+    setRefreshing(false);
+  };
   useEffect(() => {
-    const getAllRatesFUNC = async () => {
-      const { _id } = await getLocalAuth();
-      const result = await getRatesOfUser(userId.toString());
-      const rates = result.map((rate: RateProps) => ({
-        ...rate,
-        localUserId: _id,
-      }));
-      console.log(rates);
-      setRates(rates);
-    };
     getAllRatesFUNC();
   }, [reload]);
 
@@ -84,7 +87,7 @@ const AllFriendRatePage = () => {
           defaultPoint={Number.parseInt(editPoint)}
         />
       ) : null}
-      <ScrollView className="p-[16px]" contentContainerStyle={{ rowGap: 8 }}>
+      <ScrollView className="p-[16px]" contentContainerStyle={{ rowGap: 8 }} refreshControl={<RefreshControl refreshing={refreshing} onRefresh={getAllRatesFUNC}/>}>
         {rates?.map((item) => (
           <Rate
             key={item._id}

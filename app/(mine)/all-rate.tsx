@@ -1,4 +1,4 @@
-import { View, Text, ScrollView } from "react-native";
+import { View, Text, ScrollView, RefreshControl } from "react-native";
 import React, { useEffect, useState } from "react";
 import Previous from "@/components/ui/Previous";
 import { useNavigation } from "expo-router";
@@ -13,11 +13,13 @@ const AllRatePage = () => {
   const { userId } = useLocalSearchParams();
   const navigation = useNavigation();
   const [rates, setRates] = useState<RateProps[]>();
+  const [refreshing, setRefreshing] = useState(false);
+  const getAllRatesFUNC = async () => {
+    const rates = await getRatesOfUser(userId.toString());
+    setRates(rates);
+    setRefreshing(false);
+  };
   useEffect(() => {
-    const getAllRatesFUNC = async () => {
-      const rates = await getRatesOfUser(userId.toString());
-      setRates(rates);
-    };
     getAllRatesFUNC();
   }, []);
   return (
@@ -25,7 +27,7 @@ const AllRatePage = () => {
       <View className="mt-[10px] ml-[10px]">
         <Previous navigation={navigation} />
       </View>
-      <ScrollView className="p-[16px]" contentContainerStyle={{ rowGap: 8 }}>
+      <ScrollView className="p-[16px]" contentContainerStyle={{ rowGap: 8 }} refreshControl={<RefreshControl refreshing={refreshing} onRefresh={getAllRatesFUNC}/>}>
         {rates?.map((item) => (
           <Rate key={item._id} {...item} />
         ))}

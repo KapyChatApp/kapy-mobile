@@ -19,6 +19,7 @@ import { groupFriendsByFirstLetter } from "@/utils/Filter";
 const FriendsPage = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [query, setQuery] = useState("");
+  const [refreshing, setRefreshing] = useState(false);
   useEffect(() => {
   }, []);
 
@@ -28,7 +29,7 @@ const FriendsPage = () => {
       <Search onChangeText={setQuery} />
       <View className="flex-1">
         <FastRequestList />
-        <FriendList />
+        <FriendList refreshing={refreshing} setRefreshing={(status:boolean)=>setRefreshing(status)} />
       </View>
     </View>
   );

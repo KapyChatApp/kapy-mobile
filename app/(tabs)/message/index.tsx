@@ -1,4 +1,4 @@
-import { View, Text, Touchable, TouchableOpacity } from "react-native";
+import { View, Text, Touchable, TouchableOpacity, RefreshControl } from "react-native";
 import React, { useEffect, useState } from "react";
 import { Stack, useRouter } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -23,27 +23,30 @@ const OutSideMessagePage = () => {
   const [messageBoxes, setMessageBoxes] = useState<MessageBoxProps[]>([]);
   const router = useRouter();
   const {markAsUnread,unreadMessages, updateDefaultMessages} =useMarkReadContext();
+  const [refreshing, setRefreshing] = useState(false);
+  const getMyMessageBoxesFUNC = async () => {
+    const { _id } = await getLocalAuth();
+    const messageBoxes = await getMyChatBoxes();
+    const messageBoxesWithLocalId = messageBoxes.map(
+      (item: MessageBoxProps) => ({
+        ...item,
+        localUserId: _id,
+      })
+    );
+    setMessageBoxes(messageBoxesWithLocalId ? messageBoxesWithLocalId : []);
+    const messageBoxIds = messageBoxes.map((item:MessageBoxProps)=> item._id);
+    updateDefaultMessages(messageBoxIds);
+   
+    for (const messageBox of messageBoxes) {
+      const channel = pusherClient.subscribe(`private-${messageBox._id}`);
+    }
+    pusherClient.bind("new-message", (data: any) =>
+      handleSetLastMessage(data)
+    );
+    setRefreshing(false);
+    console.log("refreshing...");
+  };
   useEffect(() => {
-    const getMyMessageBoxesFUNC = async () => {
-      const { _id } = await getLocalAuth();
-      const messageBoxes = await getMyChatBoxes();
-      const messageBoxesWithLocalId = messageBoxes.map(
-        (item: MessageBoxProps) => ({
-          ...item,
-          localUserId: _id,
-        })
-      );
-      setMessageBoxes(messageBoxesWithLocalId ? messageBoxesWithLocalId : []);
-      const messageBoxIds = messageBoxes.map((item:MessageBoxProps)=> item._id);
-      updateDefaultMessages(messageBoxIds);
-     
-      for (const messageBox of messageBoxes) {
-        const channel = pusherClient.subscribe(`private-${messageBox._id}`);
-      }
-      pusherClient.bind("new-message", (data: any) =>
-        handleSetLastMessage(data)
-      );
-    };
     getMyMessageBoxesFUNC();
   }, []);
   const handleSetLastMessage = (data: any) => {
@@ -75,7 +78,9 @@ const OutSideMessagePage = () => {
         </View>
       </TouchableOpacity>
       {messageBoxes.length > 0 ? (
-        <ScrollView className="message-list w-full flex-1">
+        <ScrollView className="message-list w-full flex-1"  refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={getMyMessageBoxesFUNC} />
+        }>
           {messageBoxes?.map((item) => (
             <MessageBox key={item._id} {...item} />
           ))}
