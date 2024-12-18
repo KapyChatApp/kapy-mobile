@@ -70,7 +70,7 @@ const FriendFindBox = (props: FriendBoxProps) => {
           {props.onlineTime} min ago
         </Text>
       </View>
-      {RenderFriendBoxButton()}
+  
     </TouchableOpacity>
   );
 };

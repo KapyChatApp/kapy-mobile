@@ -13,12 +13,13 @@ import {
   sortFriendsDescending,
 } from "@/utils/Filter";
 
-const FriendList = ({refreshing, setRefreshing}:any) => {
+const FriendList = ({refreshing, setRefreshing, setFriends}:any) => {
   const [myFriends, setMyFriends] = useState<FriendBoxProps[][]>([]);
   const getMyFriendsFUNC = async () => {
     const friends = await getMyFriends();
     setMyFriends(groupFriendsByFirstLetter(friends));
     setMyFriends(sortFriendsAscending(groupFriendsByFirstLetter(friends)));
+    setFriends(friends);
     setRefreshing(false);
   };
   useFocusEffect(
