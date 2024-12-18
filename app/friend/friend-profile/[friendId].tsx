@@ -1,4 +1,4 @@
-import { View, Text, Platform } from "react-native";
+import { View, Text, Platform, RefreshControl } from "react-native";
 import React, { useEffect, useState } from "react";
 import { useLocalSearchParams, useNavigation, useRouter } from "expo-router";
 import HeadProfile from "@/components/shared/community/HeadProfile";
@@ -18,13 +18,15 @@ import { addBFF, addFriend } from "@/lib/add-request";
 import { IconURL } from "@/constants/IconURL";
 import LoadingSpinner from "@/components/ui/LoadingSpinner";
 import { getFriendProfile } from "@/lib/friend-profile";
-import FriendPostList from "@/components/shared/community/FriendPostList";
 import HeadProfileSkeletonLoader from "@/components/ui/HeadProfileSkeletonLoader";
 import BioSkeletonLoader from "@/components/ui/BioSkeletonLoader";
 import SocialSkeletonLoader from "@/components/ui/PostSkeletonLoader";
 import { RateProps } from "@/types/rate";
 import { getRatesOfUser } from "@/lib/rate";
 import RecentRate from "@/components/shared/community/RecentRate";
+import { SocialPostProps } from "@/types/post";
+import { getFriendPosts } from "@/lib/post";
+import SocialPost from "@/components/shared/community/SocialPost";
 const FriendProfilePage = () => {
   const { friendId } = useLocalSearchParams();
   const navigation = useNavigation();
@@ -33,58 +35,66 @@ const FriendProfilePage = () => {
     HeadProfileProps | undefined
   >();
   const [bioProps, setBioProps] = useState<UserBioProps | undefined>();
+  const [postsData, setPostsData] = useState<SocialPostProps[]>([]);
   const [relation, setRelation] = useState("stranger");
   const [friendedId, setFriendedId] = useState("");
 
   const [loading, setLoading] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [refreshing, setIsRefreshing] = useState(false);
 
   const [reload, setReload] = useState(false);
   const [isProfileLoading, setIsProfileLoading] = useState(true);
   const [recentRates, setRecentRates] = useState<RateProps[]>([]);
 
   const [localUserId, setLocalUserId] = useState("");
-  useEffect(() => {
-    const disPlayUserData = async () => {
-      try {
-        const friendData = await getFriendProfile(friendId, () =>
-          setIsProfileLoading(false)
-        );
-        const {
-          _id,
-          firstName,
-          lastName,
-          nickName,
-          bio,
-          avatar,
-          background,
-          relation,
-          point,
-          mutualFriends,
-          ..._bio
-        } = friendData;
-        setHeaderProps({
-          _id,
-          firstName,
-          lastName,
-          nickName,
-          bio,
-          avatar,
-          background,
-          point,
-          mutualFriends,
-        });
-        setBioProps(_bio);
-        setRelation(relation);
-        const recentRates = await getRatesOfUser(_id);
-        setRecentRates(recentRates);
-        setFriendedId(_id.toString());
-      } catch (error) {
-        console.log(error);
-        router.push("/(tabs)/friends/not-found");
-      }
-    };
 
+  const disPlayUserData = async () => {
+    try {
+      const postsData: SocialPostProps[] = await getFriendPosts(friendId.toString());
+      console.log("posttttttttt:",postsData);
+      setPostsData(postsData);
+      const friendData = await getFriendProfile(friendId, () =>
+        setIsProfileLoading(false)
+      );
+    
+      const {
+        _id,
+        firstName,
+        lastName,
+        nickName,
+        bio,
+        avatar,
+        background,
+        relation,
+        point,
+        mutualFriends,
+        ..._bio
+      } = friendData;
+      setHeaderProps({
+        _id,
+        firstName,
+        lastName,
+        nickName,
+        bio,
+        avatar,
+        background,
+        point,
+        mutualFriends,
+      });
+      
+      setBioProps(_bio);
+      setRelation(relation);
+      const recentRates = await getRatesOfUser(_id);
+      setRecentRates(recentRates);
+      setFriendedId(_id.toString());
+      setIsRefreshing(false);
+    } catch (error) {
+      console.log(error);
+      router.push("/(tabs)/friends/not-found");
+    }
+  };
+  useEffect(() => {
     disPlayUserData();
   }, [reload]);
   const RelationButtonGroups = () => {
@@ -271,7 +281,7 @@ const FriendProfilePage = () => {
   };
   return (
     <View className={`flex-1 ${bgLight500Dark10}`}>
-      <ScrollView>
+      <ScrollView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={disPlayUserData}/>}>
         {isProfileLoading ? (
           <HeadProfileSkeletonLoader />
         ) : (
@@ -319,7 +329,7 @@ const FriendProfilePage = () => {
           {relation === "bff" ? (
             <View className="flex  items-center w-full">
               {friendedId ? (
-                isProfileLoading ? (
+                isProfileLoading|| postsData.length===0 ? (
                   <View className="flex" style={{ rowGap: 20 }}>
                     <SocialSkeletonLoader />
                     <SocialSkeletonLoader />
@@ -328,7 +338,13 @@ const FriendProfilePage = () => {
                     <SocialSkeletonLoader />
                   </View>
                 ) : (
-                  <FriendPostList friendId={friendedId} />
+                  <View
+                        className="flex-1 items-center justify-center w-full px-[15px]"
+                        style={{ rowGap: 20 }}
+                      >{
+                  postsData.map((item) => (
+                    <SocialPost key={item._id} {...item} />
+                  ))}</View>
                 )
               ) : null}
             </View>
