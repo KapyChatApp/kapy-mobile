@@ -11,9 +11,17 @@ export const formatDate = (dateString: string) => {
 
   export const formatDateDistance = (date: string | Date) => {
     const utcDate = new Date(date);
+    const nowUtc = new Date(new Date().toISOString());
   
-    const nowUtc = new Date(new Date().toISOString()); 
+    // Tính khoảng cách thời gian (theo giây)
+    const secondsDiff = Math.floor((nowUtc.getTime() - utcDate.getTime()) / 1000);
   
+    // Nếu thời gian nhỏ hơn 1 phút (60 giây), hiển thị số giây
+    if (secondsDiff < 60) {
+      return `${secondsDiff} seconds ago`;
+    }
+  
+    // Nếu lớn hơn 1 phút, dùng `formatDistance`
     return formatDistance(utcDate, nowUtc, { addSuffix: true });
   };
 

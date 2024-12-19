@@ -13,6 +13,7 @@ import { bgLight500Dark10 } from "@/styles/theme";
 import { useClickOutside } from "react-native-click-outside";
 import { MessageBoxProps, MessageProps } from "@/types/message";
 import {
+  addToMessageLocal,
   disableTexting,
   getAllMessages,
   getAMessageBox,
@@ -33,6 +34,7 @@ import { pickDocument } from "@/utils/DoucmentPicker";
 import ImageViewing from "react-native-image-viewing";
 import { FileProps } from "@/types/file";
 import { openWebFile } from "@/utils/File";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 const MessageDetailPage = () => {
   const { messageId } = useLocalSearchParams();
   const ref = useClickOutside<View>(() => {
@@ -124,7 +126,6 @@ const MessageDetailPage = () => {
     let mediaData = selectedMedia[0];
     setSelectedMedia([]);
     setMessageText("");
-    console.log("media data: ", mediaData);
     if (messageTextData != "" || selectedMedia.length != 0) {
       setMessages((prevMessages) => [
         ...prevMessages,
@@ -168,11 +169,13 @@ const MessageDetailPage = () => {
     const getAllMessageFUNC = async () => {
       const { _id } = await getLocalAuth();
       await markRead(messageId.toString());
-      const messageBox: MessageBoxProps = await getAMessageBox(messageId);
+      const messageBoxLocal = await AsyncStorage.getItem(`box-${messageId}`);
+      const messageBox: MessageBoxProps = await JSON.parse(messageBoxLocal!);
       messageBox.localUserId = _id;
       setChatBoxHeader(messageBox);
       setMessageBox(messageBox);
-      const messages = await getAllMessages(messageId);
+      const localMessage = await AsyncStorage.getItem(`messages-${messageId}`);
+      const messages = await JSON.parse(localMessage!);
       setMessages(messages);
       setLocalUserId(_id);
 
@@ -187,9 +190,10 @@ const MessageDetailPage = () => {
           status
         );
       });
-      pusherClient.bind("new-message", (data: any) => {
+      pusherClient.bind("new-message", async (data: any) => {
         setMessages((prevMessages) => [...prevMessages, data]);
         markAsRead(messageId.toString());
+        await addToMessageLocal(messageId.toString(),data);
       });
       pusherClient.bind("revoke-message", (data: any) => {
         console.log("revoke: ", data);

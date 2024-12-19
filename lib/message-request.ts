@@ -1,6 +1,6 @@
 import axios from "axios";
 import { getLocalAuth } from "./local-auth";
-import { CreateChatBoxProps } from "@/types/message";
+import { CreateChatBoxProps, MessageProps } from "@/types/message";
 import { generateRandomNumberString } from "@/utils/Random";
 import * as FileSystem from "expo-file-system";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -8,7 +8,7 @@ import { prepareFileForUpload } from "@/utils/File";
 export const getMyChatBoxes = async () => {
   try {
     const { token } = await getLocalAuth();
-    const response = await axios.get(
+    const boxChats = await axios.get(
       process.env.EXPO_PUBLIC_BASE_URL + "/message/all-box-chat",
       {
         headers: {
@@ -17,7 +17,24 @@ export const getMyChatBoxes = async () => {
         },
       }
     );
-    return response.data.box ? response.data.box : null;
+    const groupChats = await axios.get(
+      process.env.EXPO_PUBLIC_BASE_URL + "/message/all-box-group",
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `${token}`,
+        },
+      }
+    );
+    const boxData = Array.isArray(boxChats.data.box) ? boxChats.data.box : [];
+    const groupData = Array.isArray(groupChats.data.box) ? groupChats.data.box : [];
+    const data =  [...boxData,...groupData
+    ];
+    await AsyncStorage.setItem("ChatBoxes",JSON.stringify(data));
+    for(const box of data){
+      await AsyncStorage.setItem(`box-${box._id}`,JSON.stringify(box));
+    }
+    return data;
   } catch (error) {
     console.log(error);
     throw error;
@@ -66,22 +83,26 @@ export const getAllMessages = async (boxId: string | string[]) => {
 };
 
 export const createGroup = async (
-  memberIds: string[],
-  leaderId: string,
+  memberIds: string[],  
+  groupName:string,
+  groupAva:{uri:string, type:string, name:string| null|undefined},
   goOn: (boxId: string) => void
 ) => {
   try {
     const { token } = await getLocalAuth();
-    const requestBody: CreateChatBoxProps = {
-      membersIds: memberIds,
-      leaderId: leaderId,
-    };
+    const formData = new FormData();
+    console.log("membersIds: ",memberIds);
+    formData.append("membersIds",JSON.stringify(memberIds));
+    formData.append("groupName",groupName);
+    if(groupAva){
+      formData.append("file",groupAva as any);
+    }
     const response = await axios.post(
       process.env.EXPO_PUBLIC_BASE_URL + "/message/create-group",
-      requestBody,
+      formData,
       {
         headers: {
-          "Content-Type": "application/json",
+          "Content-Type": "multipart/formdata",
           Authorization: `${token}`,
         },
       }
@@ -242,6 +263,18 @@ export const sendMessage = async (
     throw error;
   }
 };
+
+export const addToMessageLocal = async (boxId:string,message:MessageProps)=>{
+  try{
+    const localMessages = await AsyncStorage.getItem(`messages-${boxId}`);
+    const messages = await JSON.parse(localMessages!);
+    messages.push(message);
+    await AsyncStorage.setItem(`messages-${boxId}`,JSON.stringify(messages));
+  }catch(error){
+    console.log(error);
+    throw error;
+  }
+}
 
 export const texting = async (boxId: string) => {
   try {

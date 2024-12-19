@@ -58,14 +58,7 @@ const SearchPage = () => {
       >
         {results.map((item) => (
           <TouchableOpacity
-            onPress={async () =>
-              await createGroup([localUserId, item._id], localUserId, (boxId) =>
-                router.push({
-                  pathname: "/chatbox/[messageId]",
-                  params: { messageId: boxId },
-                })
-              )
-            }
+          
           >
             <FriendBoxNonEvent key={item._id} {...item} />
           </TouchableOpacity>

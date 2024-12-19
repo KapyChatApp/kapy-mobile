@@ -8,6 +8,8 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 import { getMyProfile } from "@/lib/my-profile";
 import { checkIn, checkOut } from "@/lib/local-auth";
+import { getAllMessages, getMyChatBoxes } from "@/lib/message-request";
+import { getMyFriends } from "@/lib/my-friends";
 const HomeLayout = () => {
   const [appState, setAppState] = useState(AppState.currentState);
 
@@ -15,7 +17,13 @@ const HomeLayout = () => {
   useEffect(() => {
     const fetchData = async () => {
       await getMyProfile();
+      const boxes = await getMyChatBoxes();
       await checkIn();
+      for(const box of boxes){
+        const messages = await getAllMessages(box._id);
+        await AsyncStorage.setItem(`messages-${box._id}`,JSON.stringify(messages))
+      }
+      await getMyFriends();
     };
 
     fetchData();
