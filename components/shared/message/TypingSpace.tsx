@@ -1,8 +1,6 @@
-import { View, Text, Platform, Modal } from "react-native";
+import { View} from "react-native";
 import React, { useRef, useState } from "react";
 import {
-  bgLight500Dark0,
-  bgLight500Dark10,
   bgLight600Dark300,
   textLight0Dark500,
 } from "@/styles/theme";
@@ -11,7 +9,6 @@ import { TouchableOpacity } from "react-native-gesture-handler";
 import { IconURL } from "@/constants/IconURL";
 import Icon from "@/components/ui/Icon";
 import { useTheme } from "@/context/ThemeProviders";
-import Popover, { PopoverPlacement } from "react-native-popover-view";
 import { useClickOutside } from "react-native-click-outside";
 
 const TypingSpace = ({
@@ -61,74 +58,6 @@ const TypingSpace = ({
           className="flex flex-row items-center justify-between"
           style={{ columnGap: 11 }}
         >
-          {/* <View ref={ref}>
-            <TouchableOpacity onPress={handleToggle}>
-              <View ref={buttonRef}>
-                <Icon
-                  iconURL={
-                    theme === "light"
-                      ? IconURL.chat_func_more_l
-                      : IconURL.chat_func_more_d
-                  }
-                  size={28}
-                />
-              </View>
-            </TouchableOpacity>
-            {isMoreOpen ? (
-              <Modal
-                transparent={true}
-                visible={isMoreOpen}
-                onRequestClose={() => setIsMoreOpen(false)}
-                animationType="fade"
-              >
-                <View
-                  className={`w-[140px] bg-light-510 dark:bg-dark-20 absolute`}
-                  style={{
-                    bottom: popoverPosition.bottom + 38,
-                    left: popoverPosition.left,
-                  }}
-                >
-                  <View className="flex-1">
-                    <TouchableOpacity
-                      className={`flex flex-row items-center  ${bgLight500Dark10} p-[13px]`}
-                      style={{ columnGap: 12 }}
-                      onPress={() => console.log("press!")}
-                    >
-                      <Icon
-                        iconURL={
-                          theme === "light"
-                            ? IconURL.attach_l
-                            : IconURL.attach_d
-                        }
-                        size={28}
-                      />
-                      <Text className={`${textLight0Dark500} text-12`}>
-                        Attachment
-                      </Text>
-                    </TouchableOpacity>
-                  </View>
-                  <View>
-                    <TouchableOpacity
-                      className={`flex flex-row items-center  ${bgLight500Dark10} p-[13px]`}
-                      style={{ columnGap: 12 }}
-                    >
-                      <Icon
-                        iconURL={
-                          theme === "light"
-                            ? IconURL.location_l
-                            : IconURL.location_d
-                        }
-                        size={28}
-                      />
-                      <Text className={`${textLight0Dark500} text-12`}>
-                        Location
-                      </Text>
-                    </TouchableOpacity>
-                  </View>
-                </View>
-              </Modal>
-            ) : null}
-          </View> */}
            <TouchableOpacity onPress={handlePickDocument}>
             <Icon
               iconURL={theme === "light" ? IconURL.attach_l : IconURL.attach_d}

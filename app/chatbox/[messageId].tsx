@@ -36,6 +36,7 @@ import { FileProps } from "@/types/file";
 import { openWebFile } from "@/utils/File";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import UserAvatar from "@/components/ui/UserAvatar";
+import { ScreenRatio } from "@/utils/Device";
 const MessageDetailPage = () => {
   const { messageId } = useLocalSearchParams();
   const ref = useClickOutside<View>(() => {
@@ -133,7 +134,7 @@ const MessageDetailPage = () => {
         {
           id: "",
           isReact: [],
-          readedId: [],
+          readedId: [localUserId],
           contentId:selectedMedia[0]? {url:selectedMedia[0].uri, type:selectedMedia[0].type, fileName:selectedMedia[0].name!, width:150, height:150}:undefined,
           text: messageText,
           createAt: new Date().toString(),
@@ -149,8 +150,10 @@ const MessageDetailPage = () => {
             handleViewFile(mediaData);
           },
           handleViewPdf: () => handleViewFile(mediaData),
+      
         },
       ]);
+      await markRead(messageId.toString());
       await sendMessage(messageId.toString(), messageText, selectedMedia,(status)=>setSendStatus(status));
     }
   };
@@ -215,9 +218,11 @@ const MessageDetailPage = () => {
 
   return (
     <KeyboardAvoidingView
-      behavior={Platform.OS === "ios" ? "padding" : "height"}
-      style={{ flex: 1 }}
-    >
+            className="flex-1"
+            behavior={Platform.OS === "ios" ? "padding" : "height"}
+            style={{ paddingBottom: Platform.OS === "android" ? 0 : 10 }}
+            keyboardVerticalOffset={Platform.OS === "ios" ? (ScreenRatio >1.8? 56:14) : 0}
+          >
       <View className="flex-1 ">
         {isImageViewOpen ? (
           <ImageViewing
