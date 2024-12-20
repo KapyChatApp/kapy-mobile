@@ -445,9 +445,9 @@ const Message = (props: MessageProps) => {
   useEffect(() => {
     const setUpMessage = async () => {
       setTotalLike(props.isReact.length);
-      const friend = await AsyncStorage.getItem(`friend-${props.createBy}`);
-      const friendData = await JSON.parse(friend!);
-      setAvatar(friendData?.avatar);
+      const createdUser = await AsyncStorage.getItem(`user-${props.createBy}`);
+      const createdUserData = await JSON.parse(createdUser!);
+      setAvatar(createdUserData?.avatar);
       if (props.isReact.includes(props.localUserId!)) {
         setIsLiked(true);
         setTimeLikes(1);

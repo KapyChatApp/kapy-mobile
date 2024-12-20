@@ -15,12 +15,12 @@ export const getMyFriends = async () => {
     );
 
     if (response.data) {
+      await AsyncStorage.setItem("friends",JSON.stringify((response.data)));
       for (const friend of response.data) {
         await AsyncStorage.setItem(
           `friend-${friend._id}`,
           JSON.stringify(friend)
         );
-        console.log(`friend-${friend._id} :`,friend);
       }
       return response.data;
     }

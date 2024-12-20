@@ -35,6 +35,7 @@ import ImageViewing from "react-native-image-viewing";
 import { FileProps } from "@/types/file";
 import { openWebFile } from "@/utils/File";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import UserAvatar from "@/components/ui/UserAvatar";
 const MessageDetailPage = () => {
   const { messageId } = useLocalSearchParams();
   const ref = useClickOutside<View>(() => {
@@ -199,9 +200,11 @@ const MessageDetailPage = () => {
         console.log("revoke: ", data);
         handleRevokeMessage(data.id);
       });
-      pusherClient.bind("texting-status", (data: any) => {
+      pusherClient.bind("texting-status", async (data: any) => {
         if (data.userId !== _id) {
-          setTextingAvatar(data.avatar);
+          const textingUser = await AsyncStorage.getItem(`user-${data.userId}`);
+          const textingUserData = await JSON.parse(textingUser!);
+          setTextingAvatar(textingUserData.avatar);
           setTimeout(() => setIsTypingMessage(data.texting), 200);
         }
       });
@@ -250,7 +253,7 @@ const MessageDetailPage = () => {
               scrollViewRef.current?.scrollToEnd({ animated: true })
             }
           >
-            {messages.map((item, index) => {
+            {messages.length!=0 && messages? messages.map((item, index) => {
               const previousMessage = messages[index - 1];
               const nextMessage = messages[index + 1];
               let position = "free";
@@ -294,12 +297,13 @@ const MessageDetailPage = () => {
                   handleViewFile={handleViewFile}
                 />
               );
-            })}
+            }):null}
             {isTypingMessage ? (
               <View
-                className="flex flex-row ml-[34px]"
+                className="flex flex-row"
                 style={{ columnGap: 4 }}
               >
+                <UserAvatar size={34} avatarURL={{uri:textingAvatar}}/>
                 <TypingAnimation />
               </View>
             ) : null}

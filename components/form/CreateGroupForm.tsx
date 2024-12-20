@@ -28,6 +28,7 @@ import { create } from "tailwind-rn";
 import { useRouter } from "expo-router";
 import { MessageBoxProps, ReceiverProps } from "@/types/message";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import LoadingSpinner from "../ui/LoadingSpinner";
 
 const CreateGroupForm = ({ isVisible, onClose }: any) => {
   const router = useRouter();
@@ -39,7 +40,6 @@ const CreateGroupForm = ({ isVisible, onClose }: any) => {
   >([]);
   const [groupName, setGroupName] = useState("");
   const handleGalleryPicker = async () => {
-    console.log("opennn");
     const media = await singlePickMedia();
     setSelectedMedia(media);
   };
@@ -123,8 +123,9 @@ const CreateGroupForm = ({ isVisible, onClose }: any) => {
 
   useEffect(() => {
     const getMyFriendsFUNC = async () => {
-      const friends = await getMyFriends();
-      setFriends(friends);
+      const friends = await AsyncStorage.getItem("friends");
+      const friendDatas = await JSON.parse(friends!);
+      setFriends(friendDatas);
     };
     getMyFriendsFUNC();
   }, []);
@@ -203,18 +204,20 @@ const CreateGroupForm = ({ isVisible, onClose }: any) => {
             ))}
           </View>
           <ScrollView>
-            {friends.map((item, index) => (
-              <SelectFriendBox
-                onSelect={(data) => setSelected((prev) => [...prev, data])}
-                onUnSelect={(data) => {
-                  setSelected((prev) =>
-                    prev.filter((item) => item._id !== data._id)
-                  );
-                }}
-                key={index}
-                {...item}
-              />
-            ))}
+            {
+              friends.map((item, index) => (
+                <SelectFriendBox
+                  onSelect={(data) => setSelected((prev) => [...prev, data])}
+                  onUnSelect={(data) => {
+                    setSelected((prev) =>
+                      prev.filter((item) => item._id !== data._id)
+                    );
+                  }}
+                  key={index}
+                  {...item}
+                />
+              ))
+            }
           </ScrollView>
         </Animated.View>
       </View>

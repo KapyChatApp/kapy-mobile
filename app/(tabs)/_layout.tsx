@@ -19,30 +19,39 @@ const HomeLayout = () => {
       await getMyProfile();
       const boxes = await getMyChatBoxes();
       await checkIn();
-      for(const box of boxes){
+      for (const box of boxes) {
         const messages = await getAllMessages(box._id);
-        await AsyncStorage.setItem(`messages-${box._id}`,JSON.stringify(messages))
+        await AsyncStorage.setItem(
+          `messages-${box._id}`,
+          JSON.stringify(messages)
+        );
+        for (const member of box.receiverIds) {
+          AsyncStorage.setItem(`user-${member._id}`, JSON.stringify(member));
+        }
       }
       await getMyFriends();
     };
 
     fetchData();
 
-    const subscription = AppState.addEventListener('change', handleAppStateChange);
+    const subscription = AppState.addEventListener(
+      "change",
+      handleAppStateChange
+    );
 
     // Cleanup khi component unmount
     return () => {
       subscription.remove();
       // Đảm bảo gọi checkout khi ứng dụng bị tắt hoặc chuyển sang nền
-      if (appState === 'active') {
+      if (appState === "active") {
         checkOut();
       }
     };
   }, [appState]);
 
-  const handleAppStateChange = (nextAppState:any) => {
-    if (appState.match(/active/) && nextAppState === 'background') {
-      checkOut(); 
+  const handleAppStateChange = (nextAppState: any) => {
+    if (appState.match(/active/) && nextAppState === "background") {
+      checkOut();
     }
     setAppState(nextAppState);
   };
