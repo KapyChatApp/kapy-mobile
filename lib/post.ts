@@ -68,7 +68,7 @@ export const getFriendPosts = async (friendId: string) => {
       }
     );
     if(response.status===200||response.status===201){
-      return response.status;
+      return response.data;
     }
     return [];
   } catch (error) {

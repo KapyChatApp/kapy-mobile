@@ -47,7 +47,6 @@ const MessageDetailPage = () => {
   });
 
   const [isTyping, setIsTypeping] = useState(false);
-  const [sendStatus, setSendStatus] = useState("non-send");
   const [messages, setMessages] = useState<MessageProps[]>([]);
   const [localUserId, setLocalUserId] = useState("");
   const [chatBoxHeader, setChatBoxHeader] = useState<MessageBoxProps>();
@@ -123,41 +122,49 @@ const MessageDetailPage = () => {
   const handleDisableTexting = async () => {
     await disableTexting(messageId.toString());
   };
+  
   const handleSendMessage = async () => {
     handleDisableTexting();
-    setSendStatus("sending");
     const messageTextData = messageText;
     let mediaData = selectedMedia[0];
     setSelectedMedia([]);
     setMessageText("");
     if (messageTextData != "" || selectedMedia.length != 0) {
       await playSound(AppSound.send_message);
+      const tempMessage:MessageProps=  {
+        id: "",
+        isReact: [],
+        readedId: [localUserId],
+        contentId:selectedMedia[0]? {url:selectedMedia[0].uri, type:selectedMedia[0].type, fileName:selectedMedia[0].name!, width:150, height:150}:undefined,
+        text: messageText,
+        createAt: new Date().toString(),
+        createBy: localUserId,
+        position: "",
+        isSender: true,
+        avatar: "",
+        boxId: "",
+        handleViewImage: () => {
+          handleViewImage(mediaData.uri);
+        },
+        handleViewFile: () => {
+          handleViewFile(mediaData);
+        },
+        sendStatus:"sending"
+      }
       setMessages((prevMessages) => [
         ...prevMessages,
-        {
-          id: "",
-          isReact: [],
-          readedId: [localUserId],
-          contentId:selectedMedia[0]? {url:selectedMedia[0].uri, type:selectedMedia[0].type, fileName:selectedMedia[0].name!, width:150, height:150}:undefined,
-          text: messageText,
-          createAt: new Date().toString(),
-          createBy: localUserId,
-          position: "",
-          isSender: true,
-          avatar: "",
-          boxId: "",
-          handleViewImage: () => {
-            handleViewImage(mediaData.uri);
-          },
-          handleViewFile: () => {
-            handleViewFile(mediaData);
-          },
-          handleViewPdf: () => handleViewFile(mediaData),
-      
-        },
+        tempMessage
       ]);
       await markRead(messageId.toString());
-      await sendMessage(messageId.toString(), messageText, selectedMedia,(status)=>setSendStatus(status));
+      await sendMessage(messageId.toString(), messageText,selectedMedia, (id, status) => {
+        setMessages((prevMessages) =>
+          prevMessages.map((message) =>
+            message.createAt === tempMessage.createAt // So khớp với message tạm thời dựa trên thời gian tạo
+              ? { ...message, id, sendStatus: status }
+              : message
+          )
+        );
+      });
     }
   };
   const handleDeleteMessage = (id: string) => {

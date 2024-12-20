@@ -57,7 +57,7 @@ const Message = (props: MessageProps) => {
   const handleLongPress = () => {
     if (pressableRef.current) {
       pressableRef.current.measure((fx, fy, width, height, px, py) => {
-        console.log("h: ",py+height,"w: ",screenWidth - 300 )
+        console.log("h: ", py + height, "w: ", screenWidth - 300);
         if (py + height < screenHeight / 2) {
           setModalPosition({
             x: props.isSender ? screenWidth - 300 : px,
@@ -78,7 +78,7 @@ const Message = (props: MessageProps) => {
 
   const router = useRouter();
   const roundedValueReceiver = () => {
-    if(props.contentId){
+    if (props.contentId) {
       return "rounded-3xl";
     }
     switch (position) {
@@ -93,7 +93,7 @@ const Message = (props: MessageProps) => {
     }
   };
   const roundedValueSender = () => {
-    if(props.contentId){
+    if (props.contentId) {
       return "rounded-3xl";
     }
     switch (position) {
@@ -137,7 +137,7 @@ const Message = (props: MessageProps) => {
   const renderContent = () => {
     switch (props.contentId?.type) {
       case "Image":
-        case "image":
+      case "image":
         return (
           <Pressable
             onPress={() => props?.handleViewImage(props.contentId?.url!)}
@@ -150,15 +150,17 @@ const Message = (props: MessageProps) => {
           </Pressable>
         );
       case "Video":
-        case "video":
+      case "video":
         return (
-          <Pressable className="rounded-2xl flex-1 w-full h-full"
-          onLongPress={handleLongPress}>
+          <Pressable
+            className="rounded-2xl flex-1 w-full h-full"
+            onLongPress={handleLongPress}
+          >
             <VideoPlayer videoSource={props.contentId.url!} />
           </Pressable>
         );
       case "Audio":
-        case "audio":
+      case "audio":
         return (
           <AudioPlayer
             audioUri={props.contentId.url!}
@@ -404,17 +406,16 @@ const Message = (props: MessageProps) => {
     }
   };
 
-  const renderSendStatus =  ()=>{
-    switch (props.sendStatus){
+  const renderSendStatus = () => {
+    switch (props.sendStatus) {
       case "sending":
         return "Sending...";
-        case "success":
-          return "Sent ✓"
-          case "fail":
-            return "Fail ×";
+      case "success":
+        return "Sent ✓";
+      case "fail":
+        return "Fail ×";
     }
-
-  }
+  };
 
   const handleLike = async () => {
     setIsLiked(!isLiked);
@@ -604,7 +605,7 @@ const Message = (props: MessageProps) => {
       >
         {!props.isSender && (position === "bottom" || position === "free") ? (
           <UserAvatarLink
-            avatarURL={{ uri:avatar}}
+            avatarURL={{ uri: avatar }}
             size={36}
             userId={props.createBy}
           />
@@ -620,6 +621,21 @@ const Message = (props: MessageProps) => {
               aspectRatio: props.contentId.width! / props.contentId.height!,
             }}
           >
+            {props.sendStatus === "sending" && (
+              <View
+              className="rounded-3xl"
+                style={{
+                  position: "absolute", 
+                  top: 0,
+                  left: 0,
+                  right: 0,
+                  bottom: 0,
+                  backgroundColor: "rgba(128, 128, 128, 0.7)", 
+                  zIndex: 1, 
+                }}
+              />
+            )}
+
             {renderContent()}
           </View>
         ) : (
@@ -668,7 +684,11 @@ const Message = (props: MessageProps) => {
           {formatDateDistance(props.createAt)}
         </Text>
       ) : null}
-      {props.sendStatus!="non-send"? <Text className="text-deny font-helvetica-light text-10">{renderSendStatus()}</Text>:null}
+      {props.sendStatus != "non-send" ? (
+        <Text className="text-deny font-helvetica-light text-10">
+          {renderSendStatus()}
+        </Text>
+      ) : null}
     </View>
   );
 };
