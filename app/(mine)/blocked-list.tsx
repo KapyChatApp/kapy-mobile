@@ -9,6 +9,7 @@ import Search from "@/components/shared/function/Search";
 import { bgLight500Dark10 } from "@/styles/theme";
 import { FriendBoxProps } from "@/types/friend";
 import { getMyBlocks } from "@/lib/my-blocks";
+import { onRefresh } from "@/utils/Refresh";
 
 const BlockedListPage = () => {
   const navigation = useNavigation();
@@ -31,7 +32,7 @@ const BlockedListPage = () => {
       ></Previous>
       <View className="mt-[60px] flex flex-1" style={{ rowGap: 4 }}>
         <Search></Search>
-        <ScrollView className="flex-1 " contentContainerStyle={{ rowGap: 4 }} refreshControl={<RefreshControl refreshing={refreshing} onRefresh={getMyBlocksFunc}/>}>
+        <ScrollView className="flex-1 " contentContainerStyle={{ rowGap: 4 }} refreshControl={<RefreshControl refreshing={refreshing} onRefresh={()=>onRefresh(async()=>await getMyBlocksFunc())}/>}>
           {blocks?.map((item) => (
             <BlockedUserBox key={item._id} {...item} />
           ))}

@@ -5,6 +5,7 @@ import { ScrollView } from "react-native-gesture-handler";
 import { RequestedProps } from "@/types/friend";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
+import { onRefresh } from "@/utils/Refresh";
 
 const DetailRequestList = () => {
   const [myRequesteds, setMyRequested] = useState<RequestedProps[] | null>([]);
@@ -37,11 +38,16 @@ const DetailRequestList = () => {
     <ScrollView
       className="px-[20px] pt-[10px] flex flex-col flex-1"
       contentContainerStyle={{ rowGap: 4, paddingBottom: 4 }}
-      refreshControl={<RefreshControl refreshing={refreshing} onRefresh={getMyRequested}/>}
+      refreshControl={
+        <RefreshControl
+          refreshing={refreshing}
+          onRefresh={() => onRefresh(async () => await getMyRequested())}
+        />
+      }
     >
-      {myRequesteds?.map((item)=>
-        <DetailRequestBox {...item}/>
-      )}
+      {myRequesteds?.map((item) => (
+        <DetailRequestBox {...item} />
+      ))}
     </ScrollView>
   );
 };

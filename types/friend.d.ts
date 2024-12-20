@@ -8,6 +8,7 @@ export interface FriendBoxProps{
     mutualFriends?:ShortUserProps[];
     onlineTime?:string;    
     relation?:string;
+    localUserId?:string;
 }
 
 export interface SelectFriendBoxProps{

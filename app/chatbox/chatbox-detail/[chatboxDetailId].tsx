@@ -80,7 +80,7 @@ const ChatBoxDetailPage = () => {
             iconURL={
               theme === "light" ? IconURL.groups_l : IconURL.groups_d
             }
-            URL="/chatbox/multimedia"
+            URL="/chatbox/members"
             boxId={chatboxDetailId.toString()}
           />:null}
           <FunctionCard

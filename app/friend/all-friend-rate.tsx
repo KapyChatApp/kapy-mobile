@@ -20,6 +20,7 @@ import RateForm from "@/components/form/RateForm";
 import { getLocalAuth } from "@/lib/local-auth";
 import EditRateForm from "@/components/form/EditRateForm";
 import LoadingSpinner from "@/components/ui/LoadingSpinner";
+import { onRefresh } from "@/utils/Refresh";
 
 const AllFriendRatePage = () => {
   const { userId } = useLocalSearchParams();
@@ -87,7 +88,16 @@ const AllFriendRatePage = () => {
           defaultPoint={Number.parseInt(editPoint)}
         />
       ) : null}
-      <ScrollView className="p-[16px]" contentContainerStyle={{ rowGap: 8 }} refreshControl={<RefreshControl refreshing={refreshing} onRefresh={getAllRatesFUNC}/>}>
+      <ScrollView
+        className="p-[16px]"
+        contentContainerStyle={{ rowGap: 8 }}
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={() => onRefresh(async () => await getAllRatesFUNC)}
+          />
+        }
+      >
         {rates?.map((item) => (
           <Rate
             key={item._id}

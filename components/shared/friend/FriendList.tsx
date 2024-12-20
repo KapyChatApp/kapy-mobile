@@ -12,6 +12,7 @@ import {
   sortFriendsAscending,
   sortFriendsDescending,
 } from "@/utils/Filter";
+import { onRefresh } from "@/utils/Refresh";
 
 const FriendList = ({refreshing, setRefreshing, setFriends}:any) => {
   const [myFriends, setMyFriends] = useState<FriendBoxProps[][]>([]);
@@ -72,7 +73,7 @@ const FriendList = ({refreshing, setRefreshing, setFriends}:any) => {
         className="flex-1 px-[20px]"
         contentContainerStyle={{ rowGap: 4 }}
         refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={getMyFriendsFUNC} />
+          <RefreshControl refreshing={refreshing} onRefresh={()=>onRefresh(async()=>await getMyFriendsFUNC())} />
         }
       >
         {myFriends.map((friendsGroup) => friendsGroup.map((item, index)=><View key={index} className="w-full flex" style={{rowGap:4}}>{index==0? <Text className={`${textLight0Dark500} font-helvetica-light text-12`}>{item.lastName?.split(" ").reverse()[0][0].toUpperCase()}</Text>:null}<FriendBox {...item}/> </View>))}

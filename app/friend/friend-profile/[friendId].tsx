@@ -27,6 +27,7 @@ import RecentRate from "@/components/shared/community/RecentRate";
 import { SocialPostProps } from "@/types/post";
 import { getFriendPosts } from "@/lib/post";
 import SocialPost from "@/components/shared/community/SocialPost";
+import { onRefresh } from "@/utils/Refresh";
 const FriendProfilePage = () => {
   const { friendId } = useLocalSearchParams();
   const navigation = useNavigation();
@@ -281,7 +282,7 @@ const FriendProfilePage = () => {
   };
   return (
     <View className={`flex-1 ${bgLight500Dark10}`}>
-      <ScrollView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={disPlayUserData}/>}>
+      <ScrollView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={()=>onRefresh(async()=>await disPlayUserData())}/>}>
         {isProfileLoading ? (
           <HeadProfileSkeletonLoader />
         ) : (

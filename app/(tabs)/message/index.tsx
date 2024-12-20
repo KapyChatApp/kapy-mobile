@@ -20,6 +20,9 @@ import CustomButton from "@/components/ui/CustomButton";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { IconURL } from "@/constants/IconURL";
 import Icon from "@/components/ui/Icon";
+import { AppSound } from "@/constants/Sound";
+import { playSound } from "@/utils/Media";
+import { onRefresh } from "@/utils/Refresh";
 
 const OutSideMessagePage = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -27,9 +30,12 @@ const OutSideMessagePage = () => {
   const router = useRouter();
   const {markAsUnread,unreadMessages, updateDefaultMessages} =useMarkReadContext();
   const [refreshing, setRefreshing] = useState(false);
+
   const getMyMessageBoxesFUNC = async () => {
     const { _id } = await getLocalAuth();
-  
+
+      
+
     // Lấy danh sách hộp chat từ AsyncStorage
     const messageBoxes = await AsyncStorage.getItem("ChatBoxes");
     const messageBoxDatas = messageBoxes ? JSON.parse(messageBoxes) : []; // Xử lý null
@@ -40,7 +46,6 @@ const OutSideMessagePage = () => {
         const messages = await AsyncStorage.getItem(`messages-${item._id}`);
         const parsedMessages = messages ? JSON.parse(messages) : [];
         const lastMessage = parsedMessages.length > 0 ? parsedMessages.pop() : null;
-        console.log("message: ",parsedMessages);
         return {
           ...item,
           localUserId: _id,
@@ -62,9 +67,10 @@ const OutSideMessagePage = () => {
   
     // Xử lý sự kiện "new-message"
     pusherClient.bind("new-message", (data: any) => handleSetLastMessage(data));
+
+  
   
     setRefreshing(false);
-    console.log("refreshing...");
   };
   useEffect(() => {
     getMyMessageBoxesFUNC();
@@ -100,7 +106,7 @@ const OutSideMessagePage = () => {
       
       {messageBoxes.length > 0 ? (
         <ScrollView className="message-list w-full flex-1"  refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={getMyMessageBoxesFUNC} />
+          <RefreshControl refreshing={refreshing} onRefresh={()=>onRefresh(async()=>await getMyMessageBoxesFUNC)} />
         }>
           {messageBoxes?.map((item) => (
             <MessageBox key={item._id} {...item} />

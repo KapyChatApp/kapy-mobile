@@ -70,4 +70,5 @@ export interface ReceiverProps {
   lastName: string;
   phoneNumber: string;
   avatar: string;
+  localUserId?:string;
 }
