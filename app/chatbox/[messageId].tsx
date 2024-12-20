@@ -38,6 +38,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import UserAvatar from "@/components/ui/UserAvatar";
 import { ScreenRatio } from "@/utils/Device";
 import { playSound } from "@/utils/Media";
+import { AppSound } from "@/constants/Sound";
 const MessageDetailPage = () => {
   const { messageId } = useLocalSearchParams();
   const ref = useClickOutside<View>(() => {
@@ -130,7 +131,7 @@ const MessageDetailPage = () => {
     setSelectedMedia([]);
     setMessageText("");
     if (messageTextData != "" || selectedMedia.length != 0) {
-      await playSound("../assets/sounds/send-message.mp3");
+      await playSound(AppSound.send_message);
       setMessages((prevMessages) => [
         ...prevMessages,
         {
