@@ -3,6 +3,7 @@ import { getLocalAuth } from "./local-auth";
 
 export const getFriendProfile = async (friendId: string|string[], goOn:()=>void) => {
   try {
+    console.log("friendIDsss: ",friendId);
     const { token } = await getLocalAuth();
     const response = await axios.get(
       process.env.EXPO_PUBLIC_BASE_URL + "/friend/profile",

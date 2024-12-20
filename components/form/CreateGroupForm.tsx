@@ -93,7 +93,7 @@ const CreateGroupForm = ({ isVisible, onClose }: any) => {
 
   const handleCreateGroup = async () => {
     const { _id } = await getLocalAuth();
-    const memberIds = [_id];
+    const memberIds:string[] = [];
     for (const friend of selected) {
       memberIds.push(friend._id);
     }

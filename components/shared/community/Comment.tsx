@@ -125,6 +125,7 @@ const Comment = (props: CommentProps) => {
               <UserAvatarLink
                 avatarURL={{ uri: props.avatar }}
                 size={props.isReply ? 30 : 40}
+                userId={props.createBy}
               />
               <View className="flex" style={{ rowGap: props.isReply ? 2 : 5 }}>
                 <Text
