@@ -9,6 +9,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { bgLight500Dark10 } from "@/styles/theme";
 import { getMyBFFs } from "@/lib/my-bff";
 import { FriendBoxProps } from "@/types/friend";
+import { onRefresh } from "@/utils/Refresh";
 
 const BFFListPage = () => {
   const navigation = useNavigation();
@@ -31,7 +32,7 @@ const BFFListPage = () => {
       ></Previous>
       <View className="mt-[60px] flex flex-1" style={{ rowGap: 4 }}>
         <Search></Search>
-        <ScrollView className=" flex-1" contentContainerStyle={{ rowGap: 4 }} refreshControl={<RefreshControl refreshing={refreshing} onRefresh={getMyBFFFunc}/>}>
+        <ScrollView className=" flex-1" contentContainerStyle={{ rowGap: 4 }} refreshControl={<RefreshControl refreshing={refreshing} onRefresh={()=>onRefresh(async()=>await getMyBFFFunc())}/>}>
           {myBFFs?.map((item: any) => (
             <BestFriendBox key={item._id} {...item} />
           ))}

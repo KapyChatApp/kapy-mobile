@@ -30,6 +30,7 @@ import { getPathWithConventionsCollapsed } from "expo-router/build/fork/getPathF
 import { useRouter } from "expo-router";
 import MessageLove from "@/components/ui/MessageLove";
 import { getLocalAuth } from "@/lib/local-auth";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const Message = (props: MessageProps) => {
   const [position, setPosition] = useState(props.position);
@@ -37,6 +38,7 @@ const Message = (props: MessageProps) => {
   const [isShowTime, setIsShowTime] = useState(
     position === "bottom" ? true : false
   );
+  const [avatar, setAvatar] = useState("");
   const timeRef = useClickOutside<View>(() => setIsShowTime(false));
   const modalRef = useClickOutside<View>(() => setIsModalVisible(false));
 
@@ -131,38 +133,6 @@ const Message = (props: MessageProps) => {
       { cancelable: true }
     );
   };
-
-  const { showActionSheetWithOptions } = useActionSheet();
-  // const handleLongPress = async () => {
-  //   const options = props.isSender
-  //     ? ["Revoke message", "Delete message", "Cancel"]
-  //     : ["Report message", "Delete message", "Cancel"];
-  //   const cancelButtonIndex = 2;
-  //   showActionSheetWithOptions(
-  //     {
-  //       options,
-  //       cancelButtonIndex,
-  //     },
-  //     (selectedIndex: number | undefined) => {
-  //       switch (selectedIndex) {
-  //         case 0:
-  //           if (props.isSender) {
-  //             handleRevokeMessage();
-  //           } else {
-  //             router.push({
-  //               pathname: "/report",
-  //               params: { targetId: props.id, targetType: "Message" },
-  //             });
-  //           }
-  //           break;
-  //         case 1:
-  //           handleDeleteMessage();
-  //           break;
-  //         case cancelButtonIndex:
-  //       }
-  //     }
-  //   );
-  // };
 
   const renderContent = () => {
     switch (props.contentId?.type) {
@@ -475,6 +445,9 @@ const Message = (props: MessageProps) => {
   useEffect(() => {
     const setUpMessage = async () => {
       setTotalLike(props.isReact.length);
+      const createdUser = await AsyncStorage.getItem(`user-${props.createBy}`);
+      const createdUserData = await JSON.parse(createdUser!);
+      setAvatar(createdUserData?.avatar);
       if (props.isReact.includes(props.localUserId!)) {
         setIsLiked(true);
         setTimeLikes(1);
@@ -631,7 +604,7 @@ const Message = (props: MessageProps) => {
       >
         {!props.isSender && (position === "bottom" || position === "free") ? (
           <UserAvatarLink
-            avatarURL={{ uri: props.avatar }}
+            avatarURL={{ uri:avatar}}
             size={36}
             userId={props.createBy}
           />

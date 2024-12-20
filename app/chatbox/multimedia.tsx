@@ -32,7 +32,8 @@ const ChatMultimediaPage = () => {
   const mediaSize = screenWidth / numColumns - 10;
 
   const [isImageViewingOpen, setIsImageViewingOpen] = useState(false);
-  const [imageViewing, setImageViewing] = useState("");
+  const [selectedImageIndex,setSelectedImageIndex] = useState(0);
+  const [imageViewing, setImageViewing] = useState<{uri:string|undefined}[]>([]);
 
   const [isAudioViewingOpen, setIsAudioViewingOpen] = useState(false);
   const [audioViewing, setAudioViewing] = useState("");
@@ -52,6 +53,8 @@ const ChatMultimediaPage = () => {
             item.type !== "Video" &&
             item.type !== "Audio"
         );
+        const imageViewing = images.map((item)=> ({uri:item.url}));
+        setImageViewing(imageViewing);
         setImages(images);
         setVideos(videos);
         setAudios(audios);
@@ -62,8 +65,8 @@ const ChatMultimediaPage = () => {
   );
 
 
-  const renderImageItem = ({ item }: { item: FileProps }) => (
-    <TouchableOpacity onPress={()=>{setImageViewing(item.url!); setIsImageViewingOpen(true)}}>
+  const renderImageItem = ({ item, index }: { item: FileProps, index:number }) => (
+    <TouchableOpacity onPress={()=>{setSelectedImageIndex(index); setIsImageViewingOpen(true)}}>
       <Image
         source={{ uri: item.url }}
         style={{
@@ -168,8 +171,8 @@ const ChatMultimediaPage = () => {
       {isAudioViewingOpen? <AudioViewer uri={audioViewing} fileName={audioViewingName} onClose={()=>setIsAudioViewingOpen(false)}/>:null}
        {isImageViewingOpen ? (
           <ImageViewing
-            images={[{ uri: imageViewing }]}
-            imageIndex={0}
+            images={imageViewing}
+            imageIndex={selectedImageIndex}
             visible={isImageViewingOpen}
             onRequestClose={() => setIsImageViewingOpen(false)}
             doubleTapToZoomEnabled={true}

@@ -24,6 +24,7 @@ const ChatBoxDetailPage = () => {
   const [videos, setVideos] = useState<FileProps[]>([]);
   const [audios, setAudios] = useState<FileProps[]>([]);
   const [others, setOthers] = useState<FileProps[]>([]);
+  const [isGroup,setIsGroup] = useState(false);
   useEffect(() => {
     const getAMessageBoxFUNC = async () => {
       const messageBox: MessageBoxProps = await getAMessageBox(chatboxDetailId);
@@ -49,6 +50,9 @@ const ChatBoxDetailPage = () => {
       setVideos(videos);
       setAudios(audios);
       setOthers(others);
+      if(messageBox.receiverIds?.length!>2){
+        setIsGroup(true);
+      }
     };
     getAMessageBoxFUNC();
   }, []);
@@ -71,6 +75,14 @@ const ChatBoxDetailPage = () => {
           className="flex justify-center w-full mt-[16px]"
           style={{ rowGap: 5 }}
         >
+          {isGroup?  <FunctionCard
+            label="Members"
+            iconURL={
+              theme === "light" ? IconURL.groups_l : IconURL.groups_d
+            }
+            URL="/chatbox/members"
+            boxId={chatboxDetailId.toString()}
+          />:null}
           <FunctionCard
             label="Multimedia"
             iconURL={

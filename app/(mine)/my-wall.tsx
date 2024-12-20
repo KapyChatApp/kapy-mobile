@@ -21,6 +21,7 @@ import { getRatesOfUser } from "@/lib/rate";
 import { SocialPostProps } from "@/types/post";
 import { getMyPosts } from "@/lib/post";
 import SocialPost from "@/components/shared/community/SocialPost";
+import { onRefresh } from "@/utils/Refresh";
 
 const MyWallPage = () => {
   const navigation = useNavigation();
@@ -79,7 +80,7 @@ const MyWallPage = () => {
   return (
     <View className={`flex-1 ${bgLight500Dark10}`}>
       <ScrollView className="px-[10px]" refreshControl={
-                <RefreshControl refreshing={refreshing} onRefresh={disPlayUserData} />
+                <RefreshControl refreshing={refreshing} onRefresh={()=>onRefresh(async()=>await disPlayUserData())} />
               }>
         {isProfileLoading ? (
           <HeadProfileSkeletonLoader />

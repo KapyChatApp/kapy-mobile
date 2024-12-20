@@ -45,7 +45,7 @@ const fullName = receiver
           ellipsizeMode="tail"
           className={`font-helvetica-bold text-14 ${textLight0Dark500}`}
         >
-          {fullName}
+          {props.groupName===""? fullName:props.groupName}
         </Text>
         <View className="flex flex-row items-center" style={{columnGap:4}}>
         <Text

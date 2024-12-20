@@ -8,6 +8,7 @@ import Rate from "@/components/shared/community/Rate";
 import { RateProps } from "@/types/rate";
 import { getRatesOfUser } from "@/lib/rate";
 import { useLocalSearchParams } from "expo-router/build/hooks";
+import { onRefresh } from "@/utils/Refresh";
 
 const AllRatePage = () => {
   const { userId } = useLocalSearchParams();
@@ -27,7 +28,7 @@ const AllRatePage = () => {
       <View className="mt-[10px] ml-[10px]">
         <Previous navigation={navigation} />
       </View>
-      <ScrollView className="p-[16px]" contentContainerStyle={{ rowGap: 8 }} refreshControl={<RefreshControl refreshing={refreshing} onRefresh={getAllRatesFUNC}/>}>
+      <ScrollView className="p-[16px]" contentContainerStyle={{ rowGap: 8 }} refreshControl={<RefreshControl refreshing={refreshing} onRefresh={()=>onRefresh(async()=>await getAllRatesFUNC())}/>}>
         {rates?.map((item) => (
           <Rate key={item._id} {...item} />
         ))}

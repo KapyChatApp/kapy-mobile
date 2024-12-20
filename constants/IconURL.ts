@@ -142,5 +142,7 @@ export const IconURL = {
   map_non_select:require("../assets/icons/map_non-select.png"),
   map_select:require("../assets/icons/map_select.png"),
   setting_non_select:require("../assets/icons/setting_non-select.png"),
-  setting_select:require("../assets/icons/setting_select.png")
+  setting_select:require("../assets/icons/setting_select.png"),
+  non_select:require("../assets/icons/non-select.png"),
+  selected:require("../assets/icons/selected.png")
 };

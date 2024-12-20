@@ -17,6 +17,12 @@ import { getLocalAuth } from "@/lib/local-auth";
 import { pusherClient } from "@/lib/pusher";
 import { useMarkReadContext } from "@/context/MarkReadProvider";
 import CustomButton from "@/components/ui/CustomButton";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { IconURL } from "@/constants/IconURL";
+import Icon from "@/components/ui/Icon";
+import { AppSound } from "@/constants/Sound";
+import { playSound } from "@/utils/Media";
+import { onRefresh } from "@/utils/Refresh";
 
 const OutSideMessagePage = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -24,27 +30,47 @@ const OutSideMessagePage = () => {
   const router = useRouter();
   const {markAsUnread,unreadMessages, updateDefaultMessages} =useMarkReadContext();
   const [refreshing, setRefreshing] = useState(false);
+
   const getMyMessageBoxesFUNC = async () => {
     const { _id } = await getLocalAuth();
-    const messageBoxes = await getMyChatBoxes();
-    const messageBoxesWithLocalId = messageBoxes.map(
-      (item: MessageBoxProps) => ({
-        ...item,
-        localUserId: _id,
+
+      
+
+    // Lấy danh sách hộp chat từ AsyncStorage
+    const messageBoxes = await AsyncStorage.getItem("ChatBoxes");
+    const messageBoxDatas = messageBoxes ? JSON.parse(messageBoxes) : []; // Xử lý null
+   
+    // Cập nhật dữ liệu với thông tin bổ sung
+    const messageBoxesModified = await Promise.all(
+      messageBoxDatas.map(async (item: MessageBoxProps) => {
+        const messages = await AsyncStorage.getItem(`messages-${item._id}`);
+        const parsedMessages = messages ? JSON.parse(messages) : [];
+        const lastMessage = parsedMessages.length > 0 ? parsedMessages.pop() : null;
+        return {
+          ...item,
+          localUserId: _id,
+          responseLastMessage: lastMessage,
+        };
       })
     );
-    setMessageBoxes(messageBoxesWithLocalId ? messageBoxesWithLocalId : []);
-    const messageBoxIds = messageBoxes.map((item:MessageBoxProps)=> item._id);
+  
+    setMessageBoxes(messageBoxesModified ? messageBoxesModified : []);
+    
+    // Cập nhật danh sách ID của message boxes
+    const messageBoxIds = messageBoxDatas.map((item: MessageBoxProps) => item._id);
     updateDefaultMessages(messageBoxIds);
-   
-    for (const messageBox of messageBoxes) {
-      const channel = pusherClient.subscribe(`private-${messageBox._id}`);
+  
+    // Đăng ký các kênh Pusher
+    for (const messageBox of messageBoxDatas) {
+      pusherClient.subscribe(`private-${messageBox._id}`);
     }
-    pusherClient.bind("new-message", (data: any) =>
-      handleSetLastMessage(data)
-    );
+  
+    // Xử lý sự kiện "new-message"
+    pusherClient.bind("new-message", (data: any) => handleSetLastMessage(data));
+
+  
+  
     setRefreshing(false);
-    console.log("refreshing...");
   };
   useEffect(() => {
     getMyMessageBoxesFUNC();
@@ -72,14 +98,15 @@ const OutSideMessagePage = () => {
   return (
     <View className={`${bgLight500Dark10} flex-1 `}>
       <MainHeader></MainHeader>
-      <TouchableOpacity onPress={() => router.push("/message/search")}>
+    <TouchableOpacity onPress={() => router.push("/message/search")}>
         <View pointerEvents="box-none">
           <Search isDisable={true} />
         </View>
       </TouchableOpacity>
+      
       {messageBoxes.length > 0 ? (
         <ScrollView className="message-list w-full flex-1"  refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={getMyMessageBoxesFUNC} />
+          <RefreshControl refreshing={refreshing} onRefresh={()=>onRefresh(async()=>await getMyMessageBoxesFUNC)} />
         }>
           {messageBoxes?.map((item) => (
             <MessageBox key={item._id} {...item} />

@@ -5,7 +5,7 @@ import { IconURL } from "@/constants/IconURL";
 import { bgLight600Dark300, textLight0Dark500 } from "@/styles/theme";
 const Search = ({ onChangeText, isDisable }: any) => {
   return (
-    <View className="flex flex-row items-center justify-center mt-[6px] mx-[18px] ">
+    <View className="flex flex-row items-center justify-center mt-[6px] mx-[18px]">
       <Image
         source={IconURL.search}
         className="w-[28px] h-[28px] absolute z-10 left-4"

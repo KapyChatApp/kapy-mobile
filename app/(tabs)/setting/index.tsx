@@ -14,9 +14,7 @@ const SettingPage = () => {
   return (
     <View className={`${bgLight500Dark10} bg-light-500 dark:bg-dark-10 flex-1`}>
       <SettingHeader />
-      <SafeAreaView className="flex-1">
         <SettingList />
-      </SafeAreaView>
     </View>
   );
 };

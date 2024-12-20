@@ -13,6 +13,7 @@ import { bgLight500Dark10 } from "@/styles/theme";
 import { useClickOutside } from "react-native-click-outside";
 import { MessageBoxProps, MessageProps } from "@/types/message";
 import {
+  addToMessageLocal,
   disableTexting,
   getAllMessages,
   getAMessageBox,
@@ -33,6 +34,11 @@ import { pickDocument } from "@/utils/DoucmentPicker";
 import ImageViewing from "react-native-image-viewing";
 import { FileProps } from "@/types/file";
 import { openWebFile } from "@/utils/File";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import UserAvatar from "@/components/ui/UserAvatar";
+import { ScreenRatio } from "@/utils/Device";
+import { playSound } from "@/utils/Media";
+import { AppSound } from "@/constants/Sound";
 const MessageDetailPage = () => {
   const { messageId } = useLocalSearchParams();
   const ref = useClickOutside<View>(() => {
@@ -124,14 +130,14 @@ const MessageDetailPage = () => {
     let mediaData = selectedMedia[0];
     setSelectedMedia([]);
     setMessageText("");
-    console.log("media data: ", mediaData);
     if (messageTextData != "" || selectedMedia.length != 0) {
+      await playSound(AppSound.send_message);
       setMessages((prevMessages) => [
         ...prevMessages,
         {
           id: "",
           isReact: [],
-          readedId: [],
+          readedId: [localUserId],
           contentId:selectedMedia[0]? {url:selectedMedia[0].uri, type:selectedMedia[0].type, fileName:selectedMedia[0].name!, width:150, height:150}:undefined,
           text: messageText,
           createAt: new Date().toString(),
@@ -147,8 +153,10 @@ const MessageDetailPage = () => {
             handleViewFile(mediaData);
           },
           handleViewPdf: () => handleViewFile(mediaData),
+      
         },
       ]);
+      await markRead(messageId.toString());
       await sendMessage(messageId.toString(), messageText, selectedMedia,(status)=>setSendStatus(status));
     }
   };
@@ -168,11 +176,13 @@ const MessageDetailPage = () => {
     const getAllMessageFUNC = async () => {
       const { _id } = await getLocalAuth();
       await markRead(messageId.toString());
-      const messageBox: MessageBoxProps = await getAMessageBox(messageId);
+      const messageBoxLocal = await AsyncStorage.getItem(`box-${messageId}`);
+      const messageBox: MessageBoxProps = await JSON.parse(messageBoxLocal!);
       messageBox.localUserId = _id;
       setChatBoxHeader(messageBox);
       setMessageBox(messageBox);
-      const messages = await getAllMessages(messageId);
+      const localMessage = await AsyncStorage.getItem(`messages-${messageId}`);
+      const messages = await JSON.parse(localMessage!);
       setMessages(messages);
       setLocalUserId(_id);
 
@@ -187,17 +197,20 @@ const MessageDetailPage = () => {
           status
         );
       });
-      pusherClient.bind("new-message", (data: any) => {
+      pusherClient.bind("new-message", async (data: any) => {
         setMessages((prevMessages) => [...prevMessages, data]);
         markAsRead(messageId.toString());
+        await addToMessageLocal(messageId.toString(),data);
       });
       pusherClient.bind("revoke-message", (data: any) => {
         console.log("revoke: ", data);
         handleRevokeMessage(data.id);
       });
-      pusherClient.bind("texting-status", (data: any) => {
+      pusherClient.bind("texting-status", async (data: any) => {
         if (data.userId !== _id) {
-          setTextingAvatar(data.avatar);
+          const textingUser = await AsyncStorage.getItem(`user-${data.userId}`);
+          const textingUserData = await JSON.parse(textingUser!);
+          setTextingAvatar(textingUserData.avatar);
           setTimeout(() => setIsTypingMessage(data.texting), 200);
         }
       });
@@ -208,9 +221,11 @@ const MessageDetailPage = () => {
 
   return (
     <KeyboardAvoidingView
-      behavior={Platform.OS === "ios" ? "padding" : "height"}
-      style={{ flex: 1 }}
-    >
+            className="flex-1"
+            behavior={Platform.OS === "ios" ? "padding" : "height"}
+            style={{ paddingBottom: Platform.OS === "android" ? 0 : 10 }}
+            keyboardVerticalOffset={Platform.OS === "ios" ? (ScreenRatio >1.8? 56:14) : 0}
+          >
       <View className="flex-1 ">
         {isImageViewOpen ? (
           <ImageViewing
@@ -246,7 +261,7 @@ const MessageDetailPage = () => {
               scrollViewRef.current?.scrollToEnd({ animated: true })
             }
           >
-            {messages.map((item, index) => {
+            {messages.length!=0 && messages? messages.map((item, index) => {
               const previousMessage = messages[index - 1];
               const nextMessage = messages[index + 1];
               let position = "free";
@@ -290,12 +305,13 @@ const MessageDetailPage = () => {
                   handleViewFile={handleViewFile}
                 />
               );
-            })}
+            }):null}
             {isTypingMessage ? (
               <View
-                className="flex flex-row ml-[34px]"
+                className="flex flex-row"
                 style={{ columnGap: 4 }}
               >
+                <UserAvatar size={34} avatarURL={{uri:textingAvatar}}/>
                 <TypingAnimation />
               </View>
             ) : null}

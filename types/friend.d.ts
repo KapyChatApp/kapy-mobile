@@ -8,6 +8,19 @@ export interface FriendBoxProps{
     mutualFriends?:ShortUserProps[];
     onlineTime?:string;    
     relation?:string;
+    localUserId?:string;
+}
+
+export interface SelectFriendBoxProps{
+    _id:string;
+    avatar?:string;
+    firstName?:string;
+    lastName?:string;
+    mutualFriends?:ShortUserProps[];
+    onlineTime?:string;    
+    relation?:string;
+    onSelect?:(data:FriendBoxProps)=>void;
+    onUnSelect:(data:FriendBoxProps)=>void;
 }
 
 export interface RequestedProps{
