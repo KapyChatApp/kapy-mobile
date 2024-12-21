@@ -7,12 +7,12 @@ import { Href, useNavigation } from "expo-router";
 import { NavigationProp } from "@react-navigation/native";
 import { useRouter } from "expo-router";
 import { textLight0Dark500 } from "@/styles/theme";
-const SidebarItems = ({ label, iconURL, link }: any) => {
+const SidebarItems = ({ label, iconURL, link, onClose }: any) => {
   const router = useRouter();
   return (
     <TouchableOpacity
       className="flex flex-row items-center justify-start pl-[40px] py-[16px]"
-      onPress={() => router.push({ pathname: link })}
+      onPress={() =>{onClose(); router.push({ pathname: link });}}
     >
       <Icon size={28} iconURL={iconURL}></Icon>
       <Text className={`font-helvetica-bold text-14 ml-[16px] first-line:${textLight0Dark500}`}>{label}</Text>

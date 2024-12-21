@@ -12,7 +12,7 @@ const BestFriendBox = (props:FriendBoxProps) => {
   return (
     <TouchableOpacity
       className={`flex flex-row items-center justify-between border border-border rounded-3xl py-[8px] px-[14px] mx-[19px] ${bgLight510Dark20}`}
-      onPress={()=>router.push({pathname:"/friends/friend-profile/[friendId]",params:{friendId:props._id}})}
+      onPress={()=>router.push({pathname:"/friend/friend-profile/[friendId]",params:{friendId:props._id}})}
     >
       <View className="flex flex-row items-center justify-center">
         <UserAvatar avatarURL={{uri:props.avatar}} size={57}></UserAvatar>
