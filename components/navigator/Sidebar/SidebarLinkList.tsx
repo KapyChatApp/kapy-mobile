@@ -27,9 +27,9 @@ const SidebarLinkList = () => {
         }
       ></SidebarItems>
       <SidebarItems
-        label="Security"
-        link="/friends/invite-group"
-        iconURL={theme === "light" ? IconURL.security_l : IconURL.security_d}
+        label="My request"
+        link="/(tabs)/friends/all-request"
+        iconURL={theme === "light" ? IconURL.addmem_l : IconURL.addmem_d}
       ></SidebarItems>
       <SidebarItems
         label="Media"
