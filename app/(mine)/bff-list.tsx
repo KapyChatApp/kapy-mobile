@@ -15,6 +15,7 @@ const BFFListPage = () => {
   const navigation = useNavigation();
   const [myBFFs, setMyBFFs] = useState<FriendBoxProps[]>();
   const [refreshing, setRefreshing] = useState(false);
+  const [q, setQ] = useState("");
   const getMyBFFFunc = async () => {
     const myBFFResponse = await getMyBFFs();
     setMyBFFs(myBFFResponse);
@@ -23,6 +24,12 @@ const BFFListPage = () => {
   useEffect(() => {
     getMyBFFFunc();
   }, []);
+  const handleSearchBFF = (bffs: FriendBoxProps[], query: string) => {
+    return bffs?.filter((bff) => 
+      bff.firstName?.toLowerCase().includes(query.toLowerCase()) ||
+      bff.lastName?.toLowerCase().includes(query.toLowerCase())
+    );
+  };
   return (
     <View className={`${bgLight500Dark10} flex-1`}>
       <Previous
@@ -31,11 +38,11 @@ const BFFListPage = () => {
         header="Bestfriend list"
       ></Previous>
       <View className="mt-[60px] flex flex-1" style={{ rowGap: 4 }}>
-        <Search></Search>
+        <Search onChangeText={setQ}></Search>
         <ScrollView className=" flex-1" contentContainerStyle={{ rowGap: 4 }} refreshControl={<RefreshControl refreshing={refreshing} onRefresh={()=>onRefresh(async()=>await getMyBFFFunc())}/>}>
-          {myBFFs?.map((item: any) => (
-            <BestFriendBox key={item._id} {...item} />
-          ))}
+          {q===""? myBFFs?.map((item:FriendBoxProps, index) => (
+            <BestFriendBox key={index} {...item} />
+          )): handleSearchBFF(myBFFs!,q).map((item:FriendBoxProps, index)=><BestFriendBox key={index} {...item}/>)}
         </ScrollView>
       </View>
     </View>
