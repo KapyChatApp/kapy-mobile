@@ -8,6 +8,7 @@
     "scheme": "myapp",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
+    "reactNativeStrictMode": false,
     "splash": {
       "image": "./assets/images/splash.png",
       "resizeMode": "contain",

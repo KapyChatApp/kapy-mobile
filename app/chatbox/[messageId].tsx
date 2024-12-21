@@ -122,6 +122,48 @@ const MessageDetailPage = () => {
   const handleDisableTexting = async () => {
     await disableTexting(messageId.toString());
   };
+
+  const processMessages = (messages: MessageProps[]) => {
+    return messages.map((item, index) => {
+      const previousMessage = messages[index - 1];
+      const nextMessage = messages[index + 1];
+      let position = "free";
+  
+      if (
+        (!previousMessage || previousMessage.createBy !== item.createBy) &&
+        nextMessage?.createBy === item.createBy
+      ) {
+        position = "top";
+      } else if (
+        previousMessage?.createBy === item.createBy &&
+        nextMessage?.createBy === item.createBy
+      ) {
+        position = "middle";
+      } else if (
+        previousMessage?.createBy === item.createBy &&
+        (!nextMessage || nextMessage.createBy !== item.createBy)
+      ) {
+        position = "bottom";
+      }
+  
+      // Xác định avatar
+      const avatar = messageBox?.groupAva
+        ? messageBox?.groupAva
+        : receiver
+        ? receiver._id === localUserId
+          ? otherReceiver?.avatar
+          : receiver.avatar
+        : "";
+  
+      // Trả về message đã xử lý
+      return {
+        ...item,
+        position: position,
+        avatar,
+        isSender: localUserId === item.createBy.toString(),
+      };
+    });
+  };
   
   const handleSendMessage = async () => {
     handleDisableTexting();
@@ -129,17 +171,20 @@ const MessageDetailPage = () => {
     let mediaData = selectedMedia[0];
     setSelectedMedia([]);
     setMessageText("");
-    if (messageTextData != "" || selectedMedia.length != 0) {
+  
+    if (messageTextData !== "" || selectedMedia.length !== 0) {
       await playSound(AppSound.send_message);
-      const tempMessage:MessageProps=  {
+      let tempMessage: MessageProps = {
         id: "",
         isReact: [],
         readedId: [localUserId],
-        contentId:selectedMedia[0]? {url:selectedMedia[0].uri, type:selectedMedia[0].type, fileName:selectedMedia[0].name!, width:150, height:150}:undefined,
+        contentId: selectedMedia[0]
+          ? { url: selectedMedia[0].uri, type: selectedMedia[0].type, fileName: selectedMedia[0].name!, width: 150, height: 150 }
+          : undefined,
         text: messageText,
         createAt: new Date().toString(),
         createBy: localUserId,
-        position: "",
+        position: "free",
         isSender: true,
         avatar: "",
         boxId: "",
@@ -149,14 +194,32 @@ const MessageDetailPage = () => {
         handleViewFile: () => {
           handleViewFile(mediaData);
         },
-        sendStatus:"sending"
+        sendStatus: "sending"
+      };
+  
+      let updatedMessages = [...messages];
+  
+      if (messages.length > 0 && messages[messages.length - 1]?.createBy === localUserId) {
+        // Cập nhật tin nhắn cuối cùng
+        const lastMessage = messages[messages.length - 1];
+        if (lastMessage.position === "free") {
+          console.log("lastmessage will be top");
+          updatedMessages[updatedMessages.length - 1] = { ...lastMessage, position: "top" };
+          tempMessage.position = "bottom";
+        } else {
+          console.log("lastmessage will be middle")
+          updatedMessages[updatedMessages.length - 1] = { ...lastMessage, position: "middle" };
+          tempMessage.position = "bottom";
+        }
       }
-      setMessages((prevMessages) => [
-        ...prevMessages,
-        tempMessage
-      ]);
+  
+      updatedMessages.push(tempMessage); // Thêm tin nhắn mới vào cuối
+  
+      const processedMessages = processMessages(updatedMessages); // Xử lý tất cả tin nhắn
+      setMessages(processedMessages);
+        console.log("updatedLastMessage : ",processedMessages[processedMessages.length-2])
       await markRead(messageId.toString());
-      await sendMessage(messageId.toString(), messageText,selectedMedia, (id, status) => {
+      await sendMessage(messageId.toString(), messageText, selectedMedia, (id, status) => {
         setMessages((prevMessages) =>
           prevMessages.map((message) =>
             message.createAt === tempMessage.createAt // So khớp với message tạm thời dựa trên thời gian tạo
@@ -190,7 +253,8 @@ const MessageDetailPage = () => {
       setMessageBox(messageBox);
       const localMessage = await AsyncStorage.getItem(`messages-${messageId}`);
       const messages = await JSON.parse(localMessage!);
-      setMessages(messages);
+      const messagesWithPosition = processMessages(messages);
+      setMessages(messagesWithPosition);
       setLocalUserId(_id);
 
       const channel = pusherClient.subscribe(`private-${messageId}`);
@@ -205,7 +269,10 @@ const MessageDetailPage = () => {
         );
       });
       pusherClient.bind("new-message", async (data: any) => {
-        setMessages((prevMessages) => [...prevMessages, data]);
+        if(data.createBy!==_id){
+          setMessages((prevMessages) => [...prevMessages, data]);
+        
+        }
         markAsRead(messageId.toString());
         await addToMessageLocal(messageId.toString(),data);
       });
@@ -268,7 +335,7 @@ const MessageDetailPage = () => {
               scrollViewRef.current?.scrollToEnd({ animated: true })
             }
           >
-            {messages.length!=0 && messages? messages.map((item, index) => {
+            {/* {messages.length!=0 && messages? messages.map((item, index) => {
               const previousMessage = messages[index - 1];
               const nextMessage = messages[index + 1];
               let position = "free";
@@ -304,7 +371,7 @@ const MessageDetailPage = () => {
                       : ""
                   }
                   isSender={localUserId === item.createBy.toString()}
-                  position={position}
+                  position={item.position!=""? position:item.position}
                   localUserId={localUserId}
                   deleteMessage={handleDeleteMessage}
                   revokeMessage={handleRevokeMessage}
@@ -312,7 +379,13 @@ const MessageDetailPage = () => {
                   handleViewFile={handleViewFile}
                 />
               );
-            }):null}
+            }):null} */}
+            {messages && messages.length!=0? processMessages(messages).map((item,index)=><Message key={index} {...item} isSender={localUserId === item.createBy.toString()}
+                  localUserId={localUserId}
+                  deleteMessage={handleDeleteMessage}
+                  revokeMessage={handleRevokeMessage}
+                  handleViewImage={handleViewImage}
+                  handleViewFile={handleViewFile}/>):null}
             {isTypingMessage ? (
               <View
                 className="flex flex-row"

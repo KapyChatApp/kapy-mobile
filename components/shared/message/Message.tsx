@@ -684,7 +684,7 @@ const Message = (props: MessageProps) => {
           {formatDateDistance(props.createAt)}
         </Text>
       ) : null}
-      {props.sendStatus != "non-send" ? (
+      {props.sendStatus ? (
         <Text className="text-deny font-helvetica-light text-10">
           {renderSendStatus()}
         </Text>
