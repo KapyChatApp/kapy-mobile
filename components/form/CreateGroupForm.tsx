@@ -203,7 +203,7 @@ const CreateGroupForm = ({ isVisible, onClose }: any) => {
               </View>
             ))}
           </View>
-          <ScrollView>
+          <ScrollView className="flex-1 pb-[10px] h-3/4" contentContainerStyle={{paddingBottom:10}} >
             {
               friends.map((item, index) => (
                 <SelectFriendBox

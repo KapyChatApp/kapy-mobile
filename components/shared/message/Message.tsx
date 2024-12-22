@@ -10,27 +10,25 @@ import {
 } from "react-native";
 import React, { useEffect, useRef, useState } from "react";
 import {
-  bgLight340Dark330,
   bgLight500Dark10,
   textLight0Dark500,
 } from "@/styles/theme";
 import { useClickOutside } from "react-native-click-outside";
-import UserAvatar from "@/components/ui/UserAvatar";
 import { MessageProps } from "@/types/message";
 import { formatDateDistance } from "@/utils/DateFormatter";
 import { Image } from "react-native";
 import VideoPlayer from "../multimedia/VideoPlayer";
 import AudioPlayer from "../multimedia/AudioPlayer";
-import { useActionSheet } from "@expo/react-native-action-sheet";
 import { deleteMessage, react, revokeMessage } from "@/lib/message-request";
 import UserAvatarLink from "@/components/ui/UserAvatarLink";
 import { IconURL } from "@/constants/IconURL";
 import Icon from "@/components/ui/Icon";
-import { getPathWithConventionsCollapsed } from "expo-router/build/fork/getPathFromState-forks";
 import { useRouter } from "expo-router";
 import MessageLove from "@/components/ui/MessageLove";
-import { getLocalAuth } from "@/lib/local-auth";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import * as Haptics from 'expo-haptics';
+import { playSound } from "@/utils/Media";
+import { AppSound } from "@/constants/Sound";
 
 const Message = (props: MessageProps) => {
   const [position, setPosition] = useState(props.position);
@@ -49,31 +47,51 @@ const Message = (props: MessageProps) => {
   const [modalPosition, setModalPosition] = useState({
     x: 0,
     y: 0,
-    position: "below",
-  });
+  })
   const pressableRef = useRef<View | null>(null);
   const { height: screenHeight, width: screenWidth } = Dimensions.get("screen");
-
-  const handleLongPress = () => {
-    if (pressableRef.current) {
-      pressableRef.current.measure((fx, fy, width, height, px, py) => {
-        console.log("h: ", py + height, "w: ", screenWidth - 300);
-        if (py + height < screenHeight / 2) {
-          setModalPosition({
-            x: props.isSender ? screenWidth - 300 : px,
-            y: py + height,
-            position: "below",
-          });
-        } else {
-          setModalPosition({
-            x: props.isSender ? screenWidth - 300 : px,
-            y: py - height - 120,
-            position: "above",
-          });
-        }
-        setIsModalVisible(true);
-      });
+  const adjustModalPosition = (x:number, y:number, modalWidth:number, modalHeight:number) => {
+    let adjustedX = x;
+    let adjustedY = y;
+  
+    // Điều chỉnh để không vượt bên phải màn hình
+    if (x + modalWidth > screenWidth) {
+      adjustedX = screenWidth - modalWidth - 10; // Chừa khoảng cách 10px
     }
+  
+    // Điều chỉnh để không vượt bên trái màn hình
+    if (x < 0) {
+      adjustedX = 10; // Chừa khoảng cách 10px
+    }
+  
+    // Điều chỉnh để không vượt dưới màn hình
+    if (y + modalHeight > screenHeight) {
+      adjustedY = screenHeight - modalHeight - 10; // Chừa khoảng cách 10px
+    }
+  
+    // Điều chỉnh để không vượt trên màn hình
+    if (y < 0) {
+      adjustedY = 10; // Chừa khoảng cách 10px
+    }
+  
+    return { x: adjustedX, y: adjustedY };
+  };
+  
+  const handleLongPress = (event:any) => {
+    const { pageX, pageY } = event.nativeEvent;
+
+
+  const modalWidth = 270;
+  const modalHeight = 160;
+
+  console.log("modal w: ", modalWidth, "modal h: ", modalHeight);
+  const { x, y } = adjustModalPosition(pageX, pageY, modalWidth, modalHeight);
+
+  // Cập nhật vị trí modal
+  setModalPosition({ x, y });
+  setIsModalVisible(true);
+  Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+
   };
 
   const router = useRouter();
@@ -420,6 +438,7 @@ const Message = (props: MessageProps) => {
   const handleLike = async () => {
     setIsLiked(!isLiked);
     if ((timeLikes + 1) % 2 != 0) {
+      await playSound(AppSound.kiss);
       setTotalLike(totalLike + 1);
       setTimeLikes(timeLikes + 1);
     } else {
@@ -493,6 +512,7 @@ const Message = (props: MessageProps) => {
                   elevation: 4,
                   rowGap: 10,
                 }}
+
               >
                 <TouchableOpacity
                   className="flex items-center justify-center w-[30px] h-[30px] bg-light-510 dark:bg-dark-20 rounded-full"
@@ -601,7 +621,6 @@ const Message = (props: MessageProps) => {
         style={{ columnGap: 4 }}
         onPress={handleDoubleTapPress}
         onLongPress={handleLongPress}
-        delayLongPress={1000}
       >
         {!props.isSender && (position === "bottom" || position === "free") ? (
           <UserAvatarLink
