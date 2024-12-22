@@ -1,10 +1,13 @@
-import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, Image, ActivityIndicator } from 'react-native';
-import MapView, { Marker, Polyline } from 'react-native-maps';
-import * as Location from 'expo-location';
-import { IconURL } from '@/constants/IconURL'; // Đường dẫn đến icon tùy chỉnh của bạn
+import React, { useEffect, useState } from "react";
+import { View, Text, StyleSheet, ActivityIndicator } from "react-native";
+import MapView, { Marker } from "react-native-maps";
+import * as Location from "expo-location";
+import { IconURL } from "@/constants/IconURL";
+import { HeadProfileProps } from "@/types/user";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import UserAvatarLink from "@/components/ui/UserAvatarLink";
+import Icon from "@/components/ui/Icon";
 
-// Định nghĩa kiểu dữ liệu cho vị trí
 interface LocationCoords {
   latitude: number;
   longitude: number;
@@ -13,36 +16,63 @@ interface LocationCoords {
 const LiveMap: React.FC = () => {
   const [currentLocation, setCurrentLocation] = useState<LocationCoords | null>(null);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
+  const [localUser, setLocalUser] = useState<HeadProfileProps>();
+  const [markerSize, setMarkerSize] = useState<number>(40); // Kích thước marker
+  const [markerBottom, setMarkerBottom] = useState<number>(70); // Giá trị bottom của marker
+  const [isMarkerVisible, setIsMarkerVisible] = useState<boolean>(true); // Trạng thái marker
 
   useEffect(() => {
+    const getLocalData = async () => {
+      const userString = await AsyncStorage.getItem("user");
+      const user = JSON.parse(userString!);
+      setLocalUser(user);
+    };
+
     const getCurrentLocation = async () => {
       try {
-        // Kiểm tra quyền truy cập vị trí
         const { status } = await Location.requestForegroundPermissionsAsync();
-        if (status !== 'granted') {
-          setErrorMsg('Permission to access location was denied.');
+        if (status !== "granted") {
+          setErrorMsg("Permission to access location was denied.");
           return;
         }
-
-        // Lấy vị trí hiện tại
         const location = await Location.getCurrentPositionAsync({});
         setCurrentLocation({
           latitude: location.coords.latitude,
           longitude: location.coords.longitude,
         });
       } catch (error) {
-        setErrorMsg('Failed to fetch location.');
+        setErrorMsg("Failed to fetch location.");
       }
     };
 
+    getLocalData();
     getCurrentLocation();
   }, []);
+
+  // Điều chỉnh kích thước và vị trí marker theo zoom level
+  const adjustMarkerSizeAndPosition = (region: any) => {
+    const zoomLevel = Math.log2(360 / region.latitudeDelta); // Công thức tính zoom chính xác hơn
+    const size = Math.max(20, Math.min(zoomLevel * 10, 50)); // Giới hạn kích thước từ 20 đến 50
+
+    // Điều chỉnh bottom tuyến tính khi zoom out
+    const bottomValue = Math.max(30, Math.min(zoomLevel * 2, 50)); // Bottom giảm dần khi zoom out theo tỷ lệ zoom
+
+    // Điều chỉnh trạng thái hiển thị marker khi zoom out
+    if (region.latitudeDelta > 0.6) { // Nếu zoom out quá mức (ví dụ: khi latitudeDelta > 0.1)
+      setIsMarkerVisible(false); // Ẩn marker
+    } else {
+      setIsMarkerVisible(true); // Hiển thị marker
+    }
+
+    setMarkerSize(size);
+    setMarkerBottom(bottomValue);
+  };
 
   if (!currentLocation) {
     return (
       <View style={styles.loadingContainer}>
         <ActivityIndicator size="large" color="#0000ff" />
-        <Text>{errorMsg || 'Đang tải vị trí hiện tại...'}</Text>
+        <Text>{errorMsg || "Đang tải vị trí hiện tại..."}</Text>
       </View>
     );
   }
@@ -54,37 +84,33 @@ const LiveMap: React.FC = () => {
         initialRegion={{
           latitude: currentLocation.latitude,
           longitude: currentLocation.longitude,
-          latitudeDelta: 0.01, // Độ phóng to bản đồ
+          latitudeDelta: 0.01,
           longitudeDelta: 0.01,
         }}
+        onRegionChangeComplete={adjustMarkerSizeAndPosition} // Gọi khi zoom thay đổi
       >
-        {/* Marker cho vị trí hiện tại */}
-        <Marker
-          coordinate={currentLocation}
-          title="Vị trí của bạn"
-          description="Bạn đang ở đây"
-        >
-          <View style={styles.customMarker}>
-            <Image
-              source={IconURL.location_l} // Icon tùy chỉnh của bạn
-              style={styles.markerImage}
-            />
-            <Text style={styles.markerText}>My Location</Text>
-          </View>
-        </Marker>
-
-        {/* Polyline mẫu (nếu muốn vẽ đường) */}
-        <Polyline
-          coordinates={[
-            currentLocation,
-            {
-              latitude: currentLocation.latitude + 0.01,
-              longitude: currentLocation.longitude + 0.01,
-            },
-          ]}
-          strokeColor="#FF0000"
-          strokeWidth={4}
-        />
+        {isMarkerVisible && ( // Kiểm tra nếu marker được hiển thị
+          <Marker coordinate={currentLocation} title="Vị trí của bạn">
+            <View style={styles.customMarker} className="">
+              <View
+                className="flex items-center absolute  h-[70px]"
+                style={{ bottom: markerBottom,rowGap:4 }}
+              >
+                <UserAvatarLink
+                  avatarURL={{ uri: localUser?.avatar }}
+                  size={markerSize} // Sử dụng kích thước tự động
+                  userId={localUser?._id}
+                />
+                <View className="bg-cardinal flex flex-row p-[5px] rounded-lg absolute top-[55px] min-w-[140px]">
+                  <Text className="text-white font-helvetica-bold text-10 text-center w-full">
+                    {localUser?.firstName + " " + localUser?.lastName}
+                  </Text>
+                </View>
+              </View>
+              <Icon iconURL={IconURL.marker} size={markerSize / 2} />
+            </View>
+          </Marker>
+        )}
       </MapView>
     </View>
   );
@@ -99,20 +125,11 @@ const styles = StyleSheet.create({
   },
   loadingContainer: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
   },
   customMarker: {
-    alignItems: 'center',
-  },
-  markerImage: {
-    width: 30,
-    height: 30,
-  },
-  markerText: {
-    color: 'black',
-    fontSize: 12,
-    marginTop: 4,
+    alignItems: "center",
   },
 });
 
