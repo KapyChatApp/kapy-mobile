@@ -640,7 +640,7 @@ const Message = (props: MessageProps) => {
               aspectRatio: props.contentId.width! / props.contentId.height!,
             }}
           >
-            {props.sendStatus === "sending" && (
+            {props.sendStatus === "sending" ? (
               <View
               className="rounded-3xl"
                 style={{
@@ -653,7 +653,7 @@ const Message = (props: MessageProps) => {
                   zIndex: 1, 
                 }}
               />
-            )}
+            ):null}
 
             {renderContent()}
           </View>
