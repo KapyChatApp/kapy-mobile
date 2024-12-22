@@ -180,11 +180,10 @@ export const sendMessage = async (
   boxId: string,
   content: string,
   files: { uri: string; type: string; name: string | undefined | null }[],
-  goOn:(status:string)=>void
+  goOn:(id:string, status:string)=>void,
 ) => {
   try {
     const { token } = await getLocalAuth();
-    console.log("files: ", files);
     if (files.length != 0) {
       for (const file of files) {
         const formData = new FormData();
@@ -222,7 +221,7 @@ export const sendMessage = async (
         formData.append("boxId", boxId);
         formData.append("content", JSON.stringify(fileContent));
         formData.append("file", newFile as any);
-        await axios.post(
+        const response = await axios.post(
           process.env.EXPO_PUBLIC_BASE_URL + "/message/send",
           formData,
           {
@@ -232,7 +231,13 @@ export const sendMessage = async (
             },
           }
         );
+        if(response.status===200 || response.data===201){
+          goOn(response.data.id, "success");
+        }else{
+          goOn(response.data.id, "fail");
+        }
       }
+      
     } else {
       const formData = new FormData();
       formData.append("boxId", boxId);
@@ -247,15 +252,10 @@ export const sendMessage = async (
           },
         }
       );
-      if(response.status === 200 || response.status===201){
-        goOn("success");
-        const timer = setTimeout(()=>goOn("non-send"),2000);
-        return clearTimeout(timer);
-      }
-      else{
-        goOn("fail");
-        const timer = setTimeout(()=>goOn("non-send"),2000);
-        return clearTimeout(timer);
+      if(response.status===200 || response.data===201){
+        goOn(response.data.id, "success");
+      }else{
+        goOn(response.data.id, "fail");
       }
     }
   } catch (error) {

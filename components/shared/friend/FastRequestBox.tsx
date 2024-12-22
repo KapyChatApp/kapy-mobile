@@ -68,9 +68,9 @@ const FastRequestBox = (props: RequestedProps) => {
       throw new Error("User not found!");
     }
     const { _id } = JSON.parse(user);
-    if (props.relation === "bff") {
+    if (props.relation === "received_bff") {
       acceptBFFReq(token, _id);
-    } else if (props.relation === "friend") {
+    } else if (props.relation === "received_friend") {
       acceptFriendReq(token, _id);
     }
   };
@@ -91,7 +91,7 @@ const FastRequestBox = (props: RequestedProps) => {
           Message
         </Text>
         <RequestButton
-          type={props.relation === "bff" ? true : false}
+          type={props.relation === "received_bff" ? true : false}
           width={93}
           height={31}
           onPress={handleAccept}

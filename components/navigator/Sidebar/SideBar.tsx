@@ -1,5 +1,5 @@
 import React from "react";
-import { View, SafeAreaView } from "react-native";
+import { View, SafeAreaView, Modal } from "react-native";
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
@@ -12,26 +12,23 @@ import SidebarRecents from "./SidebarRecents";
 import { useClickOutside } from "react-native-click-outside";
 
 const SideBar = ({ isOpen, setIsOpen }: any) => {
-  
   const [isVisible, setIsVisible] = React.useState(isOpen);
-
 
   const translateX = useSharedValue(isOpen ? 0 : -1000);
 
-
   const animatedStyles = useAnimatedStyle(() => {
     return {
-      transform: [{ translateX: withTiming(translateX.value, { duration: 500 }) }],
+      transform: [
+        { translateX: withTiming(translateX.value, { duration: 500 }) },
+      ],
     };
   });
 
   React.useEffect(() => {
     if (isOpen) {
-   
       setIsVisible(true);
       translateX.value = 0;
     } else {
-     
       translateX.value = -1000;
 
       runOnJS(hideSidebar)();
@@ -39,7 +36,6 @@ const SideBar = ({ isOpen, setIsOpen }: any) => {
   }, [isOpen]);
 
   const hideSidebar = () => {
-
     setTimeout(() => {
       setIsVisible(false);
     }, 10);
@@ -52,16 +48,25 @@ const SideBar = ({ isOpen, setIsOpen }: any) => {
       className={`h-screen absolute w-full flex z-50 `}
       style={{ zIndex: 100 }}
     >
-      <View className="bg-black opacity-70 w-screen h-screen absolute" style={{ zIndex: 10 }}></View>
-      <Animated.View
-        ref={ref}
-        style={[animatedStyles, { zIndex: 20 }]}
-        className="h-full w-3/4 bg-white dark:bg-black opacity-100 absolute pt-[24px]"
+      <Modal
+        visible={isOpen}
+        onRequestClose={() => setIsOpen(false)}
+        transparent={true}
       >
-        <SidebarHeader isOpen={isOpen} setIsOpen={setIsOpen} />
-        <SidebarLinkList />
-        <SidebarRecents />
-      </Animated.View>
+        <View
+          className="bg-black opacity-70 w-screen h-screen absolute"
+          style={{ zIndex: 10 }}
+        ></View>
+        <Animated.View
+          ref={ref}
+          style={[animatedStyles, { zIndex: 20 }]}
+          className="h-full w-3/4 bg-white dark:bg-black opacity-100 absolute pt-[50px]"
+        >
+            <SidebarHeader isOpen={isOpen} setIsOpen={setIsOpen} />
+            <SidebarLinkList onClose={()=>setIsOpen(false)} />
+            <SidebarRecents />
+        </Animated.View>
+      </Modal>
     </SafeAreaView>
   ) : null;
 };

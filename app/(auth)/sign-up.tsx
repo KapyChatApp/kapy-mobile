@@ -13,6 +13,7 @@ import { UserRegisterProps } from "@/types/user";
 import axiosInstance from "@/axiosInstance";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { CommonActions } from "@react-navigation/native";
+import { bgLight500Dark10 } from "@/styles/theme";
 const SignUpPage = () => {
   const router = useRouter();
   const navigation = useNavigation();
@@ -104,7 +105,7 @@ const SignUpPage = () => {
     }
   };
   return (
-    <View className="wrapper flex-1 justify-center items-center flex flex-col dark:bg-darkbg">
+    <View className={`wrapper flex-1 justify-center items-center flex flex-col ${bgLight500Dark10}`}>
       <Text className="text-40 color text-cardinal mb-10 font-helvetica-bold">
         Sign up
       </Text>

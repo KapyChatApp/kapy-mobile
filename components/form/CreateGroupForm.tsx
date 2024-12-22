@@ -93,7 +93,7 @@ const CreateGroupForm = ({ isVisible, onClose }: any) => {
 
   const handleCreateGroup = async () => {
     const { _id } = await getLocalAuth();
-    const memberIds = [_id];
+    const memberIds:string[] = [];
     for (const friend of selected) {
       memberIds.push(friend._id);
     }
@@ -203,7 +203,7 @@ const CreateGroupForm = ({ isVisible, onClose }: any) => {
               </View>
             ))}
           </View>
-          <ScrollView>
+          <ScrollView className="flex-1 pb-[10px] h-3/4" contentContainerStyle={{paddingBottom:10}} >
             {
               friends.map((item, index) => (
                 <SelectFriendBox

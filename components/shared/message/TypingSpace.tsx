@@ -104,7 +104,7 @@ const TypingSpace = ({
           placeholderTextColor="#A9A9A9"
           className={`h-[42px] rounded-full ${bgLight600Dark300} px-[12px] ${textLight0Dark500} font-helvetica-light`}
           onFocus={() => setIsTypeping(true)}
-          onChangeText={onChangeText}
+          onChangeText={(text)=>{ setIsTypeping(true);onChangeText(text);}}
           value={value}
         />
       </View>

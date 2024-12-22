@@ -52,8 +52,8 @@ const FriendProfilePage = () => {
 
   const disPlayUserData = async () => {
     try {
+
       const postsData: SocialPostProps[] = await getFriendPosts(friendId.toString());
-      console.log("posttttttttt:",postsData);
       setPostsData(postsData);
       const friendData = await getFriendProfile(friendId, () =>
         setIsProfileLoading(false)

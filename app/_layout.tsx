@@ -77,75 +77,75 @@ export default function RootLayout() {
       <EventProvider>
         <ThemeProvider>
           <CameraProvider>
-            <SafeAreaView className="flex-1">
-              <MarkReadProvider>
-                <ClickOutsideProvider>
-                  <ActionSheetProvider>
-                    <Stack>
-                      <Stack.Screen
-                        name="index"
-                        options={{ headerShown: false }}
-                      />
-                      <Stack.Screen
-                        name="(auth)"
-                        options={{ headerShown: false }}
-                      />
-                      <Stack.Screen
-                        name="(tabs)"
-                        options={{
-                          headerShown: false,
-                          headerTitle: (props) => <MainHeader></MainHeader>,
-                        }}
-                      />
-                      <Stack.Screen
-                        name="chatbox"
-                        options={{ headerShown: false }}
-                      />
-                      <Stack.Screen
-                        name="(mine)/my-multimedia"
-                        options={{ headerShown: false }}
-                      />
-                      <Stack.Screen
-                        name="(mine)/my-wall"
-                        options={{ headerShown: false }}
-                      />
-                      <Stack.Screen
-                        name="(mine)/blocked-list"
-                        options={{ headerShown: false }}
-                      />
-                      <Stack.Screen
-                        name="(mine)/bff-list"
-                        options={{ headerShown: false }}
-                      />
-                      <Stack.Screen
-                        name="(mine)/my-groups"
-                        options={{ headerShown: false }}
-                      />
-                      <Stack.Screen
-                        name="(mine)/all-rate"
-                        options={{ headerShown: false }}
-                      />
-                      <Stack.Screen
-                        name="community"
-                        options={{ headerShown: false }}
-                      />
-                      <Stack.Screen
-                        name="(error)/not-found"
-                        options={{ headerShown: false }}
-                      />
-                      <Stack.Screen
-                        name="report"
-                        options={{ headerShown: false }}
-                      />
-                      <Stack.Screen
-                        name="friend"
-                        options={{ headerShown: false }}
-                      />
-                    </Stack>
-                  </ActionSheetProvider>
-                </ClickOutsideProvider>
-              </MarkReadProvider>
-            </SafeAreaView>
+              <SafeAreaView className="flex-1">
+                <MarkReadProvider>
+                  <ClickOutsideProvider>
+                    <ActionSheetProvider>
+                      <Stack>
+                        <Stack.Screen
+                          name="index"
+                          options={{ headerShown: false }}
+                        />
+                        <Stack.Screen
+                          name="(auth)"
+                          options={{ headerShown: false }}
+                        />
+                        <Stack.Screen
+                          name="(tabs)"
+                          options={{
+                            headerShown: false,
+                            headerTitle: (props) => <MainHeader></MainHeader>,
+                          }}
+                        />
+                        <Stack.Screen
+                          name="chatbox"
+                          options={{ headerShown: false }}
+                        />
+                        <Stack.Screen
+                          name="(mine)/my-multimedia"
+                          options={{ headerShown: false }}
+                        />
+                        <Stack.Screen
+                          name="(mine)/my-wall"
+                          options={{ headerShown: false }}
+                        />
+                        <Stack.Screen
+                          name="(mine)/blocked-list"
+                          options={{ headerShown: false }}
+                        />
+                        <Stack.Screen
+                          name="(mine)/bff-list"
+                          options={{ headerShown: false }}
+                        />
+                        <Stack.Screen
+                          name="(mine)/my-groups"
+                          options={{ headerShown: false }}
+                        />
+                        <Stack.Screen
+                          name="(mine)/all-rate"
+                          options={{ headerShown: false }}
+                        />
+                        <Stack.Screen
+                          name="community"
+                          options={{ headerShown: false }}
+                        />
+                        <Stack.Screen
+                          name="(error)/not-found"
+                          options={{ headerShown: false }}
+                        />
+                        <Stack.Screen
+                          name="report"
+                          options={{ headerShown: false }}
+                        />
+                        <Stack.Screen
+                          name="friend"
+                          options={{ headerShown: false }}
+                        />
+                      </Stack>
+                    </ActionSheetProvider>
+                  </ClickOutsideProvider>
+                </MarkReadProvider>
+              </SafeAreaView>
           </CameraProvider>
         </ThemeProvider>
       </EventProvider>

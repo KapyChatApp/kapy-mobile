@@ -1,11 +1,7 @@
-import { IconURL } from "@/constants/IconURL";
 import { BottomTabBarProps } from "@react-navigation/bottom-tabs";
 import React, { useState } from "react";
 import {
   View,
-  Text,
-  TouchableOpacity,
-  Image,
   LayoutChangeEvent,
 } from "react-native";
 import TabIcon from "../../ui/TabIcon";
@@ -15,7 +11,6 @@ import Animated, {
   withSpring,
 } from "react-native-reanimated";
 import TabBarButton from "./TabBarButton";
-import { bgLight100Dark0 } from "@/styles/theme";
 import { useTheme } from "@/context/ThemeProviders";
 import { useCamera } from "@/context/CameraContext";
 const TabBar = ({ state, descriptors, navigation }: BottomTabBarProps) => {

@@ -57,7 +57,6 @@ export const getMyPosts = async (goOn:()=>void) => {
 export const getFriendPosts = async (friendId: string) => {
   try {
     const { token } = await getLocalAuth();
-    console.log("requireId", friendId);
     const response = await axios.get(
       process.env.EXPO_PUBLIC_BASE_URL + "/post/friend",
       {
@@ -68,14 +67,13 @@ export const getFriendPosts = async (friendId: string) => {
         params: { friendId: friendId },
       }
     );
-    if (!response.data) {
-      console.log(response.status);
-      throw new Error("Not found posts");
+    if(response.status===200||response.status===201){
+      return response.data;
     }
-    return response.data;
+    return [];
   } catch (error) {
     console.log(error);
-    throw error;
+    return [];
   }
 };
 

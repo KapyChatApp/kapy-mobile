@@ -10,27 +10,25 @@ import {
 } from "react-native";
 import React, { useEffect, useRef, useState } from "react";
 import {
-  bgLight340Dark330,
   bgLight500Dark10,
   textLight0Dark500,
 } from "@/styles/theme";
 import { useClickOutside } from "react-native-click-outside";
-import UserAvatar from "@/components/ui/UserAvatar";
 import { MessageProps } from "@/types/message";
 import { formatDateDistance } from "@/utils/DateFormatter";
 import { Image } from "react-native";
 import VideoPlayer from "../multimedia/VideoPlayer";
 import AudioPlayer from "../multimedia/AudioPlayer";
-import { useActionSheet } from "@expo/react-native-action-sheet";
 import { deleteMessage, react, revokeMessage } from "@/lib/message-request";
 import UserAvatarLink from "@/components/ui/UserAvatarLink";
 import { IconURL } from "@/constants/IconURL";
 import Icon from "@/components/ui/Icon";
-import { getPathWithConventionsCollapsed } from "expo-router/build/fork/getPathFromState-forks";
 import { useRouter } from "expo-router";
 import MessageLove from "@/components/ui/MessageLove";
-import { getLocalAuth } from "@/lib/local-auth";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import * as Haptics from 'expo-haptics';
+import { playSound } from "@/utils/Media";
+import { AppSound } from "@/constants/Sound";
 
 const Message = (props: MessageProps) => {
   const [position, setPosition] = useState(props.position);
@@ -49,36 +47,56 @@ const Message = (props: MessageProps) => {
   const [modalPosition, setModalPosition] = useState({
     x: 0,
     y: 0,
-    position: "below",
-  });
+  })
   const pressableRef = useRef<View | null>(null);
   const { height: screenHeight, width: screenWidth } = Dimensions.get("screen");
-
-  const handleLongPress = () => {
-    if (pressableRef.current) {
-      pressableRef.current.measure((fx, fy, width, height, px, py) => {
-        console.log("h: ",py+height,"w: ",screenWidth - 300 )
-        if (py + height < screenHeight / 2) {
-          setModalPosition({
-            x: props.isSender ? screenWidth - 300 : px,
-            y: py + height,
-            position: "below",
-          });
-        } else {
-          setModalPosition({
-            x: props.isSender ? screenWidth - 300 : px,
-            y: py - height - 120,
-            position: "above",
-          });
-        }
-        setIsModalVisible(true);
-      });
+  const adjustModalPosition = (x:number, y:number, modalWidth:number, modalHeight:number) => {
+    let adjustedX = x;
+    let adjustedY = y;
+  
+    // Điều chỉnh để không vượt bên phải màn hình
+    if (x + modalWidth > screenWidth) {
+      adjustedX = screenWidth - modalWidth - 10; // Chừa khoảng cách 10px
     }
+  
+    // Điều chỉnh để không vượt bên trái màn hình
+    if (x < 0) {
+      adjustedX = 10; // Chừa khoảng cách 10px
+    }
+  
+    // Điều chỉnh để không vượt dưới màn hình
+    if (y + modalHeight > screenHeight) {
+      adjustedY = screenHeight - modalHeight - 10; // Chừa khoảng cách 10px
+    }
+  
+    // Điều chỉnh để không vượt trên màn hình
+    if (y < 0) {
+      adjustedY = 10; // Chừa khoảng cách 10px
+    }
+  
+    return { x: adjustedX, y: adjustedY };
+  };
+  
+  const handleLongPress = (event:any) => {
+    const { pageX, pageY } = event.nativeEvent;
+
+
+  const modalWidth = 270;
+  const modalHeight = 160;
+
+  console.log("modal w: ", modalWidth, "modal h: ", modalHeight);
+  const { x, y } = adjustModalPosition(pageX, pageY, modalWidth, modalHeight);
+
+  // Cập nhật vị trí modal
+  setModalPosition({ x, y });
+  setIsModalVisible(true);
+  Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+
   };
 
   const router = useRouter();
   const roundedValueReceiver = () => {
-    if(props.contentId){
+    if (props.contentId) {
       return "rounded-3xl";
     }
     switch (position) {
@@ -93,7 +111,7 @@ const Message = (props: MessageProps) => {
     }
   };
   const roundedValueSender = () => {
-    if(props.contentId){
+    if (props.contentId) {
       return "rounded-3xl";
     }
     switch (position) {
@@ -137,7 +155,7 @@ const Message = (props: MessageProps) => {
   const renderContent = () => {
     switch (props.contentId?.type) {
       case "Image":
-        case "image":
+      case "image":
         return (
           <Pressable
             onPress={() => props?.handleViewImage(props.contentId?.url!)}
@@ -150,15 +168,17 @@ const Message = (props: MessageProps) => {
           </Pressable>
         );
       case "Video":
-        case "video":
+      case "video":
         return (
-          <Pressable className="rounded-2xl flex-1 w-full h-full"
-          onLongPress={handleLongPress}>
+          <Pressable
+            className="rounded-2xl flex-1 w-full h-full"
+            onLongPress={handleLongPress}
+          >
             <VideoPlayer videoSource={props.contentId.url!} />
           </Pressable>
         );
       case "Audio":
-        case "audio":
+      case "audio":
         return (
           <AudioPlayer
             audioUri={props.contentId.url!}
@@ -404,21 +424,21 @@ const Message = (props: MessageProps) => {
     }
   };
 
-  const renderSendStatus =  ()=>{
-    switch (props.sendStatus){
+  const renderSendStatus = () => {
+    switch (props.sendStatus) {
       case "sending":
         return "Sending...";
-        case "success":
-          return "Sent ✓"
-          case "fail":
-            return "Fail ×";
+      case "success":
+        return "Sent ✓";
+      case "fail":
+        return "Fail ×";
     }
-
-  }
+  };
 
   const handleLike = async () => {
     setIsLiked(!isLiked);
     if ((timeLikes + 1) % 2 != 0) {
+      await playSound(AppSound.kiss);
       setTotalLike(totalLike + 1);
       setTimeLikes(timeLikes + 1);
     } else {
@@ -450,11 +470,11 @@ const Message = (props: MessageProps) => {
       setAvatar(createdUserData?.avatar);
       if (props.isReact.includes(props.localUserId!)) {
         setIsLiked(true);
-        setTimeLikes(1);
+        setTimeLikes( 1);
       }
     };
     setUpMessage();
-  }, []);
+  }, [props.position]);
   return (
     <View
       className={`flex-1 flex ${props.isSender ? "items-end" : "items-start"}`}
@@ -492,6 +512,7 @@ const Message = (props: MessageProps) => {
                   elevation: 4,
                   rowGap: 10,
                 }}
+
               >
                 <TouchableOpacity
                   className="flex items-center justify-center w-[30px] h-[30px] bg-light-510 dark:bg-dark-20 rounded-full"
@@ -600,11 +621,10 @@ const Message = (props: MessageProps) => {
         style={{ columnGap: 4 }}
         onPress={handleDoubleTapPress}
         onLongPress={handleLongPress}
-        delayLongPress={1000}
       >
         {!props.isSender && (position === "bottom" || position === "free") ? (
           <UserAvatarLink
-            avatarURL={{ uri:avatar}}
+            avatarURL={{ uri: avatar }}
             size={36}
             userId={props.createBy}
           />
@@ -620,6 +640,21 @@ const Message = (props: MessageProps) => {
               aspectRatio: props.contentId.width! / props.contentId.height!,
             }}
           >
+            {props.sendStatus === "sending" ? (
+              <View
+              className="rounded-3xl"
+                style={{
+                  position: "absolute", 
+                  top: 0,
+                  left: 0,
+                  right: 0,
+                  bottom: 0,
+                  backgroundColor: "rgba(128, 128, 128, 0.7)", 
+                  zIndex: 1, 
+                }}
+              />
+            ):null}
+
             {renderContent()}
           </View>
         ) : (
@@ -668,7 +703,11 @@ const Message = (props: MessageProps) => {
           {formatDateDistance(props.createAt)}
         </Text>
       ) : null}
-      {props.sendStatus!="non-send"? <Text className="text-deny font-helvetica-light text-10">{renderSendStatus()}</Text>:null}
+      {props.sendStatus ? (
+        <Text className="text-deny font-helvetica-light text-10">
+          {renderSendStatus()}
+        </Text>
+      ) : null}
     </View>
   );
 };
