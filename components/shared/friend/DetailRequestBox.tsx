@@ -70,9 +70,9 @@ const DetailRequestBox = (props: RequestedProps) => {
       throw new Error("User not found!");
     }
     const { _id } = JSON.parse(user);
-    if (props.relation === "bff") {
+    if (props.relation === "received_bff") {
       acceptBFFReq(token, _id);
-    } else if (props.relation === "friend") {
+    } else if (props.relation === "received_friend") {
       acceptFriendReq(token, _id);
     }
   };
@@ -89,7 +89,7 @@ const DetailRequestBox = (props: RequestedProps) => {
             <Icon
               size={32}
               iconURL={
-                props.relation === "bff"
+                props.relation === "received_bff"
                   ? IconURL.bff_request
                   : IconURL.f_request
               }

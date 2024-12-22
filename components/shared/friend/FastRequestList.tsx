@@ -17,6 +17,7 @@ const FastRequestList = () => {
     useCallback(() => {
       const getMyRequestedsFunc = async () => {
         const myRequestedResponse = await getMyRequesteds();
+        console.log("my request");
         setMyRequesteds(myRequestedResponse);
       };
       getMyRequestedsFunc();

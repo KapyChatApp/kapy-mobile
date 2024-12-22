@@ -451,11 +451,11 @@ const Message = (props: MessageProps) => {
       setAvatar(createdUserData?.avatar);
       if (props.isReact.includes(props.localUserId!)) {
         setIsLiked(true);
-        setTimeLikes(1);
+        setTimeLikes( 1);
       }
     };
     setUpMessage();
-  }, []);
+  }, [props.position]);
   return (
     <View
       className={`flex-1 flex ${props.isSender ? "items-end" : "items-start"}`}

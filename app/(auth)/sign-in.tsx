@@ -11,6 +11,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { UserLoginProps } from "@/types/user";
 import { CommonActions } from "@react-navigation/native";
 import axios from "axios";
+import { bgLight500Dark10 } from "@/styles/theme";
 const SignInPage = () => {
   const navigation = useNavigation();
   const [isPressed, setIsPressed] = useState(false);
@@ -74,7 +75,7 @@ const SignInPage = () => {
     }
   };
   return (
-    <View className="wrapper flex-1 justify-center items-center flex flex-col dark:bg-darkbg">
+    <View className={`wrapper flex-1 justify-center items-center flex flex-col ${bgLight500Dark10}`} >
       <Text className="text-40 color text-cardinal mb-10 font-helvetica-bold">
         Sign in
       </Text>
