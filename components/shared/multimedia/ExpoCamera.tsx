@@ -141,74 +141,74 @@ const ExpoCamera = ({
     startRecording();
   };
   return (
-    <View className="flex-1 w-screen h-screen fixed">
-      {photoUri != "" || videoUri != "" ? (
-        <View className="flex items-center justify-center">
-          {videoUri === "" ? (
-            <Image className="w-full h-full fixed" source={{ uri: photoUri }} />
-          ) : (
-            <View className="fixed w-full h-full flex items-center justify-center">
-              <VideoPlayer videoSource={videoUri!} />
-            </View>
-          )}
-          <View className="absolute top-[20px] left-[20px]">
-            <TouchableOpacity
-              onPress={() => {
-                setPhotoUri("");
-                setVideoUri("");
-              }}
-            >
-              <Icon iconURL={IconURL.previous} size={30} />
-            </TouchableOpacity>
+    <View className="flex-1 w-screen h-screen fixed ">
+      {photoUri === "" && videoUri === "" ? (
+       <CameraView
+       style={styles.camera}
+       facing={facing}
+       ref={cameraRef}
+       mode="video"
+     >
+       <View className=" flex-1 flex justify-between items-center pb-[100px] ">
+         <View className="flex-1 w-full flex flex-row justify-between item-center p-[20px]">
+           <TouchableOpacity onPress={onClose}>
+             <Icon iconURL={IconURL.close_single} size={30} />
+           </TouchableOpacity>
+           <TouchableOpacity onPress={toggleCameraFacing}>
+             <Icon size={30} iconURL={IconURL.change_cam} />
+           </TouchableOpacity>l
+         </View>
+         <View
+           className="flex items-center justify-between "
+           style={{ rowGap: 10 }}
+         >
+           {isRecording && (
+             <View className=" w-full flex items-center">
+               <Text className="text-white text-lg">
+                 {Math.floor(recordingTime / 60)}:
+                 {(recordingTime % 60).toString().padStart(2, "0")}
+               </Text>
+             </View>
+           )}
+           <TouchableOpacity
+             className="w-[80px] h-[80px] bg-cardinal rounded-full"
+             onPress={handlePress}
+             onLongPress={handleLongPress}
+           />
+         </View>
+       </View>
+     </CameraView>
+      ) : ( <View className="flex items-center justify-center">
+        {videoUri === "" ? (
+          <Image className="w-full h-full fixed" source={{ uri: photoUri }} />
+        ) : (
+          <View className="fixed w-full h-full flex items-center justify-center">
+            <VideoPlayer videoSource={videoUri!} />
           </View>
-          <View className="absolute bottom-[40px] right-[20px]">
-            {isSendNow?<TouchableOpacity
-              onPress={() => {
-                onSend?.();
-                onClose();
-              }}
-            >
-              <Icon size={40} iconURL={IconURL.send} />
-            </TouchableOpacity> :<TouchableOpacity onPress={onClose}><Icon iconURL={IconURL.tick} size={40}/></TouchableOpacity>}
-            
-          </View>
+        )}
+        <View className="absolute top-[20px] left-[20px]">
+          <TouchableOpacity
+            onPress={() => {
+              setPhotoUri("");
+              setVideoUri("");
+            }}
+          >
+            <Icon iconURL={IconURL.previous} size={30} />
+          </TouchableOpacity>
         </View>
-      ) : (
-        <CameraView
-          style={styles.camera}
-          facing={facing}
-          ref={cameraRef}
-          mode="video"
-        >
-          <View className=" flex-1 flex justify-between items-center">
-            <View className="flex-1 w-full flex flex-row justify-between item-center p-[20px]">
-              <TouchableOpacity onPress={onClose}>
-                <Icon iconURL={IconURL.close_single} size={30} />
-              </TouchableOpacity>
-              <TouchableOpacity onPress={toggleCameraFacing}>
-                <Icon size={30} iconURL={IconURL.change_cam} />
-              </TouchableOpacity>l
-            </View>
-            <View
-              className="flex items-center justify-between mb-[40px]"
-              style={{ rowGap: 10 }}
-            >
-              {isRecording && (
-                <View className=" w-full flex items-center">
-                  <Text className="text-white text-lg">
-                    {Math.floor(recordingTime / 60)}:
-                    {(recordingTime % 60).toString().padStart(2, "0")}
-                  </Text>
-                </View>
-              )}
-              <TouchableOpacity
-                className="w-[80px] h-[80px] bg-cardinal rounded-full"
-                onPress={handlePress}
-                onLongPress={handleLongPress}
-              />
-            </View>
-          </View>
-        </CameraView>
+        <View className="absolute bottom-[90px] right-[20px]">
+          {isSendNow?<TouchableOpacity
+            onPress={() => {
+              onSend?.();
+             onClose();
+            }}
+          >
+            <Icon size={40} iconURL={IconURL.send} />
+          </TouchableOpacity> :<TouchableOpacity onPress={onClose}><Icon iconURL={IconURL.tick} size={40}/></TouchableOpacity>}
+          
+        </View>
+      </View>
+        
       )}
     </View>
   );
