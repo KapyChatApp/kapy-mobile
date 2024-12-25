@@ -17,6 +17,8 @@ import VideoPlayer from "../multimedia/VideoPlayer";
 import AudioPlayer from "../multimedia/AudioPlayer";
 import PostAudioPlayer from "../multimedia/PostAudioPlayer";
 import File from "@/components/ui/File";
+import { FileProps } from "@/types/file";
+import MediaGroup from "@/components/ui/MediaGroup";
 const SocialPost = (props: SocialPostProps) => {
   const [isShowComment, setIsShowComment] = useState(false);
   const router = useRouter();
@@ -29,9 +31,17 @@ const SocialPost = (props: SocialPostProps) => {
     props.likedIds.includes(userId.toString()) ? true : false
   );
   const isMyPost = props.userId.toString() === userId;
+  const [videoImages,setVideoImages] = useState<FileProps[]>([]);
+  const [otherMedias, setOtherMedias] = useState<FileProps[]>([]);
   useFocusEffect(
     useCallback(() => {
-      console.log(props.contents);
+      const handleDisPlayPost = ()=>{
+        const videoImages = props.contents.filter((item)=>item.type==="Image"||item.type==="Video");
+        const otherMedias = props.contents.filter((item)=>item.type!=="Video" && item.type!=="Image");
+        console.log("display item: ",videoImages);
+        setVideoImages(videoImages);
+        setOtherMedias(otherMedias);
+      }
       const likeStreamManage = async () => {
         const { _id } = await getLocalAuth();
         setUserId(_id);
@@ -42,6 +52,7 @@ const SocialPost = (props: SocialPostProps) => {
           setIsliked(false);
         }
       };
+      handleDisPlayPost();
       likeStreamManage();
     }, [])
   );
@@ -118,28 +129,29 @@ const SocialPost = (props: SocialPostProps) => {
         <Text className={`${textLight0Dark500} font-helvetica-light text-14`}>
           {props.caption}
         </Text>
-        {props.contents.map((item) =>
-          item.type === "Video" ? (
-            <VideoPlayer videoSource={item.url!}/>
-          ) : item.type === "Image" ? (
-            <View className="z-10">
-            <Pressable className="w-fit h-fit" onPress={()=>props.handleImageViewing?.(item.url!)}>
-            <Image
-              source={{ uri: item.url }}
-              style={{
-                width: "auto",
-                height: "auto",
-                borderRadius: 10,
-                marginBottom: 10,
-                aspectRatio: Number(item.width) / Number(item.height),
-              }}
-              resizeMode="cover"
-            />
-            </Pressable>
-            </View>
-          ) : (
+        <MediaGroup medias={videoImages}/>
+        {otherMedias.map((item) =>
+          // item.type === "Video" ? (
+          //   <VideoPlayer videoSource={item.url!}/>
+          // ) : item.type === "Image" ? (
+          //   <View className="z-10">
+          //   <Pressable className="w-fit h-fit" onPress={()=>props.handleImageViewing?.(item.url!)}>
+          //   <Image
+          //     source={{ uri: item.url }}
+          //     style={{
+          //       width: "auto",
+          //       height: "auto",
+          //       borderRadius: 10,
+          //       marginBottom: 10,
+          //       aspectRatio: Number(item.width) / Number(item.height),
+          //     }}
+          //     resizeMode="cover"
+          //   />
+          //   </Pressable>
+          //   </View>
+          // ) : (
             item.type==="Audio"? <PostAudioPlayer audioUri={item.url!}/>:<File file={item} isSender={false} position="free"/>
-          )
+          // )
         )}
       </View>
       <View
