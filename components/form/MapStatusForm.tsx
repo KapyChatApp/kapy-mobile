@@ -12,6 +12,7 @@ import {
   TextInput,
   Image,
   Alert,
+  SafeAreaView,
 } from "react-native";
 import { useClickOutside } from "react-native-click-outside";
 import CustomButton from "../ui/CustomButton";
@@ -30,17 +31,25 @@ import { MessageBoxProps, ReceiverProps } from "@/types/message";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import LoadingSpinner from "../ui/LoadingSpinner";
 import DataInputBig from "../ui/DataInputBig";
+import { createMapStatus, deleteMapStatus, editMapStatus } from "@/lib/map";
+import { CreateMapStatusProps, EditMapStatusProps } from "@/types/map";
+import ExpoCamera from "../shared/multimedia/ExpoCamera";
 
-const CreateMapStatusForm = ({ isVisible, onClose }: any) => {
+const MapStatusForm = ({ isVisible, onClose, after, startLoading, endLoading, isLoading, notIsLoading}: any) => {
   const ref = useClickOutside(() => onClose());
+  const [mode, setMode] = useState("create");
   const [selectedMedia, setSelectedMedia] = useState<
     { uri: string; type: string; name: string | null | undefined }[]
   >([]);
+  const [captureImage,setCaptureImage] = useState<
+  { uri: string; type: string; name: string | null | undefined }[]
+>([]);
+  const [statusId, setStatusId] = useState("");
+  const [caption,setCaption] = useState("");
     const [avatar, setAvatar] = useState("");
-  const handleGalleryPicker = async () => {
-    const media = await singlePickMedia();
-    setSelectedMedia(media);
-  };
+    const [keepOldContent, setKeepOldContent] = useState(true);
+    const [isCameraOpen, setIsCameraOpen] = useState(false); 
+
   const translateY = useRef(new Animated.Value(0)).current;
   const panResponder = useRef(
     PanResponder.create({
@@ -63,14 +72,57 @@ const CreateMapStatusForm = ({ isVisible, onClose }: any) => {
     })
   ).current;
 
+  const handleCreateMapStatus = async ()=>{
+    onClose();
+    const param:CreateMapStatusProps={
+      caption:caption,
+      file:selectedMedia[0]
+    }
+     const newMapStatus = await createMapStatus(param,startLoading, endLoading, isLoading, notIsLoading,(data)=>after(data));
+    await AsyncStorage.setItem("my-map-status",JSON.stringify(newMapStatus));
+    setMode("edit");
+    }
+
+    const handleEditMapStatus = async ()=>{
+      onClose();
+      const param:EditMapStatusProps ={
+        caption:caption,
+        file:selectedMedia[0],
+        keepOldContent:keepOldContent,
+      }
+      const updatedMapStatus = await editMapStatus(statusId, param,startLoading, endLoading, isLoading, notIsLoading, (data)=>after(data));
+      await AsyncStorage.setItem("my-map-status", JSON.stringify(updatedMapStatus));
+     
+    } 
+
+    const handleDeleteMapStatus = async ()=>{
+      onClose();
+      await deleteMapStatus(startLoading, endLoading, isLoading, notIsLoading,()=>after(undefined));
+      setMode("create");
+     
+    }
+
   useEffect(()=>{
     const getLocalUser = async ()=>{
         const userString = await AsyncStorage.getItem("user");
         const user = await JSON.parse(userString!);
         setAvatar(user.avatar);
     }
+    const getLocalStatus = async ()=>{
+      const localStatus = await AsyncStorage.getItem("my-map-status");
+      const localStatusObject = await JSON.parse(localStatus!);
+      if(((localStatusObject.caption!==null && localStatusObject.caption!=="") || localStatusObject.content!==null )) {
+        console.log("edit is on, ",localStatusObject);
+        setMode("edit");
+        const status = await JSON.parse(localStatus!);
+        setStatusId(status._id);
+        setCaption(status.caption);
+        setSelectedMedia([{uri:status.content.url,type:status.content.type, name:status.content.fileName}]);
+      }
+    }
+    getLocalStatus();
     getLocalUser();
-  },[]);
+  },[isVisible]);
 
   return (
     <Modal
@@ -82,7 +134,7 @@ const CreateMapStatusForm = ({ isVisible, onClose }: any) => {
       <View style={styles.overlay}>
         <Animated.View
           {...panResponder.panHandlers}
-          style={[{ transform: [{ translateY }] }, { rowGap: 20 }]}
+          style={[{ transform: [{ translateY }] }, { rowGap: 30 }]}
           className={`w-full h-3/4 flex items-center ${bgLight500Dark10}`}
           ref={ref}
         >
@@ -93,25 +145,37 @@ const CreateMapStatusForm = ({ isVisible, onClose }: any) => {
             >
                 What are you doing?
             </Text>
+            <View className="flex flex-row" style={{columnGap:10}}>
             <CustomButton
               width={80}
               height={40}
-              label="Create"
-              onPress={()=>{}}
+              label={mode==="create"? "Create":"Edit"}
+              onPress={mode==="create"? handleCreateMapStatus:handleEditMapStatus}
             />
+            {mode==="edit"? <CustomButton
+              width={80}
+              height={40}
+              label="Delete"
+              onPress={handleDeleteMapStatus}
+            />:null}
+            </View>
           </View>
             <UserAvatar size={100} avatarURL={{uri:avatar}}/>
             <View className="flex flex-row items-center justify-between px-[20px]" style={{columnGap:10}}>
                 <Icon iconURL={IconURL.chat_select} size={40}/>
-                <TextInput className={`flex-1 ${textLight0Dark500} font-helvectica-regular text-16 px-[10px] py-[12px] border-b border-border`}  placeholder="How do you feel?"/>
+                <TextInput className={`flex-1 ${textLight0Dark500} font-helvectica-regular text-16 px-[10px] py-[12px] border-b border-border`}  placeholder="How do you feel?" onChangeText={setCaption} value={caption}/>
             </View>
-            {selectedMedia.length===0?   <TouchableOpacity className="h-[270px] w-[190px] flex items-center justify-center bg-light-300 dark:bg-dark-20 rounded-2xl" style={{rowGap:10}} onPress={handleGalleryPicker}>
-                <Icon iconURL={IconURL.plus_white} size={40}/>
-                <Text className="text-white font-helvetica-light">Add an image</Text>
-            </TouchableOpacity>:<Image source={{uri:selectedMedia[0].uri}} style={{width:250, aspectRatio:1, borderRadius:10}}/>}
+            {selectedMedia.length===0?   <TouchableOpacity className="h-[270px] w-[190px] flex items-center justify-center bg-light-300 dark:bg-dark-20 rounded-2xl" style={{rowGap:10}} onPress={()=>setIsCameraOpen(true)}>
+                <Icon iconURL={IconURL.opencam_d} size={40}/>
+                <Text className="text-white font-helvetica-light">Take a picture</Text>
+            </TouchableOpacity>:<View><Image source={{uri:selectedMedia[0].uri}} style={{width:250, aspectRatio:1, borderRadius:10}}/><TouchableOpacity className="absolute -top-[20px] -right-[20px]" onPress={mode==="create"? ()=>setSelectedMedia([]):()=>{
+              setKeepOldContent(false);
+              setSelectedMedia([]);
+            }}><Icon iconURL={IconURL.close} size={40}/></TouchableOpacity></View>}
          
         </Animated.View>
       </View>
+    
     </Modal>
   );
 };
@@ -158,4 +222,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default CreateMapStatusForm;
+export default MapStatusForm;

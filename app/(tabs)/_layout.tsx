@@ -10,6 +10,7 @@ import { getMyProfile } from "@/lib/my-profile";
 import { checkIn, checkOut } from "@/lib/local-auth";
 import { getAllMessages, getMyChatBoxes } from "@/lib/message-request";
 import { getMyFriends } from "@/lib/my-friends";
+import { getMyMapStatus } from "@/lib/map";
 const HomeLayout = () => {
   const [appState, setAppState] = useState(AppState.currentState);
 
@@ -30,6 +31,8 @@ const HomeLayout = () => {
         }
       }
       await getMyFriends();
+      const myMapStatus = await getMyMapStatus();
+      await AsyncStorage.setItem(`my-map-status`,JSON.stringify(myMapStatus));
     };
 
     fetchData();

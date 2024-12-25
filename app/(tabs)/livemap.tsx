@@ -1,5 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, StyleSheet, ActivityIndicator, TouchableOpacity } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  ActivityIndicator,
+  TouchableOpacity,
+  SafeAreaView,
+} from "react-native";
 import MapView, { Marker } from "react-native-maps";
 import * as Location from "expo-location";
 import { IconURL } from "@/constants/IconURL";
@@ -9,121 +16,50 @@ import UserAvatarLink from "@/components/ui/UserAvatarLink";
 import Icon from "@/components/ui/Icon";
 import Search from "@/components/shared/function/Search";
 import { bgLight100Dark0, bgLight500Dark10 } from "@/styles/theme";
-import CreateMapStatusForm from "@/components/form/CreateMapStatusForm";
-
-interface LocationCoords {
-  latitude: number;
-  longitude: number;
-}
-
-const darkModeStyle = [
-  {
-    elementType: "geometry",
-    stylers: [
-      {
-        color: "#212121",
-      },
-    ],
-  },
-  {
-    elementType: "labels.icon",
-    stylers: [
-      {
-        visibility: "off",
-      },
-    ],
-  },
-  {
-    elementType: "labels.text.fill",
-    stylers: [
-      {
-        color: "#757575",
-      },
-    ],
-  },
-  {
-    elementType: "labels.text.stroke",
-    stylers: [
-      {
-        color: "#212121",
-      },
-    ],
-  },
-  {
-    featureType: "administrative",
-    elementType: "geometry.fill",
-    stylers: [
-      {
-        color: "#757575",
-      },
-    ],
-  },
-  {
-    featureType: "poi",
-    elementType: "geometry.fill",
-    stylers: [
-      {
-        color: "#212121",
-      },
-    ],
-  },
-  {
-    featureType: "poi.park",
-    elementType: "geometry.fill",
-    stylers: [
-      {
-        color: "#2c6e49",
-      },
-    ],
-  },
-  {
-    featureType: "road",
-    elementType: "geometry",
-    stylers: [
-      {
-        color: "#3e3e3e",
-      },
-    ],
-  },
-  {
-    featureType: "road.highway",
-    elementType: "geometry.fill",
-    stylers: [
-      {
-        color: "#2c6e49",
-      },
-    ],
-  },
-  {
-    featureType: "water",
-    elementType: "geometry",
-    stylers: [
-      {
-        color: "#000000",
-      },
-    ],
-  },
-];
-
-const LiveMap: React.FC = () => {
-  const [currentLocation, setCurrentLocation] = useState<LocationCoords | null>(
-    null
-  );
+import MapStatusForm from "@/components/form/MapStatusForm";
+import { LocationProps } from "@/types/location";
+import {
+  getMyBffMapStatus,
+  getMyMapStatus,
+  initiateMapStatus,
+} from "@/lib/map";
+import { MapStatusProps } from "@/types/map";
+import UserMarker from "@/components/shared/livemap/UserMarker";
+import ImageViewing from "react-native-image-viewing";
+import ExpoCamera from "@/components/shared/multimedia/ExpoCamera";
+import LoadingSpinner from "@/components/ui/LoadingSpinner";
+const LiveMap = () => {
+  const [currentLocation, setCurrentLocation] = useState<LocationProps>();
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [localUser, setLocalUser] = useState<HeadProfileProps>();
-  const [markerSize, setMarkerSize] = useState<number>(40); // Kích thước marker
-  const [markerBottom, setMarkerBottom] = useState<number>(70); // Giá trị bottom của marker
-  const [isMarkerVisible, setIsMarkerVisible] = useState<boolean>(true); // Trạng thái marker
+  const [markerSize, setMarkerSize] = useState<number>(40);
+  const [markerBottom, setMarkerBottom] = useState<number>(70);
+  const [isMarkerVisible, setIsMarkerVisible] = useState<boolean>(true);
   const [q, setQ] = useState("");
   const [isFormOpen, setIsFormOpen] = useState(false);
+  const [bffMapStatus, setBffMapStatus] = useState<MapStatusProps[]>([]);
+  const [myMapStatus, setMyMapStatus] = useState<MapStatusProps>();
+  const [isImageViewingOpen, setIsImageViewingOpen] = useState(false);
+  const [imageViewing, setImageViewing] = useState("");
+
+  const [loading, setLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+
   useEffect(() => {
     const getLocalData = async () => {
       const userString = await AsyncStorage.getItem("user");
-      const user = JSON.parse(userString!);
+      const user = await JSON.parse(userString!);
       setLocalUser(user);
     };
 
-    const getCurrentLocation = async () => {
+    const getMyMapStatusFUNC = async () => {};
+
+    const getBffMapStatuses = async () => {
+      const bffMapStatuses: MapStatusProps[] = await getMyBffMapStatus();
+      setBffMapStatus(bffMapStatuses);
+    };
+
+    const initiateMap = async () => {
       try {
         const { status } = await Location.requestForegroundPermissionsAsync();
         if (status !== "granted") {
@@ -131,35 +67,41 @@ const LiveMap: React.FC = () => {
           return;
         }
 
-        const location = await Location.getCurrentPositionAsync({});
+        const location = await Location.getCurrentPositionAsync();
         setCurrentLocation({
-          latitude: location.coords.latitude,
-          longitude: location.coords.longitude,
+          latitude: Number(location.coords.latitude),
+          longitude: Number(location.coords.longitude),
+          altitude: Number(location.coords.altitude),
+          accuracy: Number(location.coords.accuracy),
+          altitudeAccuracy: Number(location.coords.altitudeAccuracy),
+          heading: Number(location.coords.heading),
+          speed: Number(location.coords.speed),
         });
+        const myMapStatus: MapStatusProps = await getMyMapStatus();
+        const myMapStatusWithTrueLocation: MapStatusProps = {
+          ...myMapStatus,
+          location: location.coords,
+        };
+        setMyMapStatus(myMapStatusWithTrueLocation);
+        console.log("my map data: ", myMapStatusWithTrueLocation);
+        await initiateMapStatus(location.coords);
       } catch (error) {
         setErrorMsg("Failed to fetch location.");
       }
     };
 
     getLocalData();
-    getCurrentLocation();
-  }, []);
+    initiateMap();
+    getMyMapStatusFUNC();
+    getBffMapStatuses();
+  }, [isFormOpen]);
 
-  // Điều chỉnh kích thước và vị trí marker theo zoom level
   const adjustMarkerSizeAndPosition = (region: any) => {
-    const zoomLevel = Math.log2(360 / region.latitudeDelta); // Công thức tính zoom chính xác hơn
-    const size = Math.max(20, Math.min(zoomLevel * 10, 50)); // Giới hạn kích thước từ 20 đến 50
+    const zoomLevel = Math.log2(360 / region.latitudeDelta);
+    const size = Math.min(Math.max(10, zoomLevel * 3), 60);
+    const bottomValue = Math.max(30, Math.min(zoomLevel * 2, 50));
 
-    // Điều chỉnh bottom tuyến tính khi zoom out
-    const bottomValue = Math.max(30, Math.min(zoomLevel * 2, 50)); // Bottom giảm dần khi zoom out theo tỷ lệ zoom
-
-    // Điều chỉnh trạng thái hiển thị marker khi zoom out
-    if (region.latitudeDelta > 0.6) {
-      // Nếu zoom out quá mức (ví dụ: khi latitudeDelta > 0.1)
-      setIsMarkerVisible(false); // Ẩn marker
-    } else {
-      setIsMarkerVisible(true); // Hiển thị marker
-    }
+    setIsMarkerVisible(region.latitudeDelta <= 0.6);
 
     setMarkerSize(size);
     setMarkerBottom(bottomValue);
@@ -177,47 +119,76 @@ const LiveMap: React.FC = () => {
   return (
     <View className={`flex-1 ${bgLight500Dark10}`} style={{ rowGap: 8 }}>
       <View className="flex flex-row items-center">
-        <View className="w-10/12"><Search onChangeText={setQ}/></View>
-        <TouchableOpacity className="items-center justify-center mr-[4px]" onPress={()=>setIsFormOpen(true)}>
-          <Icon iconURL={IconURL.editable} size={30}/>
+        <View className="w-10/12">
+          <Search onChangeText={setQ} />
+        </View>
+        <TouchableOpacity
+          className="items-center justify-center mr-[4px]"
+          onPress={() => setIsFormOpen(true)}
+        >
+          <Icon iconURL={IconURL.editable} size={30} />
         </TouchableOpacity>
       </View>
 
       <MapView
         style={styles.map}
         initialRegion={{
-          latitude: currentLocation.latitude,
-          longitude: currentLocation.longitude,
+          latitude: currentLocation.latitude!,
+          longitude: currentLocation.longitude!,
           latitudeDelta: 0.01,
           longitudeDelta: 0.01,
         }}
-        onRegionChangeComplete={adjustMarkerSizeAndPosition} // Gọi khi zoom thay đổi
-        customMapStyle={darkModeStyle}
+        onRegionChangeComplete={adjustMarkerSizeAndPosition}
       >
-        {isMarkerVisible && ( // Kiểm tra nếu marker được hiển thị
-          <Marker coordinate={currentLocation} title="Vị trí của bạn">
-            <View style={styles.customMarker} className="">
-              <View
-                className="flex items-center absolute  h-[70px]"
-                style={{ bottom: markerBottom, rowGap: 4 }}
-              >
-                <UserAvatarLink
-                  avatarURL={{ uri: localUser?.avatar }}
-                  size={markerSize} // Sử dụng kích thước tự động
-                  userId={localUser?._id}
-                />
-                <View className="bg-cardinal flex flex-row p-[5px] rounded-lg absolute top-[55px] min-w-[140px]">
-                  <Text className="text-white font-helvetica-bold text-10 text-center w-full">
-                    {localUser?.firstName + " " + localUser?.lastName}
-                  </Text>
-                </View>
-              </View>
-              <Icon iconURL={IconURL.marker} size={markerSize / 2} />
-            </View>
-          </Marker>
-        )}
+        {isMarkerVisible && bffMapStatus.length != 0
+          ? bffMapStatus.map((item, index) => (
+              <UserMarker
+                key={index}
+                {...item}
+                markerBottom={markerBottom}
+                markerSize={markerSize}
+                handleImageViewing={(data) => {
+                  setImageViewing(data);
+                  setIsImageViewingOpen(true);
+                }}
+              />
+            ))
+          : null}
+        <UserMarker
+          {...myMapStatus}
+          markerBottom={markerBottom}
+          markerSize={markerSize}
+          handleImageViewing={(data) => {
+            setImageViewing(data);
+            setIsImageViewingOpen(true);
+          }}
+        /> 
       </MapView>
-      <CreateMapStatusForm isVisible={isFormOpen} onClose={()=>setIsFormOpen(false)}/>
+      <MapStatusForm
+        isVisible={isFormOpen}
+        onClose={() => setIsFormOpen(false)}
+        after={(data: any) => {
+          if (data) {
+            setMyMapStatus(data);
+          } else {
+            setMyMapStatus({ ...myMapStatus, caption: "", content: undefined });
+          }
+        }}
+        startLoading={()=>setLoading(true)}
+        endLoading={()=>setLoading(false)}
+        isLoading={()=>setIsLoading(true)}
+        notIsLoading={()=>setIsLoading(false)}
+      />
+      {isImageViewingOpen ? (
+        <ImageViewing
+          images={[{ uri: imageViewing }]}
+          imageIndex={0}
+          visible={isImageViewingOpen}
+          onRequestClose={() => setIsImageViewingOpen(false)}
+          doubleTapToZoomEnabled={true}
+        />
+      ) : null}
+    {loading? <LoadingSpinner loading={isLoading}/>:null}
     </View>
   );
 };
