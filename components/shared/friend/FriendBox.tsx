@@ -1,15 +1,12 @@
 import { View, Text } from "react-native";
 import React, { useState } from "react";
-import {  useRouter } from "expo-router";
+import { useRouter } from "expo-router";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import UserAvatar from "@/components/ui/UserAvatar";
 import { bgLight510Dark20, textLight0Dark500 } from "@/styles/theme";
 import { FriendBoxProps } from "@/types/friend";
 const FriendBox = (props: FriendBoxProps) => {
   const router = useRouter();
-  const [friendIds, setFriendIds] = useState<string[]>([]);
-  const [relation, setRelation] = useState(props.relation);
-  console.log("result: ", props);
   return (
     <TouchableOpacity
       onPress={() =>
@@ -32,7 +29,6 @@ const FriendBox = (props: FriendBoxProps) => {
           {props.onlineTime} min ago
         </Text>
       </View>
-    
     </TouchableOpacity>
   );
 };

@@ -28,11 +28,16 @@ const ExpoCamera = ({
   isSendNow,
   onSend,
   setSelectedMedia,
+  type,
+  acceptSelectedMedia,
 }: {
   onClose: () => void;
   isSendNow?:boolean,
   onSend?: () => void;
   setSelectedMedia: (uri: string, type: string, name:string) => void;
+  removeSelectedMedia?:()=>void;
+  type?:"video"|"picture";
+  acceptSelectedMedia?:()=>void;
 }) => {
   const [facing, setFacing] = useState<CameraType>("back");
   const [permission, requestPermission] = useCameraPermissions();
@@ -147,10 +152,10 @@ const ExpoCamera = ({
        style={styles.camera}
        facing={facing}
        ref={cameraRef}
-       mode="video"
+       mode={type? type:"video"}
      >
        <View className=" flex-1 flex justify-between items-center pb-[100px] ">
-         <View className="flex-1 w-full flex flex-row justify-between item-center p-[20px]">
+         <View className="flex-1 w-full flex flex-row justify-between item-center p-[20px] mt-[20px]">
            <TouchableOpacity onPress={onClose}>
              <Icon iconURL={IconURL.close_single} size={30} />
            </TouchableOpacity>
@@ -173,7 +178,7 @@ const ExpoCamera = ({
            <TouchableOpacity
              className="w-[80px] h-[80px] bg-cardinal rounded-full"
              onPress={handlePress}
-             onLongPress={handleLongPress}
+             onLongPress={type==="picture"? ()=>{}:handleLongPress}
            />
          </View>
        </View>
@@ -186,7 +191,7 @@ const ExpoCamera = ({
             <VideoPlayer videoSource={videoUri!} />
           </View>
         )}
-        <View className="absolute top-[20px] left-[20px]">
+        <View className="absolute top-[20px] left-[20px] mt-[20px]">
           <TouchableOpacity
             onPress={() => {
               setPhotoUri("");
@@ -204,7 +209,7 @@ const ExpoCamera = ({
             }}
           >
             <Icon size={40} iconURL={IconURL.send} />
-          </TouchableOpacity> :<TouchableOpacity onPress={onClose}><Icon iconURL={IconURL.tick} size={40}/></TouchableOpacity>}
+          </TouchableOpacity> :<TouchableOpacity onPress={()=>{onClose(); acceptSelectedMedia?.()}}><Icon iconURL={IconURL.tick} size={40}/></TouchableOpacity>}
           
         </View>
       </View>

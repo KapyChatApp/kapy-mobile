@@ -144,5 +144,7 @@ export const IconURL = {
   setting_non_select:require("../assets/icons/setting_non-select.png"),
   setting_select:require("../assets/icons/setting_select.png"),
   non_select:require("../assets/icons/non-select.png"),
-  selected:require("../assets/icons/selected.png")
+  selected:require("../assets/icons/selected.png"),
+  marker:require("../assets/icons/marker.png"),
+  plus_white:require("../assets/icons/plus_white.png"),
 };

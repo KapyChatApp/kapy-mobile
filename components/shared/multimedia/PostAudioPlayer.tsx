@@ -177,7 +177,7 @@ const PostAudioPlayer = ({ audioUri }: { audioUri: string }) => {
           <Animated.View style={[styles.progressBar, animatedStyle]} />
         </TouchableOpacity>
         <Text
-          className={`absolute text-10 font-helvetica-ligh right-[2px] top-[10px]`}
+          className={`absolute text-10 font-helvetica-light right-[2px] top-[10px] text-cardinal`}
         >
           {millisToMMSS(position)}
         </Text>

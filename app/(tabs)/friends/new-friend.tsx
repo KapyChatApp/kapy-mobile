@@ -3,35 +3,30 @@ import React, { useEffect, useState } from "react";
 import Previous from "@/components/ui/Previous";
 import { useNavigation } from "expo-router";
 import Search from "@/components/shared/function/Search";
-import { bgLight500Dark10 } from "@/styles/theme";
+import { bgLight500Dark10, textLight0Dark500 } from "@/styles/theme";
 import { FriendBoxProps } from "@/types/friend";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 import FriendFindBox from "@/components/shared/friend/FriendFindBox";
+import { findUserByPhoneNumber, getMySuggest } from "@/lib/add-friend";
+import { ScrollView } from "react-native-gesture-handler";
+import FriendBox from "@/components/shared/friend/FriendBox";
 
 const NewFriendPage = () => {
   const navigation = useNavigation();
   const [query, setQuery] = useState("");
   const [friend, setFriend] = useState<FriendBoxProps | undefined>();
+  const [suggests, setSuggests] = useState<FriendBoxProps[]>([]);
   useEffect(() => {
+    const getMySuggestFUNC = async () => {
+      const suggests = await getMySuggest();
+      setSuggests(suggests);
+    };
+    getMySuggestFUNC();
     const delayDebounceFn = setTimeout(async () => {
       if (query) {
-        const token = await AsyncStorage.getItem("token");
-        axios
-          .get(process.env.EXPO_PUBLIC_BASE_URL + "/user/find", {
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `${token}`,
-            },
-            params: { phonenumber: query },
-          })
-          .then((response) => {
-            const friend: FriendBoxProps = response.data;
-            setFriend(friend);
-          })
-          .catch((error) => {
-            console.error("Error fetching friends:", error);
-          });
+        const result = await findUserByPhoneNumber(query);
+        setFriend(result);
       }
     }, 1500);
     return () => clearTimeout(delayDebounceFn);
@@ -43,11 +38,22 @@ const NewFriendPage = () => {
         <Previous navigation={navigation} header="New friend" />
       </View>
       <Search onChangeText={setQuery} />
-      {query && friend?._id ? (
+      {query !== "" && friend?._id ? (
         <View className="flex-1 px-[20px] py-[12px] flex" style={{ rowGap: 4 }}>
           <FriendFindBox {...friend} />
         </View>
-      ) : null}
+      ) : (
+        <View className="p-[10px]" style={{rowGap:10}}>
+          <Text className={`${textLight0Dark500} font-helvetica-bold text-14`}>
+            You may know them
+          </Text>
+          <ScrollView contentContainerStyle={{rowGap:4}}>
+            {suggests.map((item, index) => (
+              <FriendBox key={index} {...item} />
+            ))}
+          </ScrollView>
+        </View>
+      )}
     </View>
   );
 };

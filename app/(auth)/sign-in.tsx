@@ -1,4 +1,4 @@
-import { View, Text } from "react-native";
+import { View, Text, Alert } from "react-native";
 import React, { useEffect, useState } from "react";
 import DataInputBig from "@/components/ui/DataInputBig";
 import { IconURL } from "@/constants/IconURL";
@@ -53,7 +53,7 @@ const SignInPage = () => {
           "Content-Type": "application/json",
         },
       });
-  
+      console.log("response: ",loginResponse);
       const loginData = loginResponse.data;
       const token = loginData.token;
       await AsyncStorage.setItem("token", token);
@@ -67,11 +67,9 @@ const SignInPage = () => {
         );
       }
     } catch (error) {
-      if (axios.isAxiosError(error)) {
-        console.error("Axios error:", error.response ? error.response.data : error.message);
-      } else {
-        console.error("Error:", error);
-      }
+     console.log(error);
+     Alert.alert("Invalid Phonenumber or Password");
+     throw error;
     }
   };
   return (

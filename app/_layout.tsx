@@ -1,39 +1,27 @@
-import React, { Children, useState } from "react";
-import * as SecureStore from "expo-secure-store";
-import { ClerkProvider, ClerkLoaded } from "@clerk/clerk-expo";
+import React from "react";
 import {
-  Slot,
   SplashScreen,
   Stack,
-  useNavigation,
   useRouter,
 } from "expo-router";
 import { useFonts } from "expo-font";
 import { useEffect } from "react";
 import {
-  DrawerLayoutAndroid,
   GestureHandlerRootView,
 } from "react-native-gesture-handler";
 import MainHeader from "@/components/navigator/Topbar/MainHeader";
 import { EventProvider } from "react-native-outside-press";
 import { ThemeProvider } from "@/context/ThemeProviders";
 import { ClickOutsideProvider } from "react-native-click-outside";
-import { Drawer } from "expo-router/drawer";
 import {
-  Dimensions,
-  DrawerLayoutAndroidBase,
   SafeAreaView,
 } from "react-native";
-import TopBar from "@/components/navigator/Topbar/TopBar";
-import BFFListPage from "./(mine)/bff-list";
-import ActionSheet from "react-native-actions-sheet";
 import { ActionSheetProvider } from "@expo/react-native-action-sheet";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { CommonActions } from "@react-navigation/native";
 import axios from "axios";
 import { MarkReadProvider } from "@/context/MarkReadProvider";
-import { View } from "react-native";
 import { CameraProvider } from "@/context/CameraContext";
+import { Host } from 'react-native-portalize';
 SplashScreen.preventAutoHideAsync();
 export default function RootLayout() {
   const [fontsLoaded, error] = useFonts({
@@ -81,6 +69,7 @@ export default function RootLayout() {
                 <MarkReadProvider>
                   <ClickOutsideProvider>
                     <ActionSheetProvider>
+                      <Host>
                       <Stack>
                         <Stack.Screen
                           name="index"
@@ -142,6 +131,7 @@ export default function RootLayout() {
                           options={{ headerShown: false }}
                         />
                       </Stack>
+                      </Host>
                     </ActionSheetProvider>
                   </ClickOutsideProvider>
                 </MarkReadProvider>
