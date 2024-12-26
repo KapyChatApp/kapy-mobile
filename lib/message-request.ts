@@ -41,6 +41,25 @@ export const getMyChatBoxes = async () => {
   }
 };
 
+export const getMyGroups = async ()=>{
+  try{
+    const {token} = await getLocalAuth();
+    const response = await axios.get(
+      process.env.EXPO_PUBLIC_BASE_URL + "/message/all-box-group",
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `${token}`,
+        },
+      }
+    );
+    return response.data.box;
+  }catch(error){
+    console.log(error);
+    throw error;
+  }
+}
+
 export const getAMessageBox = async (boxId: string | string[]) => {
   try {
     const { token } = await getLocalAuth();
