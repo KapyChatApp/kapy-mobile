@@ -6,6 +6,7 @@ import {
   ActivityIndicator,
   TouchableOpacity,
   SafeAreaView,
+  Button,
 } from "react-native";
 import MapView, { Marker } from "react-native-maps";
 import * as Location from "expo-location";
@@ -28,6 +29,8 @@ import UserMarker from "@/components/shared/livemap/UserMarker";
 import ImageViewing from "react-native-image-viewing";
 import ExpoCamera from "@/components/shared/multimedia/ExpoCamera";
 import LoadingSpinner from "@/components/ui/LoadingSpinner";
+import { Camera } from "expo-camera";
+import { useCamera } from "@/context/CameraContext";
 const LiveMap = () => {
   const [currentLocation, setCurrentLocation] = useState<LocationProps>();
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
@@ -41,6 +44,9 @@ const LiveMap = () => {
   const [myMapStatus, setMyMapStatus] = useState<MapStatusProps>();
   const [isImageViewingOpen, setIsImageViewingOpen] = useState(false);
   const [imageViewing, setImageViewing] = useState("");
+  const [isCameraOpen, setIsCameraOpen] = useState(false);
+  const [selectedMedia, setSelectedMedia] =useState("");
+  const {openCamera, closeCamera} = useCamera();
 
   const [loading, setLoading] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -51,8 +57,6 @@ const LiveMap = () => {
       const user = await JSON.parse(userString!);
       setLocalUser(user);
     };
-
-    const getMyMapStatusFUNC = async () => {};
 
     const getBffMapStatuses = async () => {
       const bffMapStatuses: MapStatusProps[] = await getMyBffMapStatus();
@@ -66,7 +70,6 @@ const LiveMap = () => {
           setErrorMsg("Permission to access location was denied.");
           return;
         }
-
         const location = await Location.getCurrentPositionAsync();
         setCurrentLocation({
           latitude: Number(location.coords.latitude),
@@ -83,7 +86,6 @@ const LiveMap = () => {
           location: location.coords,
         };
         setMyMapStatus(myMapStatusWithTrueLocation);
-        console.log("my map data: ", myMapStatusWithTrueLocation);
         await initiateMapStatus(location.coords);
       } catch (error) {
         setErrorMsg("Failed to fetch location.");
@@ -92,7 +94,6 @@ const LiveMap = () => {
 
     getLocalData();
     initiateMap();
-    getMyMapStatusFUNC();
     getBffMapStatuses();
   }, [isFormOpen]);
 
@@ -129,7 +130,6 @@ const LiveMap = () => {
           <Icon iconURL={IconURL.editable} size={30} />
         </TouchableOpacity>
       </View>
-
       <MapView
         style={styles.map}
         initialRegion={{
@@ -171,13 +171,14 @@ const LiveMap = () => {
           if (data) {
             setMyMapStatus(data);
           } else {
-            setMyMapStatus({ ...myMapStatus, caption: "", content: undefined });
+            setMyMapStatus({ ...myMapStatus, caption:undefined, content: undefined });
           }
         }}
         startLoading={()=>setLoading(true)}
         endLoading={()=>setLoading(false)}
         isLoading={()=>setIsLoading(true)}
         notIsLoading={()=>setIsLoading(false)}
+        handleOpenCamera={()=>{setIsCameraOpen(true); openCamera()}}
       />
       {isImageViewingOpen ? (
         <ImageViewing
@@ -189,6 +190,9 @@ const LiveMap = () => {
         />
       ) : null}
     {loading? <LoadingSpinner loading={isLoading}/>:null}
+    {isCameraOpen? <View className="flex-1 absolute w-full h-full z-[50]">
+      <ExpoCamera onClose={()=>{setIsCameraOpen(false); closeCamera()}} setSelectedMedia={setSelectedMedia}/>
+    </View>:null}
     </View>
   );
 };

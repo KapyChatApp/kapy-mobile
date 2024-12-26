@@ -55,6 +55,7 @@ export const getMyMapStatus=async ()=>{
             "Content-Type":"application/json",
             Authorization:`${token}`
         }});
+        await AsyncStorage.setItem("my-map-status",JSON.stringify(response.data));
         return response.data;
     }catch(error){
         console.log(error);
@@ -164,9 +165,10 @@ export const deleteMapStatus = async (startLoading:any,
       setTimeout(()=>notIsLoading(),1000);
       goOn();
       const statusString = await AsyncStorage.getItem("my-map-status");
-      const status = await JSON.parse(statusString!);
-      const blankStatus =  {...status, caption:undefined, content:undefined}
-      await AsyncStorage.setItem("my-map-status", JSON.stringify(blankStatus));
+          const status = await JSON.parse(statusString!);
+          const blankStatus =  {...status, caption:undefined, content:undefined}
+          await AsyncStorage.setItem("my-map-status", JSON.stringify(blankStatus));
+    
     }else{
       Alert.alert("Cannot delete Status now! Please try again!");
     }
