@@ -53,7 +53,7 @@ const LiveMap = () => {
   const [imageViewing, setImageViewing] = useState("");
   const [isCameraOpen, setIsCameraOpen] = useState(false);
   const [selectedMedia, setSelectedMedia] = useState("");
-  const { openCamera, closeCamera } = useCamera();
+  const { openCamera, closeCamera, photoUri } = useCamera();
 
   const [loading, setLoading] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -136,7 +136,8 @@ const LiveMap = () => {
     getLocalData();
     initiateMap();
     getBffMapStatuses();
-  }, [isFormOpen]);
+    if(photoUri!==""){setIsFormOpen(true)}
+  }, [isFormOpen, photoUri]);
 
   const adjustMarkerSizeAndPosition = (region: any) => {
     const zoomLevel = Math.log2(360 / region.latitudeDelta);

@@ -12,7 +12,7 @@ const CameraContext = createContext<CameraContextType | undefined>(undefined);
 
 export const CameraProvider = ({ children }: { children: ReactNode }) => {
   const [isCameraOpen, setIsCameraOpen] = useState(false);
-  const [photoUri, setPhotoUri] = useState<string | null>(null);  // Khởi tạo photoUri
+  const [photoUri, setPhotoUri] = useState<string>("");  // Khởi tạo photoUri
 
   const openCamera = () => setIsCameraOpen(true);
   const closeCamera = () => setIsCameraOpen(false);

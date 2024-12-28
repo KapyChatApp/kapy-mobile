@@ -48,7 +48,7 @@ const MapStatusForm = ({
 }: any) => {
   const ref = useClickOutside(() => onClose());
   const router = useRouter();
-  const { photoUri } = useCamera();
+  const { photoUri, setPhotoUri } = useCamera();
   const [mode, setMode] = useState("create");
   const [selectedMedia, setSelectedMedia] = useState<
     { uri: string; type: string; name: string | null | undefined }[]
@@ -57,7 +57,6 @@ const MapStatusForm = ({
   const [caption, setCaption] = useState("");
   const [avatar, setAvatar] = useState("");
   const [keepOldContent, setKeepOldContent] = useState(true);
-  const [isCameraOpen, setIsCameraOpen] = useState(false);
 
   const translateY = useRef(new Animated.Value(0)).current;
   const panResponder = useRef(
@@ -85,8 +84,9 @@ const MapStatusForm = ({
     onClose();
     const param: CreateMapStatusProps = {
       caption: caption,
-      file: selectedMedia[0],
+      file:  {uri:photoUri, type:"Image", name:"MapStatus"},
     };
+    setPhotoUri("");
     const newMapStatus = await createMapStatus(
       param,
       startLoading,
@@ -103,9 +103,11 @@ const MapStatusForm = ({
     onClose();
     const param: EditMapStatusProps = {
       caption: caption,
-      file: selectedMedia[0],
+      file: {uri:photoUri, type:"Image", name:"MapStatus"},
       keepOldContent: keepOldContent,
     };
+    console.log("locketuri: ", photoUri);
+    setPhotoUri("");
     const updatedMapStatus = await editMapStatus(
       statusId,
       param,
@@ -225,11 +227,14 @@ const MapStatusForm = ({
               value={caption}
             />
           </View>
-          {selectedMedia.length === 0 ? (
+          {selectedMedia.length === 0 && photoUri === "" ? (
             <TouchableOpacity
               className="h-[270px] w-[190px] flex items-center justify-center bg-light-300 dark:bg-dark-20 rounded-2xl"
               style={{ rowGap: 10 }}
-              onPress={() => router.push("/livemap/camera")}
+              onPress={() => {
+                onClose();
+                router.push("/livemap/camera");
+              }}
             >
               <Icon iconURL={IconURL.opencam_d} size={40} />
               <Text className="text-white font-helvetica-light">
@@ -239,17 +244,21 @@ const MapStatusForm = ({
           ) : (
             <View>
               <Image
-                source={{ uri: photoUri! }}
+                source={{ uri: photoUri ? photoUri : selectedMedia[0].uri }}
                 style={{ width: 250, aspectRatio: 1, borderRadius: 10 }}
               />
               <TouchableOpacity
                 className="absolute -top-[20px] -right-[20px]"
                 onPress={
                   mode === "create"
-                    ? () => setSelectedMedia([])
+                    ? () => {
+                        setSelectedMedia([]);
+                        setPhotoUri("");
+                      }
                     : () => {
                         setKeepOldContent(false);
                         setSelectedMedia([]);
+                        setPhotoUri("");
                       }
                 }
               >
