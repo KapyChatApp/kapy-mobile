@@ -147,4 +147,6 @@ export const IconURL = {
   selected:require("../assets/icons/selected.png"),
   marker:require("../assets/icons/marker.png"),
   plus_white:require("../assets/icons/plus_white.png"),
+  to_right_arrow:require("../assets/icons/to-right-arrow.png"),
+  pin_myself:require("../assets/icons/pin_myself.png")
 };

@@ -64,7 +64,7 @@ const LoadingSpinner = ({
     <View style={styles.overlay}>
       <View
         className={`${
-          fullScreen ? "w-screen h-screen absolute" : "w-[120px] h-[120px]"
+          fullScreen ? "w-screen h-screen absolute" : "absolute w-[120px] h-[120px]"
         }  rounded-xl bg-white dark:bg-black flex-1 items-center justify-center `}
         style={{ elevation: 5, rowGap: 12 }}
       >
