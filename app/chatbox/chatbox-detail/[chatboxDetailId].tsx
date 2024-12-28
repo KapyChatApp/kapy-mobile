@@ -13,6 +13,8 @@ import { MessageBoxProps } from "@/types/message";
 import { getAMessageBox } from "@/lib/message";
 import { FileProps } from "@/types/file";
 import { getFilesOfAMessageBox } from "@/lib/media";
+import { getFromAsyncStorage } from "@/utils/Device";
+import { getLocalAuth } from "@/lib/local";
 
 const ChatBoxDetailPage = () => {
   const { chatboxDetailId } = useLocalSearchParams();
@@ -25,10 +27,12 @@ const ChatBoxDetailPage = () => {
   const [isGroup, setIsGroup] = useState(false);
   useEffect(() => {
     const getAMessageBoxFUNC = async () => {
-      const messageBox: MessageBoxProps = await getAMessageBox(chatboxDetailId);
+      const {_id} = await getLocalAuth();
+      const messageBox: MessageBoxProps = await getFromAsyncStorage(`box-${chatboxDetailId}`);
       const messageBoxData = {
         ...messageBox,
         _id: messageBox._id,
+        localUserId:_id
       };
       setMessageBox(messageBoxData);
       const files: FileProps[] = await getFilesOfAMessageBox(

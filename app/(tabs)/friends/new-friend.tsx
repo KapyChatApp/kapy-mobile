@@ -43,11 +43,11 @@ const NewFriendPage = () => {
           <FriendFindBox {...friend} />
         </View>
       ) : (
-        <View className="p-[10px]" style={{rowGap:10}}>
+        <View className="p-[20px]" style={{rowGap:10}}>
           <Text className={`${textLight0Dark500} font-helvetica-bold text-14`}>
             You may know them
           </Text>
-          <ScrollView contentContainerStyle={{rowGap:4}}>
+          <ScrollView contentContainerStyle={{rowGap:8}}>
             {suggests.map((item, index) => (
               <FriendBox key={index} {...item} />
             ))}
