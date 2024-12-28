@@ -9,24 +9,21 @@ import {
   Dimensions,
 } from "react-native";
 import React, { useEffect, useRef, useState } from "react";
-import {
-  bgLight500Dark10,
-  textLight0Dark500,
-} from "@/styles/theme";
+import { bgLight500Dark10, textLight0Dark500 } from "@/styles/theme";
 import { useClickOutside } from "react-native-click-outside";
 import { MessageProps } from "@/types/message";
 import { formatDateDistance } from "@/utils/DateFormatter";
 import { Image } from "react-native";
 import VideoPlayer from "../multimedia/VideoPlayer";
 import AudioPlayer from "../multimedia/AudioPlayer";
-import { deleteMessage, react, revokeMessage } from "@/lib/message-request";
+import { deleteMessage, react, revokeMessage } from "@/lib/message";
 import UserAvatarLink from "@/components/ui/UserAvatarLink";
 import { IconURL } from "@/constants/IconURL";
 import Icon from "@/components/ui/Icon";
 import { useRouter } from "expo-router";
 import MessageLove from "@/components/ui/MessageLove";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import * as Haptics from 'expo-haptics';
+import * as Haptics from "expo-haptics";
 import { playSound } from "@/utils/Media";
 import { AppSound } from "@/constants/Sound";
 
@@ -47,51 +44,54 @@ const Message = (props: MessageProps) => {
   const [modalPosition, setModalPosition] = useState({
     x: 0,
     y: 0,
-  })
+  });
   const pressableRef = useRef<View | null>(null);
   const { height: screenHeight, width: screenWidth } = Dimensions.get("screen");
-  const adjustModalPosition = (x:number, y:number, modalWidth:number, modalHeight:number) => {
+  const adjustModalPosition = (
+    x: number,
+    y: number,
+    modalWidth: number,
+    modalHeight: number
+  ) => {
     let adjustedX = x;
     let adjustedY = y;
-  
+
     // Điều chỉnh để không vượt bên phải màn hình
     if (x + modalWidth > screenWidth) {
       adjustedX = screenWidth - modalWidth - 10; // Chừa khoảng cách 10px
     }
-  
+
     // Điều chỉnh để không vượt bên trái màn hình
     if (x < 0) {
       adjustedX = 10; // Chừa khoảng cách 10px
     }
-  
+
     // Điều chỉnh để không vượt dưới màn hình
     if (y + modalHeight > screenHeight) {
       adjustedY = screenHeight - modalHeight - 10; // Chừa khoảng cách 10px
     }
-  
+
     // Điều chỉnh để không vượt trên màn hình
     if (y < 0) {
       adjustedY = 10; // Chừa khoảng cách 10px
     }
-  
+
     return { x: adjustedX, y: adjustedY };
   };
-  
-  const handleLongPress = (event:any) => {
+
+  const handleLongPress = (event: any) => {
     const { pageX, pageY } = event.nativeEvent;
 
+    const modalWidth = 270;
+    const modalHeight = 160;
 
-  const modalWidth = 270;
-  const modalHeight = 160;
+    console.log("modal w: ", modalWidth, "modal h: ", modalHeight);
+    const { x, y } = adjustModalPosition(pageX, pageY, modalWidth, modalHeight);
 
-  console.log("modal w: ", modalWidth, "modal h: ", modalHeight);
-  const { x, y } = adjustModalPosition(pageX, pageY, modalWidth, modalHeight);
-
-  // Cập nhật vị trí modal
-  setModalPosition({ x, y });
-  setIsModalVisible(true);
-  Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-
+    // Cập nhật vị trí modal
+    setModalPosition({ x, y });
+    setIsModalVisible(true);
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
   };
 
   const router = useRouter();
@@ -470,7 +470,7 @@ const Message = (props: MessageProps) => {
       setAvatar(createdUserData?.avatar);
       if (props.isReact.includes(props.localUserId!)) {
         setIsLiked(true);
-        setTimeLikes( 1);
+        setTimeLikes(1);
       }
     };
     setUpMessage();
@@ -512,7 +512,6 @@ const Message = (props: MessageProps) => {
                   elevation: 4,
                   rowGap: 10,
                 }}
-
               >
                 <TouchableOpacity
                   className="flex items-center justify-center w-[30px] h-[30px] bg-light-510 dark:bg-dark-20 rounded-full"
@@ -642,18 +641,18 @@ const Message = (props: MessageProps) => {
           >
             {props.sendStatus === "sending" ? (
               <View
-              className="rounded-3xl"
+                className="rounded-3xl"
                 style={{
-                  position: "absolute", 
+                  position: "absolute",
                   top: 0,
                   left: 0,
                   right: 0,
                   bottom: 0,
-                  backgroundColor: "rgba(128, 128, 128, 0.7)", 
-                  zIndex: 1, 
+                  backgroundColor: "rgba(128, 128, 128, 0.7)",
+                  zIndex: 1,
                 }}
               />
-            ):null}
+            ) : null}
 
             {renderContent()}
           </View>

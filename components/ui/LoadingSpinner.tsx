@@ -1,16 +1,15 @@
 // LoadingSpinner.js
 import { IconURL } from '@/constants/IconURL';
 import React, { useEffect } from 'react';
-import { View, StyleSheet, Image } from 'react-native';
+import { View, StyleSheet, Image, Text } from 'react-native';
 import Animated, { Easing, useSharedValue, useAnimatedStyle, withRepeat, withTiming } from 'react-native-reanimated';
 
-const LoadingSpinner = ({loading}:{loading:boolean}) => {
+const LoadingSpinner = ({loading, title}:{loading:boolean, title?:string}) => {
   const rotation = useSharedValue(0);
   const spinnerScale = useSharedValue(1); 
   const tickScale = useSharedValue(0); 
 
   useEffect(() => {
-    console.log("loading status: ", loading);
     if (loading) {
       rotation.value = withRepeat(
         withTiming(1, {
@@ -53,6 +52,7 @@ const LoadingSpinner = ({loading}:{loading:boolean}) => {
           style={[styles.tick, tickStyle]} 
           resizeMode="contain"
         />
+        {title? <Text className='font-helvetica-bold text-12  text-cardinal'>{title}</Text>:null}        
       </View>
     </View>
   );
@@ -65,7 +65,7 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     bottom: 0,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)', // Lớp nền mờ
+    backgroundColor: 'rgba(0, 0, 0, 0.5)', 
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -73,10 +73,11 @@ const styles = StyleSheet.create({
     width: 120,
     height: 120,
     borderRadius: 10,
-    backgroundColor: 'rgba(255, 255, 255, 1)', // Màu nền với độ trong suốt
+    backgroundColor: 'rgba(255, 255, 255, 1)', 
     justifyContent: 'center',
     alignItems: 'center',
     elevation: 5,
+    rowGap:8,
   },
   spinner: {
     width: 50,
@@ -87,9 +88,9 @@ const styles = StyleSheet.create({
     borderRadius: 25,
   },
   tick: {
-    width: 50, // Chiều rộng của dấu tick
-    height: 50, // Chiều cao của dấu tick
-    position: 'absolute', // Đặt dấu tick ở vị trí tuyệt đối
+    width: 50, 
+    height: 50, 
+    position: 'absolute', 
   },
 });
 

@@ -10,7 +10,7 @@ import { SocialPostProps } from "@/types/post";
 import { formatDate, formatDateDistance } from "@/utils/DateFormatter";
 import { Video } from "expo-av";
 import { deletePost, disLike, like } from "@/lib/post";
-import { getLocalAuth } from "@/lib/local-auth";
+import { getLocalAuth } from "@/lib/local";
 import { useActionSheet } from "@expo/react-native-action-sheet";
 import * as Sharing from "expo-sharing";
 import VideoPlayer from "../multimedia/VideoPlayer";
@@ -31,17 +31,21 @@ const SocialPost = (props: SocialPostProps) => {
     props.likedIds.includes(userId.toString()) ? true : false
   );
   const isMyPost = props.userId.toString() === userId;
-  const [videoImages,setVideoImages] = useState<FileProps[]>([]);
+  const [videoImages, setVideoImages] = useState<FileProps[]>([]);
   const [otherMedias, setOtherMedias] = useState<FileProps[]>([]);
   useFocusEffect(
     useCallback(() => {
-      const handleDisPlayPost = ()=>{
-        const videoImages = props.contents.filter((item)=>item.type==="Image"||item.type==="Video");
-        const otherMedias = props.contents.filter((item)=>item.type!=="Video" && item.type!=="Image");
-        console.log("display item: ",videoImages);
+      const handleDisPlayPost = () => {
+        const videoImages = props.contents.filter(
+          (item) => item.type === "Image" || item.type === "Video"
+        );
+        const otherMedias = props.contents.filter(
+          (item) => item.type !== "Video" && item.type !== "Image"
+        );
+        console.log("display item: ", videoImages);
         setVideoImages(videoImages);
         setOtherMedias(otherMedias);
-      }
+      };
       const likeStreamManage = async () => {
         const { _id } = await getLocalAuth();
         setUserId(_id);
@@ -96,7 +100,10 @@ const SocialPost = (props: SocialPostProps) => {
             }
             break;
           case 1:
-            router.push({pathname:"/community/edit-post",params:{postId:props._id}});
+            router.push({
+              pathname: "/community/edit-post",
+              params: { postId: props._id },
+            });
             break;
 
           case cancelButtonIndex:
@@ -129,28 +136,33 @@ const SocialPost = (props: SocialPostProps) => {
         <Text className={`${textLight0Dark500} font-helvetica-light text-14`}>
           {props.caption}
         </Text>
-        <MediaGroup medias={videoImages}/>
-        {otherMedias.map((item) =>
-          // item.type === "Video" ? (
-          //   <VideoPlayer videoSource={item.url!}/>
-          // ) : item.type === "Image" ? (
-          //   <View className="z-10">
-          //   <Pressable className="w-fit h-fit" onPress={()=>props.handleImageViewing?.(item.url!)}>
-          //   <Image
-          //     source={{ uri: item.url }}
-          //     style={{
-          //       width: "auto",
-          //       height: "auto",
-          //       borderRadius: 10,
-          //       marginBottom: 10,
-          //       aspectRatio: Number(item.width) / Number(item.height),
-          //     }}
-          //     resizeMode="cover"
-          //   />
-          //   </Pressable>
-          //   </View>
-          // ) : (
-            item.type==="Audio"? <PostAudioPlayer audioUri={item.url!}/>:<File file={item} isSender={false} position="free"/>
+        <MediaGroup medias={videoImages} />
+        {otherMedias.map(
+          (item) =>
+            // item.type === "Video" ? (
+            //   <VideoPlayer videoSource={item.url!}/>
+            // ) : item.type === "Image" ? (
+            //   <View className="z-10">
+            //   <Pressable className="w-fit h-fit" onPress={()=>props.handleImageViewing?.(item.url!)}>
+            //   <Image
+            //     source={{ uri: item.url }}
+            //     style={{
+            //       width: "auto",
+            //       height: "auto",
+            //       borderRadius: 10,
+            //       marginBottom: 10,
+            //       aspectRatio: Number(item.width) / Number(item.height),
+            //     }}
+            //     resizeMode="cover"
+            //   />
+            //   </Pressable>
+            //   </View>
+            // ) : (
+            item.type === "Audio" ? (
+              <PostAudioPlayer audioUri={item.url!} />
+            ) : (
+              <File file={item} isSender={false} position="free" />
+            )
           // )
         )}
       </View>
@@ -158,7 +170,11 @@ const SocialPost = (props: SocialPostProps) => {
         className="flex flex-row absolute -bottom-[14px] left-[20px]"
         style={{ columnGap: 8 }}
       >
-        <Love totalLike={totalLike} onPress={handleLikeFunction} isLoved={isLiked}/>
+        <Love
+          totalLike={totalLike}
+          onPress={handleLikeFunction}
+          isLoved={isLiked}
+        />
         <Comment
           totalComment={totalComment}
           onPress={

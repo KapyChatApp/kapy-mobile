@@ -1,6 +1,6 @@
 import { FriendBoxProps } from "@/types/friend";
 import axios from "axios";
-import { getLocalAuth } from "./local-auth";
+import { getLocalAuth } from "./local";
 
 export const getMyBlocks = async () => {
   try {

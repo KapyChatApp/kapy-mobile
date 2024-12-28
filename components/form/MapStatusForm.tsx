@@ -23,8 +23,8 @@ import Icon from "../ui/Icon";
 import { IconURL } from "@/constants/IconURL";
 import UserAvatar from "../ui/UserAvatar";
 import { singlePickMedia } from "@/utils/GalleryPicker";
-import { createGroup } from "@/lib/message-request";
-import { getLocalAuth } from "@/lib/local-auth";
+import { createGroup } from "@/lib/message";
+import { getLocalAuth } from "@/lib/local";
 import { create } from "tailwind-rn";
 import { useRouter } from "expo-router";
 import { MessageBoxProps, ReceiverProps } from "@/types/message";
@@ -44,11 +44,11 @@ const MapStatusForm = ({
   endLoading,
   isLoading,
   notIsLoading,
-  handleOpenCamera
+  handleOpenCamera,
 }: any) => {
   const ref = useClickOutside(() => onClose());
   const router = useRouter();
-  const {photoUri} = useCamera();
+  const { photoUri } = useCamera();
   const [mode, setMode] = useState("create");
   const [selectedMedia, setSelectedMedia] = useState<
     { uri: string; type: string; name: string | null | undefined }[]
@@ -125,8 +125,8 @@ const MapStatusForm = ({
     onClose();
     setMode("create");
     setStatusId("");
-setCaption("");
-setSelectedMedia([]);
+    setCaption("");
+    setSelectedMedia([]);
     await deleteMapStatus(
       startLoading,
       endLoading,
@@ -146,22 +146,23 @@ setSelectedMedia([]);
       const localStatus = await AsyncStorage.getItem("my-map-status");
       const localStatusObject = await JSON.parse(localStatus!);
       if (
-        ((localStatusObject.caption !== undefined && localStatusObject.capton!== null) &&
+        (localStatusObject.caption !== undefined &&
+          localStatusObject.capton !== null &&
           localStatusObject.caption !== "") ||
-        (localStatusObject.content !== undefined && localStatusObject.content!==null)
+        (localStatusObject.content !== undefined &&
+          localStatusObject.content !== null)
       ) {
-       
-          setMode("edit");
-          const status = await JSON.parse(localStatus!);
-          setStatusId(status._id);
-          setCaption(status.caption);
-          setSelectedMedia([
-            {
-              uri: status.content.url,
-              type: status.content.type,
-              name: status.content.fileName,
-            },
-          ]);
+        setMode("edit");
+        const status = await JSON.parse(localStatus!);
+        setStatusId(status._id);
+        setCaption(status.caption);
+        setSelectedMedia([
+          {
+            uri: status.content.url,
+            type: status.content.type,
+            name: status.content.fileName,
+          },
+        ]);
       }
     };
     getLocalStatus();
@@ -174,7 +175,7 @@ setSelectedMedia([]);
       onRequestClose={onClose}
       animationType="slide"
       transparent={true}
-      style={{zIndex:50, elevation:50}}
+      style={{ zIndex: 50, elevation: 50 }}
     >
       <View style={styles.overlay}>
         <Animated.View
@@ -228,7 +229,7 @@ setSelectedMedia([]);
             <TouchableOpacity
               className="h-[270px] w-[190px] flex items-center justify-center bg-light-300 dark:bg-dark-20 rounded-2xl"
               style={{ rowGap: 10 }}
-              onPress={()=>router.push("/livemap/camera")}
+              onPress={() => router.push("/livemap/camera")}
             >
               <Icon iconURL={IconURL.opencam_d} size={40} />
               <Text className="text-white font-helvetica-light">

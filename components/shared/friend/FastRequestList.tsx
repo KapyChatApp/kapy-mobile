@@ -17,8 +17,8 @@ const FastRequestList = () => {
     useCallback(() => {
       const getMyRequestedsFunc = async () => {
         const myRequestedResponse = await getMyRequesteds();
-        console.log("my request");
-        setMyRequesteds(myRequestedResponse);
+        const myRequested = myRequestedResponse.filter((item:any)=>item.relation ==="received_friend" || item.relation==="received_bff");
+        setMyRequesteds(myRequested);
       };
       getMyRequestedsFunc();
     }, [])

@@ -7,7 +7,7 @@ import CommentLove from "@/components/ui/CommentLove";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { CommentProps } from "@/types/post";
 import { formatDate } from "@/utils/DateFormatter";
-import { getLocalAuth } from "@/lib/local-auth";
+import { getLocalAuth } from "@/lib/local";
 import { deleteComment, disLikeComment, likeComment } from "@/lib/comment";
 import VideoPlayer from "../multimedia/VideoPlayer";
 import AudioPlayer from "../multimedia/AudioPlayer";
@@ -152,7 +152,11 @@ const Comment = (props: CommentProps) => {
               <Text className="text-dark-330 text-10">
                 {formatDate(props.createAt)}
               </Text>
-              <CommentLove totalLike={totalLike} onPress={handleLike} isLiked={liked}/>
+              <CommentLove
+                totalLike={totalLike}
+                onPress={handleLike}
+                isLiked={liked}
+              />
               <Reply
                 totalReply={totalReply}
                 onPress={() => {

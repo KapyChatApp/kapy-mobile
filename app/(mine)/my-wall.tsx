@@ -15,7 +15,7 @@ import SocialSkeletonLoader from "@/components/ui/PostSkeletonLoader";
 import HeadProfileSkeletonLoader from "@/components/ui/HeadProfileSkeletonLoader";
 import BioSkeletonLoader from "@/components/ui/BioSkeletonLoader";
 import RecentRate from "@/components/shared/community/RecentRate";
-import { getLocalAuth } from "@/lib/local-auth";
+import { getLocalAuth } from "@/lib/local";
 import { RateProps } from "@/types/rate";
 import { getRatesOfUser } from "@/lib/rate";
 import { SocialPostProps } from "@/types/post";
@@ -32,7 +32,7 @@ const MyWallPage = () => {
   const [recentRates, setRecentRates] = useState<RateProps[]>([]);
   const [refreshing, setRefreshing] = useState(false);
   const [postsData, setPostsData] = useState<SocialPostProps[]>([]);
-    const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(true);
   const disPlayUserData = async () => {
     const user = await AsyncStorage.getItem("user");
     if (!user) {
@@ -79,9 +79,15 @@ const MyWallPage = () => {
 
   return (
     <View className={`flex-1 ${bgLight500Dark10}`}>
-      <ScrollView className="px-[10px]" refreshControl={
-                <RefreshControl refreshing={refreshing} onRefresh={()=>onRefresh(async()=>await disPlayUserData())} />
-              }>
+      <ScrollView
+        className="px-[10px]"
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={() => onRefresh(async () => await disPlayUserData())}
+          />
+        }
+      >
         {isProfileLoading ? (
           <HeadProfileSkeletonLoader />
         ) : (
@@ -103,18 +109,21 @@ const MyWallPage = () => {
           </Text>
           <CreatePost avatarURL={headerProps?.avatar} />
           <View className="w-full h-[30px]"></View>
-          <View className="flex-1 items-center justify-center" style={{ rowGap: 20 }}>
-      {postsData.length > 0 ? (
-        !isLoading ? (
-          postsData.map((item) => <SocialPost key={item._id} {...item} />)
-        ) : (
-          <View className="w-full" style={{ rowGap: 30 }}>
-            <SocialSkeletonLoader />
-            <SocialSkeletonLoader />
+          <View
+            className="flex-1 items-center justify-center"
+            style={{ rowGap: 20 }}
+          >
+            {postsData.length > 0 ? (
+              !isLoading ? (
+                postsData.map((item) => <SocialPost key={item._id} {...item} />)
+              ) : (
+                <View className="w-full" style={{ rowGap: 30 }}>
+                  <SocialSkeletonLoader />
+                  <SocialSkeletonLoader />
+                </View>
+              )
+            ) : null}
           </View>
-        )
-      ) : null}
-    </View>
           <View className="w-full h-[200px]"></View>
         </View>
       </ScrollView>

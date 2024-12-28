@@ -8,8 +8,9 @@ import { bgLight500Dark10 } from "@/styles/theme";
 import { FriendBoxProps } from "@/types/friend";
 import { findMyFriend } from "@/lib/find-request";
 import FriendBoxNonEvent from "@/components/shared/friend/FriendBoxNonEvent";
-import { createGroup, getAMessageBox } from "@/lib/message-request";
-import { getLocalAuth } from "@/lib/local-auth";
+import { createGroup, getAMessageBox } from "@/lib/message";
+import { getLocalAuth } from "@/lib/local";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const SearchPage = () => {
   const navigation = useNavigation();
@@ -44,10 +45,7 @@ const SearchPage = () => {
     };
   }, [q]);
   return (
-    <View
-      className={`flex-1 flex ${bgLight500Dark10}`}
-      style={{ rowGap: 8 }}
-    >
+    <View className={`flex-1 flex ${bgLight500Dark10}`} style={{ rowGap: 8 }}>
       <View className="mt-[10px] ml-[10px]">
         <Previous navigation={navigation} header="Search friends" />
       </View>
@@ -58,7 +56,20 @@ const SearchPage = () => {
       >
         {results.map((item) => (
           <TouchableOpacity
-          
+            onPress={async () => {
+              const newBox = await createGroup([item._id]);
+              if (newBox.newBox) {
+                router.push({
+                  pathname: "/chatbox/[messageId]",
+                  params: { messageId: newBox.newBox._id },
+                });
+              }
+              // const [stUser, ndUser] = [Number.parseInt(localUserId),Number.parseInt(item._id)].sort();
+              // const boxString = await AsyncStorage.getItem(`box-${stUser}-${ndUser}`);
+              // const box = await JSON.parse(boxString!);
+              // console.log("loacldata: ",box);
+              // router.push({pathname:"/chatbox/[messageId]",params:{messageId:box._id}});
+            }}
           >
             <FriendBoxNonEvent key={item._id} {...item} />
           </TouchableOpacity>

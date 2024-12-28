@@ -1,35 +1,38 @@
 import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { getLocalAuth } from "./local-auth";
+import { getLocalAuth } from "./local";
 import { Alert } from "react-native";
 import { generateRandomNumberString } from "@/utils/Random";
 
-export const getAPost = async (postId:string, goOn:()=>void)=>{
-  try{
-    const {token} = await getLocalAuth();
-    
-    const response = await axios.get( process.env.EXPO_PUBLIC_BASE_URL + "/post/apost",{
-      headers:{
-        "Content-Type": "application/json",
-        Authorization: `${token}`
-      },
-      params:{
-        postId: postId
+export const getAPost = async (postId: string, goOn: () => void) => {
+  try {
+    const { token } = await getLocalAuth();
+
+    const response = await axios.get(
+      process.env.EXPO_PUBLIC_BASE_URL + "/post/apost",
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `${token}`,
+        },
+        params: {
+          postId: postId,
+        },
       }
-    }); 
-    console.log("data ",  response.data);
-    if(!response.data){
+    );
+    console.log("data ", response.data);
+    if (!response.data) {
       goOn();
     }
     return response.data;
-  }catch(error){
+  } catch (error) {
     console.log(error);
     goOn();
     throw error;
   }
-}
+};
 
-export const getMyPosts = async (goOn:()=>void) => {
+export const getMyPosts = async (goOn: () => void) => {
   try {
     const { token } = await getLocalAuth();
 
@@ -45,12 +48,11 @@ export const getMyPosts = async (goOn:()=>void) => {
     if (!response.data) {
       throw new Error("Not found your posts");
     }
-    console.log("postData: ",response.data)
+    console.log("postData: ", response.data);
     goOn();
     return response.data;
   } catch (error) {
-    console.log(error);
-    throw error;
+    return [];
   }
 };
 
@@ -67,7 +69,7 @@ export const getFriendPosts = async (friendId: string) => {
         params: { friendId: friendId },
       }
     );
-    if(response.status===200||response.status===201){
+    if (response.status === 200 || response.status === 201) {
       return response.data;
     }
     return [];
@@ -79,7 +81,7 @@ export const getFriendPosts = async (friendId: string) => {
 
 export const createPost = async (
   caption: string,
-  selectedMedia: { uri: string; type: string;name:string }[],
+  selectedMedia: { uri: string; type: string; name: string }[],
   goOn: () => void
 ) => {
   try {
@@ -120,45 +122,49 @@ export const createPost = async (
   }
 };
 
-export const deletePost = async (postId:string, goOn:()=>void)=>{
-  try{
-    const {token} = await getLocalAuth();
-    
-    const response = await axios.delete(process.env.EXPO_PUBLIC_BASE_URL + "/post/delete",{
-      headers:{
-        "Content-Type":"application/json",
-        Authorization:`${token}`
-      },
-      params:{postId:postId}
-    });
+export const deletePost = async (postId: string, goOn: () => void) => {
+  try {
+    const { token } = await getLocalAuth();
 
-    if(response.status ==200){
+    const response = await axios.delete(
+      process.env.EXPO_PUBLIC_BASE_URL + "/post/delete",
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `${token}`,
+        },
+        params: { postId: postId },
+      }
+    );
+
+    if (response.status == 200) {
       goOn();
+    } else {
+      Alert.alert("Cannot delete the post now!");
     }
-    else{
-    Alert.alert('Cannot delete the post now!');}
-  }catch(error){
+  } catch (error) {
     console.log(error);
     throw error;
   }
-}
+};
 export const like = async (postId: string) => {
   try {
     const { token } = await getLocalAuth();
     const response = await axios.post(
-      process.env.EXPO_PUBLIC_BASE_URL + "/post/like",{},
+      process.env.EXPO_PUBLIC_BASE_URL + "/post/like",
+      {},
       {
         headers: {
           "Content-Type": "application/json",
           Authorization: `${token}`,
         },
-        params:{
-          postId:postId
-        }
+        params: {
+          postId: postId,
+        },
       }
     );
     if (response.status != 200) {
-      Alert.alert('Cannot like now!');
+      Alert.alert("Cannot like now!");
     }
   } catch (error) {
     console.log("Error like: ", error);
@@ -166,23 +172,24 @@ export const like = async (postId: string) => {
   }
 };
 
-export const disLike = async  (postId: string) => {
+export const disLike = async (postId: string) => {
   try {
     const { token } = await getLocalAuth();
     const response = await axios.post(
-      process.env.EXPO_PUBLIC_BASE_URL + "/post/dislike",{},
+      process.env.EXPO_PUBLIC_BASE_URL + "/post/dislike",
+      {},
       {
         headers: {
           "Content-Type": "application/json",
           Authorization: `${token}`,
         },
-        params:{
-          postId:postId
-        }
+        params: {
+          postId: postId,
+        },
       }
     );
     if (response.status != 200) {
-      Alert.alert('Cannot dislike now');
+      Alert.alert("Cannot dislike now");
     }
   } catch (error) {
     console.log("Error like: ", error);
@@ -190,13 +197,22 @@ export const disLike = async  (postId: string) => {
   }
 };
 
-export const editPost = async (postId:string,caption:string,selectedMedias: {uri:string, type:string, name:string|null|undefined}[], remainMediaIds:string[] ) =>{
-  try{
-    const {token} = await getLocalAuth();
+export const editPost = async (
+  postId: string,
+  caption: string,
+  selectedMedias: {
+    uri: string;
+    type: string;
+    name: string | null | undefined;
+  }[],
+  remainMediaIds: string[]
+) => {
+  try {
+    const { token } = await getLocalAuth();
     const formData = new FormData();
-    formData.append("caption",caption);
+    formData.append("caption", caption);
     formData.append("remainContentIds", JSON.stringify(remainMediaIds));
-    selectedMedias.forEach(media => {
+    selectedMedias.forEach((media) => {
       formData.append("file", {
         uri: media.uri,
         type: media.type,
@@ -204,18 +220,22 @@ export const editPost = async (postId:string,caption:string,selectedMedias: {uri
       } as any);
     });
 
-    const response = await axios.patch(process.env.EXPO_PUBLIC_BASE_URL + "/post/edit",formData, {
-      headers:{
-        "Content-Type":"multipart/form-data",
-        Authorization:`${token}`
-      },
-      params:{postId:postId}
-    });
-    if(response.status===200 || response.status ==201){
+    const response = await axios.patch(
+      process.env.EXPO_PUBLIC_BASE_URL + "/post/edit",
+      formData,
+      {
+        headers: {
+          "Content-Type": "multipart/form-data",
+          Authorization: `${token}`,
+        },
+        params: { postId: postId },
+      }
+    );
+    if (response.status === 200 || response.status == 201) {
       Alert.alert("Edited!");
     }
-  } catch(error){
+  } catch (error) {
     console.log(error);
     throw error;
-  } 
-}
+  }
+};

@@ -1,5 +1,5 @@
 import axios from "axios";
-import { getLocalAuth } from "./local-auth";
+import { getLocalAuth } from "./local";
 import { CreateChatBoxProps, MessageProps } from "@/types/message";
 import { generateRandomNumberString } from "@/utils/Random";
 import * as FileSystem from "expo-file-system";
@@ -7,7 +7,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { prepareFileForUpload } from "@/utils/File";
 export const getMyChatBoxes = async () => {
   try {
-    const { token } = await getLocalAuth();
+    const { token, _id } = await getLocalAuth();
     const boxChats = await axios.get(
       process.env.EXPO_PUBLIC_BASE_URL + "/message/all-box-chat",
       {
@@ -27,12 +27,24 @@ export const getMyChatBoxes = async () => {
       }
     );
     const boxData = Array.isArray(boxChats.data.box) ? boxChats.data.box : [];
-    const groupData = Array.isArray(groupChats.data.box) ? groupChats.data.box : [];
-    const data =  [...boxData,...groupData
-    ];
-    await AsyncStorage.setItem("ChatBoxes",JSON.stringify(data));
-    for(const box of data){
-      await AsyncStorage.setItem(`box-${box._id}`,JSON.stringify(box));
+    const groupData = Array.isArray(groupChats.data.box)
+      ? groupChats.data.box
+      : [];
+    const data = [...boxData, ...groupData];
+    await AsyncStorage.setItem("ChatBoxes", JSON.stringify(data));
+    for (const box of data) {
+      if (box.receiverIds.lengt <= 2) {
+        const [stUserId, ndUserId] = [
+          Number.parseInt(box.receiverIds[0]._id),
+          Number.parseInt(box.receiverIds[1]._id),
+        ].sort();
+        await AsyncStorage.setItem(
+          `box-${stUserId}-${ndUserId}`,
+          JSON.stringify(box)
+        );
+      } else {
+        await AsyncStorage.setItem(`box-${box._id}`, JSON.stringify(box));
+      }
     }
     return data;
   } catch (error) {
@@ -41,9 +53,9 @@ export const getMyChatBoxes = async () => {
   }
 };
 
-export const getMyGroups = async ()=>{
-  try{
-    const {token} = await getLocalAuth();
+export const getMyGroups = async () => {
+  try {
+    const { token } = await getLocalAuth();
     const response = await axios.get(
       process.env.EXPO_PUBLIC_BASE_URL + "/message/all-box-group",
       {
@@ -54,11 +66,11 @@ export const getMyGroups = async ()=>{
       }
     );
     return response.data.box;
-  }catch(error){
+  } catch (error) {
     console.log(error);
     throw error;
   }
-}
+};
 
 export const getAMessageBox = async (boxId: string | string[]) => {
   try {
@@ -102,19 +114,20 @@ export const getAllMessages = async (boxId: string | string[]) => {
 };
 
 export const createGroup = async (
-  memberIds: string[],  
-  groupName:string,
-  groupAva:{uri:string, type:string, name:string| null|undefined},
-  goOn: (boxId: string) => void
+  memberIds: string[],
+  groupName?: string,
+  groupAva?: { uri: string; type: string; name: string | null | undefined },
+  goOn?: (boxId: string) => void
 ) => {
   try {
     const { token } = await getLocalAuth();
     const formData = new FormData();
-    console.log("membersIds: ",memberIds);
-    formData.append("membersIds",JSON.stringify(memberIds));
-    formData.append("groupName",groupName);
-    if(groupAva){
-      formData.append("file",groupAva as any);
+    console.log("membersIds: ", memberIds);
+    formData.append("membersIds", JSON.stringify(memberIds));
+    formData.append("groupName", groupName ? groupName : "");
+
+    if (groupAva) {
+      formData.append("file", groupAva as any);
     }
     const response = await axios.post(
       process.env.EXPO_PUBLIC_BASE_URL + "/message/create-group",
@@ -127,9 +140,28 @@ export const createGroup = async (
       }
     );
     if (response.data) {
-      setTimeout(() => goOn(response.data._id), 300);
+      if (response.data.newBox.receiverIds.length > 2) {
+        await AsyncStorage.setItem(
+          `box-${response.data.newBox._id}`,
+          JSON.stringify(response.data.newBox)
+        );
+      } else {
+        const [stUserId, ndUserId] = [
+          Number.parseInt(response.data.newBox.receiverIds[0]._id),
+          Number.parseInt(response.data.newBox.receiverIds[1]._id),
+        ].sort();
+        await AsyncStorage.setItem(
+          `box-${stUserId}-${ndUserId}`,
+          JSON.stringify(response.data.newBox)
+        );
+      }
+      const boxString = await AsyncStorage.getItem("ChatBoxes");
+      const boxes = await JSON.parse(boxString!);
+      const updateBoxes = [...boxes, response.data.newBox];
+      await AsyncStorage.setItem("ChatBoxes", JSON.stringify(updateBoxes));
+      setTimeout(() => goOn?.(response.data.newBox._id), 300);
     }
-    return response.data ? response.data : null;
+    return response.data ? response.data.newBox : null;
   } catch (error) {
     console.log(error);
     throw error;
@@ -199,7 +231,7 @@ export const sendMessage = async (
   boxId: string,
   content: string,
   files: { uri: string; type: string; name: string | undefined | null }[],
-  goOn:(id:string, status:string)=>void,
+  goOn: (id: string, status: string) => void
 ) => {
   try {
     const { token } = await getLocalAuth();
@@ -250,13 +282,12 @@ export const sendMessage = async (
             },
           }
         );
-        if(response.status===200 || response.data===201){
+        if (response.status === 200 || response.data === 201) {
           goOn(response.data.id, "success");
-        }else{
+        } else {
           goOn(response.data.id, "fail");
         }
       }
-      
     } else {
       const formData = new FormData();
       formData.append("boxId", boxId);
@@ -271,9 +302,9 @@ export const sendMessage = async (
           },
         }
       );
-      if(response.status===200 || response.data===201){
+      if (response.status === 200 || response.data === 201) {
         goOn(response.data.id, "success");
-      }else{
+      } else {
         goOn(response.data.id, "fail");
       }
     }
@@ -283,17 +314,20 @@ export const sendMessage = async (
   }
 };
 
-export const addToMessageLocal = async (boxId:string,message:MessageProps)=>{
-  try{
+export const addToMessageLocal = async (
+  boxId: string,
+  message: MessageProps
+) => {
+  try {
     const localMessages = await AsyncStorage.getItem(`messages-${boxId}`);
     const messages = await JSON.parse(localMessages!);
     messages.push(message);
-    await AsyncStorage.setItem(`messages-${boxId}`,JSON.stringify(messages));
-  }catch(error){
+    await AsyncStorage.setItem(`messages-${boxId}`, JSON.stringify(messages));
+  } catch (error) {
     console.log(error);
     throw error;
   }
-}
+};
 
 export const texting = async (boxId: string) => {
   try {

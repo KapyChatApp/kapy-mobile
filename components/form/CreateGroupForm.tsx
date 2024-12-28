@@ -22,8 +22,8 @@ import Icon from "../ui/Icon";
 import { IconURL } from "@/constants/IconURL";
 import UserAvatar from "../ui/UserAvatar";
 import { singlePickMedia } from "@/utils/GalleryPicker";
-import { createGroup } from "@/lib/message-request";
-import { getLocalAuth } from "@/lib/local-auth";
+import { createGroup } from "@/lib/message";
+import { getLocalAuth } from "@/lib/local";
 import { create } from "tailwind-rn";
 import { useRouter } from "expo-router";
 import { MessageBoxProps, ReceiverProps } from "@/types/message";
@@ -93,7 +93,7 @@ const CreateGroupForm = ({ isVisible, onClose }: any) => {
 
   const handleCreateGroup = async () => {
     const { _id } = await getLocalAuth();
-    const memberIds:string[] = [];
+    const memberIds: string[] = [];
     for (const friend of selected) {
       memberIds.push(friend._id);
     }
@@ -203,21 +203,22 @@ const CreateGroupForm = ({ isVisible, onClose }: any) => {
               </View>
             ))}
           </View>
-          <ScrollView className="flex-1 pb-[10px] h-3/4" contentContainerStyle={{paddingBottom:10}} >
-            {
-              friends.map((item, index) => (
-                <SelectFriendBox
-                  onSelect={(data) => setSelected((prev) => [...prev, data])}
-                  onUnSelect={(data) => {
-                    setSelected((prev) =>
-                      prev.filter((item) => item._id !== data._id)
-                    );
-                  }}
-                  key={index}
-                  {...item}
-                />
-              ))
-            }
+          <ScrollView
+            className="flex-1 pb-[10px] h-3/4"
+            contentContainerStyle={{ paddingBottom: 10 }}
+          >
+            {friends.map((item, index) => (
+              <SelectFriendBox
+                onSelect={(data) => setSelected((prev) => [...prev, data])}
+                onUnSelect={(data) => {
+                  setSelected((prev) =>
+                    prev.filter((item) => item._id !== data._id)
+                  );
+                }}
+                key={index}
+                {...item}
+              />
+            ))}
           </ScrollView>
         </Animated.View>
       </View>

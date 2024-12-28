@@ -17,7 +17,7 @@ import { useLocalSearchParams } from "expo-router/build/hooks";
 import CustomButton from "@/components/ui/CustomButton";
 import { IconURL } from "@/constants/IconURL";
 import RateForm from "@/components/form/RateForm";
-import { getLocalAuth } from "@/lib/local-auth";
+import { getLocalAuth } from "@/lib/local";
 import EditRateForm from "@/components/form/EditRateForm";
 import LoadingSpinner from "@/components/ui/LoadingSpinner";
 import { onRefresh } from "@/utils/Refresh";

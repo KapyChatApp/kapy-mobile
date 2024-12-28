@@ -23,7 +23,8 @@ const DetailRequestList = () => {
         }
       );
       if (response.data) {
-        setMyRequested(response.data);
+        const myRequested = response.data.filter((item:any)=>item.relation==="received_bff"|| item.relation==="received_friend");
+        setMyRequested(myRequested);
       }
     } catch (error) {
       console.log(error);

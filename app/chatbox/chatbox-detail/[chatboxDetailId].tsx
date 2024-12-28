@@ -10,11 +10,9 @@ import { useTheme } from "@/context/ThemeProviders";
 import { IconURL } from "@/constants/IconURL";
 import FunctionCard from "@/components/shared/function/FunctionCard";
 import { MessageBoxProps } from "@/types/message";
-import { getAMessageBox } from "@/lib/message-request";
+import { getAMessageBox } from "@/lib/message";
 import { FileProps } from "@/types/file";
-import {
-  getFilesOfAMessageBox,
-} from "@/lib/media";
+import { getFilesOfAMessageBox } from "@/lib/media";
 
 const ChatBoxDetailPage = () => {
   const { chatboxDetailId } = useLocalSearchParams();
@@ -24,7 +22,7 @@ const ChatBoxDetailPage = () => {
   const [videos, setVideos] = useState<FileProps[]>([]);
   const [audios, setAudios] = useState<FileProps[]>([]);
   const [others, setOthers] = useState<FileProps[]>([]);
-  const [isGroup,setIsGroup] = useState(false);
+  const [isGroup, setIsGroup] = useState(false);
   useEffect(() => {
     const getAMessageBoxFUNC = async () => {
       const messageBox: MessageBoxProps = await getAMessageBox(chatboxDetailId);
@@ -50,7 +48,7 @@ const ChatBoxDetailPage = () => {
       setVideos(videos);
       setAudios(audios);
       setOthers(others);
-      if(messageBox.receiverIds?.length!>2){
+      if (messageBox.receiverIds?.length! > 2) {
         setIsGroup(true);
       }
     };
@@ -75,14 +73,14 @@ const ChatBoxDetailPage = () => {
           className="flex justify-center w-full mt-[16px]"
           style={{ rowGap: 5 }}
         >
-          {isGroup?  <FunctionCard
-            label="Members"
-            iconURL={
-              theme === "light" ? IconURL.groups_l : IconURL.groups_d
-            }
-            URL="/chatbox/members"
-            boxId={chatboxDetailId.toString()}
-          />:null}
+          {isGroup ? (
+            <FunctionCard
+              label="Members"
+              iconURL={theme === "light" ? IconURL.groups_l : IconURL.groups_d}
+              URL="/chatbox/members"
+              boxId={chatboxDetailId.toString()}
+            />
+          ) : null}
           <FunctionCard
             label="Multimedia"
             iconURL={

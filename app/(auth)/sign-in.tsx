@@ -12,13 +12,16 @@ import { UserLoginProps } from "@/types/user";
 import { CommonActions } from "@react-navigation/native";
 import axios from "axios";
 import { bgLight500Dark10 } from "@/styles/theme";
+import { getMyProfile } from "@/lib/my-profile";
+import { synchronizeData } from "@/lib/local";
+import LoadingSpinner from "@/components/ui/LoadingSpinner";
 const SignInPage = () => {
   const navigation = useNavigation();
   const [isPressed, setIsPressed] = useState(false);
   const { theme } = useTheme();
   const [phoneNumber, setPhoneNumber] = useState("");
   const [password, setPassword] = useState("");
-
+  const [loading, setLoading] = useState(false);
   useEffect(() => {
     const checkToken = async () => {
       const token = await AsyncStorage.getItem("token");
@@ -53,11 +56,13 @@ const SignInPage = () => {
           "Content-Type": "application/json",
         },
       });
-      console.log("response: ",loginResponse);
+      await AsyncStorage.clear();
       const loginData = loginResponse.data;
       const token = loginData.token;
       await AsyncStorage.setItem("token", token);
       const savedToken = await AsyncStorage.getItem("token")
+      try{
+        await synchronizeData(()=>setLoading(true), ()=>setLoading(false));
       if (savedToken) {
         navigation.dispatch(
           CommonActions.reset({
@@ -65,6 +70,11 @@ const SignInPage = () => {
             routes: [{ name: "(tabs)" }],
           })
         );
+      }
+    }
+      catch(error){
+        console.log(error);
+        Alert.alert("Fail to synchronize your data!")
       }
     } catch (error) {
      console.log(error);
@@ -112,6 +122,7 @@ const SignInPage = () => {
         solving="Sign up now"
         link="/sign-up"
       ></OtherSign>
+      {loading? <LoadingSpinner loading={loading} title="Synchronizing"/>:null}
     </View>
   );
 };

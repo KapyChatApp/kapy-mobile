@@ -1,5 +1,5 @@
 import { Header } from "react-native/Libraries/NewAppScreen";
-import { getLocalAuth } from "./local-auth";
+import { getLocalAuth } from "./local";
 import axios from "axios";
 
 export const findMyFriend = async (q: string) => {

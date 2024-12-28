@@ -1,5 +1,5 @@
 import { LocationProps } from "@/types/location";
-import { getLocalAuth } from "./local-auth";
+import { getLocalAuth } from "./local";
 import axios from "axios";
 
 export const updateLocation = async (location: LocationProps) => {
