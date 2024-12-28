@@ -5,17 +5,19 @@ import Previous from "@/components/ui/Previous";
 import { useNavigation } from "expo-router";
 import { SearchBar } from "react-native-screens";
 import Search from "@/components/shared/function/Search";
-import { ScrollView } from "react-native-gesture-handler";
+import { RefreshControl, ScrollView } from "react-native-gesture-handler";
 import { bgLight500Dark10 } from "@/styles/theme";
 import GroupList from "@/components/shared/group/GroupList";
 import { MessageBoxProps } from "@/types/message";
 import { getMyGroups } from "@/lib/message";
 import MessageBox from "@/components/shared/message/MessageBox";
+import { getFromAsyncStorage } from "@/utils/Device";
 
 const MyGroupsPage = () => {
   const navigation = useNavigation();
   const [groups, setGroups] = useState<MessageBoxProps[]>([]);
   const [q, setQ] = useState("");
+  const [refreshing, setRefreshing] = useState(false);
   const handleSearchGroups = () => {
     const lowerCaseQuery = q.toLowerCase();
     return (
@@ -24,11 +26,17 @@ const MyGroupsPage = () => {
       }) || []
     );
   };
+
+  const handleRefresh = async ()=>{
+    setRefreshing(true);
+    const groups = await getMyGroups();
+    setGroups(Array.isArray(groups) ? groups : []);
+    setRefreshing(false);
+  }
   useEffect(() => {
     const getMyGroupsFUNC = async () => {
-      const groups = await getMyGroups();
-      setGroups(groups || []);
-      console.log("groupss: ", groups);
+      const groups = await  getFromAsyncStorage("groups");
+      setGroups(Array.isArray(groups) ? groups : []);
     };
     getMyGroupsFUNC();
   }, []);
@@ -38,8 +46,8 @@ const MyGroupsPage = () => {
         <Previous navigation={navigation} header="My groups" />
       </View>
       <Search onChangeText={setQ} />
-      <ScrollView>
-        {q === "" && groups
+      <ScrollView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={handleRefresh}/>}>
+        {q === "" && groups !==undefined
           ? groups.map((item, index) => <MessageBox key={index} {...item} />)
           : handleSearchGroups().map((item, index) => (
               <MessageBox key={index} {...item} />

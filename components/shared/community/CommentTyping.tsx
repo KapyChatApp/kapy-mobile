@@ -93,17 +93,19 @@ const CommentTyping = ({
           placeholderTextColor="#A9A9A9"
           className={`flex-1 h-[42px] ${textLight0Dark500} bg-light-600 dark:bg-dark-330 rounded-full px-[12px] font-helvetica-light text-14`}
           onChangeText={setCaption}
+          value={caption}
         />
         <TouchableOpacity
           onPress={async () => {
+            if(caption!==""||selectedMedia){
             const newComment = await createComment(
               caption,
               selectedMedia,
-              () => Alert.alert("Successfully!"),
+              () => {setCaption(""); setSelectedMedia(undefined)},
               replyId,
               targetType
             );
-            createNewComment(newComment);
+            createNewComment(newComment);}
           }}
         >
           <Icon iconURL={IconURL.send} size={34} />

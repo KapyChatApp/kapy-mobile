@@ -97,7 +97,7 @@ const SignUpPage = () => {
       const savedToken = await AsyncStorage.getItem("token");
 
       if (savedToken) {
-        router.push("/(tabs)/message");
+        router.push("/(auth)/sync");
       }
     } catch (error) {
       // Xử lý lỗi

@@ -26,6 +26,7 @@ const AuthLayout = () => {
       <Stack.Screen name="sign-up" options={{ headerShown: false }} />
       <Stack.Screen name="forgot-password" options={{ headerShown: false }} />
       <Stack.Screen name="verify-code" options={{ headerShown: false }} />
+      <Stack.Screen name="sync" options={{ headerShown: false }} />
     </Stack>
   );
 };

@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import DataInputBig from "@/components/ui/DataInputBig";
 import { IconURL } from "@/constants/IconURL";
 import SubmitButton from "@/components/ui/SubmitButton";
-import {useNavigation } from "expo-router";
+import {useNavigation, useRouter } from "expo-router";
 import SecretInput from "@/components/ui/SecretInput";
 import OtherSign from "@/components/ui/OtherSign";
 import { useTheme } from "@/context/ThemeProviders";
@@ -17,6 +17,7 @@ import { synchronizeData } from "@/lib/local";
 import LoadingSpinner from "@/components/ui/LoadingSpinner";
 const SignInPage = () => {
   const navigation = useNavigation();
+  const router = useRouter();
   const [isPressed, setIsPressed] = useState(false);
   const { theme } = useTheme();
   const [phoneNumber, setPhoneNumber] = useState("");
@@ -61,21 +62,11 @@ const SignInPage = () => {
       const token = loginData.token;
       await AsyncStorage.setItem("token", token);
       const savedToken = await AsyncStorage.getItem("token")
-      try{
-        await synchronizeData(()=>setLoading(true), ()=>setLoading(false));
+    
       if (savedToken) {
-        navigation.dispatch(
-          CommonActions.reset({
-            index: 0,
-            routes: [{ name: "(tabs)" }],
-          })
-        );
+       router.push("/(auth)/sync");
       }
-    }
-      catch(error){
-        console.log(error);
-        Alert.alert("Fail to synchronize your data!")
-      }
+    
     } catch (error) {
      console.log(error);
      Alert.alert("Invalid Phonenumber or Password");

@@ -1,7 +1,7 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 import { getMyProfile } from "./my-profile";
-import { getAllMessages, getMyChatBoxes } from "./message";
+import { getAllMessages, getMyChatBoxes, getMyGroups } from "./message";
 import { getMyMapStatus } from "./map";
 import { getMyFriends } from "./my-friends";
 
@@ -76,11 +76,15 @@ export const synchronizeData = async (
         AsyncStorage.setItem(`user-${member._id}`, JSON.stringify(member));
       }
     }
+    await getMyGroups();
     await getMyFriends();
     const myMapStatus = await getMyMapStatus();
     await AsyncStorage.setItem(`my-map-status`, JSON.stringify(myMapStatus));
+    return true;
   } catch (error) {
     console.log(error);
     throw error;
+  }finally{
+    endLoading?.();
   }
 };

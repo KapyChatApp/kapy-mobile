@@ -1,13 +1,30 @@
 // LoadingSpinner.js
-import { IconURL } from '@/constants/IconURL';
-import React, { useEffect } from 'react';
-import { View, StyleSheet, Image, Text } from 'react-native';
-import Animated, { Easing, useSharedValue, useAnimatedStyle, withRepeat, withTiming } from 'react-native-reanimated';
+import { IconURL } from "@/constants/IconURL";
+import { useTheme } from "@/context/ThemeProviders";
+import React, { useEffect } from "react";
+import { View, StyleSheet, Image, Text } from "react-native";
+import Animated, {
+  Easing,
+  useSharedValue,
+  useAnimatedStyle,
+  withRepeat,
+  withTiming,
+} from "react-native-reanimated";
 
-const LoadingSpinner = ({loading, title}:{loading:boolean, title?:string}) => {
+const LoadingSpinner = ({
+  loading,
+  title,
+  fullScreen,
+}: {
+  loading: boolean;
+  title?: string;
+  fullScreen?: boolean;
+}) => {
+  const { theme } = useTheme();
+
   const rotation = useSharedValue(0);
-  const spinnerScale = useSharedValue(1); 
-  const tickScale = useSharedValue(0); 
+  const spinnerScale = useSharedValue(1);
+  const tickScale = useSharedValue(0);
 
   useEffect(() => {
     if (loading) {
@@ -45,14 +62,23 @@ const LoadingSpinner = ({loading, title}:{loading:boolean, title?:string}) => {
 
   return (
     <View style={styles.overlay}>
-      <View style={styles.box}>
+      <View
+        className={`${
+          fullScreen ? "w-screen h-screen absolute" : "w-[120px] h-[120px]"
+        }  rounded-xl bg-white dark:bg-black flex-1 items-center justify-center `}
+        style={{ elevation: 5, rowGap: 12 }}
+      >
         <Animated.View style={[styles.spinner, spinnerStyle]} />
         <Animated.Image
           source={IconURL.tick}
-          style={[styles.tick, tickStyle]} 
+          style={[styles.tick, tickStyle]}
           resizeMode="contain"
         />
-        {title? <Text className='font-helvetica-bold text-12  text-cardinal'>{title}</Text>:null}        
+        {title ? (
+          <Text className="font-helvetica-bold text-14  text-cardinal">
+            {title}
+          </Text>
+        ) : null}
       </View>
     </View>
   );
@@ -60,37 +86,28 @@ const LoadingSpinner = ({loading, title}:{loading:boolean, title?:string}) => {
 
 const styles = StyleSheet.create({
   overlay: {
-    position: 'absolute',
+    position: "absolute",
     top: 0,
     left: 0,
     right: 0,
     bottom: 0,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)', 
-    justifyContent: 'center',
-    alignItems: 'center',
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
+    justifyContent: "center",
+    alignItems: "center",
   },
-  box: {
-    width: 120,
-    height: 120,
-    borderRadius: 10,
-    backgroundColor: 'rgba(255, 255, 255, 1)', 
-    justifyContent: 'center',
-    alignItems: 'center',
-    elevation: 5,
-    rowGap:8,
-  },
+
   spinner: {
     width: 50,
     height: 50,
     borderWidth: 4,
-    borderColor: '#F57602',
-    borderTopColor: 'transparent',
+    borderColor: "#F57602",
+    borderTopColor: "transparent",
     borderRadius: 25,
   },
   tick: {
-    width: 50, 
-    height: 50, 
-    position: 'absolute', 
+    width: 50,
+    height: 50,
+    position: "absolute",
   },
 });
 

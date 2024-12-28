@@ -65,10 +65,11 @@ export const getMyGroups = async () => {
         },
       }
     );
+    await AsyncStorage.setItem(`groups`, JSON.stringify(response.data.box));
     return response.data.box;
   } catch (error) {
     console.log(error);
-    throw error;
+    return [];
   }
 };
 
