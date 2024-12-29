@@ -115,6 +115,10 @@ export default function RootLayout() {
                           options={{ headerShown: false }}
                         />
                         <Stack.Screen
+                          name="(mine)/notification"
+                          options={{ headerShown: false }}
+                        />
+                        <Stack.Screen
                           name="community"
                           options={{ headerShown: false }}
                         />

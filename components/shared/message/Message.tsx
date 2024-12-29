@@ -38,6 +38,7 @@ const Message = (props: MessageProps) => {
   const modalRef = useClickOutside<View>(() => setIsModalVisible(false));
 
   const [isLiked, setIsLiked] = useState(false);
+  const [likedArray, setLikedArray] = useState<string[]>([]);
   const [totalLike, setTotalLike] = useState(0);
   const [timeLikes, setTimeLikes] = useState(0);
 
@@ -438,7 +439,6 @@ const Message = (props: MessageProps) => {
   const handleLike = async () => {
     setIsLiked(!isLiked);
     if ((timeLikes + 1) % 2 != 0) {
-      await playSound(AppSound.kiss);
       setTotalLike(totalLike + 1);
       setTimeLikes(timeLikes + 1);
     } else {
@@ -463,6 +463,8 @@ const Message = (props: MessageProps) => {
   };
 
   useEffect(() => {
+    setPosition(props.position);
+    setLikedArray(props.isReact);
     const setUpMessage = async () => {
       setTotalLike(props.isReact.length);
       const createdUser = await AsyncStorage.getItem(`user-${props.createBy}`);
@@ -474,7 +476,7 @@ const Message = (props: MessageProps) => {
       }
     };
     setUpMessage();
-  }, [props.position]);
+  }, [props]);
   return (
     <View
       className={`flex-1 flex ${props.isSender ? "items-end" : "items-start"}`}
@@ -690,8 +692,8 @@ const Message = (props: MessageProps) => {
           >
             <MessageLove
               onPress={handleLike}
-              totalLike={totalLike}
               isLiked={isLiked}
+              likedArray={likedArray}
             />
           </View>
         ) : null}

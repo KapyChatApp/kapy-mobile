@@ -285,7 +285,6 @@ const MessageDetailPage = () => {
   };
 
   const handleReactMessage = (id: string, isReact: string[]) => {
-    console.log("react people: ", isReact, " to: ", id);
     setMessages((prevMessages) => {
       return prevMessages?.map((message: MessageProps) => {
         return message.id === id
@@ -341,6 +340,7 @@ const MessageDetailPage = () => {
       });
       pusherClient.bind("react-message", async (data: any) => {
         handleReactMessage(data.id, data.isReact);
+        await playSound(AppSound.kiss);
         const messageString = await AsyncStorage.getItem(
           `messages-${messageId}`
         );
