@@ -13,11 +13,12 @@ import {
   sortFriendsDescending,
 } from "@/utils/Filter";
 import { onRefresh } from "@/utils/Refresh";
+import { getFromAsyncStorage } from "@/utils/Device";
 
 const FriendList = ({refreshing, setRefreshing, setFriends}:any) => {
   const [myFriends, setMyFriends] = useState<FriendBoxProps[][]>([]);
   const getMyFriendsFUNC = async () => {
-    const friends = await getMyFriends();
+    const friends = await getFromAsyncStorage("friends");
     setMyFriends(groupFriendsByFirstLetter(friends));
     setMyFriends(sortFriendsAscending(groupFriendsByFirstLetter(friends)));
     setFriends(friends);
@@ -25,7 +26,6 @@ const FriendList = ({refreshing, setRefreshing, setFriends}:any) => {
   };
   useFocusEffect(
     useCallback(() => {
-      console.log("aaa");
       getMyFriendsFUNC();
     }, [])
   );
@@ -61,6 +61,13 @@ const FriendList = ({refreshing, setRefreshing, setFriends}:any) => {
     },
   ];
 
+  const handleRefresh = async ()=>{
+    setRefreshing(true);
+    const friends = await getMyFriends();
+    setFriends(friends);
+    setRefreshing(false);
+  }
+
   return (
     <View className="flex flex-1">
       <View className="flex flex-row justify-between items-center px-[20px] py-[10px]">
@@ -73,7 +80,7 @@ const FriendList = ({refreshing, setRefreshing, setFriends}:any) => {
         className="flex-1 px-[20px]"
         contentContainerStyle={{ rowGap: 4 }}
         refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={()=>onRefresh(async()=>await getMyFriendsFUNC())} />
+          <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />
         }
       >
         {myFriends.map((friendsGroup) => friendsGroup.map((item, index)=><View key={index} className="w-full flex" style={{rowGap:4}}>{index==0? <Text className={`${textLight0Dark500} font-helvetica-light text-12`}>{item.lastName?.split(" ").reverse()[0][0].toUpperCase()}</Text>:null}<FriendBox {...item}/> </View>))}

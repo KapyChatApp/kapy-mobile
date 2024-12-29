@@ -1,11 +1,11 @@
 import { generateRandomNumberString } from "@/utils/Random";
 import axios from "axios";
 import { Alert } from "react-native";
-import { getLocalAuth } from "./local-auth";
+import { getLocalAuth } from "./local";
 
 export const createComment = async (
   caption: string,
-  selectedMedia: { uri: string; type: string; name:string } | null,
+  selectedMedia: { uri: string; type: string; name: string } | null,
   goOn: () => void,
   replyId: string | undefined,
   targetType: string
@@ -21,7 +21,7 @@ export const createComment = async (
       uri: selectedMedia?.uri,
       type:
         selectedMedia?.type === "image" ? "image/jpeg" : selectedMedia?.type,
-      name: selectedMedia?.name ,
+      name: selectedMedia?.name,
     };
 
     formData.append("file", newFile as any);

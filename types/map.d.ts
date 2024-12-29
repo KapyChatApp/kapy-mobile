@@ -21,6 +21,6 @@ export interface CreateMapStatusProps{
 
 export interface EditMapStatusProps{
     caption:string;
-    file:formidable.File;
+    file?:formidable.File;
     keepOldContent:boolean;
 }

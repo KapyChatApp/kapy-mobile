@@ -23,7 +23,7 @@ const MyAvatar = ({size}:any) => {
   },[]))
   return (
     <TouchableOpacity className="flex" onPress={()=>router.push("/(mine)/my-wall")}>
-      {avatar===undefined?<Image
+      {avatar===undefined||avatar===""?<Image
         source={DefaultAva.user}
         className={`rounded-full ${bgLight500Dark10}`}
         style={{height:size, width:size}}

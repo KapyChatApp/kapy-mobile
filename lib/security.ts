@@ -1,11 +1,11 @@
 import axios from "axios";
 import { getLocalAuth } from "./local";
 
-export const getMyRequesteds = async () => {
+export const getMyAuthHistory = async () => {
   try {
     const { token } = await getLocalAuth();
     const response = await axios.get(
-      process.env.EXPO_PUBLIC_BASE_URL + "/mine/requested",
+      process.env.EXPO_PUBLIC_BASE_URL + "/mine/auth-history",
       {
         headers: {
           "Content-Type": "application/json",
@@ -13,9 +13,7 @@ export const getMyRequesteds = async () => {
         },
       }
     );
-    if (response.data) {
-      return response.data;
-    }
+    return response.data;
   } catch (error) {
     console.log(error);
     throw error;

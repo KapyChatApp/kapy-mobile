@@ -1,5 +1,5 @@
 import axios from "axios";
-import { getLocalAuth } from "./local-auth";
+import { getLocalAuth } from "./local";
 
 export const getRealtimeOfUser = async (userId: string) => {
   try {

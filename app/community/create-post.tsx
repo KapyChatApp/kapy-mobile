@@ -17,7 +17,7 @@ import { HeadProfileProps } from "@/types/user";
 import Popover, { PopoverPlacement } from "react-native-popover-view";
 import Icon from "@/components/ui/Icon";
 import { IconURL } from "@/constants/IconURL";
-import { getLocalAuth } from "@/lib/local-auth";
+import { getLocalAuth } from "@/lib/local";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { bgLight500Dark10, textLight0Dark500 } from "@/styles/theme";
 import { useClickOutside } from "react-native-click-outside";
@@ -43,9 +43,9 @@ const CreatePostPage = () => {
   const ref = useClickOutside<View>(() => setIsTyping(false));
 
   const [selectedMedia, setSelectedMedia] = useState<
-    { uri: string; type: string;name:string }[]
+    { uri: string; type: string; name: string }[]
   >([]);
-  
+
   const handlePickMedia = async () => {
     const media = await pickMedia();
     setSelectedMedia((prev) => [
@@ -53,8 +53,8 @@ const CreatePostPage = () => {
       ...media.map((item) => ({
         uri: item.uri,
         type: item.type,
-        name: item.name || "", 
-      }))
+        name: item.name || "",
+      })),
     ]);
   };
 
@@ -65,8 +65,8 @@ const CreatePostPage = () => {
         ...prev,
         ...media.map((item) => ({
           uri: item.uri,
-          type: item.type || "", 
-          name: item.name || "", 
+          type: item.type || "",
+          name: item.name || "",
         })),
       ]);
     }
@@ -91,12 +91,22 @@ const CreatePostPage = () => {
         behavior={Platform.OS === "ios" ? "padding" : "height"}
         style={{ flex: 1 }}
       >
-         {isCameraOpen?<View className="fixed w-screen h-screen"> <ExpoCamera onClose={()=>setIsCameraOpen(false)} isSendNow={false} setSelectedMedia={(uri:string,  type:string,name:string)=>setSelectedMedia([{uri:uri, type:type, name:name}])}/></View>:null}
+        {isCameraOpen ? (
+          <View className="fixed w-screen h-screen">
+            {" "}
+            <ExpoCamera
+              onClose={() => setIsCameraOpen(false)}
+              isSendNow={false}
+              setSelectedMedia={(uri: string, type: string, name: string) =>
+                setSelectedMedia([{ uri: uri, type: type, name: name }])
+              }
+            />
+          </View>
+        ) : null}
         <View className="pl-[10px] pt-[10px] mb-[10px]">
           <Previous header="Create a post" navigation={navigation} />
         </View>
-       
-        
+
         <ScrollView
           className={`${bgLight500Dark10}`}
           contentContainerStyle={{ padding: 10, rowGap: 8 }}
@@ -167,13 +177,22 @@ const CreatePostPage = () => {
                 navigation.goBack();
               })
             }
-            handleOpenCamera={()=>setIsCameraOpen(true)}
-            handleOpenMicro={()=>setIsMicroOpen(true)}
+            handleOpenCamera={() => setIsCameraOpen(true)}
+            handleOpenMicro={() => setIsMicroOpen(true)}
             handleFilePicker={handlePickDocument}
           />
-           {isMicroOpen? <View ref={ref}>
-          <AudioRecorder setSelectedMedia={(uri,type,name)=>setSelectedMedia((prev)=>[...prev,{uri:uri,type:type,name:name}])}/>
-        </View> : null}
+          {isMicroOpen ? (
+            <View ref={ref}>
+              <AudioRecorder
+                setSelectedMedia={(uri, type, name) =>
+                  setSelectedMedia((prev) => [
+                    ...prev,
+                    { uri: uri, type: type, name: name },
+                  ])
+                }
+              />
+            </View>
+          ) : null}
         </View>
       </KeyboardAvoidingView>
     </View>

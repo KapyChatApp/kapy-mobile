@@ -1,63 +1,52 @@
-import { View, Text, Image, Dimensions, AppState } from "react-native";
-import React, { useEffect, useState } from "react";
-import { Stack, Tabs } from "expo-router";
+import {AppState } from "react-native";
+import React, { useEffect, useRef, useState } from "react";
+import {Tabs } from "expo-router";
 import { IconURL } from "@/constants/IconURL";
 import TabIcon from "@/components/ui/TabIcon";
 import TabBar from "@/components/navigator/Tabbar/TabBar";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import axios from "axios";
-import { getMyProfile } from "@/lib/my-profile";
-import { checkIn, checkOut } from "@/lib/local-auth";
-import { getAllMessages, getMyChatBoxes } from "@/lib/message-request";
-import { getMyFriends } from "@/lib/my-friends";
-import { getMyMapStatus } from "@/lib/map";
+import { checkIn, checkOut } from "@/lib/local";
 const HomeLayout = () => {
-  const [appState, setAppState] = useState(AppState.currentState);
-
-  // Lắng nghe sự thay đổi trạng thái của ứng dụng
+  const appState = useRef(AppState.currentState);
+  const [isLoading, setIsLoading] = useState(true);
+  const [hasCheckedIn, setHasCheckedIn] = useState(false); 
+  const [isFirstLaunch, setIsFirstLaunch] = useState(true); 
   useEffect(() => {
-    const fetchData = async () => {
-      await getMyProfile();
-      const boxes = await getMyChatBoxes();
-      await checkIn();
-      for (const box of boxes) {
-        const messages = await getAllMessages(box._id);
-        await AsyncStorage.setItem(
-          `messages-${box._id}`,
-          JSON.stringify(messages)
-        );
-        for (const member of box.receiverIds) {
-          AsyncStorage.setItem(`user-${member._id}`, JSON.stringify(member));
-        }
-      }
-      await getMyFriends();
-      const myMapStatus = await getMyMapStatus();
-      await AsyncStorage.setItem(`my-map-status`,JSON.stringify(myMapStatus));
-    };
+    const handleAppStateChange = async (nextAppState: any) => {
+      appState.current = nextAppState;
 
-    fetchData();
+      if (nextAppState === "active") {
+        if (isFirstLaunch) {
+          await checkIn();
+          setHasCheckedIn(true);
+          setIsFirstLaunch(false);
+        } else if (!hasCheckedIn) {
+          await checkIn();
+          setHasCheckedIn(true);
+        }
+      } else if (nextAppState === "background" && hasCheckedIn) {
+        await checkOut();
+        setHasCheckedIn(false);
+      }
+    };
 
     const subscription = AppState.addEventListener(
       "change",
       handleAppStateChange
     );
 
-    // Cleanup khi component unmount
-    return () => {
-      subscription.remove();
-      // Đảm bảo gọi checkout khi ứng dụng bị tắt hoặc chuyển sang nền
-      if (appState === "active") {
-        checkOut();
+    const handleAppStateBackground = async () => {
+      if (hasCheckedIn) {
+        await checkOut();
+        setHasCheckedIn(false);
       }
     };
-  }, [appState]);
 
-  const handleAppStateChange = (nextAppState: any) => {
-    if (appState.match(/active/) && nextAppState === "background") {
-      checkOut();
-    }
-    setAppState(nextAppState);
-  };
+    return () => {
+      subscription.remove();
+      handleAppStateBackground();
+    };
+  }, [hasCheckedIn, isFirstLaunch]);
+
   return (
     <Tabs tabBar={(props) => <TabBar {...props}></TabBar>}>
       <Tabs.Screen

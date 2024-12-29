@@ -1,5 +1,5 @@
 import { bgLight500Dark10, textLight0Dark500 } from "@/styles/theme";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import {
   View,
   Text,
@@ -23,10 +23,10 @@ import Icon from "../ui/Icon";
 import { IconURL } from "@/constants/IconURL";
 import UserAvatar from "../ui/UserAvatar";
 import { singlePickMedia } from "@/utils/GalleryPicker";
-import { createGroup } from "@/lib/message-request";
-import { getLocalAuth } from "@/lib/local-auth";
+import { createGroup } from "@/lib/message";
+import { getLocalAuth } from "@/lib/local";
 import { create } from "tailwind-rn";
-import { useRouter } from "expo-router";
+import { useFocusEffect, useRouter } from "expo-router";
 import { MessageBoxProps, ReceiverProps } from "@/types/message";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import LoadingSpinner from "../ui/LoadingSpinner";
@@ -44,20 +44,24 @@ const MapStatusForm = ({
   endLoading,
   isLoading,
   notIsLoading,
-  handleOpenCamera
+  selectedMedia,
+  setSelectedMedia,
+  caption,
+  setCaption,
+  keepOldContent,
+  setKeepOldContent,
 }: any) => {
-  const ref = useClickOutside(() => onClose());
+  const ref = useClickOutside(() => {
+    onClose();
+    setPhotoUri("");
+  });
   const router = useRouter();
-  const {photoUri} = useCamera();
+  const { photoUri, setPhotoUri } = useCamera();
   const [mode, setMode] = useState("create");
-  const [selectedMedia, setSelectedMedia] = useState<
-    { uri: string; type: string; name: string | null | undefined }[]
-  >([]);
   const [statusId, setStatusId] = useState("");
-  const [caption, setCaption] = useState("");
+
+
   const [avatar, setAvatar] = useState("");
-  const [keepOldContent, setKeepOldContent] = useState(true);
-  const [isCameraOpen, setIsCameraOpen] = useState(false);
 
   const translateY = useRef(new Animated.Value(0)).current;
   const panResponder = useRef(
@@ -71,6 +75,7 @@ const MapStatusForm = ({
       onPanResponderRelease: (e, gestureState) => {
         if (gestureState.dy > 100) {
           onClose();
+          setPhotoUri("");
         } else {
           Animated.spring(translateY, {
             toValue: 0,
@@ -85,8 +90,10 @@ const MapStatusForm = ({
     onClose();
     const param: CreateMapStatusProps = {
       caption: caption,
-      file: selectedMedia[0],
+      file: { uri: photoUri, type: "Image", name: "MapStatus" },
     };
+    console.log("param", param);
+    setPhotoUri("");
     const newMapStatus = await createMapStatus(
       param,
       startLoading,
@@ -95,38 +102,68 @@ const MapStatusForm = ({
       notIsLoading,
       (data) => after(data)
     );
+    console.log("new-map-status: ", newMapStatus);
     await AsyncStorage.setItem("my-map-status", JSON.stringify(newMapStatus));
     setMode("edit");
   };
 
   const handleEditMapStatus = async () => {
     onClose();
+    console.log("caption: ", caption);
+    try{
+    let params =null;
+    console.log("photoUri: ",photoUri);
+    if(selectedMedia[0] || photoUri ){
     const param: EditMapStatusProps = {
       caption: caption,
-      file: selectedMedia[0],
+      file: {
+        uri:
+          (photoUri!==null && photoUri !== "")
+            ? photoUri||""
+            : selectedMedia[0].uri||"",
+        type: "Image",
+        name: "MapStatus",
+      },
       keepOldContent: keepOldContent,
-    };
+    }
+    params=param;
+  }
+    else{
+      const param: EditMapStatusProps = {
+        caption: caption,
+        keepOldContent: keepOldContent,
+      }
+      params=param
+    }
+    console.log("param: ", params);
+    console.log(1);
+    setPhotoUri("");
+    console.log(2);
+    console.log("param: ", params);
     const updatedMapStatus = await editMapStatus(
       statusId,
-      param,
+      params,
       startLoading,
       endLoading,
       isLoading,
       notIsLoading,
       (data) => after(data)
     );
+    console.log(3);
     await AsyncStorage.setItem(
       "my-map-status",
       JSON.stringify(updatedMapStatus)
-    );
+    );}catch(error){
+      console.log(error);
+    }
   };
 
   const handleDeleteMapStatus = async () => {
     onClose();
     setMode("create");
     setStatusId("");
-setCaption("");
-setSelectedMedia([]);
+    setCaption("");
+    setSelectedMedia([]);
     await deleteMapStatus(
       startLoading,
       endLoading,
@@ -136,21 +173,23 @@ setSelectedMedia([]);
     );
   };
 
-  useEffect(() => {
-    const getLocalUser = async () => {
-      const userString = await AsyncStorage.getItem("user");
-      const user = await JSON.parse(userString!);
-      setAvatar(user.avatar);
-    };
-    const getLocalStatus = async () => {
-      const localStatus = await AsyncStorage.getItem("my-map-status");
-      const localStatusObject = await JSON.parse(localStatus!);
-      if (
-        ((localStatusObject.caption !== undefined && localStatusObject.capton!== null) &&
-          localStatusObject.caption !== "") ||
-        (localStatusObject.content !== undefined && localStatusObject.content!==null)
-      ) {
-       
+  useFocusEffect(
+    useCallback(() => {
+      const getLocalUser = async () => {
+        const userString = await AsyncStorage.getItem("user");
+        const user = await JSON.parse(userString!);
+        setAvatar(user.avatar);
+      };
+      const getLocalStatus = async () => {
+        const localStatus = await AsyncStorage.getItem("my-map-status");
+        const localStatusObject = await JSON.parse(localStatus!);
+        if (
+          (localStatusObject.caption !== undefined &&
+            localStatusObject.capton !== null &&
+            localStatusObject.caption !== "") ||
+          (localStatusObject.content !== undefined &&
+            localStatusObject.content !== null)
+        ) {
           setMode("edit");
           const status = await JSON.parse(localStatus!);
           setStatusId(status._id);
@@ -162,11 +201,12 @@ setSelectedMedia([]);
               name: status.content.fileName,
             },
           ]);
-      }
-    };
-    getLocalStatus();
-    getLocalUser();
-  }, []);
+        }
+      };
+      getLocalStatus();
+      getLocalUser();
+    }, [photoUri])
+  );
 
   return (
     <Modal
@@ -174,7 +214,7 @@ setSelectedMedia([]);
       onRequestClose={onClose}
       animationType="slide"
       transparent={true}
-      style={{zIndex:50, elevation:50}}
+      style={{ zIndex: 50, elevation: 50 }}
     >
       <View style={styles.overlay}>
         <Animated.View
@@ -224,11 +264,15 @@ setSelectedMedia([]);
               value={caption}
             />
           </View>
-          {selectedMedia.length === 0 ? (
+          {selectedMedia.length === 0 &&
+          (photoUri === null || photoUri === "") ? (
             <TouchableOpacity
               className="h-[270px] w-[190px] flex items-center justify-center bg-light-300 dark:bg-dark-20 rounded-2xl"
               style={{ rowGap: 10 }}
-              onPress={()=>router.push("/livemap/camera")}
+              onPress={() => {
+                onClose();
+                router.push("/livemap/camera");
+              }}
             >
               <Icon iconURL={IconURL.opencam_d} size={40} />
               <Text className="text-white font-helvetica-light">
@@ -238,17 +282,23 @@ setSelectedMedia([]);
           ) : (
             <View>
               <Image
-                source={{ uri: photoUri! }}
+                source={{
+                  uri: photoUri === "" ? selectedMedia[0].uri! : photoUri!,
+                }}
                 style={{ width: 250, aspectRatio: 1, borderRadius: 10 }}
               />
               <TouchableOpacity
                 className="absolute -top-[20px] -right-[20px]"
                 onPress={
                   mode === "create"
-                    ? () => setSelectedMedia([])
+                    ? () => {
+                        setSelectedMedia([]);
+                        setPhotoUri("");
+                      }
                     : () => {
                         setKeepOldContent(false);
                         setSelectedMedia([]);
+                        setPhotoUri("");
                       }
                 }
               >

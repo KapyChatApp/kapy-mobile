@@ -26,7 +26,6 @@ const fullName = receiver
     ? `${otherReceiver?.firstName} ${otherReceiver?.lastName}`
     : `${receiver.firstName} ${receiver.lastName}`
   : "";
-
   const isReaded = props.readStatus === true ||  unreadMessages[props._id!]===true
 
   return (

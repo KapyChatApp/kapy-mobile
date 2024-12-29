@@ -1,7 +1,7 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 import { Alert } from "react-native";
-import { getLocalAuth } from "./local-auth";
+import { getLocalAuth } from "./local";
 
 export const unFriend = async (friendId: string, goOn: () => void) => {
   try {

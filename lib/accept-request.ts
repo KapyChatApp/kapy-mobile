@@ -1,7 +1,8 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 import { Alert } from "react-native";
-import { getLocalAuth } from "./local-auth";
+import { getLocalAuth } from "./local";
+import { createGroup } from "./message";
 
 export const acceptFriend = async (friendId: string, goOn: () => void) => {
   try {
@@ -17,7 +18,10 @@ export const acceptFriend = async (friendId: string, goOn: () => void) => {
         },
       }
     );
+    const memberIds: string[] = [_id, friendId];
+    await createGroup(memberIds);
     if (response.status == 200 || response.status == 201) {
+      console.log("inside");
       goOn();
     } else {
       Alert.alert("Cannot accept now!");

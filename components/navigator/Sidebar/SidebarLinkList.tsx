@@ -11,7 +11,7 @@ const SidebarLinkList = ({ onClose }: any) => {
     <View className="mt-[10px]">
       <SidebarItems
         label="Groups"
-        link="/friends/my-groups"
+        link="/(mine)/my-groups"
         iconURL={theme === "light" ? IconURL.groups_l : IconURL.groups_d}
         onClose={onClose}
       ></SidebarItems>

@@ -22,7 +22,7 @@ export const SettingSecurityProps = [
   {
     index: 2,
     label: "Sign in history",
-    link : "/sign-in-history",
+    link : "/setting/security/sign-in-history",
   },
   {
     index: 3,

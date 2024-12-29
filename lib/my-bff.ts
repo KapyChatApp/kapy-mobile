@@ -1,6 +1,6 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
-import { getLocalAuth } from "./local-auth";
+import { getLocalAuth } from "./local";
 import { FriendBoxProps } from "@/types/friend";
 
 export const getMyBFFs = async () => {

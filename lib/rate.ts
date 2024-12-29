@@ -1,5 +1,5 @@
 import { CreateRateProps } from "@/types/rate";
-import { getLocalAuth } from "./local-auth";
+import { getLocalAuth } from "./local";
 import axios from "axios";
 import { Alert } from "react-native";
 
@@ -99,14 +99,17 @@ export const editRate = async (
   }
 };
 
-export const deleteRate = async (pointId: string, setStartLoading: () => void,
-setEndLoading: () => void,
-setIsLoading: () => void,
-setNotIsLoading: () => void,
-setReload: () => void) => {
+export const deleteRate = async (
+  pointId: string,
+  setStartLoading: () => void,
+  setEndLoading: () => void,
+  setIsLoading: () => void,
+  setNotIsLoading: () => void,
+  setReload: () => void
+) => {
   try {
     setStartLoading();
-     setIsLoading();
+    setIsLoading();
     const { token } = await getLocalAuth();
     const response = await axios.delete(
       process.env.EXPO_PUBLIC_BASE_URL + "/point/delete-my",
@@ -122,7 +125,7 @@ setReload: () => void) => {
       setNotIsLoading();
       setTimeout(() => setEndLoading(), 1500);
       setReload();
-      return ;
+      return;
     } else {
       Alert.alert("Cannot edit now!");
     }

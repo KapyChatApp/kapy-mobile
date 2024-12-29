@@ -1,16 +1,32 @@
 // LoadingSpinner.js
-import { IconURL } from '@/constants/IconURL';
-import React, { useEffect } from 'react';
-import { View, StyleSheet, Image } from 'react-native';
-import Animated, { Easing, useSharedValue, useAnimatedStyle, withRepeat, withTiming } from 'react-native-reanimated';
+import { IconURL } from "@/constants/IconURL";
+import { useTheme } from "@/context/ThemeProviders";
+import React, { useEffect } from "react";
+import { View, StyleSheet, Image, Text } from "react-native";
+import Animated, {
+  Easing,
+  useSharedValue,
+  useAnimatedStyle,
+  withRepeat,
+  withTiming,
+} from "react-native-reanimated";
 
-const LoadingSpinner = ({loading}:{loading:boolean}) => {
+const LoadingSpinner = ({
+  loading,
+  title,
+  fullScreen,
+}: {
+  loading: boolean;
+  title?: string;
+  fullScreen?: boolean;
+}) => {
+  const { theme } = useTheme();
+
   const rotation = useSharedValue(0);
-  const spinnerScale = useSharedValue(1); 
-  const tickScale = useSharedValue(0); 
+  const spinnerScale = useSharedValue(1);
+  const tickScale = useSharedValue(0);
 
   useEffect(() => {
-    console.log("loading status: ", loading);
     if (loading) {
       rotation.value = withRepeat(
         withTiming(1, {
@@ -46,13 +62,23 @@ const LoadingSpinner = ({loading}:{loading:boolean}) => {
 
   return (
     <View style={styles.overlay}>
-      <View style={styles.box}>
+      <View
+        className={`${
+          fullScreen ? "w-screen h-screen absolute" : "absolute w-[120px] h-[120px]"
+        }  rounded-xl bg-white dark:bg-black flex-1 items-center justify-center `}
+        style={{ elevation: 5, rowGap: 12 }}
+      >
         <Animated.View style={[styles.spinner, spinnerStyle]} />
         <Animated.Image
           source={IconURL.tick}
-          style={[styles.tick, tickStyle]} 
+          style={[styles.tick, tickStyle]}
           resizeMode="contain"
         />
+        {title ? (
+          <Text className="font-helvetica-bold text-14  text-cardinal">
+            {title}
+          </Text>
+        ) : null}
       </View>
     </View>
   );
@@ -60,36 +86,28 @@ const LoadingSpinner = ({loading}:{loading:boolean}) => {
 
 const styles = StyleSheet.create({
   overlay: {
-    position: 'absolute',
+    position: "absolute",
     top: 0,
     left: 0,
     right: 0,
     bottom: 0,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)', // Lớp nền mờ
-    justifyContent: 'center',
-    alignItems: 'center',
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
+    justifyContent: "center",
+    alignItems: "center",
   },
-  box: {
-    width: 120,
-    height: 120,
-    borderRadius: 10,
-    backgroundColor: 'rgba(255, 255, 255, 1)', // Màu nền với độ trong suốt
-    justifyContent: 'center',
-    alignItems: 'center',
-    elevation: 5,
-  },
+
   spinner: {
     width: 50,
     height: 50,
     borderWidth: 4,
-    borderColor: '#F57602',
-    borderTopColor: 'transparent',
+    borderColor: "#F57602",
+    borderTopColor: "transparent",
     borderRadius: 25,
   },
   tick: {
-    width: 50, // Chiều rộng của dấu tick
-    height: 50, // Chiều cao của dấu tick
-    position: 'absolute', // Đặt dấu tick ở vị trí tuyệt đối
+    width: 50,
+    height: 50,
+    position: "absolute",
   },
 });
 

@@ -17,7 +17,7 @@ import { HeadProfileProps } from "@/types/user";
 import Popover, { PopoverPlacement } from "react-native-popover-view";
 import Icon from "@/components/ui/Icon";
 import { IconURL } from "@/constants/IconURL";
-import { getLocalAuth } from "@/lib/local-auth";
+import { getLocalAuth } from "@/lib/local";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { bgLight500Dark10, textLight0Dark500 } from "@/styles/theme";
 import { useClickOutside } from "react-native-click-outside";

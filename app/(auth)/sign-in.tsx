@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import DataInputBig from "@/components/ui/DataInputBig";
 import { IconURL } from "@/constants/IconURL";
 import SubmitButton from "@/components/ui/SubmitButton";
-import {useNavigation } from "expo-router";
+import {useNavigation, useRouter } from "expo-router";
 import SecretInput from "@/components/ui/SecretInput";
 import OtherSign from "@/components/ui/OtherSign";
 import { useTheme } from "@/context/ThemeProviders";
@@ -12,13 +12,17 @@ import { UserLoginProps } from "@/types/user";
 import { CommonActions } from "@react-navigation/native";
 import axios from "axios";
 import { bgLight500Dark10 } from "@/styles/theme";
+import { getMyProfile } from "@/lib/my-profile";
+import { getDeviceInfo, synchronizeData } from "@/lib/local";
+import LoadingSpinner from "@/components/ui/LoadingSpinner";
 const SignInPage = () => {
   const navigation = useNavigation();
+  const router = useRouter();
   const [isPressed, setIsPressed] = useState(false);
   const { theme } = useTheme();
   const [phoneNumber, setPhoneNumber] = useState("");
   const [password, setPassword] = useState("");
-
+  const [loading, setLoading] = useState(false);
   useEffect(() => {
     const checkToken = async () => {
       const token = await AsyncStorage.getItem("token");
@@ -47,25 +51,24 @@ const SignInPage = () => {
 
   const handleSignIn = async () => {
     try {
-      const param: UserLoginProps = { phoneNumber, password };
+      const deviceInfo = await getDeviceInfo();
+      const param: UserLoginProps = { ...deviceInfo,phoneNumber, password };
       const loginResponse = await axios.post(process.env.EXPO_PUBLIC_BASE_URL + "/auth/login", param, {
         headers: {
           "Content-Type": "application/json",
         },
       });
-      console.log("response: ",loginResponse);
+      await AsyncStorage.clear();
       const loginData = loginResponse.data;
       const token = loginData.token;
       await AsyncStorage.setItem("token", token);
+      await AsyncStorage.setItem("device-id",loginResponse.data.device._id);
       const savedToken = await AsyncStorage.getItem("token")
+    
       if (savedToken) {
-        navigation.dispatch(
-          CommonActions.reset({
-            index: 0,
-            routes: [{ name: "(tabs)" }],
-          })
-        );
+       router.push("/(auth)/sync");
       }
+    
     } catch (error) {
      console.log(error);
      Alert.alert("Invalid Phonenumber or Password");
@@ -112,6 +115,7 @@ const SignInPage = () => {
         solving="Sign up now"
         link="/sign-up"
       ></OtherSign>
+      {loading? <LoadingSpinner loading={loading} title="Synchronizing"/>:null}
     </View>
   );
 };

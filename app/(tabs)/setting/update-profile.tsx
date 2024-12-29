@@ -18,7 +18,7 @@ import { BioEditorProps, HeaderProfileEditorProps } from "@/types/user";
 import axios from "axios";
 import LoadingSpinner from "@/components/ui/LoadingSpinner";
 import ExpoCamera from "@/components/shared/multimedia/ExpoCamera";
-import { sendMessage } from "@/lib/message-request";
+import { sendMessage } from "@/lib/message";
 import { uploadAvatar, uploadBackground } from "@/lib/my-profile";
 import { useCamera } from "@/context/CameraContext";
 

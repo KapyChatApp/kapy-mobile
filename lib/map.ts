@@ -1,5 +1,5 @@
 import { LocationProps } from "@/types/location";
-import { getLocalAuth } from "./local-auth";
+import { getLocalAuth } from "./local";
 import axios from "axios";
 import {
   CreateMapStatusProps,
@@ -46,29 +46,34 @@ export const getMyBffMapStatus = async () => {
     console.log(error);
     throw error;
   }
-}
+};
 
-export const getMyMapStatus=async ()=>{
-    try{
-        const {token} = await getLocalAuth();
-        const response = await axios.get(process.env.EXPO_PUBLIC_BASE_URL+"/mine/map-status",{headers:{
-            "Content-Type":"application/json",
-            Authorization:`${token}`
-        }});
-        await AsyncStorage.setItem("my-map-status",JSON.stringify(response.data));
-        return response.data;
-    }catch(error){
-        console.log(error);
-        throw error; 
-    }
-}
+export const getMyMapStatus = async () => {
+  try {
+    const { token } = await getLocalAuth();
+    const response = await axios.get(
+      process.env.EXPO_PUBLIC_BASE_URL + "/mine/map-status",
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `${token}`,
+        },
+      }
+    );
+    await AsyncStorage.setItem("my-map-status", JSON.stringify(response.data));
+    return response.data;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};
 export const createMapStatus = async (
   param: CreateMapStatusProps,
-  startLoading:any,
-  endLoading:any,
-  isLoading:any,
-  notIsLoading:any,
-  goOn?: (data: MapStatusProps) => void,
+  startLoading: any,
+  endLoading: any,
+  isLoading: any,
+  notIsLoading: any,
+  goOn?: (data: MapStatusProps) => void
 ) => {
   try {
     startLoading();
@@ -90,7 +95,7 @@ export const createMapStatus = async (
     if (response.status === 200 || response.status === 201) {
       goOn?.(response.data);
       notIsLoading();
-      setTimeout(()=>endLoading(),1000);
+      setTimeout(() => endLoading(), 1000);
       return response.data;
     } else {
       Alert.alert("Cannot create status now, please try again!");
@@ -104,10 +109,10 @@ export const createMapStatus = async (
 export const editMapStatus = async (
   statusId: string,
   param: EditMapStatusProps,
-  startLoading:any,
-  endLoading:any,
-  isLoading:any,
-  notIsLoading:any,
+  startLoading: any,
+  endLoading: any,
+  isLoading: any,
+  notIsLoading: any,
   goOn?: (data: MapStatusProps) => void
 ) => {
   try {
@@ -132,7 +137,7 @@ export const editMapStatus = async (
     if (response.status === 200 || response.status === 201) {
       goOn?.(response.data);
       notIsLoading();
-      setTimeout(()=>endLoading(),1000);
+      setTimeout(() => endLoading(), 1000);
       return response.data;
     } else {
       Alert.alert("Cannot edit Status now, please try again!");
@@ -143,10 +148,13 @@ export const editMapStatus = async (
   }
 };
 
-export const deleteMapStatus = async (startLoading:any,
-  endLoading:any,
-  isLoading:any,
-  notIsLoading:any,goOn:()=>void) => {
+export const deleteMapStatus = async (
+  startLoading: any,
+  endLoading: any,
+  isLoading: any,
+  notIsLoading: any,
+  goOn: () => void
+) => {
   try {
     startLoading();
     isLoading();
@@ -160,16 +168,15 @@ export const deleteMapStatus = async (startLoading:any,
         },
       }
     );
-    if(response.status===200|| response.status===201){
+    if (response.status === 200 || response.status === 201) {
       endLoading();
-      setTimeout(()=>notIsLoading(),1000);
+      setTimeout(() => notIsLoading(), 1000);
       goOn();
       const statusString = await AsyncStorage.getItem("my-map-status");
-          const status = await JSON.parse(statusString!);
-          const blankStatus =  {...status, caption:undefined, content:undefined}
-          await AsyncStorage.setItem("my-map-status", JSON.stringify(blankStatus));
-    
-    }else{
+      const status = await JSON.parse(statusString!);
+      const blankStatus = { ...status, caption: undefined, content: undefined };
+      await AsyncStorage.setItem("my-map-status", JSON.stringify(blankStatus));
+    } else {
       Alert.alert("Cannot delete Status now! Please try again!");
     }
   } catch (error) {
