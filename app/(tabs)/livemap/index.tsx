@@ -54,11 +54,15 @@ const LiveMap = () => {
   const [isCameraOpen, setIsCameraOpen] = useState(false);
   const [selectedMedia, setSelectedMedia] = useState("");
   const { openCamera, closeCamera, photoUri } = useCamera();
+  const [reload, setReload] = useState(false);
 
   const [loading, setLoading] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
   const mapRef = useRef<MapView | null>(null);
+
+  const [caption, setCaption] = useState("");
+  const [keepOldContent, setKeepOldContent] = useState(true);
 
   const focusToLocation = (latitude: number, longitude: number) => {
     console.log("here");
@@ -136,8 +140,10 @@ const LiveMap = () => {
     getLocalData();
     initiateMap();
     getBffMapStatuses();
-    if(photoUri!==""){setIsFormOpen(true)}
-  }, [isFormOpen, photoUri]);
+    if (photoUri !== "") {
+      setIsFormOpen(true);
+    }
+  }, [isFormOpen, photoUri, reload]);
 
   const adjustMarkerSizeAndPosition = (region: any) => {
     const zoomLevel = Math.log2(360 / region.latitudeDelta);
@@ -209,29 +215,35 @@ const LiveMap = () => {
           }}
         />
       </MapView>
-      <MapStatusForm
-        isVisible={isFormOpen}
-        onClose={() => setIsFormOpen(false)}
-        after={(data: any) => {
-          if (data) {
-            setMyMapStatus(data);
-          } else {
-            setMyMapStatus({
-              ...myMapStatus,
-              caption: undefined,
-              content: undefined,
-            });
-          }
-        }}
-        startLoading={() => setLoading(true)}
-        endLoading={() => setLoading(false)}
-        isLoading={() => setIsLoading(true)}
-        notIsLoading={() => setIsLoading(false)}
-        handleOpenCamera={() => {
-          setIsCameraOpen(true);
-          openCamera();
-        }}
-      />
+      {isFormOpen ? (
+        <MapStatusForm
+          isVisible={isFormOpen}
+          onClose={() => setIsFormOpen(false)}
+          after={(data: any) => {
+            if (data) {
+              setMyMapStatus(data);
+            } else {
+              setMyMapStatus({
+                ...myMapStatus,
+                caption: undefined,
+                content: undefined,
+              });
+            }
+            setReload(true);
+          }}
+          startLoading={() => setLoading(true)}
+          endLoading={() => setLoading(false)}
+          isLoading={() => setIsLoading(true)}
+          notIsLoading={() => setIsLoading(false)}
+          caption={caption}
+          setCaption={setCaption}
+          selectedMedia={selectedMedia}
+          setSelectedMedia={setSelectedMedia}
+          keepOldContent={keepOldContent}
+          setKeepOldContent={setKeepOldContent}
+        />
+      ) : null}
+
       {isImageViewingOpen ? (
         <ImageViewing
           images={[{ uri: imageViewing }]}
