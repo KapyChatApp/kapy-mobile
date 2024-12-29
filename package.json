@@ -98,7 +98,8 @@
     "react-native-view-shot": "^1.12.0",
     "react-native-web": "~0.19.10",
     "tailwind-rn": "^4.2.0",
-    "use-state-with-callback": "^3.0.2"
+    "use-state-with-callback": "^3.0.2",
+    "expo-device": "~7.0.1"
   },
   "devDependencies": {
     "@babel/core": "^7.25.9",

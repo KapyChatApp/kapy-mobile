@@ -175,7 +175,6 @@ const MapStatusForm = ({
 
   useFocusEffect(
     useCallback(() => {
-      console.log("back");
       const getLocalUser = async () => {
         const userString = await AsyncStorage.getItem("user");
         const user = await JSON.parse(userString!);
@@ -195,15 +194,7 @@ const MapStatusForm = ({
           const status = await JSON.parse(localStatus!);
           setStatusId(status._id);
           setCaption(status.caption);
-          console.log("map content: ", status.content);
           setSelectedMedia([
-            {
-              uri: status.content.url,
-              type: status.content.type,
-              name: status.content.fileName,
-            },
-          ]);
-          console.log("media: ", [
             {
               uri: status.content.url,
               type: status.content.type,

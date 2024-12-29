@@ -9,7 +9,9 @@ const index = () => {
   const navigation = useNavigation();
   return (
     <View className={`${bgLight500Dark10} w-full h-full`}>
+      <View className="mt-[20px] ml-[20px]">
       <Previous navigation={navigation} header="Security" />
+      </View>
       <SecurityList />
     </View>
   );

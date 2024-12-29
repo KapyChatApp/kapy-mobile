@@ -148,5 +148,8 @@ export const IconURL = {
   marker:require("../assets/icons/marker.png"),
   plus_white:require("../assets/icons/plus_white.png"),
   to_right_arrow:require("../assets/icons/to-right-arrow.png"),
-  pin_myself:require("../assets/icons/pin_myself.png")
+  pin_myself:require("../assets/icons/pin_myself.png"),
+  phone:require("../assets/icons/phone.png"),
+  tablet:require("../assets/icons/tablet.png"),
+  desktop:require("../assets/icons/desktop.png"),
 };

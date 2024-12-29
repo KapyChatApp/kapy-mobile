@@ -4,6 +4,48 @@ import { getMyProfile } from "./my-profile";
 import { getAllMessages, getMyChatBoxes, getMyGroups } from "./message";
 import { getMyMapStatus } from "./map";
 import { getMyFriends } from "./my-friends";
+import * as Device from "expo-device";
+import { getCountryInfo } from "./location";
+
+export const getDeviceInfo = async () => {
+  try {
+    const deviceType = Device.deviceType;
+
+    let deviceTypeString = "UNKNOWN";
+
+    switch (deviceType) {
+      case Device.DeviceType.PHONE:
+        deviceTypeString = "PHONE";
+        break;
+      case Device.DeviceType.TABLET:
+        deviceTypeString = "TABLET";
+        break;
+      case Device.DeviceType.DESKTOP:
+        deviceTypeString = "DESKTOP";
+        break;
+      case Device.DeviceType.TV:
+        deviceTypeString = "TV";
+        break;
+      case Device.DeviceType.UNKNOWN:
+        deviceTypeString = "UNKNOWN";
+        break;
+      default:
+        deviceTypeString = "UNKNOWN";
+    }
+    return {
+      deviceName: Device.deviceName,
+      deviceType: deviceTypeString,
+      modelName: Device.modelName,
+      brand: Device.brand,
+      osName: Device.osName,
+      osVersion: Device.osVersion,
+      region: await getCountryInfo(),
+    };
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};
 
 export const getLocalAuth = async () => {
   const token = await AsyncStorage.getItem("token");
@@ -84,7 +126,7 @@ export const synchronizeData = async (
   } catch (error) {
     console.log(error);
     throw error;
-  }finally{
+  } finally {
     endLoading?.();
   }
 };
