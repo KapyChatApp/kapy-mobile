@@ -1,22 +1,21 @@
 import {
   View,
   SafeAreaView,
+  Text,
   KeyboardAvoidingView,
   Platform,
 } from "react-native";
-import React, { useEffect, useRef, useState } from "react";
+import React, { memo, useCallback, useEffect, useRef, useState } from "react";
 import { useLocalSearchParams } from "expo-router";
 import ChatBoxHeader from "@/components/shared/message/ChatBoxHeader";
 import TypingSpace from "@/components/shared/message/TypingSpace";
 import { ScrollView } from "react-native-gesture-handler";
-import { bgLight500Dark10 } from "@/styles/theme";
+import { bgLight500Dark10, textLight0Dark500 } from "@/styles/theme";
 import { useClickOutside } from "react-native-click-outside";
 import { MessageBoxProps, MessageProps } from "@/types/message";
 import {
   addToMessageLocal,
   disableTexting,
-  getAllMessages,
-  getAMessageBox,
   markRead,
   sendMessage,
   texting,
@@ -45,7 +44,7 @@ const MessageDetailPage = () => {
     setIsTypeping(false);
     setIsMicroOpen(false);
   });
-
+  const [isKicked, setIsKicked] = useState(false);
   const [isTyping, setIsTypeping] = useState(false);
   const [messages, setMessages] = useState<MessageProps[]>([]);
   const [localUserId, setLocalUserId] = useState("");
@@ -58,12 +57,16 @@ const MessageDetailPage = () => {
   const [isImageViewOpen, setIsImageViewOpen] = useState(false);
   const [viewingImage, setViewingImage] = useState("");
 
-  const [isFileViewOpen, setIsFileViewOpen] = useState(false);
   const [viewingFile, setViewingFile] = useState<FileProps>();
 
   const [selectedMedia, setSelectedMedia] = useState<
     { uri: string; type: string; name: string | null | undefined }[]
   >([]);
+
+  const [memberAvatars, setMemberAvatars] = useState<Map<string, string>>(
+    new Map()
+  );
+
   const [isTypingMessage, setIsTypingMessage] = useState(false);
   const typingTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const [textingAvatar, setTextingAvatar] = useState("");
@@ -212,14 +215,12 @@ const MessageDetailPage = () => {
         // Cập nhật tin nhắn cuối cùng
         const lastMessage = messages[messages.length - 1];
         if (lastMessage.position === "free") {
-          console.log("lastmessage will be top");
           updatedMessages[updatedMessages.length - 1] = {
             ...lastMessage,
             position: "top",
           };
           tempMessage.position = "bottom";
         } else {
-          console.log("lastmessage will be middle");
           updatedMessages[updatedMessages.length - 1] = {
             ...lastMessage,
             position: "middle",
@@ -232,11 +233,6 @@ const MessageDetailPage = () => {
 
       const processedMessages = processMessages(updatedMessages); // Xử lý tất cả tin nhắn
       setMessages(processedMessages);
-      console.log(
-        "updatedLastMessage : ",
-        processedMessages[processedMessages.length - 2]
-      );
-      await markRead(messageId.toString());
       await sendMessage(
         messageId.toString(),
         messageText,
@@ -245,7 +241,7 @@ const MessageDetailPage = () => {
           setMessages((prevMessages) =>
             prevMessages.map((message) =>
               message.createAt === tempMessage.createAt // So khớp với message tạm thời dựa trên thời gian tạo
-                ? { ...message, id, sendStatus: status }
+                ? { ...message, id: id, sendStatus: status }
                 : message
             )
           );
@@ -285,7 +281,6 @@ const MessageDetailPage = () => {
   };
 
   const handleReactMessage = (id: string, isReact: string[]) => {
-    console.log("react people: ", isReact, " to: ", id);
     setMessages((prevMessages) => {
       return prevMessages?.map((message: MessageProps) => {
         return message.id === id
@@ -294,6 +289,30 @@ const MessageDetailPage = () => {
       });
     });
   };
+
+  const handleReadMessage = (readedId: string[]) => {
+    setMessages((prevMessages) => {
+      if (!prevMessages || prevMessages.length === 0) {
+        return prevMessages;
+      }
+      const updatedMessages = [...prevMessages];
+      updatedMessages[updatedMessages.length - 1] = {
+        ...updatedMessages[updatedMessages.length - 1],
+        readedId: [...readedId],
+      };
+
+      return updatedMessages;
+    });
+  };
+
+  const addToMap = (key: string, value: string): void => {
+    setMemberAvatars((prevMap) => {
+      const updatedMap = new Map(prevMap); // Tạo bản sao từ prevMap
+      updatedMap.set(key, value); // Thêm cặp key-value vào bản sao
+      return updatedMap; // Cập nhật state
+    });
+  };
+
   useEffect(() => {
     const getAllMessageFUNC = async () => {
       const { _id } = await getLocalAuth();
@@ -301,6 +320,10 @@ const MessageDetailPage = () => {
       const messageBoxLocal = await AsyncStorage.getItem(`box-${messageId}`);
       const messageBox: MessageBoxProps = await JSON.parse(messageBoxLocal!);
       messageBox.localUserId = _id;
+      setIsKicked(messageBox.isKicked ? true : false);
+      for (const receiver of messageBox.receiverIds!) {
+        addToMap(receiver._id, receiver.avatar);
+      }
       setChatBoxHeader(messageBox);
       setMessageBox(messageBox);
       const localMessage = await AsyncStorage.getItem(`messages-${messageId}`);
@@ -323,12 +346,13 @@ const MessageDetailPage = () => {
       pusherClient.bind("new-message", async (data: any) => {
         if (data.createBy !== _id) {
           setMessages((prevMessages) => [...prevMessages, data]);
+          await markRead(messageId.toString());
+        } else {
         }
         markAsRead(messageId.toString());
         await addToMessageLocal(messageId.toString(), data);
       });
       pusherClient.bind("revoke-message", (data: any) => {
-        console.log("revoke: ", data);
         handleRevokeMessage(data.id);
       });
       pusherClient.bind("texting-status", async (data: any) => {
@@ -341,6 +365,7 @@ const MessageDetailPage = () => {
       });
       pusherClient.bind("react-message", async (data: any) => {
         handleReactMessage(data.id, data.isReact);
+        await playSound(AppSound.kiss);
         const messageString = await AsyncStorage.getItem(
           `messages-${messageId}`
         );
@@ -352,6 +377,14 @@ const MessageDetailPage = () => {
           `messages-${messageId}`,
           JSON.stringify(updatedReactMessages)
         );
+      });
+      pusherClient.bind("readed-status", (data: any) => {
+        handleReadMessage(data.readedId);
+      });
+      pusherClient.bind("kick", (data: any) => {
+        if (data.targetId === localUserId) {
+          console.log("Im kicked!");
+        }
       });
       markAsRead(messageId.toString());
     };
@@ -402,51 +435,6 @@ const MessageDetailPage = () => {
               scrollViewRef.current?.scrollToEnd({ animated: true })
             }
           >
-            {/* {messages.length!=0 && messages? messages.map((item, index) => {
-              const previousMessage = messages[index - 1];
-              const nextMessage = messages[index + 1];
-              let position = "free";
-              if (
-                (!previousMessage ||
-                  previousMessage.createBy !== item.createBy) &&
-                nextMessage?.createBy === item.createBy
-              ) {
-                position = "top";
-              } else if (
-                previousMessage?.createBy === item.createBy &&
-                nextMessage?.createBy === item.createBy
-              ) {
-                position = "middle";
-              } else if (
-                previousMessage?.createBy === item.createBy &&
-                (!nextMessage || nextMessage.createBy !== item.createBy)
-              ) {
-                position = "bottom";
-              }
-
-              return (
-                <Message
-                  key={index}
-                  {...item}
-                  avatar={
-                    messageBox?.groupAva
-                      ? messageBox?.groupAva
-                      : receiver
-                      ? receiver._id === localUserId
-                        ? otherReceiver?.avatar
-                        : receiver.avatar
-                      : ""
-                  }
-                  isSender={localUserId === item.createBy.toString()}
-                  position={item.position!=""? position:item.position}
-                  localUserId={localUserId}
-                  deleteMessage={handleDeleteMessage}
-                  revokeMessage={handleRevokeMessage}
-                  handleViewImage={handleViewImage}
-                  handleViewFile={handleViewFile}
-                />
-              );
-            }):null} */}
             {messages && messages.length != 0
               ? processMessages(messages).map((item, index) => (
                   <Message
@@ -458,6 +446,7 @@ const MessageDetailPage = () => {
                     revokeMessage={handleRevokeMessage}
                     handleViewImage={handleViewImage}
                     handleViewFile={handleViewFile}
+                    memberAvatars={memberAvatars}
                   />
                 ))
               : null}
@@ -474,17 +463,28 @@ const MessageDetailPage = () => {
             selectedMedia={selectedMedia}
             setSelectedMedia={setSelectedMedia}
           />
-          <TypingSpace
-            handlePickMedia={handlePickMedia}
-            handlePickDocument={handlePickDocument}
-            isTyping={isTyping}
-            setIsTypeping={setIsTypeping}
-            onChangeText={handleTextChange}
-            value={messageText}
-            onPress={handleSendMessage}
-            setIsCameraOpen={() => setIsCameraOpen(true)}
-            setIsMicroOpen={() => setIsMicroOpen(true)}
-          />
+          {isKicked ? (
+            <View>
+              <Text
+                className={`font-helvetica-light text-12 ${textLight0Dark500}`}
+              >
+                You has been kicked
+              </Text>
+            </View>
+          ) : (
+            <TypingSpace
+              handlePickMedia={handlePickMedia}
+              handlePickDocument={handlePickDocument}
+              isTyping={isTyping}
+              setIsTypeping={setIsTypeping}
+              onChangeText={handleTextChange}
+              value={messageText}
+              onPress={handleSendMessage}
+              setIsCameraOpen={() => setIsCameraOpen(true)}
+              setIsMicroOpen={() => setIsMicroOpen(true)}
+            />
+          )}
+
           {isMicroOpen ? (
             <View ref={ref}>
               <AudioRecorder

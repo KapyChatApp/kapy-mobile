@@ -1,22 +1,25 @@
-import { View, Text } from "react-native";
-import React, { useEffect, useState } from "react";
-import { TouchableOpacity } from "react-native-gesture-handler";
+import { View, Text, Modal, Dimensions, Platform, GestureResponderEvent } from "react-native";
+import React, { useEffect, useRef, useState } from "react";
+import { Pressable, TouchableOpacity } from "react-native-gesture-handler";
 import UserAvatar from "@/components/ui/UserAvatar";
-import { bgLight510Dark10, textLight0Dark500 } from "@/styles/theme";
+import { bgLight500Dark10, bgLight510Dark10, textLight0Dark500 } from "@/styles/theme";
 import { useRouter } from "expo-router";
 import { MessageBoxProps } from "@/types/message";
 import { formatDate, formatDateDistance} from "@/utils/DateFormatter";
 import { useMarkReadContext } from "@/context/MarkReadProvider";
 import Icon from "@/components/ui/Icon";
 import { IconURL } from "@/constants/IconURL";
+import * as Haptics from "expo-haptics";
+import { useClickOutside } from "react-native-click-outside";
 const MessageBox = (props:MessageBoxProps) => {
   const router = useRouter();
+
   const { unreadMessages } = useMarkReadContext();
 
   const receiverIds = props.receiverIds ?? []; 
   const receiver = receiverIds[0];  
   const otherReceiver = receiverIds[1];  
-  const avatarURL = props.groupAva
+  const avatarURL = props.groupName!==""
   ? props.groupAva
   : receiver && receiver._id === props.localUserId
   ? otherReceiver?.avatar 
@@ -29,8 +32,10 @@ const fullName = receiver
   const isReaded = props.readStatus === true ||  unreadMessages[props._id!]===true
 
   return (
+    <View className="flex-1" >
+    
     <TouchableOpacity
-      activeOpacity={0.8}
+    activeOpacity={0.7}
       className={`flex flex-row px-[20px] py-[10px] items-center w-screen ${bgLight510Dark10}`}
       onPress={()=>{router.push({
         pathname:"/chatbox/[messageId]",
@@ -64,6 +69,7 @@ const fullName = receiver
         </Text>
       </View>
     </TouchableOpacity>
+    </View>
   );
 };
 

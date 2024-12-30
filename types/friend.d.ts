@@ -21,6 +21,7 @@ export interface SelectFriendBoxProps{
     relation?:string;
     onSelect?:(data:FriendBoxProps)=>void;
     onUnSelect:(data:FriendBoxProps)=>void;
+    isDisable?:boolean;
 }
 
 export interface RequestedProps{

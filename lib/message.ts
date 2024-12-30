@@ -5,6 +5,7 @@ import { generateRandomNumberString } from "@/utils/Random";
 import * as FileSystem from "expo-file-system";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { prepareFileForUpload } from "@/utils/File";
+import { Alert } from "react-native";
 export const getMyChatBoxes = async () => {
   try {
     const { token, _id } = await getLocalAuth();
@@ -169,6 +170,37 @@ export const createGroup = async (
   }
 };
 
+export const deleteMessageBox = async (
+  boxId: string,
+  startLoading: () => void,
+  endLoading: () => void,
+  goOn: () => void
+) => {
+  try {
+    startLoading();
+    const { token } = await getLocalAuth();
+    const response = await axios.delete(
+      process.env.EXPO_PUBLIC_BASE_URL + "/message/deleteBox",
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `${token}`,
+        },
+        params: { boxId: boxId },
+      }
+    );
+    if (response.status === 200 || response.status === 201) {
+      endLoading();
+      goOn();
+    } else {
+      Alert.alert("Cannot delete the chat now!");
+    }
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};
+
 export const markRead = async (boxId: string) => {
   try {
     const { token } = await getLocalAuth();
@@ -304,9 +336,10 @@ export const sendMessage = async (
         }
       );
       if (response.status === 200 || response.data === 201) {
-        goOn(response.data.id, "success");
+        console.log("send message-id: ", response.data);
+        goOn(response.data.sendMessage.id, "success");
       } else {
-        goOn(response.data.id, "fail");
+        goOn(response.data.sendMessage.id, "fail");
       }
     }
   } catch (error) {
@@ -387,6 +420,137 @@ export const react = async (messageId: string) => {
         },
       }
     );
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};
+
+export const addMem = async (
+  boxId: string,
+  memberIds: string[],
+  goOn: () => void
+) => {
+  try {
+    const { token } = await getLocalAuth();
+    const response = await axios.post(
+      process.env.EXPO_PUBLIC_BASE_URL + "/message/group/addMember",
+      { boxId: boxId, newMember: memberIds },
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `${token}`,
+        },
+      }
+    );
+    if (response.status === 200 || response.status === 201) {
+      goOn();
+    }
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const leaveGroup = async (boxId: string, goOn: () => void) => {
+  try {
+    const { token } = await getLocalAuth();
+    const response = await axios.delete(
+      process.env.EXPO_PUBLIC_BASE_URL + "/message/group/removeMember",
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `${token}`,
+        },
+        params: {
+          boxId: boxId,
+        },
+      }
+    );
+    if (response.status === 200 || response.status === 201) {
+      goOn();
+    }
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};
+
+export const removeMember = async (
+  boxId: string,
+  targetId: string,
+  goOn: () => void
+) => {
+  try {
+    const { token } = await getLocalAuth();
+    const response = await axios.delete(
+      process.env.EXPO_PUBLIC_BASE_URL + "/message/group/removeMember",
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `${token}`,
+        },
+        params: {
+          boxId: boxId,
+          targetedId: targetId,
+        },
+      }
+    );
+    if (response.status === 200 || response.status === 201) {
+      goOn();
+    }
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};
+
+export const changeLeader = async (
+  boxId: string,
+  newLeader: string,
+  goOn: () => void
+) => {
+  try {
+    const { token } = await getLocalAuth();
+    const response = await axios.put(
+      process.env.EXPO_PUBLIC_BASE_URL + "/message/group/changeLeader",{},
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `${token}`,
+        },
+        params: {
+          boxId: boxId,
+          newLeader: newLeader,
+        },
+      }
+    );
+    if (response.status === 200 || response.status === 201) {
+      goOn();
+    }
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};
+
+export const disbandGroup = async (boxId: string, goOn: () => void) => {
+  try {
+    const { token } = await getLocalAuth();
+    const response = await axios.delete(
+      process.env.EXPO_PUBLIC_BASE_URL + "/message/group/disband",
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `${token}`,
+        },
+        params: {
+          boxId: boxId,
+        },
+      }
+    );
+    if (response.status === 200 || response.status === 201) {
+      goOn();
+    }
   } catch (error) {
     console.log(error);
     throw error;
