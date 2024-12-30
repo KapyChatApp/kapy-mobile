@@ -99,6 +99,7 @@ const OutSideMessagePage = () => {
     );
     await AsyncStorage.setItem("ChatBoxes", JSON.stringify(updatedChatBoxes));
     await AsyncStorage.removeItem(`box-${deletedMessageBox}`);
+    await AsyncStorage.removeItem(`messages-${deletedMessageBox}`);
     setMessageBoxes((prev) =>
       prev.filter((messageBox) => messageBox._id !== id)
     );
