@@ -10,11 +10,13 @@ import { IconURL } from "@/constants/IconURL";
 const SelectFriendBox = (props: SelectFriendBoxProps) => {
   const [isSelected, setIsSelected] = useState(false);
   const [pressTime, setPressTime] = useState(0);
-  const router = useRouter();
   return (
     <TouchableOpacity
+    activeOpacity={props.isDisable? 1:0.7}
       onPress={
-        (pressTime + 1) % 2 != 0
+        props.isDisable
+          ? () => {}
+          : (pressTime + 1) % 2 != 0
           ? () => {
               setIsSelected(true);
               props.onSelect?.(props);
@@ -36,10 +38,14 @@ const SelectFriendBox = (props: SelectFriendBoxProps) => {
             {props.firstName + " " + props.lastName}
           </Text>
         </View>
-        <Icon
-          iconURL={isSelected ? IconURL.selected : IconURL.non_select}
-          size={20}
-        />
+        {props.isDisable ? (
+          <Icon iconURL={IconURL.selected} size={20} />
+        ) : (
+          <Icon
+            iconURL={isSelected ? IconURL.selected : IconURL.non_select}
+            size={20}
+          />
+        )}
       </View>
     </TouchableOpacity>
   );

@@ -4,7 +4,7 @@ import {
   KeyboardAvoidingView,
   Platform,
 } from "react-native";
-import React, { memo, useEffect, useRef, useState } from "react";
+import React, { memo, useCallback, useEffect, useRef, useState } from "react";
 import { useLocalSearchParams } from "expo-router";
 import ChatBoxHeader from "@/components/shared/message/ChatBoxHeader";
 import TypingSpace from "@/components/shared/message/TypingSpace";
@@ -74,6 +74,10 @@ const MessageDetailPage = () => {
     const media = await pickMedia();
     setSelectedMedia((prev) => [...prev, ...media]);
   };
+
+  const onChangeText=useCallback((text:string)=>{
+    setMessageText(text);
+  },[])
 
   const handlePickDocument = async () => {
     const document = await pickDocument();
@@ -462,7 +466,7 @@ const MessageDetailPage = () => {
             handlePickDocument={handlePickDocument}
             isTyping={isTyping}
             setIsTypeping={setIsTypeping}
-            onChangeText={handleTextChange}
+            onChangeText={onChangeText}
             value={messageText}
             onPress={handleSendMessage}
             setIsCameraOpen={() => setIsCameraOpen(true)}

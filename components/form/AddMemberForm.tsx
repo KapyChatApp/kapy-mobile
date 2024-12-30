@@ -31,20 +31,15 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import LoadingSpinner from "../ui/LoadingSpinner";
 import Search from "../shared/function/Search";
 
-const CreateGroupForm = ({ isVisible, onClose }: any) => {
+const AddMemberForm = ({isVisible, onClose, members}:any) => {
   const router = useRouter();
   const ref = useClickOutside(() => onClose());
   const [friends, setFriends] = useState<FriendBoxProps[]>([]);
   const [selected, setSelected] = useState<FriendBoxProps[]>([]);
-  const [selectedMedia, setSelectedMedia] = useState<
-    { uri: string; type: string; name: string | null | undefined }[]
-  >([]);
-  const [groupName, setGroupName] = useState("");
-  const [q,setQ] = useState("");
-  const handleGalleryPicker = async () => {
-    const media = await singlePickMedia();
-    setSelectedMedia(media);
-  };
+  const [memberIds,setMemberIds] = useState<string[]>([]);
+ 
+    const [q,setQ] = useState("");
+
   const translateY = useRef(new Animated.Value(0)).current;
   const panResponder = useRef(
     PanResponder.create({
@@ -67,63 +62,21 @@ const CreateGroupForm = ({ isVisible, onClose }: any) => {
     })
   ).current;
 
-  const convertToReceiverProps = async (receiverIds: string[]) => {
-    const user = await AsyncStorage.getItem("user");
-    const userData = await JSON.parse(user!);
-    const localReceiver: ReceiverProps = {
-      _id: userData._id,
-      firstName: userData.firstName,
-      lastName: userData.lastName,
-      avatar: userData.avatar,
-      phoneNumber: userData.phoneNumber,
+  const handleAddMemberToGroup = async ()=>{
+
+  }
+
+  useEffect(() => {
+    const getMyFriendsFUNC = async () => {
+      const friends = await AsyncStorage.getItem("friends");
+      const friendDatas = await JSON.parse(friends!);
+      setFriends(friendDatas);
+      const memberIds = members.map((item:any)=>item._id);
+      setMemberIds(memberIds);
     };
-    const receivers: ReceiverProps[] = [localReceiver];
-    for (const receiverId of receiverIds) {
-      const friend = await AsyncStorage.getItem(`friend-${receiverId}`);
-      const friendData = await JSON.parse(friend!);
-      const receiver: ReceiverProps = {
-        _id: friendData._id,
-        firstName: friendData.firstName,
-        lastName: friendData.lastName,
-        avatar: friendData.avatar,
-        phoneNumber: friendData.phoneNumber,
-      };
-      receivers.push(receiver);
-    }
-    return receivers;
-  };
+    getMyFriendsFUNC();
+  }, []);
 
-  const handleCreateGroup = async () => {
-    const { _id } = await getLocalAuth();
-    const memberIds: string[] = [];
-    for (const friend of selected) {
-      memberIds.push(friend._id);
-    }
-    await createGroup(memberIds, groupName, selectedMedia[0], async (boxId) => {
-      await AsyncStorage.setItem(
-        `box-${boxId}`,
-        JSON.stringify({
-          _id: boxId,
-          groupName: groupName,
-          groupAva: selectedMedia[0].uri,
-          receiverIds: convertToReceiverProps(memberIds),
-          createAt: new Date().toDateString,
-          responseLastMessage: null,
-          localUserId: (await getLocalAuth())._id,
-          setLastMessage: () => {},
-          readStatus: true,
-          isOnline: true,
-        })
-      );
-      router.push({
-        pathname: "/chatbox/[messageId]",
-        params: { messageId: boxId },
-      });
-      onClose();
-    });
-  };
-
-  
   const handleSearch = ()=>{
     const lowerCaseQuery = q.toLowerCase();
 
@@ -139,15 +92,6 @@ const CreateGroupForm = ({ isVisible, onClose }: any) => {
       );
     });
   }
-
-  useEffect(() => {
-    const getMyFriendsFUNC = async () => {
-      const friends = await AsyncStorage.getItem("friends");
-      const friendDatas = await JSON.parse(friends!);
-      setFriends(friendDatas);
-    };
-    getMyFriendsFUNC();
-  }, []);
 
   return (
     <Modal
@@ -168,41 +112,17 @@ const CreateGroupForm = ({ isVisible, onClose }: any) => {
             <Text
               className={`text-18 font-helvetica-bold ${textLight0Dark500} text-cardinal`}
             >
-              Create group
+              Your friends
             </Text>
             <CustomButton
               width={80}
               height={40}
-              label="Create"
-              onPress={handleCreateGroup}
+              iconURL={IconURL.to_right_arrow}
+              iconSize={15}
+              onPress={handleAddMemberToGroup}
             />
           </View>
-          <View
-            className="flex flex-row w-full items-center justify-center px-[10px]"
-            style={{ columnGap: 8 }}
-          >
-            <TouchableOpacity
-              className="flex items-center justify-center w-[70px] h-[70px] rounded-full bg-light-300"
-              onPress={handleGalleryPicker}
-            >
-              {selectedMedia.length != 0 ? (
-                <Image
-                  className="rounded-full"
-                  source={{ uri: selectedMedia[0].uri }}
-                  width={70}
-                  height={70}
-                />
-              ) : (
-                <Icon iconURL={IconURL.change_image} size={30} />
-              )}
-            </TouchableOpacity>
-            <TextInput
-              className={`flex-1 py-[12px] pr-[8px] text-16 font-helvetica-bold border-b border-border ${textLight0Dark500}`}
-              placeholder="Group name"
-              onChangeText={setGroupName}
-            />
-          </View>
-          <Search onChangeText={setQ}/>
+         <Search onChangeText={setQ}/>
           <View
             className="flex flex-row flex-wrap px-[20px] w-full"
             style={{ rowGap: 4, columnGap: 10 }}
@@ -211,7 +131,7 @@ const CreateGroupForm = ({ isVisible, onClose }: any) => {
               <View
                 key={index}
                 className="flex flex-row items-center justify-center bg-light-340 dark:bg-dark-20 p-[4px] rounded-xl
-            "
+              "
                 style={{ columnGap: 2 }}
               >
                 <UserAvatar avatarURL={{ uri: item.avatar }} size={24} />
@@ -237,19 +157,21 @@ const CreateGroupForm = ({ isVisible, onClose }: any) => {
                 }}
                 key={index}
                 {...item}
+                isDisable={memberIds.includes(item._id)}
               />
-            )):handleSearch().map((item, index) => (
-              <SelectFriendBox
-                onSelect={(data) => setSelected((prev) => [...prev, data])}
-                onUnSelect={(data) => {
-                  setSelected((prev) =>
-                    prev.filter((item) => item._id !== data._id)
-                  );
-                }}
-                key={index}
-                {...item}
-              />
-            ))}
+            )): handleSearch().map((item, index) => (
+                <SelectFriendBox
+                  onSelect={(data) => setSelected((prev) => [...prev, data])}
+                  onUnSelect={(data) => {
+                    setSelected((prev) =>
+                      prev.filter((item) => item._id !== data._id)
+                    );
+                  }}
+                  key={index}
+                  {...item}
+                  isDisable={memberIds.includes(item._id)}
+                />
+              ))}
           </ScrollView>
         </Animated.View>
       </View>
@@ -299,4 +221,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default CreateGroupForm;
+export default AddMemberForm;

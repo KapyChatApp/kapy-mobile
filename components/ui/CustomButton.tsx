@@ -17,18 +17,17 @@ const CustomButton = ({
       className={`flex justify-center items-center rounded-full ${
         type ? "bg-specialRelation" : "bg-cardinal"
       } flex-row `}
-      style={{ width: width, height: height, columnGap: 4 }}
+      style={{ width: width, height: height, columnGap: 8 }}
       onPress={onPress}
-    >
+    > {label ? (
+      <Text
+        className="text-white font-helvetica-bold"
+        style={{ fontSize: fontSize }}
+      >
+        {label}
+      </Text>
+    ) : null}
       {iconURL ? <Icon iconURL={iconURL} size={iconSize} /> : null}
-      {label ? (
-        <Text
-          className="text-white font-helvetica-bold"
-          style={{ fontSize: fontSize }}
-        >
-          {label}
-        </Text>
-      ) : null}
     </TouchableOpacity>
   );
 };
