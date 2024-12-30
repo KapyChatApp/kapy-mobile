@@ -22,7 +22,7 @@ import Icon from "../ui/Icon";
 import { IconURL } from "@/constants/IconURL";
 import UserAvatar from "../ui/UserAvatar";
 import { singlePickMedia } from "@/utils/GalleryPicker";
-import { createGroup } from "@/lib/message";
+import { addMem, createGroup } from "@/lib/message";
 import { getLocalAuth } from "@/lib/local";
 import { create } from "tailwind-rn";
 import { useRouter } from "expo-router";
@@ -31,7 +31,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import LoadingSpinner from "../ui/LoadingSpinner";
 import Search from "../shared/function/Search";
 
-const AddMemberForm = ({isVisible, onClose, members}:any) => {
+const AddMemberForm = ({isVisible, onClose, members, setMembers,boxId}:any) => {
   const router = useRouter();
   const ref = useClickOutside(() => onClose());
   const [friends, setFriends] = useState<FriendBoxProps[]>([]);
@@ -63,7 +63,9 @@ const AddMemberForm = ({isVisible, onClose, members}:any) => {
   ).current;
 
   const handleAddMemberToGroup = async ()=>{
-
+    setMembers(selected);
+    onClose();
+    await addMem(boxId, selected.map((item)=>item._id),()=>{});
   }
 
   useEffect(() => {

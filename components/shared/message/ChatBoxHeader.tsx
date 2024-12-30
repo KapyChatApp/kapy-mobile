@@ -74,7 +74,6 @@ const ChatBoxHeader = (props: MessageBoxProps) => {
        const boxData = await JSON.parse(box!);
        setGroupAva(boxData.groupAva);
        setGroupName(boxData.groupName);
-       console.log("group ava: ",boxData.groupAva);
     }
     };
     getHeaderData();
@@ -105,7 +104,8 @@ const ChatBoxHeader = (props: MessageBoxProps) => {
               >
                 {groupName===""? fullName:groupName}
               </Text>
-              {isOnline? <View className="flex flex-row items-center" style={{columnGap:4}}><Text className="text-12 font-helvetica-bold text-cardinal">Online</Text> <View className="w-[8px] h-[8px] bg-cardinal rounded-full"/></View>:<Text className="text-12 text-cardinal font-helvetica-normal">Online {updateTime!=""? formatDateDistance(updateTime):null}</Text>}
+              {props.groupName===""?
+              (isOnline? <View className="flex flex-row items-center" style={{columnGap:4}}><Text className="text-12 font-helvetica-bold text-cardinal">Online</Text> <View className="w-[8px] h-[8px] bg-cardinal rounded-full"/></View>:<Text className="text-12 text-cardinal font-helvetica-normal">Online {updateTime!=""? formatDateDistance(updateTime):null}</Text>):null}
           
             </View>
           ) : (

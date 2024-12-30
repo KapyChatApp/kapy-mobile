@@ -10,7 +10,7 @@ import { useTheme } from "@/context/ThemeProviders";
 import { IconURL } from "@/constants/IconURL";
 import FunctionCard from "@/components/shared/function/FunctionCard";
 import { MessageBoxProps } from "@/types/message";
-import { deleteMessageBox, getAMessageBox } from "@/lib/message";
+import { deleteMessageBox, getAMessageBox, leaveGroup } from "@/lib/message";
 import { FileProps } from "@/types/file";
 import { getFilesOfAMessageBox } from "@/lib/media";
 import { getFromAsyncStorage } from "@/utils/Device";
@@ -41,13 +41,24 @@ const ChatBoxDetailPage = () => {
       () => setLoading(false),
       () => {
         waitDeleteMessageBox(chatboxDetailId.toString());
-         navigation.dispatch(
-                  CommonActions.reset({
-                    index: 0,
-                    routes: [{ name: "(tabs)" }],
-                  })
-                );
+        navigation.dispatch(
+          CommonActions.reset({
+            index: 0,
+            routes: [{ name: "(tabs)" }],
+          })
+        );
       }
+    );
+  };
+
+  const handleLeaveChat = async () => {
+    await leaveGroup(chatboxDetailId.toString(), () => {});
+    waitDeleteMessageBox(chatboxDetailId.toString());
+    navigation.dispatch(
+      CommonActions.reset({
+        index: 0,
+        routes: [{ name: "(tabs)" }],
+      })
     );
   };
   useEffect(() => {
@@ -147,11 +158,19 @@ const ChatBoxDetailPage = () => {
               onPress={handleDeleteMessageBox}
             />
           ) : null}
-          <FunctionCard
-            label="Block"
-            iconURL={theme === "light" ? IconURL.block_l : IconURL.block_d}
-            onPress={() => {}}
-          />
+          {isGroup ? (
+            <FunctionCard
+              label="Leave"
+              iconURL={theme === "light" ? IconURL.leave_l : IconURL.leave_d}
+              onPress={handleLeaveChat}
+            />
+          ) : (
+            <FunctionCard
+              label="Block"
+              iconURL={theme === "light" ? IconURL.block_l : IconURL.block_d}
+              onPress={() => {}}
+            />
+          )}
         </View>
       </ScrollView>
       {loading ? <LoadingSpinner loading={loading} /> : null}

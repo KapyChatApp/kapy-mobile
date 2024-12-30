@@ -15,6 +15,7 @@ import File from "@/components/ui/File";
 
 import { useActionSheet } from "@expo/react-native-action-sheet";
 import { useRouter } from "expo-router";
+import PostAudioPlayer from "../multimedia/PostAudioPlayer";
 const Comment = (props: CommentProps) => {
   const [isShowReply, setIsShowReply] = useState(false);
   const haveReplies = props.replieds && props.replieds.length > 0;
@@ -64,7 +65,7 @@ const Comment = (props: CommentProps) => {
       case "Video":
         return <VideoPlayer videoSource={props.content.url!} />;
       case "Audio":
-        return <AudioPlayer audioUri={props.content.url!} isSender={true} />;
+        return <PostAudioPlayer audioUri={props.content.url!} />;
       default:
         return <File isSender={false} position="free" file={props.content} />;
     }

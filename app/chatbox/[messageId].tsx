@@ -1,6 +1,7 @@
 import {
   View,
   SafeAreaView,
+  Text,
   KeyboardAvoidingView,
   Platform,
 } from "react-native";
@@ -9,7 +10,7 @@ import { useLocalSearchParams } from "expo-router";
 import ChatBoxHeader from "@/components/shared/message/ChatBoxHeader";
 import TypingSpace from "@/components/shared/message/TypingSpace";
 import { ScrollView } from "react-native-gesture-handler";
-import { bgLight500Dark10 } from "@/styles/theme";
+import { bgLight500Dark10, textLight0Dark500 } from "@/styles/theme";
 import { useClickOutside } from "react-native-click-outside";
 import { MessageBoxProps, MessageProps } from "@/types/message";
 import {
@@ -43,7 +44,7 @@ const MessageDetailPage = () => {
     setIsTypeping(false);
     setIsMicroOpen(false);
   });
-
+  const [isKicked, setIsKicked] = useState(false);
   const [isTyping, setIsTypeping] = useState(false);
   const [messages, setMessages] = useState<MessageProps[]>([]);
   const [localUserId, setLocalUserId] = useState("");
@@ -62,22 +63,19 @@ const MessageDetailPage = () => {
     { uri: string; type: string; name: string | null | undefined }[]
   >([]);
 
-  const [memberAvatars, setMemberAvatars]= useState<Map<string, string>>(new Map());
+  const [memberAvatars, setMemberAvatars] = useState<Map<string, string>>(
+    new Map()
+  );
 
   const [isTypingMessage, setIsTypingMessage] = useState(false);
   const typingTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const [textingAvatar, setTextingAvatar] = useState("");
-
 
   const scrollViewRef = useRef<ScrollView>(null);
   const handlePickMedia = async () => {
     const media = await pickMedia();
     setSelectedMedia((prev) => [...prev, ...media]);
   };
-
-  const onChangeText=useCallback((text:string)=>{
-    setMessageText(text);
-  },[])
 
   const handlePickDocument = async () => {
     const document = await pickDocument();
@@ -243,7 +241,7 @@ const MessageDetailPage = () => {
           setMessages((prevMessages) =>
             prevMessages.map((message) =>
               message.createAt === tempMessage.createAt // So khớp với message tạm thời dựa trên thời gian tạo
-                ? { ...message, id:id, sendStatus: status }
+                ? { ...message, id: id, sendStatus: status }
                 : message
             )
           );
@@ -302,7 +300,7 @@ const MessageDetailPage = () => {
         ...updatedMessages[updatedMessages.length - 1],
         readedId: [...readedId],
       };
-  
+
       return updatedMessages;
     });
   };
@@ -322,7 +320,8 @@ const MessageDetailPage = () => {
       const messageBoxLocal = await AsyncStorage.getItem(`box-${messageId}`);
       const messageBox: MessageBoxProps = await JSON.parse(messageBoxLocal!);
       messageBox.localUserId = _id;
-      for(const receiver of messageBox.receiverIds!){
+      setIsKicked(messageBox.isKicked ? true : false);
+      for (const receiver of messageBox.receiverIds!) {
         addToMap(receiver._id, receiver.avatar);
       }
       setChatBoxHeader(messageBox);
@@ -348,9 +347,7 @@ const MessageDetailPage = () => {
         if (data.createBy !== _id) {
           setMessages((prevMessages) => [...prevMessages, data]);
           await markRead(messageId.toString());
-        }else{
-     
-         
+        } else {
         }
         markAsRead(messageId.toString());
         await addToMessageLocal(messageId.toString(), data);
@@ -381,8 +378,13 @@ const MessageDetailPage = () => {
           JSON.stringify(updatedReactMessages)
         );
       });
-      pusherClient.bind("readed-status",(data:any)=>{
+      pusherClient.bind("readed-status", (data: any) => {
         handleReadMessage(data.readedId);
+      });
+      pusherClient.bind("kick", (data: any) => {
+        if (data.targetId === localUserId) {
+          console.log("Im kicked!");
+        }
       });
       markAsRead(messageId.toString());
     };
@@ -461,17 +463,28 @@ const MessageDetailPage = () => {
             selectedMedia={selectedMedia}
             setSelectedMedia={setSelectedMedia}
           />
-          <TypingSpace
-            handlePickMedia={handlePickMedia}
-            handlePickDocument={handlePickDocument}
-            isTyping={isTyping}
-            setIsTypeping={setIsTypeping}
-            onChangeText={onChangeText}
-            value={messageText}
-            onPress={handleSendMessage}
-            setIsCameraOpen={() => setIsCameraOpen(true)}
-            setIsMicroOpen={() => setIsMicroOpen(true)}
-          />
+          {isKicked ? (
+            <View>
+              <Text
+                className={`font-helvetica-light text-12 ${textLight0Dark500}`}
+              >
+                You has been kicked
+              </Text>
+            </View>
+          ) : (
+            <TypingSpace
+              handlePickMedia={handlePickMedia}
+              handlePickDocument={handlePickDocument}
+              isTyping={isTyping}
+              setIsTypeping={setIsTypeping}
+              onChangeText={handleTextChange}
+              value={messageText}
+              onPress={handleSendMessage}
+              setIsCameraOpen={() => setIsCameraOpen(true)}
+              setIsMicroOpen={() => setIsMicroOpen(true)}
+            />
+          )}
+
           {isMicroOpen ? (
             <View ref={ref}>
               <AudioRecorder

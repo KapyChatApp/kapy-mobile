@@ -336,6 +336,7 @@ export const sendMessage = async (
         }
       );
       if (response.status === 200 || response.data === 201) {
+        console.log("send message-id: ", response.data);
         goOn(response.data.sendMessage.id, "success");
       } else {
         goOn(response.data.sendMessage.id, "fail");
@@ -428,7 +429,7 @@ export const react = async (messageId: string) => {
 export const addMem = async (
   boxId: string,
   memberIds: string[],
-  goOn: () => string
+  goOn: () => void
 ) => {
   try {
     const { token } = await getLocalAuth();
@@ -506,12 +507,12 @@ export const removeMember = async (
 export const changeLeader = async (
   boxId: string,
   newLeader: string,
-  goOn: () => string
+  goOn: () => void
 ) => {
   try {
     const { token } = await getLocalAuth();
     const response = await axios.put(
-      process.env.EXPO_PUBLIC_BASE_URL + "/message/group/changeLeader",
+      process.env.EXPO_PUBLIC_BASE_URL + "/message/group/changeLeader",{},
       {
         headers: {
           "Content-Type": "application/json",

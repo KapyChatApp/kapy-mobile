@@ -50,11 +50,13 @@ export interface MessageBoxProps {
   groupAva?: string;
   receiverIds?: ReceiverProps[];
   createAt?: string;
+  createBy?:string;
   responseLastMessage?: MessageProps;
   localUserId?:string;
   setLastMessage?:(message:string)=>void;
   readStatus?:boolean;
   isOnline?:boolean;
+  isKicked?:boolean;
 }
 
 export interface ChatBoxHeaderProps {
@@ -72,4 +74,8 @@ export interface ReceiverProps {
   phoneNumber: string;
   avatar: string;
   localUserId?:string;
+  isLeader?:boolean;
+  isLeaderRole?:boolean;
+  handleRemoveMember?:(id:string)=>void;
+  handleChangeLeader?:(id:string)=>void;
 }
