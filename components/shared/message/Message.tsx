@@ -24,17 +24,20 @@ import { useRouter } from "expo-router";
 import MessageLove from "@/components/ui/MessageLove";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as Haptics from "expo-haptics";
-import { playSound } from "@/utils/Media";
-import { AppSound } from "@/constants/Sound";
+import UserAvatar from "@/components/ui/UserAvatar";
+import { getFromAsyncStorage } from "@/utils/Device";
+import { ScrollView } from "react-native-gesture-handler";
 
 const Message = (props: MessageProps) => {
   const [position, setPosition] = useState(props.position);
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const [isShowTime, setIsShowTime] = useState(
+  const [isShowMessageInfo, setIsShowMessageInfo] = useState(
     position === "bottom" ? true : false
   );
+
   const [avatar, setAvatar] = useState("");
-  const timeRef = useClickOutside<View>(() => setIsShowTime(false));
+  const [readedId, setReadedId] = useState<string[]>([]);
+  const timeRef = useClickOutside<View>(() => setIsShowMessageInfo(false));
   const modalRef = useClickOutside<View>(() => setIsModalVisible(false));
 
   const [isLiked, setIsLiked] = useState(false);
@@ -57,24 +60,20 @@ const Message = (props: MessageProps) => {
     let adjustedX = x;
     let adjustedY = y;
 
-    // Điều chỉnh để không vượt bên phải màn hình
     if (x + modalWidth > screenWidth) {
-      adjustedX = screenWidth - modalWidth - 10; // Chừa khoảng cách 10px
+      adjustedX = screenWidth - modalWidth - 10; 
     }
 
-    // Điều chỉnh để không vượt bên trái màn hình
     if (x < 0) {
-      adjustedX = 10; // Chừa khoảng cách 10px
+      adjustedX = 10; 
     }
 
-    // Điều chỉnh để không vượt dưới màn hình
     if (y + modalHeight > screenHeight) {
-      adjustedY = screenHeight - modalHeight - 10; // Chừa khoảng cách 10px
+      adjustedY = screenHeight - modalHeight - 10; 
     }
 
-    // Điều chỉnh để không vượt trên màn hình
     if (y < 0) {
-      adjustedY = 10; // Chừa khoảng cách 10px
+      adjustedY = 10; 
     }
 
     return { x: adjustedX, y: adjustedY };
@@ -85,11 +84,8 @@ const Message = (props: MessageProps) => {
 
     const modalWidth = 270;
     const modalHeight = 160;
-
-    console.log("modal w: ", modalWidth, "modal h: ", modalHeight);
     const { x, y } = adjustModalPosition(pageX, pageY, modalWidth, modalHeight);
 
-    // Cập nhật vị trí modal
     setModalPosition({ x, y });
     setIsModalVisible(true);
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
@@ -111,6 +107,7 @@ const Message = (props: MessageProps) => {
         return "rounded-3xl";
     }
   };
+
   const roundedValueSender = () => {
     if (props.contentId) {
       return "rounded-3xl";
@@ -455,7 +452,7 @@ const Message = (props: MessageProps) => {
     const timeDifference = currentTime - lastTap;
 
     if (timeDifference >= 300 || timeDifference <= 0) {
-      if (position !== "bottom") setIsShowTime(!isShowTime);
+      if (position !== "bottom") setIsShowMessageInfo(!isShowMessageInfo);
     } else {
       handleLike();
     }
@@ -465,6 +462,7 @@ const Message = (props: MessageProps) => {
   useEffect(() => {
     setPosition(props.position);
     setLikedArray(props.isReact);
+    setReadedId(props.readedId);
     const setUpMessage = async () => {
       setTotalLike(props.isReact.length);
       const createdUser = await AsyncStorage.getItem(`user-${props.createBy}`);
@@ -515,15 +513,22 @@ const Message = (props: MessageProps) => {
                   rowGap: 10,
                 }}
               >
+                <View className="flex flex-row items-center" style={{columnGap:10}}>
                 <TouchableOpacity
                   className="flex items-center justify-center w-[30px] h-[30px] bg-light-510 dark:bg-dark-20 rounded-full"
                   onPress={async () => {
-                    handleLike();
+                    await handleLike();
                     setIsModalVisible(false);
                   }}
                 >
                   <Icon iconURL={IconURL.loved} size={16} />
                 </TouchableOpacity>
+                <View className={`${bgLight500Dark10} rounded-full px-[10px]`}>
+                  <ScrollView horizontal={true} contentContainerStyle={{padding:5,columnGap:6}}>
+                    {likedArray.map((item, index)=><View key={index} className="flex"><UserAvatar size={30} avatarURL={{uri:props.memberAvatars?.get(item)}}/><View className="absolute -right-[2px] -bottom-[5px]"><Icon size={16} iconURL={IconURL.loved}/></View></View>)}
+                  </ScrollView>
+                  </View>
+                </View>
                 <View className={`${bgLight500Dark10} w-[250px] rounded-2xl`}>
                   <TouchableOpacity
                     className="flex items-center justify-center w-full h-[50px]  border-border border-b-[0.5px]"
@@ -571,6 +576,7 @@ const Message = (props: MessageProps) => {
                   rowGap: 10,
                 }}
               >
+                <View className="flex flex-row items-center" style={{columnGap:10}}>
                 <TouchableOpacity
                   className="flex items-center justify-center w-[30px] h-[30px] bg-light-510 dark:bg-dark-20 rounded-full"
                   onPress={async () => {
@@ -580,6 +586,12 @@ const Message = (props: MessageProps) => {
                 >
                   <Icon iconURL={IconURL.loved} size={16} />
                 </TouchableOpacity>
+                <View className={`${bgLight500Dark10} rounded-full px-[10px]`}>
+                  <ScrollView horizontal={true} contentContainerStyle={{padding:5,columnGap:6}}>
+                    {likedArray.map((item, index)=><View key={index} className="flex"><UserAvatar size={30} avatarURL={{uri:props.memberAvatars?.get(item)}}/><View className="absolute -right-[2px] -bottom-[5px]"><Icon size={16} iconURL={IconURL.loved}/></View></View>)}
+                  </ScrollView>
+                  </View>
+                </View>
                 <View className={`${bgLight500Dark10} w-[250px] rounded-2xl`}>
                   <TouchableOpacity
                     className="flex items-center justify-center w-full h-[50px]  border-border border-b-[0.5px]"
@@ -699,10 +711,15 @@ const Message = (props: MessageProps) => {
         ) : null}
       </Pressable>
       {totalLike > 0 ? <View className="w-full h-[14px]" /> : null}
-      {position === "bottom" || isShowTime ? (
+      {position === "bottom" || isShowMessageInfo ? (
+        <View className="flex" style={{rowGap:2}}>
+          <View className={`flex flex-row  ${props.isSender? "justify-end":"justify-start ml-[40px]"} `} style={{columnGap:2}}>
+            {readedId.map((item, index)=><UserAvatar key={index} size={14} avatarURL={{uri:props.memberAvatars?.get(item)}}/>)}
+          </View>
         <Text className="text-deny font-helvetica-light text-10 ml-[40px]">
           {formatDateDistance(props.createAt)}
         </Text>
+        </View>
       ) : null}
       {props.sendStatus ? (
         <Text className="text-deny font-helvetica-light text-10">

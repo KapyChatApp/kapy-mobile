@@ -41,6 +41,7 @@ export interface MessageProps {
   handleViewImage:(imageURL:string)=>void;
   handleViewFile:(file:FileProps)=>void;
   sendStatus?:string;
+  memberAvatars?:Map<string, string>
 }
 
 export interface MessageBoxProps {

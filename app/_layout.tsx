@@ -1,27 +1,20 @@
 import React from "react";
-import {
-  SplashScreen,
-  Stack,
-  useRouter,
-} from "expo-router";
+import { SplashScreen, Stack, useRouter } from "expo-router";
 import { useFonts } from "expo-font";
 import { useEffect } from "react";
-import {
-  GestureHandlerRootView,
-} from "react-native-gesture-handler";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 import MainHeader from "@/components/navigator/Topbar/MainHeader";
 import { EventProvider } from "react-native-outside-press";
 import { ThemeProvider } from "@/context/ThemeProviders";
 import { ClickOutsideProvider } from "react-native-click-outside";
-import {
-  SafeAreaView,
-} from "react-native";
+import { SafeAreaView } from "react-native";
 import { ActionSheetProvider } from "@expo/react-native-action-sheet";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 import { MarkReadProvider } from "@/context/MarkReadProvider";
 import { CameraProvider } from "@/context/CameraContext";
-import { Host } from 'react-native-portalize';
+import { Host } from "react-native-portalize";
+import { MessageBoxProvider } from "@/context/MessageBoxContext";
 SplashScreen.preventAutoHideAsync();
 export default function RootLayout() {
   const [fontsLoaded, error] = useFonts({
@@ -65,81 +58,83 @@ export default function RootLayout() {
       <EventProvider>
         <ThemeProvider>
           <CameraProvider>
-              <SafeAreaView className="flex-1">
-                <MarkReadProvider>
+            <SafeAreaView className="flex-1">
+              <MarkReadProvider>
+                <MessageBoxProvider>
                   <ClickOutsideProvider>
                     <ActionSheetProvider>
                       <Host>
-                      <Stack>
-                        <Stack.Screen
-                          name="index"
-                          options={{ headerShown: false }}
-                        />
-                        <Stack.Screen
-                          name="(auth)"
-                          options={{ headerShown: false }}
-                        />
-                        <Stack.Screen
-                          name="(tabs)"
-                          options={{
-                            headerShown: false,
-                            headerTitle: (props) => <MainHeader></MainHeader>,
-                          }}
-                        />
-                        <Stack.Screen
-                          name="chatbox"
-                          options={{ headerShown: false }}
-                        />
-                        <Stack.Screen
-                          name="(mine)/my-multimedia"
-                          options={{ headerShown: false }}
-                        />
-                        <Stack.Screen
-                          name="(mine)/my-wall"
-                          options={{ headerShown: false }}
-                        />
-                        <Stack.Screen
-                          name="(mine)/blocked-list"
-                          options={{ headerShown: false }}
-                        />
-                        <Stack.Screen
-                          name="(mine)/bff-list"
-                          options={{ headerShown: false }}
-                        />
-                        <Stack.Screen
-                          name="(mine)/my-groups"
-                          options={{ headerShown: false }}
-                        />
-                        <Stack.Screen
-                          name="(mine)/all-rate"
-                          options={{ headerShown: false }}
-                        />
-                        <Stack.Screen
-                          name="(mine)/notification"
-                          options={{ headerShown: false }}
-                        />
-                        <Stack.Screen
-                          name="community"
-                          options={{ headerShown: false }}
-                        />
-                        <Stack.Screen
-                          name="(error)/not-found"
-                          options={{ headerShown: false }}
-                        />
-                        <Stack.Screen
-                          name="report"
-                          options={{ headerShown: false }}
-                        />
-                        <Stack.Screen
-                          name="friend"
-                          options={{ headerShown: false }}
-                        />
-                      </Stack>
+                        <Stack>
+                          <Stack.Screen
+                            name="index"
+                            options={{ headerShown: false }}
+                          />
+                          <Stack.Screen
+                            name="(auth)"
+                            options={{ headerShown: false }}
+                          />
+                          <Stack.Screen
+                            name="(tabs)"
+                            options={{
+                              headerShown: false,
+                              headerTitle: (props) => <MainHeader></MainHeader>,
+                            }}
+                          />
+                          <Stack.Screen
+                            name="chatbox"
+                            options={{ headerShown: false }}
+                          />
+                          <Stack.Screen
+                            name="(mine)/my-multimedia"
+                            options={{ headerShown: false }}
+                          />
+                          <Stack.Screen
+                            name="(mine)/my-wall"
+                            options={{ headerShown: false }}
+                          />
+                          <Stack.Screen
+                            name="(mine)/blocked-list"
+                            options={{ headerShown: false }}
+                          />
+                          <Stack.Screen
+                            name="(mine)/bff-list"
+                            options={{ headerShown: false }}
+                          />
+                          <Stack.Screen
+                            name="(mine)/my-groups"
+                            options={{ headerShown: false }}
+                          />
+                          <Stack.Screen
+                            name="(mine)/all-rate"
+                            options={{ headerShown: false }}
+                          />
+                          <Stack.Screen
+                            name="(mine)/notification"
+                            options={{ headerShown: false }}
+                          />
+                          <Stack.Screen
+                            name="community"
+                            options={{ headerShown: false }}
+                          />
+                          <Stack.Screen
+                            name="(error)/not-found"
+                            options={{ headerShown: false }}
+                          />
+                          <Stack.Screen
+                            name="report"
+                            options={{ headerShown: false }}
+                          />
+                          <Stack.Screen
+                            name="friend"
+                            options={{ headerShown: false }}
+                          />
+                        </Stack>
                       </Host>
                     </ActionSheetProvider>
                   </ClickOutsideProvider>
-                </MarkReadProvider>
-              </SafeAreaView>
+                </MessageBoxProvider>
+              </MarkReadProvider>
+            </SafeAreaView>
           </CameraProvider>
         </ThemeProvider>
       </EventProvider>

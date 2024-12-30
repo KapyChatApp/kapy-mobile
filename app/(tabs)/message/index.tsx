@@ -1,5 +1,5 @@
 import { View, TouchableOpacity, RefreshControl } from "react-native";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useRouter } from "expo-router";
 import MainHeader from "@/components/navigator/Topbar/MainHeader";
 import Search from "@/components/shared/function/Search";
@@ -14,9 +14,10 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { onRefresh } from "@/utils/Refresh";
 import { getMyChatBoxes } from "@/lib/message";
 import { getFromAsyncStorage } from "@/utils/Device";
+import { useMessageBox } from "@/context/MessageBoxContext";
 
 const OutSideMessagePage = () => {
-  const [isOpen, setIsOpen] = useState(false);
+  const { deletedMessageBox, completeDeleteMessageBox } = useMessageBox();
   const [messageBoxes, setMessageBoxes] = useState<MessageBoxProps[]>([]);
   const router = useRouter();
   const { markAsUnread, unreadMessages, updateDefaultMessages } =
@@ -24,13 +25,10 @@ const OutSideMessagePage = () => {
   const [refreshing, setRefreshing] = useState(false);
 
   const getMyMessageBoxesFUNC = async () => {
-    console.log("herre");
     const { _id } = await getLocalAuth();
 
     const messageBoxes = await AsyncStorage.getItem("ChatBoxes");
     const messageBoxDatas = messageBoxes ? JSON.parse(messageBoxes) : [];
-    console.log("Refresh to get messages: ", messageBoxes);
-    // Cập nhật dữ liệu với thông tin bổ sung
     const messageBoxesModified = await Promise.all(
       messageBoxDatas.map(async (item: MessageBoxProps) => {
         const messages = await AsyncStorage.getItem(`messages-${item._id}`);
@@ -46,8 +44,6 @@ const OutSideMessagePage = () => {
     );
 
     setMessageBoxes(messageBoxesModified ? messageBoxesModified : []);
-
-    // Cập nhật danh sách ID của message boxes
     const messageBoxIds = messageBoxDatas.map(
       (item: MessageBoxProps) => item._id
     );
@@ -60,16 +56,14 @@ const OutSideMessagePage = () => {
     pusherClient.bind("new-message", (data: any) => handleSetLastMessage(data));
 
     pusherClient.bind("new-box", (data: any) => {
-      console.log("new-box", data);
       handleSetNewMessageBox(data);
     });
   };
 
   const handleRefreshMessageBox = async () => {
     setRefreshing(true);
-    const {_id} = await getLocalAuth();
+    const { _id } = await getLocalAuth();
     const updateMessageBoxes = await getMyChatBoxes();
-    console.log("refreshed message box: ", updateMessageBoxes[0].receiverIds);
     const messageBoxesModified = await Promise.all(
       updateMessageBoxes.map(async (item: MessageBoxProps) => {
         const messages = await AsyncStorage.getItem(`messages-${item._id}`);
@@ -97,9 +91,26 @@ const OutSideMessagePage = () => {
     await AsyncStorage.setItem("ChatBoxes", JSON.stringify(newChatBoxes));
     await AsyncStorage.setItem(`box-${data._id}`, JSON.stringify(data));
   };
+
+  const handleDeleteMessageBox = async (id: string) => {
+    const chatBoxes = await getFromAsyncStorage("ChatBoxes");
+    const updatedChatBoxes = chatBoxes.filter(
+      (item: MessageBoxProps) => item._id !== id
+    );
+    await AsyncStorage.setItem("ChatBoxes", JSON.stringify(updatedChatBoxes));
+    await AsyncStorage.removeItem(`box-${deletedMessageBox}`);
+    setMessageBoxes((prev) =>
+      prev.filter((messageBox) => messageBox._id !== id)
+    );
+    completeDeleteMessageBox();
+  };
+
   useEffect(() => {
+    if (deletedMessageBox !== "") {
+      handleDeleteMessageBox(deletedMessageBox);
+    }
     getMyMessageBoxesFUNC();
-  }, []);
+  }, [deletedMessageBox]);
   const handleSetLastMessage = (data: any) => {
     const { boxId } = data;
     setTimeout(() => {
@@ -136,7 +147,7 @@ const OutSideMessagePage = () => {
           />
         }
       >
-        {messageBoxes.length > 0 
+        {messageBoxes.length > 0
           ? messageBoxes?.map((item) => <MessageBox key={item._id} {...item} />)
           : null}
       </ScrollView>

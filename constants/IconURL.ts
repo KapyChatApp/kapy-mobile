@@ -152,4 +152,6 @@ export const IconURL = {
   phone:require("../assets/icons/phone.png"),
   tablet:require("../assets/icons/tablet.png"),
   desktop:require("../assets/icons/desktop.png"),
+  trashcan_l:require("../assets/icons/trashcan_l.png"),
+  trashcan_d:require("../assets/icons/trashcan_d.png")
 };

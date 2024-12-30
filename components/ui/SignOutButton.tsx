@@ -11,22 +11,12 @@ import { getLocalAuth } from "@/lib/local";
 
 const SignOutButton = () => {
   const navigation = useNavigation();
+
   const handleLogout = async () => {
     const deviceId = await AsyncStorage.getItem("device-id");
     const { token } = await getLocalAuth();
-    await axios.post(
-      process.env.EXPO_PUBLIC_BASE_URL + "/auth/logout",
-      {},
-      {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `${token}`,
-        },
-        params: {
-          id: deviceId,
-        },
-      }
-    );
+    const storedToken = token;
+    const storedDeviceId = deviceId;
     await AsyncStorage.clear();
     navigation.dispatch(
       CommonActions.reset({
@@ -34,6 +24,20 @@ const SignOutButton = () => {
         routes: [{ name: "(auth)" }],
       })
     );
+    await axios.post(
+      process.env.EXPO_PUBLIC_BASE_URL + "/auth/logout",
+      {},
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `${storedToken}`,
+        },
+        params: {
+          id: storedDeviceId,
+        },
+      }
+    );
+    
   };
   return (
     <TouchableOpacity

@@ -1,6 +1,6 @@
 import { View, Text } from "react-native";
 import React, { useEffect, useState } from "react";
-import { useLocalSearchParams, useNavigation } from "expo-router";
+import { useLocalSearchParams, useNavigation, useRouter } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { bgLight500Dark10 } from "@/styles/theme";
 import { ScrollView } from "react-native-gesture-handler";
@@ -10,29 +10,56 @@ import { useTheme } from "@/context/ThemeProviders";
 import { IconURL } from "@/constants/IconURL";
 import FunctionCard from "@/components/shared/function/FunctionCard";
 import { MessageBoxProps } from "@/types/message";
-import { getAMessageBox } from "@/lib/message";
+import { deleteMessageBox, getAMessageBox } from "@/lib/message";
 import { FileProps } from "@/types/file";
 import { getFilesOfAMessageBox } from "@/lib/media";
 import { getFromAsyncStorage } from "@/utils/Device";
 import { getLocalAuth } from "@/lib/local";
+import LoadingSpinner from "@/components/ui/LoadingSpinner";
+import { useMessageBox } from "@/context/MessageBoxContext";
+import { CommonActions } from "@react-navigation/native";
 
 const ChatBoxDetailPage = () => {
   const { chatboxDetailId } = useLocalSearchParams();
   const { theme } = useTheme();
+  const { waitDeleteMessageBox } = useMessageBox();
   const [messageBox, setMessageBox] = useState<MessageBoxProps | null>(null);
   const [images, setImages] = useState<FileProps[]>([]);
   const [videos, setVideos] = useState<FileProps[]>([]);
   const [audios, setAudios] = useState<FileProps[]>([]);
   const [others, setOthers] = useState<FileProps[]>([]);
   const [isGroup, setIsGroup] = useState(false);
+  const router = useRouter();
+  const navigation = useNavigation();
+
+  const [loading, setLoading] = useState(false);
+
+  const handleDeleteMessageBox = async () => {
+    await deleteMessageBox(
+      chatboxDetailId.toString(),
+      () => setLoading(true),
+      () => setLoading(false),
+      () => {
+        waitDeleteMessageBox(chatboxDetailId.toString());
+         navigation.dispatch(
+                  CommonActions.reset({
+                    index: 0,
+                    routes: [{ name: "(tabs)" }],
+                  })
+                );
+      }
+    );
+  };
   useEffect(() => {
     const getAMessageBoxFUNC = async () => {
-      const {_id} = await getLocalAuth();
-      const messageBox: MessageBoxProps = await getFromAsyncStorage(`box-${chatboxDetailId}`);
+      const { _id } = await getLocalAuth();
+      const messageBox: MessageBoxProps = await getFromAsyncStorage(
+        `box-${chatboxDetailId}`
+      );
       const messageBoxData = {
         ...messageBox,
         _id: messageBox._id,
-        localUserId:_id
+        localUserId: _id,
       };
       setMessageBox(messageBoxData);
       const files: FileProps[] = await getFilesOfAMessageBox(
@@ -81,8 +108,12 @@ const ChatBoxDetailPage = () => {
             <FunctionCard
               label="Members"
               iconURL={theme === "light" ? IconURL.groups_l : IconURL.groups_d}
-              URL="/chatbox/members"
-              boxId={chatboxDetailId.toString()}
+              onPress={() =>
+                router.push({
+                  pathname: "/chatbox/members",
+                  params: { boxId: chatboxDetailId.toString() },
+                })
+              }
             />
           ) : null}
           <FunctionCard
@@ -90,8 +121,12 @@ const ChatBoxDetailPage = () => {
             iconURL={
               theme === "light" ? IconURL.multimedia_l : IconURL.multimedia_d
             }
-            URL="/chatbox/multimedia"
-            boxId={chatboxDetailId.toString()}
+            onPress={() =>
+              router.push({
+                pathname: "/chatbox/multimedia",
+                params: { boxId: chatboxDetailId.toString() },
+              })
+            }
           />
           <FunctionCard
             label="Notification"
@@ -103,20 +138,23 @@ const ChatBoxDetailPage = () => {
             iconURL={theme === "light" ? IconURL.pin_l : IconURL.pin_d}
             URL="/"
           />
-          <FunctionCard
-            label="Share contact information"
-            iconURL={
-              theme === "light" ? IconURL.visit_card_l : IconURL.visit_card_d
-            }
-            URL="/"
-          />
+          {!isGroup ? (
+            <FunctionCard
+              label="Delete the chat"
+              iconURL={
+                theme === "light" ? IconURL.trashcan_l : IconURL.trashcan_d
+              }
+              onPress={handleDeleteMessageBox}
+            />
+          ) : null}
           <FunctionCard
             label="Block"
             iconURL={theme === "light" ? IconURL.block_l : IconURL.block_d}
-            URL="/"
+            onPress={() => {}}
           />
         </View>
       </ScrollView>
+      {loading ? <LoadingSpinner loading={loading} /> : null}
     </View>
   );
 };
