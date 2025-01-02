@@ -8,6 +8,8 @@ import {
   Platform,
   Dimensions,
 } from "react-native";
+import * as Linking from 'expo-linking';
+
 import React, { useEffect, useRef, useState } from "react";
 import { bgLight500Dark10, textLight0Dark500 } from "@/styles/theme";
 import { useClickOutside } from "react-native-click-outside";
@@ -27,6 +29,11 @@ import * as Haptics from "expo-haptics";
 import UserAvatar from "@/components/ui/UserAvatar";
 import { getFromAsyncStorage } from "@/utils/Device";
 import { ScrollView } from "react-native-gesture-handler";
+import { hasLink } from "@/utils/Link";
+import { playSound } from "@/utils/Media";
+import { AppSound } from "@/constants/Sound";
+import { isGroupSystemMessage } from "@/utils/Text";
+
 
 const Message = (props: MessageProps) => {
   const [position, setPosition] = useState(props.position);
@@ -149,6 +156,31 @@ const Message = (props: MessageProps) => {
       { cancelable: true }
     );
   };
+
+
+// Tách và xử lý link trong văn bản
+const highlightLinks = (message:string) => {
+  const parts = message.split(/(\b(?:https?:\/\/|www\.)[^\s]+\b)/g); // Tách văn bản tại các URL
+  return parts.map((part, index) => {
+    if (hasLink(part)) {
+      const formattedLink = part.startsWith('http://') || part.startsWith('https://')
+        ? part
+        : `https://${part}`;
+
+      return (
+        <Text
+          key={index}
+        className="font-helvetica-bold underline"
+          onPress={() => Linking.openURL(formattedLink).catch(err => console.warn('Error opening link:', err))}
+        >
+          {part}
+        </Text>
+      );
+    }
+    return <Text key={index}>{part}</Text>;
+  });
+};
+
 
   const renderContent = () => {
     switch (props.contentId?.type) {
@@ -434,6 +466,7 @@ const Message = (props: MessageProps) => {
   };
 
   const handleLike = async () => {
+    await playSound(AppSound.kiss);
     setIsLiked(!isLiked);
     if ((timeLikes + 1) % 2 != 0) {
       setTotalLike(totalLike + 1);
@@ -467,6 +500,7 @@ const Message = (props: MessageProps) => {
       setTotalLike(props.isReact.length);
       const createdUser = await AsyncStorage.getItem(`user-${props.createBy}`);
       const createdUserData = await JSON.parse(createdUser!);
+      console.log("getUserAva From: ", createdUserData);
       setAvatar(createdUserData?.avatar);
       if (props.isReact.includes(props.localUserId!)) {
         setIsLiked(true);
@@ -474,7 +508,7 @@ const Message = (props: MessageProps) => {
       }
     };
     setUpMessage();
-  }, [props]);
+  }, [props,avatar]);
   return (
     <View
       className={`flex-1 flex ${props.isSender ? "items-end" : "items-start"}`}
@@ -650,10 +684,10 @@ const Message = (props: MessageProps) => {
             style={{
               maxWidth: 240,
               maxHeight: 240,
-              aspectRatio: props.contentId.width! / props.contentId.height!,
+              aspectRatio: props.contentId.type==="Image" || props.contentId.type==="Video"? props.contentId.width! / props.contentId.height!:'auto',
             }}
           >
-            {props.sendStatus === "sending" ? (
+            {/* {props.sendStatus === "sending" ? (
               <View
                 className="rounded-3xl"
                 style={{
@@ -666,7 +700,7 @@ const Message = (props: MessageProps) => {
                   zIndex: 1,
                 }}
               />
-            ) : null}
+            ) : null} */}
 
             {renderContent()}
           </View>
@@ -681,19 +715,18 @@ const Message = (props: MessageProps) => {
               props.isSender ? roundedValueSender() : roundedValueReceiver()
             }`}
           >
-            <Text
-              className={`${
-                props.isSender ? "text-light-500" : textLight0Dark500
-              } text-14 ${
-                props.text === "Message revoked"
-                  ? "font-helvetica-light-italic"
-                  : "font-helvetica-light "
-              } `}
-            >
-              {props.text === "Message revoked"
-                ? `*${props.text}*`
-                : props.text}
-            </Text>
+          
+  <Text
+    className={`${
+      props.isSender ? "text-light-500" : textLight0Dark500
+    } text-14 ${
+      props.text === "Message revoked"
+        ? "font-helvetica-light-italic"
+        : "font-helvetica-light "
+    }`}
+  >
+    {props.text === "Message revoked" ? `*${props.text}*` :  highlightLinks((props.text))}
+  </Text>
           </View>
         )}
         {totalLike > 0 ? (
@@ -713,19 +746,26 @@ const Message = (props: MessageProps) => {
       {totalLike > 0 ? <View className="w-full h-[14px]" /> : null}
       {position === "bottom" || isShowMessageInfo ? (
         <View className="flex" style={{rowGap:2}}>
-          <View className={`flex flex-row  ${props.isSender? "justify-end":"justify-start ml-[40px]"} `} style={{columnGap:2}}>
-            {readedId.map((item, index)=><UserAvatar key={index} size={14} avatarURL={{uri:props.memberAvatars?.get(item)}}/>)}
-          </View>
-        <Text className="text-deny font-helvetica-light text-10 ml-[40px]">
-          {formatDateDistance(props.createAt)}
-        </Text>
-        </View>
+  <View className={`flex flex-row  ${props.isSender? "justify-end":"justify-start ml-[40px]"} `} style={{columnGap:2}}>
+    {[...new Set(readedId)].map((item, index) => item === props.createBy? null : (
+      <UserAvatar 
+        key={item} 
+        size={14} 
+        avatarURL={{uri: props.memberAvatars?.get(item)}}
+      />
+    ))}
+  </View>
+  <Text className="text-deny font-helvetica-light text-10 ml-[40px]">
+    {formatDateDistance(props.createAt)}
+  </Text>
+</View>
       ) : null}
       {props.sendStatus ? (
         <Text className="text-deny font-helvetica-light text-10">
           {renderSendStatus()}
         </Text>
-      ) : null}
+) : null
+}
     </View>
   );
 };

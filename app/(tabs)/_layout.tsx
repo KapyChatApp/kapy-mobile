@@ -4,13 +4,17 @@ import {Tabs } from "expo-router";
 import { IconURL } from "@/constants/IconURL";
 import TabIcon from "@/components/ui/TabIcon";
 import TabBar from "@/components/navigator/Tabbar/TabBar";
-import { checkIn, checkOut } from "@/lib/local";
+import { checkIn, checkOut, registerForPushNotificationsAsync } from "@/lib/local";
 const HomeLayout = () => {
   const appState = useRef(AppState.currentState);
   const [isLoading, setIsLoading] = useState(true);
   const [hasCheckedIn, setHasCheckedIn] = useState(false); 
   const [isFirstLaunch, setIsFirstLaunch] = useState(true); 
+
+
+ 
   useEffect(() => {
+  
     const handleAppStateChange = async (nextAppState: any) => {
       appState.current = nextAppState;
 

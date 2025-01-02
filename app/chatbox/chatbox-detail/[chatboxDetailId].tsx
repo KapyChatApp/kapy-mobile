@@ -18,6 +18,7 @@ import { getLocalAuth } from "@/lib/local";
 import LoadingSpinner from "@/components/ui/LoadingSpinner";
 import { useMessageBox } from "@/context/MessageBoxContext";
 import { CommonActions } from "@react-navigation/native";
+import { pusherClient } from "@/lib/pusher";
 
 const ChatBoxDetailPage = () => {
   const { chatboxDetailId } = useLocalSearchParams();
@@ -49,6 +50,7 @@ const ChatBoxDetailPage = () => {
         );
       }
     );
+    pusherClient.unsubscribe(`private-${chatboxDetailId.toString()}`);
   };
 
   const handleLeaveChat = async () => {
@@ -90,7 +92,7 @@ const ChatBoxDetailPage = () => {
       setVideos(videos);
       setAudios(audios);
       setOthers(others);
-      if (messageBox.receiverIds?.length! > 2) {
+      if (messageBox.groupName !=="") {
         setIsGroup(true);
       }
     };

@@ -1,4 +1,5 @@
 import { View, Text, Pressable, Image, Alert } from "react-native";
+import * as Linking from "expo-linking"
 import React, { useCallback, useEffect, useState } from "react";
 import UserAvatarLink from "@/components/ui/UserAvatarLink";
 import { textLight0Dark500 } from "@/styles/theme";
@@ -19,8 +20,10 @@ import PostAudioPlayer from "../multimedia/PostAudioPlayer";
 import File from "@/components/ui/File";
 import { FileProps } from "@/types/file";
 import MediaGroup from "@/components/ui/MediaGroup";
+import { hasLink } from "@/utils/Link";
 const SocialPost = (props: SocialPostProps) => {
   const [isShowComment, setIsShowComment] = useState(false);
+  const [post, setPost] = useState<SocialPostProps>();
   const router = useRouter();
   const [totalLike, setTotalLike] = useState(props.likedIds.length);
   const [totalComment, setTotalComment] = useState(props.comments.length);
@@ -33,8 +36,33 @@ const SocialPost = (props: SocialPostProps) => {
   const isMyPost = props.userId.toString() === userId;
   const [videoImages, setVideoImages] = useState<FileProps[]>([]);
   const [otherMedias, setOtherMedias] = useState<FileProps[]>([]);
+
+  const highlightLinks = (message:string) => {
+  const parts = message.split(/(\b(?:https?:\/\/|www\.)[^\s]+\b)/g); // Tách văn bản tại các URL
+  return parts.map((part, index) => {
+    if (hasLink(part)) {
+      const formattedLink = part.startsWith('http://') || part.startsWith('https://')
+        ? part
+        : `https://${part}`;
+
+      return (
+        <Text
+          key={index}
+        className="font-helvetica-bold underline"
+          onPress={() => Linking.openURL(formattedLink).catch(err => console.warn('Error opening link:', err))}
+        >
+          {part}
+        </Text>
+      );
+    }
+    return <Text key={index}>{part}</Text>;
+  });
+};
+
+  
   useFocusEffect(
     useCallback(() => {
+      setPost(props);
       const handleDisPlayPost = () => {
         const videoImages = props.contents.filter(
           (item) => item.type === "Image" || item.type === "Video"
@@ -58,7 +86,7 @@ const SocialPost = (props: SocialPostProps) => {
       };
       handleDisPlayPost();
       likeStreamManage();
-    }, [])
+    }, [props])
   );
 
   const handleLikeFunction = async () => {
@@ -77,6 +105,19 @@ const SocialPost = (props: SocialPostProps) => {
   const handleDeletePost = async () => {
     await deletePost(props._id, () => Alert.alert("Deleted"));
   };
+  const handleShare = async () => {
+    try {
+      if (post?.contents && post?.contents.length != 0) {
+        for (const content of post.contents) {
+          await Sharing.shareAsync(content.url!, {
+            dialogTitle: 'Share this post',
+          });
+        }
+      }
+  } catch (error) {
+    console.error('Error sharing post: ', error);
+  }
+};
   const handleLongPress = async () => {
     const options = isMyPost
       ? ["Delete the post", "Edit the post", "Cancel"]
@@ -134,7 +175,7 @@ const SocialPost = (props: SocialPostProps) => {
       </View>
       <View className="flex" style={{ rowGap: 10 }}>
         <Text className={`${textLight0Dark500} font-helvetica-light text-14`}>
-          {props.caption}
+          {highlightLinks(props.caption)}
         </Text>
         <MediaGroup medias={videoImages} />
         {otherMedias.map(
@@ -187,7 +228,7 @@ const SocialPost = (props: SocialPostProps) => {
                   })
           }
         />
-        <Share totalShare={0} onPress={() => {}} />
+        <Share totalShare={0} onPress={handleShare} />
       </View>
     </Pressable>
   );

@@ -92,7 +92,7 @@ const FriendProfilePage = () => {
       setIsRefreshing(false);
     } catch (error) {
       console.log(error);
-      router.push("/(tabs)/friends/not-found");
+      router.push("/status/not-found");
     }
   };
   useEffect(() => {
@@ -329,7 +329,7 @@ const FriendProfilePage = () => {
           ) : null}
           {relation === "bff" ? (
             <View className="flex  items-center w-full">
-              {friendedId ? (
+              {/* {friendedId ? (
                 isProfileLoading|| postsData.length===0 ? (
                   <View className="flex" style={{ rowGap: 20 }}>
                     <SocialSkeletonLoader />
@@ -338,7 +338,7 @@ const FriendProfilePage = () => {
                     <SocialSkeletonLoader />
                     <SocialSkeletonLoader />
                   </View>
-                ) : (
+                ) : ( */}
                   <View
                         className="flex-1 items-center justify-center w-full px-[15px]"
                         style={{ rowGap: 20 }}
@@ -346,8 +346,8 @@ const FriendProfilePage = () => {
                   postsData.map((item) => (
                     <SocialPost key={item._id} {...item} />
                   ))}</View>
-                )
-              ) : null}
+                {/* )
+              ) : null} */}
             </View>
           ) : (
             <UnblockPostView
@@ -357,7 +357,7 @@ const FriendProfilePage = () => {
               reload={() => setReload(true)}
             />
           )}
-          <View className="w-full h-[60px]"></View>
+          <View className="w-full h-[400px]"></View>
         </View>
       </ScrollView>
       {loading ? <LoadingSpinner loading={isLoading} /> : null}

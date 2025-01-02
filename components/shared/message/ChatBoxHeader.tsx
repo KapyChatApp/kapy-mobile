@@ -18,10 +18,12 @@ import { pusherClient } from "@/lib/pusher";
 import { getRealtimeOfUser } from "@/lib/realtime";
 import { formatDateDistance } from "@/utils/DateFormatter";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useMessageBox } from "@/context/MessageBoxContext";
 
 const ChatBoxHeader = (props: MessageBoxProps) => {
   const navigation = useNavigation();
   const router = useRouter();
+  const { checkOutMessageBox } = useMessageBox();
   const [avatarURL, setAvatarURL] = useState("");
   const [fullName, setFullName] = useState("");
   const [userId, setUserId] = useState("");
@@ -29,9 +31,10 @@ const ChatBoxHeader = (props: MessageBoxProps) => {
   const [updateTime, setUpdateTime] = useState("");
   const [groupAva, setGroupAva] = useState("");
   const [groupName, setGroupName] = useState("");
-  console.log(updateTime);
+
   useEffect(() => {
     const getHeaderData = async () => {
+      console.log("head-data: ", props);
       if(props.groupName===""){
       if (props.receiverIds?.[0] && props.receiverIds?.[1]) {
         const receiverIds = props.receiverIds ?? [];
@@ -55,9 +58,7 @@ const ChatBoxHeader = (props: MessageBoxProps) => {
             : receiver._id;
         setUserId(id);
         const realtime = await getRealtimeOfUser(id);
-        console.log(realtime);
         setUpdateTime(realtime.updateTime);
-        console.log("updateTime: ",realtime.updateTime);
         setIsOnline(realtime.isOnline);
         pusherClient.subscribe(`private-${id}`);
         pusherClient.bind("online-status", (data: any) => {
@@ -83,7 +84,7 @@ const ChatBoxHeader = (props: MessageBoxProps) => {
       className={`bg-light-500 dark:bg-dark-0 w-full h-[82px] flex flex-row items-center justify-between  px-[16px]`}
     >
       <View className="flex flex-row items-center" style={{ columnGap: 12 }}>
-        <Previous navigation={navigation} isAbsolute={false}></Previous>
+        <Previous navigation={navigation} isAbsolute={false} specialAction={checkOutMessageBox}/>
         <View className="flex flex-row items-center" style={{ columnGap: 8 }}>
           {props.groupName ? (
             <UserAvatar size={46} avatarURL={{ uri: groupName===""? avatarURL:groupAva }} />
@@ -124,12 +125,12 @@ const ChatBoxHeader = (props: MessageBoxProps) => {
         className="flex flex-row items-center justify-center"
         style={{ columnGap: 10 }}
       >
-        <TouchableOpacity>
+        {/* <TouchableOpacity>
           <Icon iconURL={IconURL.call} size={30}></Icon>
         </TouchableOpacity>
-        <TouchableOpacity>
-          <Icon iconURL={IconURL.video_call} size={30}></Icon>
-        </TouchableOpacity>
+        <TouchableOpacity onPress={()=>router.push("/chatbox/call")}>
+          <Icon iconURL={IconURL.video_call} size={30} ></Icon>
+        </TouchableOpacity> */}
         <TouchableOpacity
           onPress={() => {
             if (props._id) {
@@ -144,7 +145,7 @@ const ChatBoxHeader = (props: MessageBoxProps) => {
             }
           }}
         >
-          <Icon iconURL={IconURL.information} size={24}></Icon>
+          <Icon iconURL={IconURL.information} size={26}></Icon>
         </TouchableOpacity>
       </View>
     </View>

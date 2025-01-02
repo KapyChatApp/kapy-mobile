@@ -14,6 +14,7 @@ import axiosInstance from "@/axiosInstance";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { CommonActions } from "@react-navigation/native";
 import { bgLight500Dark10 } from "@/styles/theme";
+import { getDeviceInfo } from "@/lib/local";
 const SignUpPage = () => {
   const router = useRouter();
   const navigation = useNavigation();
@@ -72,8 +73,8 @@ const SignUpPage = () => {
       if (!response.ok) {
         throw new Error("Network response was not ok");
       }
-
-      const signInParam = { phoneNumber, password };
+      const deviceInfo = await getDeviceInfo();
+      const signInParam = { phoneNumber, password ,...deviceInfo};
 
       const loginResponse = await fetch(
         process.env.EXPO_PUBLIC_BASE_URL + "/auth/login",

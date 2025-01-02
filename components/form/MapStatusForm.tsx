@@ -92,7 +92,6 @@ const MapStatusForm = ({
       caption: caption,
       file: { uri: photoUri, type: "Image", name: "MapStatus" },
     };
-    console.log("param", param);
     setPhotoUri("");
     const newMapStatus = await createMapStatus(
       param,

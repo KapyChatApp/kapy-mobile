@@ -9,7 +9,7 @@ import Previous from "@/components/ui/Previous";
 import { ReceiverProps } from "@/types/message";
 import { changeLeader, getAMessageBox, removeMember } from "@/lib/message";
 import { getLocalAuth } from "@/lib/local";
-import MemberBox from "@/components/shared/friend/MemberBox";
+import MemberBox from "@/components/shared/group/MemberBox";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { bgLight500Dark10 } from "@/styles/theme";
 import CustomButton from "@/components/ui/CustomButton";

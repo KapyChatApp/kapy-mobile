@@ -60,12 +60,6 @@ const TypingSpace = ({
                 size={28}
               />
             </TouchableOpacity>
-            <TouchableOpacity>
-              <Icon
-                iconURL={theme === "light" ? IconURL.location_l : IconURL.location_d}
-                size={28}
-              />
-            </TouchableOpacity>
             <TouchableOpacity onPress={setIsMicroOpen}>
               <Icon
                 iconURL={theme === "light" ? IconURL.mic_l : IconURL.mic_d}

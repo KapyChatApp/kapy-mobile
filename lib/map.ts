@@ -78,6 +78,7 @@ export const createMapStatus = async (
   try {
     startLoading();
     isLoading();
+    console.log("herre");
     const { token } = await getLocalAuth();
     const formData = new FormData();
     formData.append("caption", param.caption);

@@ -48,9 +48,10 @@ export const getMyPosts = async (goOn: () => void) => {
     if (!response.data) {
       throw new Error("Not found your posts");
     }
-    console.log("postData: ", response.data);
+    const safePost = response.data.filter((item: any) => item.flag !== false);
+    console.log("safe-post: ", safePost);
     goOn();
-    return response.data;
+    return safePost;
   } catch (error) {
     return [];
   }
@@ -70,7 +71,8 @@ export const getFriendPosts = async (friendId: string) => {
       }
     );
     if (response.status === 200 || response.status === 201) {
-      return response.data;
+      const safePost = response.data.filter((item: any) => item.flag !== false)
+      return safePost;
     }
     return [];
   } catch (error) {

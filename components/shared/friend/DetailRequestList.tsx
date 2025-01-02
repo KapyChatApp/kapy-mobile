@@ -46,8 +46,8 @@ const DetailRequestList = () => {
         />
       }
     >
-      {myRequesteds?.map((item) => (
-        <DetailRequestBox {...item} />
+      {myRequesteds?.map((item, key) => (
+        <DetailRequestBox key={key} {...item} />
       ))}
     </ScrollView>
   );

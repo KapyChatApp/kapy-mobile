@@ -19,7 +19,7 @@ const CustomButton = ({
       } flex-row `}
       style={{ width: width, height: height, columnGap: 8 }}
       onPress={onPress}
-    > {label ? (
+    >{label ? (
       <Text
         className="text-white font-helvetica-bold"
         style={{ fontSize: fontSize }}

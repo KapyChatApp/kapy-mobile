@@ -124,7 +124,6 @@ export const createGroup = async (
   try {
     const { token } = await getLocalAuth();
     const formData = new FormData();
-    console.log("membersIds: ", memberIds);
     formData.append("membersIds", JSON.stringify(memberIds));
     formData.append("groupName", groupName ? groupName : "");
 
@@ -141,32 +140,12 @@ export const createGroup = async (
         },
       }
     );
-    if (response.data) {
-      if (response.data.newBox.receiverIds.length > 2) {
-        await AsyncStorage.setItem(
-          `box-${response.data.newBox._id}`,
-          JSON.stringify(response.data.newBox)
-        );
-      } else {
-        const [stUserId, ndUserId] = [
-          Number.parseInt(response.data.newBox.receiverIds[0]._id),
-          Number.parseInt(response.data.newBox.receiverIds[1]._id),
-        ].sort();
-        await AsyncStorage.setItem(
-          `box-${stUserId}-${ndUserId}`,
-          JSON.stringify(response.data.newBox)
-        );
-      }
-      const boxString = await AsyncStorage.getItem("ChatBoxes");
-      const boxes = await JSON.parse(boxString!);
-      const updateBoxes = [...boxes, response.data.newBox];
-      await AsyncStorage.setItem("ChatBoxes", JSON.stringify(updateBoxes));
-      setTimeout(() => goOn?.(response.data.newBox._id), 300);
-    }
-    return response.data ? response.data.newBox : null;
+    console.log("newBox: ", response
+      .data.result.messageBox
+    )
+    return response.data ? response.data.result.messageBox : null;
   } catch (error) {
     console.log(error);
-    throw error;
   }
 };
 
