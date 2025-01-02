@@ -5,19 +5,21 @@ import {
   TextInput,
   TouchableOpacity,
   SafeAreaView,
+  Alert,
 } from "react-native";
 import SubmitButton from "@/components/ui/SubmitButton";
-import { useGlobalSearchParams, useNavigation } from "expo-router";
+import { useGlobalSearchParams, useNavigation, useRouter } from "expo-router";
 import Previous from "@/components/ui/Previous";
 import * as Clipboard from "expo-clipboard"; // Import Clipboard
 import { bgLight500Dark10, textLight0Dark500 } from "@/styles/theme";
+import { forgotPassword } from "@/lib/security";
 
 const VerifyCodePage = () => {
-  const { info } = useGlobalSearchParams();
+  const { phoneNumber,newPassword } = useGlobalSearchParams();
   const [countDown, setCountDown] = useState(60);
   const [isExpired, setIsExpired] = useState(false);
   const navigation = useNavigation();
-
+  const router = useRouter();
   const [num1, setNum1] = useState<string>("");
   const [num2, setNum2] = useState<string>("");
   const [num3, setNum3] = useState<string>("");
@@ -73,6 +75,20 @@ const VerifyCodePage = () => {
     }
   };
 
+  const handleVerify = async () => {
+    await forgotPassword("" + num1 + num2 + num3 + num4 + num5 + num6,phoneNumber.toString(),newPassword.toString(),()=>Alert.alert(
+      "Notice",         
+      "Reset password successfully!",
+      [
+        {
+          text: "Back to Sign in",         
+          onPress: () =>router.push("/(auth)/sign-in"),
+        },
+      ],
+      { cancelable: true }  
+    ))
+  }
+
   useEffect(() => {
     if (countDown > 0) {
       setTimeout(() => {
@@ -92,7 +108,7 @@ const VerifyCodePage = () => {
       <Text
         className={`text-18 font-helvetica-light mt-[118px] w-[303px] text-center ${textLight0Dark500}`}
       >
-        We have sent a verification code to your {info}
+        We have sent a verification code to your {phoneNumber}
       </Text>
 
       <View className="mt-[62px] flex flex-row items-center gap-x-1">
@@ -142,9 +158,7 @@ const VerifyCodePage = () => {
 
       <SubmitButton
         label="Submit"
-        onPress={() =>
-          console.log("total:" + num1 + num2 + num3 + num4 + num5 + num6)
-        }
+        onPress={handleVerify}
       />
     </View>
   );

@@ -98,7 +98,7 @@ const EditPostPage = () => {
       >
         {isCameraOpen ? (
           <View className="fixed w-screen h-screen">
-            {" "}
+
             <ExpoCamera
               onClose={() => setIsCameraOpen(false)}
               isSendNow={false}

@@ -11,8 +11,11 @@ import Icon from "@/components/ui/Icon";
 import { IconURL } from "@/constants/IconURL";
 import * as Haptics from "expo-haptics";
 import { useClickOutside } from "react-native-click-outside";
+import { useMessageBox } from "@/context/MessageBoxContext";
+import { extractContentFromGroupSystemMessage, isGroupSystemMessage } from "@/utils/Text";
 const MessageBox = (props:MessageBoxProps) => {
   const router = useRouter();
+  const { checkInMessageBox} = useMessageBox();
 
   const { unreadMessages } = useMarkReadContext();
 
@@ -37,7 +40,8 @@ const fullName = receiver
     <TouchableOpacity
     activeOpacity={0.7}
       className={`flex flex-row px-[20px] py-[10px] items-center w-screen ${bgLight510Dark10}`}
-      onPress={()=>{router.push({
+        onPress={() => {
+          checkInMessageBox(props._id!); router.push({
         pathname:"/chatbox/[messageId]",
         params:{messageId:props._id? props._id : ""},
       })}}
@@ -51,13 +55,15 @@ const fullName = receiver
         >
           {props.groupName===""? fullName:props.groupName}
         </Text>
-        <View className="flex flex-row items-center" style={{columnGap:4}}>
-        <Text
-          numberOfLines={1}
-          className={` text-14 overflow-ellipsis ${textLight0Dark500} ${isReaded? "font-helvetica-light" :"font-helvetica-bold"} flex-wrap`}
-        >
-          {props.responseLastMessage?.createBy === props.localUserId? "You: " + (props.responseLastMessage?.contentId? "Sent a file": props.responseLastMessage?.text) : (props.responseLastMessage?.contentId? "Sent a file" :props.responseLastMessage?.text) }
-        </Text>
+          <View className="flex flex-row items-center" style={{ columnGap: 4 }}>
+            
+            {props.responseLastMessage ?
+              <Text
+                numberOfLines={1}
+                className={` text-14 overflow-ellipsis ${textLight0Dark500} ${isReaded ? "font-helvetica-light" : "font-helvetica-bold"} flex-wrap`}
+              >
+                {props.responseLastMessage?.createBy === props.localUserId ? "You: " + (props.responseLastMessage?.contentId ? "Sent a file" : (isGroupSystemMessage(props.responseLastMessage?.text) ? extractContentFromGroupSystemMessage(props.responseLastMessage?.text):props.responseLastMessage?.text)) : (props.responseLastMessage?.contentId ? "Sent a file" : (isGroupSystemMessage(props.responseLastMessage?.text) ? extractContentFromGroupSystemMessage(props.responseLastMessage?.text):props.responseLastMessage?.text))}
+              </Text> : null}
         {!isReaded? <Icon size={8} iconURL={IconURL.circle}/>:null}
         </View>
         <Text

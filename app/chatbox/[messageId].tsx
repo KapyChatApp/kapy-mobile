@@ -4,9 +4,10 @@ import {
   Text,
   KeyboardAvoidingView,
   Platform,
+  Button,
 } from "react-native";
 import React, { memo, useCallback, useEffect, useRef, useState } from "react";
-import { useLocalSearchParams } from "expo-router";
+import { useLocalSearchParams, useRouter } from "expo-router";
 import ChatBoxHeader from "@/components/shared/message/ChatBoxHeader";
 import TypingSpace from "@/components/shared/message/TypingSpace";
 import { ScrollView } from "react-native-gesture-handler";
@@ -16,6 +17,8 @@ import { MessageBoxProps, MessageProps } from "@/types/message";
 import {
   addToMessageLocal,
   disableTexting,
+  getAllMessages,
+  getMyChatBoxes,
   markRead,
   sendMessage,
   texting,
@@ -35,15 +38,22 @@ import { FileProps } from "@/types/file";
 import { openWebFile } from "@/utils/File";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import UserAvatar from "@/components/ui/UserAvatar";
-import { ScreenRatio } from "@/utils/Device";
+import { getFromAsyncStorage, ScreenRatio } from "@/utils/Device";
 import { playSound } from "@/utils/Media";
 import { AppSound } from "@/constants/Sound";
+import { sendPushNotification } from "@/lib/notification";
+import { useMessageBox } from "@/context/MessageBoxContext";
+import { extractContentFromGroupSystemMessage, isGroupSystemMessage } from "@/utils/Text";
 const MessageDetailPage = () => {
+ 
   const { messageId } = useLocalSearchParams();
   const ref = useClickOutside<View>(() => {
     setIsTypeping(false);
     setIsMicroOpen(false);
   });
+  const router = useRouter();
+  const { inMessageBox } = useMessageBox();
+  const [reload, setReload] = useState(false);
   const [isKicked, setIsKicked] = useState(false);
   const [isTyping, setIsTypeping] = useState(false);
   const [messages, setMessages] = useState<MessageProps[]>([]);
@@ -171,84 +181,153 @@ const MessageDetailPage = () => {
   const handleSendMessage = async () => {
     handleDisableTexting();
     const messageTextData = messageText;
-    let mediaData = selectedMedia[0];
+    const mediaDataList = [...selectedMedia];
     setSelectedMedia([]);
     setMessageText("");
 
-    if (messageTextData !== "" || selectedMedia.length !== 0) {
-      await playSound(AppSound.send_message);
-      let tempMessage: MessageProps = {
-        id: "",
-        isReact: [],
-        readedId: [localUserId],
-        contentId: selectedMedia[0]
-          ? {
-              url: selectedMedia[0].uri,
-              type: selectedMedia[0].type,
-              fileName: selectedMedia[0].name!,
-              width: 150,
-              height: 150,
+    if (messageTextData !== "" || mediaDataList.length !== 0) {
+        await playSound(AppSound.send_message);
+        let updatedMessages = [...messages];
+        const newTempMessages: MessageProps[] = [];
+
+        // Handle text-only message
+        if (messageTextData !== "" && mediaDataList.length === 0) {
+            let position: "free" | "top" | "middle" | "bottom" = "free";
+            
+            // Check position for text-only message
+            if (
+                messages.length > 0 &&
+                messages[messages.length - 1]?.createBy === localUserId
+            ) {
+                const lastMessage = messages[messages.length - 1];
+                if (lastMessage.position === "free") {
+                    updatedMessages[updatedMessages.length - 1] = {
+                        ...lastMessage,
+                        position: "top",
+                    };
+                    position = "bottom";
+                } else {
+                    updatedMessages[updatedMessages.length - 1] = {
+                        ...lastMessage,
+                        position: "middle",
+                    };
+                    position = "bottom";
+                }
             }
-          : undefined,
-        text: messageText,
-        createAt: new Date().toString(),
-        createBy: localUserId,
-        position: "free",
-        isSender: true,
-        avatar: "",
-        boxId: "",
-        handleViewImage: () => {
-          handleViewImage(mediaData.uri);
-        },
-        handleViewFile: () => {
-          handleViewFile(mediaData);
-        },
-        sendStatus: "sending",
-      };
 
-      let updatedMessages = [...messages];
-
-      if (
-        messages.length > 0 &&
-        messages[messages.length - 1]?.createBy === localUserId
-      ) {
-        // Cập nhật tin nhắn cuối cùng
-        const lastMessage = messages[messages.length - 1];
-        if (lastMessage.position === "free") {
-          updatedMessages[updatedMessages.length - 1] = {
-            ...lastMessage,
-            position: "top",
-          };
-          tempMessage.position = "bottom";
+            const tempTextMessage: MessageProps = {
+                id: "",
+                isReact: [],
+                readedId: [localUserId],
+                text: messageTextData,
+                createAt: new Date().toString(),
+                createBy: localUserId,
+                position: position,
+                isSender: true,
+                avatar: "",
+                boxId: "",
+              sendStatus: "sending",
+              handleViewImage: () => { },
+              handleViewFile:()=>{}
+            };
+            
+            newTempMessages.push(tempTextMessage);
         } else {
-          updatedMessages[updatedMessages.length - 1] = {
-            ...lastMessage,
-            position: "middle",
-          };
-          tempMessage.position = "bottom";
-        }
-      }
+            // Existing media handling code
+            mediaDataList.forEach((mediaData, index) => {
+                let position: "free" | "top" | "middle" | "bottom" = "free";
 
-      updatedMessages.push(tempMessage); // Thêm tin nhắn mới vào cuối
+                if (index === 0) {
+                    if (
+                        messages.length > 0 &&
+                        messages[messages.length - 1]?.createBy === localUserId
+                    ) {
+                        const lastMessage = messages[messages.length - 1];
+                        if (lastMessage.position === "free") {
+                            updatedMessages[updatedMessages.length - 1] = {
+                                ...lastMessage,
+                                position: "top",
+                            };
+                            position = "middle";
+                        } else {
+                            updatedMessages[updatedMessages.length - 1] = {
+                                ...lastMessage,
+                                position: "middle",
+                            };
+                            position = "middle";
+                        }
+                    }
+                }
 
-      const processedMessages = processMessages(updatedMessages); // Xử lý tất cả tin nhắn
-      setMessages(processedMessages);
-      await sendMessage(
-        messageId.toString(),
-        messageText,
-        selectedMedia,
-        (id, status) => {
-          setMessages((prevMessages) =>
-            prevMessages.map((message) =>
-              message.createAt === tempMessage.createAt // So khớp với message tạm thời dựa trên thời gian tạo
-                ? { ...message, id: id, sendStatus: status }
-                : message
-            )
-          );
+                if (index === mediaDataList.length - 1) {
+                    position = "bottom";
+                }
+
+                if (index > 0 && index < mediaDataList.length - 1) {
+                    position = "middle";
+                }
+
+                const tempMessage: MessageProps = {
+                    id: "",
+                    isReact: [],
+                    readedId: [localUserId],
+                    contentId: {
+                        url: mediaData.uri,
+                        type: mediaData.type,
+                        fileName: mediaData.name!,
+                        width: 150,
+                        height: 150,
+                    },
+                    text: index === 0 ? messageText : "",
+                    createAt: new Date().toString(),
+                    createBy: localUserId,
+                    position: position,
+                    isSender: true,
+                    avatar: "",
+                    boxId: "",
+                    handleViewImage: () => {
+                        handleViewImage(mediaData.uri);
+                    },
+                    handleViewFile: () => {
+                        handleViewFile(mediaData);
+                    },
+                    sendStatus: "sending",
+                };
+
+                newTempMessages.push(tempMessage);
+            });
         }
-      );
+
+        // Add all new messages to the updated messages array
+        updatedMessages = [...updatedMessages, ...newTempMessages];
+
+        const processedMessages = processMessages(updatedMessages);
+        setMessages(processedMessages);
+
+        // Send messages
+        for (let i = 0; i < newTempMessages.length; i++) {
+            const tempMessage = newTempMessages[i];
+            const currentMedia = mediaDataList.length > 0 ? [mediaDataList[i]] : [];
+            const messageContent = mediaDataList.length === 0 ? messageTextData : 
+                                 (i === 0 ? messageText : "");
+
+            await sendMessage(
+                messageId.toString(),
+                messageContent,
+                currentMedia,
+                (id, status) => {
+                    setMessages((prevMessages) =>
+                        prevMessages.map((message) =>
+                            message.createAt === tempMessage.createAt
+                                ? { ...message, id: id, sendStatus: status }
+                                : message
+                        )
+                    );
+                }
+            );
+        }
     }
-  };
+};
   const handleDeleteMessage = async (id: string) => {
     setMessages((prevMessages) =>
       prevMessages.filter((message) => message.id !== id)
@@ -280,15 +359,18 @@ const MessageDetailPage = () => {
     );
   };
 
-  const handleReactMessage = (id: string, isReact: string[]) => {
-    setMessages((prevMessages) => {
-      return prevMessages?.map((message: MessageProps) => {
-        return message.id === id
-          ? { ...message, isReact: [...isReact] }
-          : message;
-      });
+  
+const handleReactMessage = useCallback((id: string, isReact: string[]) => {
+  setMessages((prevMessages) => {
+    return prevMessages?.map((message: MessageProps) => {
+      if (message.id === id) {
+        return { ...message, isReact: [...isReact] };
+      }
+      return message;
     });
-  };
+  });
+}, []);
+
 
   const handleReadMessage = (readedId: string[]) => {
     setMessages((prevMessages) => {
@@ -318,7 +400,16 @@ const MessageDetailPage = () => {
       const { _id } = await getLocalAuth();
       await markRead(messageId.toString());
       const messageBoxLocal = await AsyncStorage.getItem(`box-${messageId}`);
-      const messageBox: MessageBoxProps = await JSON.parse(messageBoxLocal!);
+      let messageBox: MessageBoxProps = await JSON.parse(messageBoxLocal!);
+      let messages = await getFromAsyncStorage(`messages-${messageId.toString()}`);
+      if (messageBox===null||messageBox===undefined) {
+        const newChatBoxes = await getMyChatBoxes();
+        messageBox = newChatBoxes.find((item) => item._id === messageId.toString());
+        messages = await getAllMessages(messageId.toString());
+        setReload(true);
+        console.log("reloadnow");
+      }
+      console.log("inside-messagebox: ", messageBox);
       messageBox.localUserId = _id;
       setIsKicked(messageBox.isKicked ? true : false);
       for (const receiver of messageBox.receiverIds!) {
@@ -326,8 +417,6 @@ const MessageDetailPage = () => {
       }
       setChatBoxHeader(messageBox);
       setMessageBox(messageBox);
-      const localMessage = await AsyncStorage.getItem(`messages-${messageId}`);
-      const messages = await JSON.parse(localMessage!);
       const messagesWithPosition = processMessages(messages);
       setMessages(messagesWithPosition);
       setLocalUserId(_id);
@@ -343,6 +432,7 @@ const MessageDetailPage = () => {
           status
         );
       });
+     
       pusherClient.bind("new-message", async (data: any) => {
         if (data.createBy !== _id) {
           setMessages((prevMessages) => [...prevMessages, data]);
@@ -357,6 +447,7 @@ const MessageDetailPage = () => {
       });
       pusherClient.bind("texting-status", async (data: any) => {
         if (data.userId !== _id) {
+          console.log("is texting")
           const textingUser = await AsyncStorage.getItem(`user-${data.userId}`);
           const textingUserData = await JSON.parse(textingUser!);
           setTextingAvatar(textingUserData.avatar);
@@ -364,8 +455,8 @@ const MessageDetailPage = () => {
         }
       });
       pusherClient.bind("react-message", async (data: any) => {
+          await playSound(AppSound.kiss);
         handleReactMessage(data.id, data.isReact);
-        await playSound(AppSound.kiss);
         const messageString = await AsyncStorage.getItem(
           `messages-${messageId}`
         );
@@ -381,14 +472,25 @@ const MessageDetailPage = () => {
       pusherClient.bind("readed-status", (data: any) => {
         handleReadMessage(data.readedId);
       });
-      pusherClient.bind("kick", (data: any) => {
-        if (data.targetId === localUserId) {
-          console.log("Im kicked!");
+      pusherClient.bind("kick", async(data: any) => {
+        const { _id } = await getLocalAuth();
+        if (data.targetId === _id) {
+          setIsKicked(true);
+          const chatBoxes = await getFromAsyncStorage("ChatBoxes");
+          const updatedChatBoxes = chatBoxes.map((item:any) => item._id === data.boxId ? {...item,isKicked:true} :item)
+          const box = await getFromAsyncStorage(`box-${messageId.toString()}`);
+          await AsyncStorage.setItem(`box-${messageId.toString()}`, JSON.stringify({ ...box, isKicked: true }));
+          await AsyncStorage.setItem("ChatBoxes", JSON.stringify(updatedChatBoxes));
         }
       });
       markAsRead(messageId.toString());
     };
     getAllMessageFUNC();
+    return () => {
+    // Ngừng lắng nghe sự kiện của kênh Pusher
+    pusherClient.unsubscribe(`private-${messageId}`);
+    console.log("Disconnected from Pusher channel.");
+  };
   }, []);
 
   return (
@@ -436,7 +538,11 @@ const MessageDetailPage = () => {
             }
           >
             {messages && messages.length != 0
-              ? processMessages(messages).map((item, index) => (
+              ? processMessages(messages).map((item, index) => isGroupSystemMessage(item.text) ? (
+              <View className="w-full flex items-center justify-center py-[6px]">
+                  <Text className="font-helvetica-light text-12 text-light-320">{extractContentFromGroupSystemMessage(item.text)}</Text>
+              </View>
+              ):(
                   <Message
                     key={index}
                     {...item}
@@ -456,22 +562,23 @@ const MessageDetailPage = () => {
                 <TypingAnimation />
               </View>
             ) : null}
-          </ScrollView>
+            {isKicked? (
+            <View className="flex items-center justify-center py-[20px]">
+              <Text
+                className={`font-helvetica-light text-12 text-light-320`}
+              >
+                You has been kicked
+              </Text>
+            </View>
+            ) : null}
+            </ScrollView>
         </View>
         <View collapsable={false} ref={ref}>
           <SelectedMedia
             selectedMedia={selectedMedia}
             setSelectedMedia={setSelectedMedia}
           />
-          {isKicked ? (
-            <View>
-              <Text
-                className={`font-helvetica-light text-12 ${textLight0Dark500}`}
-              >
-                You has been kicked
-              </Text>
-            </View>
-          ) : (
+          {isKicked ? null : (
             <TypingSpace
               handlePickMedia={handlePickMedia}
               handlePickDocument={handlePickDocument}

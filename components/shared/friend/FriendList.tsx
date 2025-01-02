@@ -18,7 +18,7 @@ import { getFromAsyncStorage } from "@/utils/Device";
 const FriendList = ({refreshing, setRefreshing, setFriends}:any) => {
   const [myFriends, setMyFriends] = useState<FriendBoxProps[][]>([]);
   const getMyFriendsFUNC = async () => {
-    const friends = await getFromAsyncStorage("friends");
+    const friends = await getMyFriends();
     setMyFriends(groupFriendsByFirstLetter(friends));
     setMyFriends(sortFriendsAscending(groupFriendsByFirstLetter(friends)));
     setFriends(friends);
@@ -40,9 +40,6 @@ const FriendList = ({refreshing, setRefreshing, setFriends}:any) => {
     setMyFriends(descFriends);
   }
 
-  const contactRegular = () => {
-    console.log("REGULAR");
-  };
   const friendFilter = [
     {
       index: 0,
@@ -53,12 +50,7 @@ const FriendList = ({refreshing, setRefreshing, setFriends}:any) => {
       index: 1,
       label: "Descending",
       filter: handleSortDesc,
-    },
-    {
-      index: 2,
-      label: "Contact",
-      filter: contactRegular,
-    },
+    }
   ];
 
   const handleRefresh = async ()=>{
@@ -83,7 +75,7 @@ const FriendList = ({refreshing, setRefreshing, setFriends}:any) => {
           <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />
         }
       >
-        {myFriends.map((friendsGroup) => friendsGroup.map((item, index)=><View key={index} className="w-full flex" style={{rowGap:4}}>{index==0? <Text className={`${textLight0Dark500} font-helvetica-light text-12`}>{item.lastName?.split(" ").reverse()[0][0].toUpperCase()}</Text>:null}<FriendBox {...item}/> </View>))}
+        {myFriends.map((friendsGroup) => friendsGroup.map((item, index)=><View key={index} className="w-full flex" style={{rowGap:4}}>{index==0?<Text className={`${textLight0Dark500} font-helvetica-light text-12`}>{item.lastName?.split(" ").reverse()[0][0].toUpperCase()}</Text>:null}<FriendBox {...item}/></View>))}
       </ScrollView>
     </View>
   );

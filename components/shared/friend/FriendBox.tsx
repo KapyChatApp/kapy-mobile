@@ -22,12 +22,9 @@ const FriendBox = (props: FriendBoxProps) => {
         <Text className={`font-helvetica-bold text-14 ${textLight0Dark500}`}>
           {props.firstName + " " + props.lastName}
         </Text>
-        <Text className={`font-helvetica-light text-12 ${textLight0Dark500}`}>
+        {props.mutualFriends && props.mutualFriends.length>0? <Text className={`font-helvetica-light text-12 ${textLight0Dark500}`}>
           {props.mutualFriends?.length} mutual friends
-        </Text>
-        <Text className="font-helvetica-light text-[10px] text-cardinal">
-          {props.onlineTime} min ago
-        </Text>
+        </Text>:null}
       </View>
     </TouchableOpacity>
   );

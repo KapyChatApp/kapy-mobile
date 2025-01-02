@@ -102,7 +102,7 @@ const UpdateProfilePage = () => {
             style={StyleSheet.absoluteFillObject}
             className="fixed w-screen h-screen z-100"
           >
-            {" "}
+
             <ExpoCamera
               setSelectedMedia={setSelectedAvatar}
               isSendNow={true}
@@ -128,7 +128,6 @@ const UpdateProfilePage = () => {
             style={StyleSheet.absoluteFillObject}
             className="fixed w-screen h-screen z-100"
           >
-            {" "}
             <ExpoCamera
               setSelectedMedia={setSelectedBackground}
               isSendNow={true}

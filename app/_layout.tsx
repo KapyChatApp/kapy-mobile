@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { SplashScreen, Stack, useRouter } from "expo-router";
 import { useFonts } from "expo-font";
 import { useEffect } from "react";
@@ -15,6 +15,7 @@ import { MarkReadProvider } from "@/context/MarkReadProvider";
 import { CameraProvider } from "@/context/CameraContext";
 import { Host } from "react-native-portalize";
 import { MessageBoxProvider } from "@/context/MessageBoxContext";
+import { registerForPushNotificationsAsync } from "@/lib/local";
 SplashScreen.preventAutoHideAsync();
 export default function RootLayout() {
   const [fontsLoaded, error] = useFonts({
@@ -27,9 +28,16 @@ export default function RootLayout() {
     "Helvetica-Ultra-Light-Italic": require("../assets/fonts/helveticaneueultralightitalic.ttf"),
   });
   const router = useRouter();
+  
+  
   useEffect(() => {
     if (error) throw error;
     if (fontsLoaded) SplashScreen.hideAsync();
+    const getPushToken = async () => {
+      const token = await registerForPushNotificationsAsync();
+      await AsyncStorage.setItem("notification-token", token!);
+     }
+
     const checkToken = async () => {
       const token = await AsyncStorage.getItem("token");
       if (!token) return;
@@ -48,6 +56,7 @@ export default function RootLayout() {
         throw error;
       }
     };
+    getPushToken();
     checkToken();
   }, [fontsLoaded, error]);
 
@@ -128,7 +137,9 @@ export default function RootLayout() {
                             name="friend"
                             options={{ headerShown: false }}
                           />
-                        </Stack>
+                          <Stack.Screen name="status"
+                          options={{headerShown:false}}/>
+                           </Stack>
                       </Host>
                     </ActionSheetProvider>
                   </ClickOutsideProvider>

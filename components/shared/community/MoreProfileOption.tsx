@@ -5,7 +5,7 @@ import { IconURL } from "@/constants/IconURL";
 import { bgLight500Dark10, textLight0Dark500 } from "@/styles/theme";
 import { block } from "@/lib/add-request";
 import { useClickOutside } from "react-native-click-outside";
-import { useRouter } from "expo-router";
+import { useNavigation, useRouter } from "expo-router";
 
 const MoreProfileOption = ({
   friendId,
@@ -16,16 +16,12 @@ const MoreProfileOption = ({
 }: any) => {
   const ref = useClickOutside<View>(()=>setModalVisible(false));
   const [modalVisible, setModalVisible] = useState(false);
-  const  router =useRouter();
+  const router = useRouter();
+  const navigation = useNavigation();
   const handleBlock = async () => {
     setStartLoading();
     setIsLoading();
-    const blockStatus = await block(friendId);
-    if (blockStatus) {
-      setIsNotLoading();
-      const timer = setInterval(() => setEndLoading(), 1500);
-      return () => clearInterval(timer);
-    }
+    await block(friendId, () => {setEndLoading(); navigation.goBack()});
   };
 
   return (
@@ -44,15 +40,8 @@ const MoreProfileOption = ({
           <View ref={ref}
             className={`${bgLight500Dark10} absolute w-[150px] right-0 ${Platform.OS==="ios"? "top-[76px]":"top-[60px]"}  rounded-3xl`}
           >
-            <TouchableOpacity className="flex items-center justify-center w-full h-[50px]  border-border border-b-[0.5px]"
-              onPress={() => {
-                // Handle Share profile
-                setModalVisible(false);
-              }}
-            >
-              <Text className={`${textLight0Dark500} font-helvetica-light text-14 text-center`}>Share profile</Text>
-            </TouchableOpacity>
-            <TouchableOpacity className="flex items-center justify-center w-full h-[50px]  border-border border-y-[0.5px]"
+            
+            <TouchableOpacity className="flex items-center justify-center w-full h-[50px] "
               onPress={() => {
                 setModalVisible(false);
                 router.push({pathname:"/report", params:{targetId:friendId, targetType:"User"}})

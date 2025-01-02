@@ -8,7 +8,8 @@ const  ChatBoxLayout = () => {
         <Stack.Screen name="[messageId]" options={{headerShown:false}}/>
         <Stack.Screen name="chatbox-detail" options={{headerShown:false}}/>
         <Stack.Screen name="multimedia" options={{headerShown:false}}/>
-        <Stack.Screen name="members" options={{headerShown:false}}/>
+      <Stack.Screen name="members" options={{ headerShown: false }} />
+      <Stack.Screen name="call" options={{headerShown:false}}/>
     </Stack>
   )
 }

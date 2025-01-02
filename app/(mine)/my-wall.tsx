@@ -22,6 +22,7 @@ import { SocialPostProps } from "@/types/post";
 import { getMyPosts } from "@/lib/post";
 import SocialPost from "@/components/shared/community/SocialPost";
 import { onRefresh } from "@/utils/Refresh";
+import { getMyProfile } from "@/lib/my-profile";
 
 const MyWallPage = () => {
   const navigation = useNavigation();
@@ -34,10 +35,7 @@ const MyWallPage = () => {
   const [postsData, setPostsData] = useState<SocialPostProps[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const disPlayUserData = async () => {
-    const user = await AsyncStorage.getItem("user");
-    if (!user) {
-      throw new Error("You are unauthenticated!");
-    }
+  
 
     const {
       _id,
@@ -49,7 +47,7 @@ const MyWallPage = () => {
       background,
       point,
       ..._bio
-    } = JSON.parse(user);
+    } = await getMyProfile();
     set_id(_id);
     setHeaderProps({
       firstName,

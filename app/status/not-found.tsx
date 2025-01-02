@@ -6,6 +6,7 @@ import { IconURL } from '@/constants/IconURL'
 import { bgLight500Dark10 } from '@/styles/theme'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import PreviousDouble from '@/components/ui/PreviousDouble'
+import Previous from '@/components/ui/Previous'
 
 const NotFoundPage = () => {
     const navigation = useNavigation();

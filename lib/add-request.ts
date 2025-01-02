@@ -54,7 +54,7 @@ export const addBFF = async (friendId: string, goOn: () => void) => {
   }
 };
 
-export const block = async (friendId: string) => {
+export const block = async (friendId: string, goOn:()=>void) => {
   try {
     const { token, _id } = await getLocalAuth();
     const bffRequestBody = { sender: _id, receiver: friendId };
@@ -68,9 +68,11 @@ export const block = async (friendId: string) => {
         },
       }
     );
+    console.log("block status: ", response.status);
 
     if (response.status === 200 || response.status === 201) {
-      return true;
+      console.log("thisss");
+      goOn();
     } else {
       Alert.alert(`Your request fail ${response.statusText} `);
       return false;

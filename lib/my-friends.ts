@@ -22,6 +22,9 @@ export const getMyFriends = async () => {
           JSON.stringify(friend)
         );
       }
+      for (const user of response.data) {
+        await AsyncStorage.setItem(`user-${user._id}`, JSON.stringify(user));
+      }
       return response.data;
     }
   } catch (error) {

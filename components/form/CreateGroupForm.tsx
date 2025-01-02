@@ -30,10 +30,12 @@ import { MessageBoxProps, ReceiverProps } from "@/types/message";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import LoadingSpinner from "../ui/LoadingSpinner";
 import Search from "../shared/function/Search";
+import { getFromAsyncStorage } from "@/utils/Device";
 
 const CreateGroupForm = ({ isVisible, onClose }: any) => {
   const router = useRouter();
   const ref = useClickOutside(() => onClose());
+  const [loading, setLoading] = useState(false);
   const [friends, setFriends] = useState<FriendBoxProps[]>([]);
   const [selected, setSelected] = useState<FriendBoxProps[]>([]);
   const [selectedMedia, setSelectedMedia] = useState<
@@ -94,33 +96,23 @@ const CreateGroupForm = ({ isVisible, onClose }: any) => {
   };
 
   const handleCreateGroup = async () => {
-    const { _id } = await getLocalAuth();
+    setLoading(true);
     const memberIds: string[] = [];
     for (const friend of selected) {
       memberIds.push(friend._id);
     }
-    await createGroup(memberIds, groupName, selectedMedia[0], async (boxId) => {
-      await AsyncStorage.setItem(
-        `box-${boxId}`,
-        JSON.stringify({
-          _id: boxId,
-          groupName: groupName,
-          groupAva: selectedMedia[0].uri,
-          receiverIds: convertToReceiverProps(memberIds),
-          createAt: new Date().toDateString,
-          responseLastMessage: null,
-          localUserId: (await getLocalAuth())._id,
-          setLastMessage: () => {},
-          readStatus: true,
-          isOnline: true,
-        })
-      );
-      router.push({
-        pathname: "/chatbox/[messageId]",
-        params: { messageId: boxId },
-      });
-      onClose();
-    });
+    const newGroup = await createGroup(memberIds, groupName, selectedMedia[0]);
+       const chatboxes = await getFromAsyncStorage("ChatBoxes");
+       const updatedChatBoxes = [...chatboxes, newGroup];
+       await AsyncStorage.setItem("ChatBoxes", JSON.stringify(updatedChatBoxes));
+    await AsyncStorage.setItem(`box-${newGroup._id}`, JSON.stringify(newGroup));
+    onClose();
+    setLoading(false);
+       router.push({
+         pathname: "/chatbox/[messageId]",
+         params:{messageId:newGroup._id}
+       })
+      
   };
 
   
@@ -252,6 +244,7 @@ const CreateGroupForm = ({ isVisible, onClose }: any) => {
             ))}
           </ScrollView>
         </Animated.View>
+        {loading ? <LoadingSpinner loading={loading} />:null}
       </View>
     </Modal>
   );

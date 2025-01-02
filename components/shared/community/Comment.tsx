@@ -12,10 +12,12 @@ import { deleteComment, disLikeComment, likeComment } from "@/lib/comment";
 import VideoPlayer from "../multimedia/VideoPlayer";
 import AudioPlayer from "../multimedia/AudioPlayer";
 import File from "@/components/ui/File";
+import * as Linking from "expo-linking"
 
 import { useActionSheet } from "@expo/react-native-action-sheet";
 import { useRouter } from "expo-router";
 import PostAudioPlayer from "../multimedia/PostAudioPlayer";
+import { hasLink } from "@/utils/Link";
 const Comment = (props: CommentProps) => {
   const [isShowReply, setIsShowReply] = useState(false);
   const haveReplies = props.replieds && props.replieds.length > 0;
@@ -47,6 +49,29 @@ const Comment = (props: CommentProps) => {
     };
     render();
   }, []);
+
+  const highlightLinks = (message:string) => {
+  const parts = message.split(/(\b(?:https?:\/\/|www\.)[^\s]+\b)/g); // Tách văn bản tại các URL
+  return parts.map((part, index) => {
+    if (hasLink(part)) {
+      const formattedLink = part.startsWith('http://') || part.startsWith('https://')
+        ? part
+        : `https://${part}`;
+
+      return (
+        <Text
+          key={index}
+        className="font-helvetica-bold underline"
+          onPress={() => Linking.openURL(formattedLink).catch(err => console.warn('Error opening link:', err))}
+        >
+          {part}
+        </Text>
+      );
+    }
+    return <Text key={index}>{part}</Text>;
+  });
+};
+
 
   const renderContent = () => {
     switch (props.content.type) {
@@ -141,7 +166,7 @@ const Comment = (props: CommentProps) => {
                     props.isReply ? "text-10" : "text-12"
                   }`}
                 >
-                  {props.caption}
+                  {highlightLinks(props.caption)}
                 </Text>
                 <View>{props.content ? renderContent() : null}</View>
               </View>

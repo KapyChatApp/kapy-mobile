@@ -20,7 +20,7 @@ const HeadProfile = (props:HeadProfileProps) => {
           <Text className={`text-14 font-helvetica-light ${textLight0Dark500}`}>Community Point: </Text>
           <Text className="text-18 font-helvetica-bold text-cardinal">{props.point}</Text>
         </View>
-        {props.mutualFriends?.length!=0? 
+        {props.mutualFriends?.length!=0 && props.mutualFriends? 
         <Pressable className="flex flex-row items-center justify-center" style={{columnGap:5}}  onPress={()=>router.push({pathname:"/friend/mutual-friends",params:{friendId:props._id}})}>
           {props.mutualFriends?.map((item, index)=>index<=2?<UserAvatar key={index} size={20} avatarURL={{uri:item.avatar}}/>:null)}
           {props.mutualFriends?.length!>3?<View className="w-[20px] h-[20px] bg-light-330 flex items-center justify-center rounded-full"><Text className="text-white font-helvetica-light text-10">{props.mutualFriends?.length! - 3}+</Text></View>:null}

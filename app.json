@@ -2,7 +2,12 @@
   "expo": {
     "name": "KapyMobile",
     "slug": "KapyMobile",
+    "platforms": [
+      "ios",
+      "android"
+    ],
     "version": "1.0.0",
+      "sdkVersion": "52.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "scheme": "myapp",
@@ -41,6 +46,7 @@
       "favicon": "./assets/images/favicon.png"
     },
     "plugins": [
+      "@config-plugins/react-native-webrtc",
       "expo-router",
       "expo-font",
       [
@@ -77,6 +83,14 @@
           "iCloudContainerEnvironment": "Development"
         }
       ],
+      [
+        "expo-dev-client",
+        {
+          "ios": {
+            "developmentTeam": "YOUR_DEVELOPMENT_TEAM_ID"
+          }
+        }
+      ],
       "expo-asset",
       "expo-secure-store",
       "expo-video",
@@ -89,6 +103,10 @@
       "eas": {
         "projectId": "d60d3ab1-07e9-4e7e-af08-3996d196dd15"
       }
+    },
+    "notifications": {
+      "icon": "./assets/images/icon.png",
+      "color": "#000000"
     }
   }
 }

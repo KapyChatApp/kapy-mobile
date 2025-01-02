@@ -38,6 +38,9 @@ import { useCamera } from "@/context/CameraContext";
 import CustomButton from "@/components/ui/CustomButton";
 import { ScrollView } from "react-native-gesture-handler";
 import UserAvatar from "@/components/ui/UserAvatar";
+import { getMyBFFs } from "@/lib/my-bff";
+import { pusherClient } from "@/lib/pusher";
+import { push } from "expo-router/build/global-state/routing";
 const LiveMap = () => {
   const [currentLocation, setCurrentLocation] = useState<LocationProps>();
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
@@ -101,7 +104,15 @@ const LiveMap = () => {
       const userString = await AsyncStorage.getItem("user");
       const user = await JSON.parse(userString!);
       setLocalUser(user);
+      const bffs = await getMyBFFs();
+      for (const bff of bffs) {
+        pusherClient.subscribe(`private-${bff._id}`);
+      }
     };
+
+    // pusherClient.bind("map-status", async(data: any) => {
+    //   await getBffMapStatuses();
+    //   });
 
     const getBffMapStatuses = async () => {
       const bffMapStatuses: MapStatusProps[] = await getMyBffMapStatus();
@@ -295,7 +306,15 @@ const LiveMap = () => {
           </ScrollView>
         </View>
       ) : null}
-      <View className="absolute right-[10px] bottom-[10px]">
+      <View className="absolute right-[10px] bottom-[10px]" style={{rowGap:8}}>
+         <TouchableOpacity
+          className={`w-[50px] h-[50px] ${bgLight500Dark10} rounded-xl items-center justify-center`}
+          onPress={
+            async () => { const bffMap = await getMyBffMapStatus();  setBffMapStatus(bffMap); } 
+          }
+        >
+          <Icon iconURL={IconURL.reload_orange} size={30} />
+        </TouchableOpacity>
         <TouchableOpacity
           className={`w-[50px] h-[50px] ${bgLight500Dark10} rounded-xl items-center justify-center`}
           onPress={() =>

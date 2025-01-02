@@ -93,7 +93,6 @@ const CreatePostPage = () => {
       >
         {isCameraOpen ? (
           <View className="fixed w-screen h-screen">
-            {" "}
             <ExpoCamera
               onClose={() => setIsCameraOpen(false)}
               isSendNow={false}
@@ -169,13 +168,13 @@ const CreatePostPage = () => {
         <View ref={ref}>
           <PostTyping
             handleGalleryPicker={handlePickMedia}
-            handlePostAction={async () =>
-              await createPost(caption, selectedMedia, () => {
-                Alert.alert(
+            handlePostAction={async () =>{Alert.alert(
                   "Your post is being created and will be done soon!"
-                );
+            );
+              
                 navigation.goBack();
-              })
+              await createPost(caption, selectedMedia, () => { 
+              })}
             }
             handleOpenCamera={() => setIsCameraOpen(true)}
             handleOpenMicro={() => setIsMicroOpen(true)}

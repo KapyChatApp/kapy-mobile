@@ -155,5 +155,6 @@ export const IconURL = {
   trashcan_l:require("../assets/icons/trashcan_l.png"),
   trashcan_d:require("../assets/icons/trashcan_d.png"),
   minus_white:require("../assets/icons/minus_white.png"),
-  key:require("../assets/icons/key.png")
+  key: require("../assets/icons/key.png"),
+  reload_orange: require("../assets/icons/reload_orange.png")
 };

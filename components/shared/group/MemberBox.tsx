@@ -43,13 +43,14 @@ const MemberBox = (props: ReceiverProps) => {
         </View>
       </View>
       {props.isLeaderRole ? (
-        <View className="flex flex-row" style={{columnGap:8}}>
-        <TouchableOpacity
+        <View className="flex flex-row" style={{ columnGap: 8 }}>
+          {props.isLeader?null:<TouchableOpacity
           className="flex items-center justify-center p-[8px] rounded-xl bg-dark-300"
           onPress={() => props.handleRemoveMember?.(props._id)}
         >
           <Icon iconURL={IconURL.minus_white} size={16} />
-        </TouchableOpacity>
+        </TouchableOpacity>}
+        
         <TouchableOpacity
           className="flex items-center justify-center p-[8px] rounded-xl bg-cardinal"
           onPress={() => props.handleChangeLeader?.(props._id)}

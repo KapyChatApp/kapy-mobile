@@ -29,7 +29,7 @@ const UnblockPostView = ({
     >
       <View className="flex flex-row">
         <Text className={`${textLight0Dark500} font-helvetica-light text-14`}>
-          You have to be their{" "}
+          You have to be their
         </Text>
         <Link href="/">
           <Text className="text-specialRelation font-helvetica-bold text-14 underline">
@@ -37,7 +37,7 @@ const UnblockPostView = ({
           </Text>
         </Link>
         <Text className={`${textLight0Dark500} font-helvetica-light text-14`}>
-          {" "}
+
           to see their posts!
         </Text>
       </View>

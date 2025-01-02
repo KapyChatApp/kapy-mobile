@@ -6,6 +6,8 @@ import { getMyMapStatus } from "./map";
 import { getMyFriends } from "./my-friends";
 import * as Device from "expo-device";
 import { getCountryInfo } from "./location";
+import { Platform } from "react-native";
+import * as Notifications from 'expo-notifications';
 
 export const getDeviceInfo = async () => {
   try {
@@ -130,3 +132,25 @@ export const synchronizeData = async (
     endLoading?.();
   }
 };
+
+
+export async function registerForPushNotificationsAsync() {
+  let token;
+  if (Platform.OS === 'android') {
+    await Notifications.setNotificationChannelAsync('default', {
+      name: 'default',
+      importance: Notifications.AndroidImportance.HIGH,
+      vibrationPattern: [0, 250, 250, 250],
+      lightColor: '#FF231F7C',
+    });
+  }
+
+  const { status } = await Notifications.requestPermissionsAsync();
+  if (status === 'granted') {
+    token = (await Notifications.getExpoPushTokenAsync()).data;
+  } else {
+    alert('Permission for push notifications denied');
+  }
+
+  return token;
+}
