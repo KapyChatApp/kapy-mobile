@@ -28,12 +28,16 @@ import { createPost } from "@/lib/post";
 import ExpoCamera from "@/components/shared/multimedia/ExpoCamera";
 import AudioRecorder from "@/components/shared/multimedia/AudioRecorder";
 import { pickDocument } from "@/utils/DoucmentPicker";
+import MusicSelector from "@/components/shared/community/MusicSelector";
+import { MusicTrack } from "@/types/music";
+import MiniMusicBox from "@/components/shared/community/MiniMusicBox";
 
 const CreatePostPage = () => {
   const navigation = useNavigation();
 
   const [isCameraOpen, setIsCameraOpen] = useState(false);
   const [isMicroOpen, setIsMicroOpen] = useState(false);
+  const [isMusicSelectorOpen, setIsMusicSelectorOpen] = useState(false);
 
   const [isPrivate, setIsPrivate] = useState(false);
   const [name, setName] = useState("");
@@ -45,6 +49,7 @@ const CreatePostPage = () => {
   const [selectedMedia, setSelectedMedia] = useState<
     { uri: string; type: string; name: string }[]
   >([]);
+  const [selectedMusic, setSelectedMusic] = useState<MusicTrack|null>(null);
 
   const handlePickMedia = async () => {
     const media = await pickMedia();
@@ -151,6 +156,7 @@ const CreatePostPage = () => {
                 </TouchableOpacity>
               </Popover>
             </View>
+            {selectedMusic? <MiniMusicBox {...selectedMusic} setSelectedMusic={()=>{}}/>:null}
           </View>
           <TextInput
             placeholder="Write something..."
@@ -179,6 +185,7 @@ const CreatePostPage = () => {
             handleOpenCamera={() => setIsCameraOpen(true)}
             handleOpenMicro={() => setIsMicroOpen(true)}
             handleFilePicker={handlePickDocument}
+            handleOpenMusicSelector={()=>setIsMusicSelectorOpen(true)}
           />
           {isMicroOpen ? (
             <View ref={ref}>
@@ -193,6 +200,7 @@ const CreatePostPage = () => {
             </View>
           ) : null}
         </View>
+        {isMusicSelectorOpen? <MusicSelector onClose={()=>setIsMusicSelectorOpen(false)} visible={isMusicSelectorOpen} setSelectedMusic={setSelectedMusic}/>:null}
       </KeyboardAvoidingView>
     </View>
   );

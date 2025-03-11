@@ -156,5 +156,11 @@ export const IconURL = {
   trashcan_d:require("../assets/icons/trashcan_d.png"),
   minus_white:require("../assets/icons/minus_white.png"),
   key: require("../assets/icons/key.png"),
-  reload_orange: require("../assets/icons/reload_orange.png")
+  reload_orange: require("../assets/icons/reload_orange.png"),
+  post_select:require("../assets/icons/post-select.png"),
+  post_non_select:require("../assets/icons/post_non-select.png"),
+  disc_l:require("../assets/icons/disc_l.png"),
+  disc_d:require("../assets/icons/disc_d.png"),
+  tag_l:require("../assets/icons/tag_l.png"),
+  tag_d:require("../assets/icons/tag_d.png"),
 };

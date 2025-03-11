@@ -5,7 +5,7 @@ import { IconURL } from "@/constants/IconURL";
 import Icon from "./Icon";
 import CustomButton from "./CustomButton";
 
-const PostTyping = ({handleGalleryPicker,handleFilePicker, handlePostAction, handleOpenCamera, handleOpenMicro}:{handleGalleryPicker:()=>void,handleFilePicker:()=>void,handlePostAction:()=>void, handleOpenCamera:any, handleOpenMicro:any}) => {
+const PostTyping = ({handleGalleryPicker,handleFilePicker, handlePostAction, handleOpenCamera, handleOpenMicro, handleOpenMusicSelector, handleOpenTagSelector}:{handleGalleryPicker:()=>void,handleFilePicker:()=>void,handlePostAction:()=>void, handleOpenCamera:any, handleOpenMicro:any, handleOpenMusicSelector:()=>void, handleOpenTagSelector:()=>void}) => {
   const { theme } = useTheme();
   return (
     <View
@@ -34,6 +34,18 @@ const PostTyping = ({handleGalleryPicker,handleFilePicker, handlePostAction, han
         <TouchableOpacity onPress={handleOpenCamera}>
           <Icon
             iconURL={theme === "light" ? IconURL.opencam_l : IconURL.opencam_d}
+            size={28}
+          ></Icon>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={handleOpenMusicSelector}>
+          <Icon
+            iconURL={theme === "light" ? IconURL.disc_l : IconURL.disc_d}
+            size={28}
+          ></Icon>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={handleOpenTagSelector}>
+          <Icon
+            iconURL={theme === "light" ? IconURL.tag_l : IconURL.tag_d}
             size={28}
           ></Icon>
         </TouchableOpacity>

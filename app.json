@@ -46,7 +46,6 @@
       "favicon": "./assets/images/favicon.png"
     },
     "plugins": [
-      "@config-plugins/react-native-webrtc",
       "expo-router",
       "expo-font",
       [
@@ -81,14 +80,6 @@
         "expo-document-picker",
         {
           "iCloudContainerEnvironment": "Development"
-        }
-      ],
-      [
-        "expo-dev-client",
-        {
-          "ios": {
-            "developmentTeam": "YOUR_DEVELOPMENT_TEAM_ID"
-          }
         }
       ],
       "expo-asset",

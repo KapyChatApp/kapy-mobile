@@ -68,6 +68,13 @@ const HomeLayout = () => {
         }}
       ></Tabs.Screen>
       <Tabs.Screen
+        name="post"
+        options={{
+          headerShown: false,
+          tabBarIcon: () => <TabIcon iconURL={IconURL.post_select}></TabIcon>,
+        }}
+      ></Tabs.Screen>
+      <Tabs.Screen
         name="livemap"
         options={{
           headerShown: false,

@@ -18,6 +18,10 @@ const TabIcons = {
     nonSelected: <TabIcon iconURL={IconURL.friends_non_select} />,
     selected: <TabIcon iconURL={IconURL.friends_select} />,
   },
+  post:{
+    nonSelected:<TabIcon iconURL={IconURL.post_non_select}/>,
+    selected:<TabIcon iconURL={IconURL.post_select}/>,
+  },
   livemap: {
     nonSelected: <TabIcon iconURL={IconURL.map_non_select} />,
     selected: <TabIcon iconURL={IconURL.map_select} />,
