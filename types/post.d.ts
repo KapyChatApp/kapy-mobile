@@ -1,4 +1,5 @@
 import { FileProps } from "./file";
+import { ShortUserProps } from "./user";
 
 export interface SocialPostProps {
   _id: string;
@@ -14,7 +15,13 @@ export interface SocialPostProps {
   createAt: string;
   contents: FileProps[];
   isDetail?: boolean;
+  tags:ShortUserProps[];
+  musicName?:string;
+  musicURL?:string;
+  musicAuthor?:string;
+  musicImageURL?:string;
   handleImageViewing:(uri:string)=>void;
+  isDetailView?: boolean;
 }
 
 export interface CommentProps {

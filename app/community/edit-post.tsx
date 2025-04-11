@@ -13,7 +13,7 @@ import { useLocalSearchParams, useNavigation, useRouter } from "expo-router";
 import Previous from "@/components/ui/Previous";
 import { SafeAreaView } from "react-native-safe-area-context";
 import UserAvatar from "@/components/ui/UserAvatar";
-import { HeadProfileProps } from "@/types/user";
+import { HeadProfileProps, ShortUserProps } from "@/types/user";
 import Popover, { PopoverPlacement } from "react-native-popover-view";
 import Icon from "@/components/ui/Icon";
 import { IconURL } from "@/constants/IconURL";
@@ -30,6 +30,13 @@ import { FileProps } from "@/types/file";
 import ExpoCamera from "@/components/shared/multimedia/ExpoCamera";
 import AudioRecorder from "@/components/shared/multimedia/AudioRecorder";
 import { pickDocument } from "@/utils/DoucmentPicker";
+import { FriendBoxProps } from "@/types/friend";
+import { MusicTrack } from "@/types/music";
+import FriendSelector from "@/components/shared/community/FriendSelector";
+import MusicSelector from "@/components/shared/community/MusicSelector";
+import MiniMusicBox from "@/components/shared/community/MiniMusicBox";
+import FriendLinkName from "@/components/shared/friend/FriendLinkName";
+import TagSelector from "@/components/shared/community/TagSelector";
 
 const EditPostPage = () => {
   const { postId } = useLocalSearchParams();
@@ -44,10 +51,16 @@ const EditPostPage = () => {
 
   const [isCameraOpen, setIsCameraOpen] = useState(false);
   const [isMicroOpen, setIsMicroOpen] = useState(false);
+  const [isMusicSelectorOpen, setIsMusicSelectorOpen] = useState(false);
+  const [isBFFTagOpen, setIsBFFTagOpen] = useState(false);
 
   const [selectedMedia, setSelectedMedia] = useState<
     { uri: string; type: string; name: string }[]
   >([]);
+  const [selectedMusic, setSelectedMusic] = useState<MusicTrack | null>(null);
+  const [selectedBFFs, setSelectedBFFs] = useState<FriendBoxProps[]>([]);
+  const [selectedTags, setSelectedTags] = useState<ShortUserProps[]>([]);
+
   const handlePickMedia = async () => {
     const media = await pickMedia();
     setSelectedMedia((prev) => [
@@ -79,13 +92,40 @@ const EditPostPage = () => {
         router.push("/not-found")
       );
       setPost(result);
+      if (!result) {
+        setPost(result);
+      }
+      console.log("edit post music URL: ", post?.musicURL);
       setCaption(result.caption);
       const mediaLocal = result.contents.map((item: FileProps) => {
         remainMedias.set(item.url, item._id);
         return { uri: item.url, type: item.type, name: item };
       });
-      console.log("media local: ", mediaLocal);
       setSelectedMedia(mediaLocal);
+      const tags: FriendBoxProps[] = [];
+      for (const pTag of result?.tags!) {
+        const tag: FriendBoxProps = {
+          _id: pTag._id,
+          firstName: pTag.firstName,
+          lastName: pTag.lastName,
+          avatar: pTag.avatar,
+        };
+        tags.push(tag);
+      }
+      setSelectedBFFs(tags);
+      setSelectedTags(result?.tags!);
+      setSelectedMusic({
+        trackId: 1,
+        trackName: result?.musicName ? result?.musicName : "",
+        artistName: result?.musicAuthor ? result?.musicAuthor : "",
+        albumName: "",
+        artworkUrl100: result?.musicImageURL ? result?.musicImageURL : "",
+        previewUrl: result?.musicURL ? result.musicURL : "",
+        trackPrice: 1,
+        currency: "",
+        releaseDate: "",
+        genre: "",
+      });
     };
     getPostDetail();
   }, []);
@@ -98,7 +138,6 @@ const EditPostPage = () => {
       >
         {isCameraOpen ? (
           <View className="fixed w-screen h-screen">
-
             <ExpoCamera
               onClose={() => setIsCameraOpen(false)}
               isSendNow={false}
@@ -157,7 +196,32 @@ const EditPostPage = () => {
                 </TouchableOpacity>
               </Popover>
             </View>
+            {selectedMusic ? (
+              <MiniMusicBox {...selectedMusic} setSelectedMusic={() => {}} />
+            ) : null}
           </View>
+          {selectedTags.length === 0 ? null : (
+            <View
+              className="flex flex-row items-center"
+              style={{ columnGap: 4 }}
+            >
+              <Text className={`${textLight0Dark500} font-helvetica-light`}>
+                with
+              </Text>
+              {selectedTags.map((item, index) => (
+                <FriendLinkName
+                  key={index}
+                  _id={item._id}
+                  fullName={
+                    index === selectedBFFs.length - 1
+                      ? item.firstName + " " + item.lastName
+                      : item.firstName + " " + item.lastName + ","
+                  }
+                  fontSize={12}
+                />
+              ))}
+            </View>
+          )}
           <TextInput
             placeholder="Write something..."
             multiline={true}
@@ -183,12 +247,22 @@ const EditPostPage = () => {
                 postId.toString(),
                 caption,
                 selectedMedia,
-                Array.from(remainMedias.values())
+                Array.from(remainMedias.values()),
+                selectedTags.map((item) => item._id),
+                selectedMusic?.trackName,
+                selectedMusic?.previewUrl,
+                selectedMusic?.artistName,
+                selectedMusic?.artworkUrl100,
+                () => {
+                  navigation.goBack();
+                }
               )
             }
             handleOpenCamera={() => setIsCameraOpen(true)}
             handleOpenMicro={() => setIsMicroOpen(true)}
             handleFilePicker={handlePickDocument}
+            handleOpenMusicSelector={() => setIsMusicSelectorOpen(true)}
+            handleOpenTagSelector={() => setIsBFFTagOpen(true)}
           />
           {isMicroOpen ? (
             <View ref={ref}>
@@ -203,6 +277,29 @@ const EditPostPage = () => {
             </View>
           ) : null}
         </View>
+        {isMusicSelectorOpen ? (
+          <MusicSelector
+            onClose={() => setIsMusicSelectorOpen(false)}
+            visible={isMusicSelectorOpen}
+            selectedMusic={selectedMusic}
+            setSelectedMusic={setSelectedMusic}
+          />
+        ) : null}
+        {isBFFTagOpen ? (
+          <TagSelector
+            visible={isBFFTagOpen}
+            onClose={() => setIsBFFTagOpen(false)}
+            selectedTags={selectedTags}
+            onSelectTag={(data: ShortUserProps) =>
+              setSelectedTags((prev) => [...prev, data])
+            }
+            onUnselectTag={(data: ShortUserProps) =>
+              setSelectedTags((prev) =>
+                prev.filter((item) => item._id !== data._id)
+              )
+            }
+          />
+        ) : null}
       </KeyboardAvoidingView>
     </SafeAreaView>
   );

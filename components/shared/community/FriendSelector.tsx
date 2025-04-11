@@ -17,33 +17,51 @@ import {
 } from "react-native-gesture-handler";
 import MusicBox from "./MusicBox";
 import Search from "../function/Search";
+import { FriendBoxProps, SelectFriendBoxProps } from "@/types/friend";
+import { getMyBFFs } from "@/lib/my-bff";
+import SelectFriendBox from "../friend/SelectFriendBox";
+import { previousMonday } from "date-fns";
+import CustomButton from "@/components/ui/CustomButton";
+import { ShortUserProps } from "@/types/user";
 
-const MusicSelector = ({
+const FriendSelector = ({
   visible,
   onClose,
-  selectedMusic,
-  setSelectedMusic,
+  setSelectedFriend,
+  defaultSelectedFriends,
 }: {
   visible: boolean;
   onClose: () => void;
-  selectedMusic?: MusicTrack|null;
-  setSelectedMusic: (music: MusicTrack | null) => void;
+  setSelectedFriend: (Friend: FriendBoxProps[]) => void;
+  defaultSelectedFriends?: ShortUserProps[];
 }) => {
-  const [musics, setMusics] = useState<MusicTrack[]>([]);
+  const [BFFs, setBFFs] = useState<FriendBoxProps[]>([]);
+  const [selectedBFFs, setSelectedBFFs] = useState<FriendBoxProps[]>([]);
   const [q, setQ] = useState<string>("");
-  const [searchResult, setSearchResult] = useState<MusicTrack[]>([]);
 
   // Animation để kéo modal xuống
   const translateY = new Animated.Value(0);
 
-  const fetchMusic = async () => {
-    const musics = await getMusicList();
-    setMusics(musics);
+  const fetchBff = async () => {
+    const bffs = await getMyBFFs();
+    setBFFs(bffs);
   };
 
-  const handleSearch = async () => {
-    const result: MusicTrack[] = await searchMusic(q);
-    setSearchResult(result);
+  const handleSearch = () => {
+    const lowerCaseQuery = q.toLowerCase();
+
+    return BFFs.filter((friend) => {
+      const fullName = `${friend.firstName} ${friend.lastName}`.toLowerCase();
+      const reverseFullName =
+        `${friend.lastName} ${friend.firstName}`.toLowerCase();
+
+      return (
+        friend.firstName?.toLowerCase().includes(lowerCaseQuery) ||
+        friend.lastName?.toLowerCase().includes(lowerCaseQuery) ||
+        fullName.includes(lowerCaseQuery) ||
+        reverseFullName.includes(lowerCaseQuery)
+      );
+    });
   };
 
   useEffect(() => {
@@ -55,8 +73,17 @@ const MusicSelector = ({
   }, [q]);
 
   useEffect(() => {
-    fetchMusic();
-  }, []);
+    fetchBff();
+    if(defaultSelectedFriends){
+      for (const selectedBFF of defaultSelectedFriends){
+        for(const bff of BFFs){
+          if(bff._id.toString()===selectedBFF.toString()){
+            setSelectedBFFs((prev)=>[...prev, bff]);
+          }
+        }
+      }
+    }
+  }, [selectedBFFs]);
 
   // Xử lý kéo xuống để đóng modal
   const handleGesture = Animated.event(
@@ -103,53 +130,42 @@ const MusicSelector = ({
                 </PanGestureHandler>
 
                 <Search onChangeText={setQ} />
-                {musics.length != 0 ? (
+                {BFFs.length != 0 ? (
                   <ScrollView
                     contentContainerStyle={{
-                      rowGap: 4,
                       paddingHorizontal: 16,
                       paddingVertical: 8,
                     }}
                     className="w-full h-full"
                   >
-                    {q === ""
-                      ? musics.map((item, index) => (
-                          <MusicBox
-                            key={index}
-                            {...item}
-                            setSelectedMusic={() => {
-                              setSelectedMusic(item);
-                              onClose();
+                    {q !== ""
+                      ? handleSearch().map((item, index) => (
+                          <SelectFriendBox
+                            onSelect={(data) => {
+                              setSelectedBFFs((prev) => [...prev, data]);
                             }}
-                            deleteMusic={() => {
-                              setSelectedMusic(null);
-                              onClose();
-                            }}
-                            isSelected={
-                              selectedMusic?.previewUrl === item.previewUrl
-                                ? true
-                                : false
+                            onUnSelect={(data) =>
+                              setSelectedBFFs((prev) =>
+                                prev.filter((item) => item._id !== data._id)
+                              )
                             }
-                          />
+                            {...item}
+                            key={index}
+                          ></SelectFriendBox>
                         ))
-                      : searchResult.map((item, index) => (
-                          <MusicBox
-                            key={index}
-                            {...item}
-                            setSelectedMusic={() => {
-                              setSelectedMusic(item);
-                              onClose();
+                      : BFFs.map((item, index) => (
+                          <SelectFriendBox
+                            onSelect={(data) => {
+                              setSelectedBFFs((prev) => [...prev, data]);
                             }}
-                            deleteMusic={() => {
-                              setSelectedMusic(null);
-                              onClose();
-                            }}
-                            isSelected={
-                              selectedMusic?.previewUrl === item.previewUrl
-                                ? true
-                                : false
+                            onUnSelect={(data) =>
+                              setSelectedBFFs((prev) =>
+                                prev.filter((item) => item._id !== data._id)
+                              )
                             }
-                          />
+                            {...item}
+                            key={index}
+                          ></SelectFriendBox>
                         ))}
                   </ScrollView>
                 ) : (
@@ -157,6 +173,19 @@ const MusicSelector = ({
                     <ActivityIndicator size="small" color="#F57206" />
                   </View>
                 )}
+                {selectedBFFs.length !== 0 ? (
+                  <View className="w-full items-end justify-end pb-14 px-2">
+                    <CustomButton
+                      width={100}
+                      height={40}
+                      label={`Add ${selectedBFFs.length} BFFs`}
+                      onPress={() => {
+                        setSelectedFriend(selectedBFFs);
+                        onClose();
+                      }}
+                    />
+                  </View>
+                ) : null}
               </View>
             </GestureHandlerRootView>
           </TouchableWithoutFeedback>
@@ -194,4 +223,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default MusicSelector;
+export default FriendSelector;

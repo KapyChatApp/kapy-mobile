@@ -1,4 +1,11 @@
-import { View, Text, Image, TouchableOpacity, TouchableWithoutFeedback, Keyboard } from "react-native";
+import {
+  View,
+  Text,
+  Image,
+  TouchableOpacity,
+  TouchableWithoutFeedback,
+  Keyboard,
+} from "react-native";
 import React, { useState, useEffect } from "react";
 import { Audio } from "expo-av";
 import { MusicTrack } from "@/types/music";
@@ -50,7 +57,10 @@ const MusicBox = (props: MusicTrack) => {
       stopSound();
     };
 
-    const keyboardListener = Keyboard.addListener("keyboardDidHide", stopOnOutsidePress);
+    const keyboardListener = Keyboard.addListener(
+      "keyboardDidHide",
+      stopOnOutsidePress
+    );
 
     return () => {
       keyboardListener.remove();
@@ -59,8 +69,16 @@ const MusicBox = (props: MusicTrack) => {
 
   return (
     <TouchableWithoutFeedback onPress={stopSound}>
-      <View className="flex items-center justify-center flex-row" style={{ columnGap: 16 }}>
-        <Image source={{ uri: props.artworkUrl100 }} style={{ width: 50, height: 50, borderRadius: 8 }} />
+      <View
+        className={`flex items-center justify-center flex-row px-[8px] ${
+          props.isSelected ? "bg-light-310 dark:bg-dark-20" : ""
+        }`}
+        style={{ columnGap: 16 }}
+      >
+        <Image
+          source={{ uri: props.artworkUrl100 }}
+          style={{ width: 50, height: 50, borderRadius: 8 }}
+        />
         <View className="flex-1 flex">
           <Text className={`${textLight0Dark500} font-helvetica-bold text-14`}>
             {props.trackName}
@@ -69,12 +87,34 @@ const MusicBox = (props: MusicTrack) => {
             {props.artistName}
           </Text>
         </View>
-        <View className="flex flex-row justify-center items-center" style={{columnGap:4}}> <TouchableOpacity onPress={isPlaying ? stopSound : playSound}>
-          <Icon iconURL={isPlaying? IconURL.pause_orange:IconURL.play_orange} size={26}/>
-        </TouchableOpacity>
-        <CustomButton width={44} height={30} label="Use" fontSize={12} onPress={()=>props.setSelectedMusic?.()}/>
-            </View>
-       
+        <View
+          className="flex flex-row justify-center items-center"
+          style={{ columnGap: 4 }}
+        >
+          <TouchableOpacity onPress={isPlaying ? stopSound : playSound}>
+            <Icon
+              iconURL={isPlaying ? IconURL.pause_orange : IconURL.play_orange}
+              size={26}
+            />
+          </TouchableOpacity>
+          {props.isSelected ? (
+            <CustomButton
+              width={44}
+              height={30}
+              label="RM"
+              fontSize={12}
+              onPress={() => props.deleteMusic?.()}
+            />
+          ) : (
+            <CustomButton
+              width={44}
+              height={30}
+              label="Use"
+              fontSize={12}
+              onPress={() => props.setSelectedMusic?.()}
+            />
+          )}
+        </View>
       </View>
     </TouchableWithoutFeedback>
   );

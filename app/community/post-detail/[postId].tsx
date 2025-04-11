@@ -48,6 +48,7 @@ const PostDetailPage = () => {
       const result = await getAPost(postId.toString(), () =>
         router.push("/not-found")
       );
+      console.log("detail post: ", result);
       setPost(result);
     };
     getPostDetail();
@@ -180,6 +181,7 @@ const PostDetailPage = () => {
                 {...post}
                 isDetail={true}
                 handleImageViewing={handleImageViewing}
+                isDetailView={true}
               />
             ) : null}
 

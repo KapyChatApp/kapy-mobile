@@ -10,4 +10,6 @@ export interface MusicTrack {
     releaseDate: string;
     genre: string;
     setSelectedMusic?:()=>void;
+    deleteMusic?:()=>void;
+    isSelected?:boolean;
   }

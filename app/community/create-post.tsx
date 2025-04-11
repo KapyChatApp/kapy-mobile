@@ -31,6 +31,9 @@ import { pickDocument } from "@/utils/DoucmentPicker";
 import MusicSelector from "@/components/shared/community/MusicSelector";
 import { MusicTrack } from "@/types/music";
 import MiniMusicBox from "@/components/shared/community/MiniMusicBox";
+import FriendSelector from "@/components/shared/community/FriendSelector";
+import { FriendBoxProps } from "@/types/friend";
+import FriendLinkName from "@/components/shared/friend/FriendLinkName";
 
 const CreatePostPage = () => {
   const navigation = useNavigation();
@@ -38,6 +41,7 @@ const CreatePostPage = () => {
   const [isCameraOpen, setIsCameraOpen] = useState(false);
   const [isMicroOpen, setIsMicroOpen] = useState(false);
   const [isMusicSelectorOpen, setIsMusicSelectorOpen] = useState(false);
+  const [isBFFTagOpen, setIsBFFTagOpen] = useState(false);
 
   const [isPrivate, setIsPrivate] = useState(false);
   const [name, setName] = useState("");
@@ -50,6 +54,7 @@ const CreatePostPage = () => {
     { uri: string; type: string; name: string }[]
   >([]);
   const [selectedMusic, setSelectedMusic] = useState<MusicTrack|null>(null);
+  const [selectedBFFs, setSelectedBFFs] = useState<FriendBoxProps[]>([]);
 
   const handlePickMedia = async () => {
     const media = await pickMedia();
@@ -158,6 +163,11 @@ const CreatePostPage = () => {
             </View>
             {selectedMusic? <MiniMusicBox {...selectedMusic} setSelectedMusic={()=>{}}/>:null}
           </View>
+          {selectedBFFs.length===0? null:<View className="flex flex-row items-center" style
+          ={{columnGap:4}}>
+            <Text className={`${textLight0Dark500} font-helvetica-light`}>with</Text>
+            {selectedBFFs.map((item, index)=><FriendLinkName key={index} _id={item._id} fullName={index===selectedBFFs.length-1? item.firstName + " " + item.lastName: item.firstName + " " + item.lastName+","} fontSize={12}/>)}
+            </View>}
           <TextInput
             placeholder="Write something..."
             multiline={true}
@@ -179,13 +189,14 @@ const CreatePostPage = () => {
             );
               
                 navigation.goBack();
-              await createPost(caption, selectedMedia, () => { 
+              await createPost(caption, selectedMedia,selectedBFFs.map((item)=>item._id),selectedMusic, () => { 
               })}
             }
             handleOpenCamera={() => setIsCameraOpen(true)}
             handleOpenMicro={() => setIsMicroOpen(true)}
             handleFilePicker={handlePickDocument}
             handleOpenMusicSelector={()=>setIsMusicSelectorOpen(true)}
+            handleOpenTagSelector={()=>setIsBFFTagOpen(true)}
           />
           {isMicroOpen ? (
             <View ref={ref}>
@@ -200,7 +211,8 @@ const CreatePostPage = () => {
             </View>
           ) : null}
         </View>
-        {isMusicSelectorOpen? <MusicSelector onClose={()=>setIsMusicSelectorOpen(false)} visible={isMusicSelectorOpen} setSelectedMusic={setSelectedMusic}/>:null}
+        {isMusicSelectorOpen? <MusicSelector onClose={()=>setIsMusicSelectorOpen(false)} visible={isMusicSelectorOpen} setSelectedMusic={setSelectedMusic} selectedMusic={selectedMusic}/>:null}
+          {isBFFTagOpen? <FriendSelector onClose={()=>setIsBFFTagOpen(false)} visible={isBFFTagOpen} setSelectedFriend={setSelectedBFFs}/>:null}
       </KeyboardAvoidingView>
     </View>
   );

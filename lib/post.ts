@@ -3,6 +3,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { getLocalAuth } from "./local";
 import { Alert } from "react-native";
 import { generateRandomNumberString } from "@/utils/Random";
+import { MusicTrack } from "@/types/music";
 
 export const getAPost = async (postId: string, goOn: () => void) => {
   try {
@@ -71,7 +72,7 @@ export const getFriendPosts = async (friendId: string) => {
       }
     );
     if (response.status === 200 || response.status === 201) {
-      const safePost = response.data.filter((item: any) => item.flag !== false)
+      const safePost = response.data.filter((item: any) => item.flag !== false);
       return safePost;
     }
     return [];
@@ -84,6 +85,8 @@ export const getFriendPosts = async (friendId: string) => {
 export const createPost = async (
   caption: string,
   selectedMedia: { uri: string; type: string; name: string }[],
+  tagIds: string[] | null,
+  selectedMusic: MusicTrack | null,
   goOn: () => void
 ) => {
   try {
@@ -92,6 +95,15 @@ export const createPost = async (
     const formData = new FormData();
 
     formData.append("caption", caption);
+    if (tagIds && tagIds.length != 0) {
+      formData.append("tagIds", JSON.stringify(tagIds));
+    }
+    if (selectedMusic) {
+      formData.append("musicName", selectedMusic?.trackName);
+      formData.append("musicAuthor", selectedMusic?.artistName);
+      formData.append("musicImageURL", selectedMusic?.artworkUrl100);
+      formData.append("musicURL", selectedMusic.previewUrl);
+    }
 
     selectedMedia.forEach((media, index) => {
       const newFile: any = {
@@ -207,13 +219,24 @@ export const editPost = async (
     type: string;
     name: string | null | undefined;
   }[],
-  remainMediaIds: string[]
+  remainMediaIds: string[],
+  tagIds: string[] | undefined,
+  musicName: string |undefined,
+  musicURL: string |undefined,
+  musicAuthor: string |undefined,
+  musicImageURL: string |undefined,
+  goOn:()=>void
 ) => {
   try {
     const { token } = await getLocalAuth();
     const formData = new FormData();
     formData.append("caption", caption);
     formData.append("remainContentIds", JSON.stringify(remainMediaIds));
+    formData.append("tagIds",JSON.stringify(tagIds? tagIds :[]));
+    formData.append("musicName", musicName? musicName:"");
+    formData.append("musicURL", musicURL? musicURL:"");
+    formData.append("musicAuthor", musicAuthor? musicAuthor:"");
+    formData.append("musicImageURL", musicImageURL? musicImageURL:"");
     selectedMedias.forEach((media) => {
       formData.append("file", {
         uri: media.uri,
@@ -234,7 +257,19 @@ export const editPost = async (
       }
     );
     if (response.status === 200 || response.status == 201) {
-      Alert.alert("Edited!");
+      Alert.alert(
+        "Edited!",
+        "Your post has been successfully edited.",
+        [
+          {
+            text: "OK",
+            onPress: () => {
+              goOn();
+            },
+          },
+        ],
+        { cancelable: false }
+      );
     }
   } catch (error) {
     console.log(error);

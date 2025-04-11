@@ -1,6 +1,6 @@
 import { View, Text, Pressable, Image, Alert } from "react-native";
-import * as Linking from "expo-linking"
-import React, { useCallback, useEffect, useState } from "react";
+import * as Linking from "expo-linking";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import UserAvatarLink from "@/components/ui/UserAvatarLink";
 import { textLight0Dark500 } from "@/styles/theme";
 import Love from "@/components/ui/Love";
@@ -9,7 +9,7 @@ import Comment from "@/components/ui/Comment";
 import { useFocusEffect, useRouter } from "expo-router";
 import { SocialPostProps } from "@/types/post";
 import { formatDate, formatDateDistance } from "@/utils/DateFormatter";
-import { Video } from "expo-av";
+import { Audio, Video } from "expo-av";
 import { deletePost, disLike, like } from "@/lib/post";
 import { getLocalAuth } from "@/lib/local";
 import { useActionSheet } from "@expo/react-native-action-sheet";
@@ -21,6 +21,8 @@ import File from "@/components/ui/File";
 import { FileProps } from "@/types/file";
 import MediaGroup from "@/components/ui/MediaGroup";
 import { hasLink } from "@/utils/Link";
+import MiniMusicBox from "./MiniMusicBox";
+import FriendLinkName from "../friend/FriendLinkName";
 const SocialPost = (props: SocialPostProps) => {
   const [isShowComment, setIsShowComment] = useState(false);
   const [post, setPost] = useState<SocialPostProps>();
@@ -37,29 +39,35 @@ const SocialPost = (props: SocialPostProps) => {
   const [videoImages, setVideoImages] = useState<FileProps[]>([]);
   const [otherMedias, setOtherMedias] = useState<FileProps[]>([]);
 
-  const highlightLinks = (message:string) => {
-  const parts = message.split(/(\b(?:https?:\/\/|www\.)[^\s]+\b)/g); // Tách văn bản tại các URL
-  return parts.map((part, index) => {
-    if (hasLink(part)) {
-      const formattedLink = part.startsWith('http://') || part.startsWith('https://')
-        ? part
-        : `https://${part}`;
+  const soundRef = useRef<Audio.Sound | null>(null);
 
-      return (
-        <Text
-          key={index}
-        className="font-helvetica-bold underline"
-          onPress={() => Linking.openURL(formattedLink).catch(err => console.warn('Error opening link:', err))}
-        >
-          {part}
-        </Text>
-      );
-    }
-    return <Text key={index}>{part}</Text>;
-  });
-};
+  const highlightLinks = (message: string) => {
+    const parts = message.split(/(\b(?:https?:\/\/|www\.)[^\s]+\b)/g); // Tách văn bản tại các URL
+    return parts.map((part, index) => {
+      if (hasLink(part)) {
+        const formattedLink =
+          part.startsWith("http://") || part.startsWith("https://")
+            ? part
+            : `https://${part}`;
 
-  
+        return (
+          <Text
+            key={index}
+            className="font-helvetica-bold underline"
+            onPress={() =>
+              Linking.openURL(formattedLink).catch((err) =>
+                console.warn("Error opening link:", err)
+              )
+            }
+          >
+            {part}
+          </Text>
+        );
+      }
+      return <Text key={index}>{part}</Text>;
+    });
+  };
+
   useFocusEffect(
     useCallback(() => {
       setPost(props);
@@ -110,14 +118,14 @@ const SocialPost = (props: SocialPostProps) => {
       if (post?.contents && post?.contents.length != 0) {
         for (const content of post.contents) {
           await Sharing.shareAsync(content.url!, {
-            dialogTitle: 'Share this post',
+            dialogTitle: "Share this post",
           });
         }
       }
-  } catch (error) {
-    console.error('Error sharing post: ', error);
-  }
-};
+    } catch (error) {
+      console.error("Error sharing post: ", error);
+    }
+  };
   const handleLongPress = async () => {
     const options = isMyPost
       ? ["Delete the post", "Edit the post", "Cancel"]
@@ -152,53 +160,120 @@ const SocialPost = (props: SocialPostProps) => {
       }
     );
   };
+
+  useEffect(() => {
+    const loadAndPlaySound = async () => {
+      if (props.musicURL) {
+        try {
+          const { sound } = await Audio.Sound.createAsync(
+            { uri: props.musicURL },
+            { shouldPlay: true }
+          );
+          soundRef.current = sound;
+        } catch (error) {
+          console.error("Error when playing music", error);
+        }
+      }
+    };
+    if (props.isDetailView && props.musicURL && props.musicURL !== "") {
+      loadAndPlaySound();
+    }
+
+    return () => {
+      if (soundRef.current) {
+        soundRef.current.unloadAsync();
+        soundRef.current = null;
+      }
+    };
+  }, [props.musicURL]);
+
+  useFocusEffect(
+    useCallback(() => {
+      return () => {
+        if (soundRef.current) {
+          soundRef.current.stopAsync();
+          soundRef.current.unloadAsync();
+          soundRef.current = null;
+        }
+      };
+    }, [])
+  );
   return (
     <Pressable
       className="flex border border-border rounded-3xl p-[16px] w-full pb-[50px]"
       style={{ rowGap: 8 }}
       onLongPress={handleLongPress}
+      onPress={() => {
+        if (!props.isDetailView) {
+          router.push({
+            pathname: "/community/post-detail/[postId]",
+            params: { postId: props._id },
+          });
+        }
+      }}
     >
-      <View className="flex flex-row" style={{ columnGap: 8 }}>
-        <UserAvatarLink
-          avatarURL={{ uri: props.avatar }}
-          userId={props.userId}
-          size={59}
-        />
-        <View className="flex pt-[8px]" style={{ rowGap: 6 }}>
-          <Text className={`${textLight0Dark500} font-helvetica-bold text-14`}>
-            {props.firstName + " " + props.lastName}
-          </Text>
-          <Text className="text-dark-330 dark:text-dark-320 font-helvetica-light text-10">
-            {formatDateDistance(props.createAt)}
-          </Text>
+      <View
+        className="flex flex-row items-center justify-between"
+        style={{ columnGap: 10 }}
+      >
+        <View className="flex flex-row" style={{ columnGap: 8 }}>
+          <UserAvatarLink
+            avatarURL={{ uri: props.avatar }}
+            userId={props.userId}
+            size={59}
+          />
+          <View className="flex pt-[8px]" style={{ rowGap: 6 }}>
+            <Text
+              className={`${textLight0Dark500} font-helvetica-bold text-14`}
+            >
+              {props.firstName + " " + props.lastName}
+            </Text>
+            <Text className="text-dark-330 dark:text-dark-320 font-helvetica-light text-10">
+              {formatDateDistance(props.createAt)}
+            </Text>
+          </View>
         </View>
+
+        {props.musicURL ? (
+          <MiniMusicBox
+            albumName=""
+            trackName={props.musicName!}
+            trackId={1}
+            artistName={props.musicAuthor!}
+            previewUrl={props.musicURL}
+            artworkUrl100={props.musicImageURL!}
+            trackPrice={1}
+            currency=""
+            releaseDate=""
+            genre=""
+          />
+        ) : null}
       </View>
+
       <View className="flex" style={{ rowGap: 10 }}>
+        <View
+          className="flex flex-row flex-wrap
+        "
+        >
+          {props.tags.map((item, index) => (
+            <FriendLinkName
+              key={index}
+              _id={item._id}
+              fullName={
+                index === props.tags.length - 1
+                  ? item.firstName + " " + item.lastName
+                  : item.firstName + " " + item.lastName + ", "
+              }
+              fontSize={12}
+            />
+          ))}
+        </View>
         <Text className={`${textLight0Dark500} font-helvetica-light text-14`}>
           {highlightLinks(props.caption)}
         </Text>
         <MediaGroup medias={videoImages} />
         {otherMedias.map(
           (item) =>
-            // item.type === "Video" ? (
-            //   <VideoPlayer videoSource={item.url!}/>
-            // ) : item.type === "Image" ? (
-            //   <View className="z-10">
-            //   <Pressable className="w-fit h-fit" onPress={()=>props.handleImageViewing?.(item.url!)}>
-            //   <Image
-            //     source={{ uri: item.url }}
-            //     style={{
-            //       width: "auto",
-            //       height: "auto",
-            //       borderRadius: 10,
-            //       marginBottom: 10,
-            //       aspectRatio: Number(item.width) / Number(item.height),
-            //     }}
-            //     resizeMode="cover"
-            //   />
-            //   </Pressable>
-            //   </View>
-            // ) : (
             item.type === "Audio" ? (
               <PostAudioPlayer audioUri={item.url!} />
             ) : (
