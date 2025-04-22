@@ -16,13 +16,11 @@ const CreatePost = ({ avatarURL }: { avatarURL: string | undefined }) => {
       onPress={() => router.push("/community/create-post")}
     >
       <UserAvatar avatarURL={{ uri: avatarURL }} size={50} />
-  
       <Text
         className={`${textLight0Dark500} font-helvetica-light text-14 flex-1`}
       >
-        How are you today? 
+        How are you today?
       </Text>
-
       <Icon iconURL={IconURL.editable} size={18} />
     </TouchableOpacity>
   );
