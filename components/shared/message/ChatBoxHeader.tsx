@@ -125,12 +125,12 @@ const ChatBoxHeader = (props: MessageBoxProps) => {
         className="flex flex-row items-center justify-center"
         style={{ columnGap: 10 }}
       >
-        {/* <TouchableOpacity>
+        <TouchableOpacity  onPress={()=>router.push({pathname:"/chatbox/audio-call/[userId]", params:{userId:userId}})}>
           <Icon iconURL={IconURL.call} size={30}></Icon>
         </TouchableOpacity>
-        <TouchableOpacity onPress={()=>router.push("/chatbox/call")}>
+        <TouchableOpacity onPress={()=>router.push({pathname:"/chatbox/video-call/[userId]", params:{userId:userId}})}>
           <Icon iconURL={IconURL.video_call} size={30} ></Icon>
-        </TouchableOpacity> */}
+        </TouchableOpacity>
         <TouchableOpacity
           onPress={() => {
             if (props._id) {

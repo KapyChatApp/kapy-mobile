@@ -14,6 +14,7 @@ const PostPage = () => {
   const [loading, setLoading] = useState(false);
   const [hasMore, setHasMore] = useState(true);
   const [localUser, setLocalUser] = useState<any>(null);
+  const [refreshing, setRefreshing] = useState(false); // 👈 thêm state này
 
   const fetchPosts = useCallback(
     async (pageNumber: number) => {
@@ -35,6 +36,20 @@ const PostPage = () => {
     },
     [loading, hasMore]
   );
+
+  const handleRefresh = async () => {
+    setRefreshing(true);
+    try {
+      const freshPosts = await getMyComunityPosts(1, 2);
+      setPosts(freshPosts);
+      setPage(1);
+      setHasMore(true);
+    } catch (error) {
+      console.error("Error refreshing posts:", error);
+    } finally {
+      setRefreshing(false);
+    }
+  };
 
   const getLocalUser = async () => {
     try {
@@ -87,6 +102,8 @@ const PostPage = () => {
         onEndReachedThreshold={0.5}
         ListFooterComponent={renderFooter}
         ItemSeparatorComponent={() => <View style={{ height: 26 }} />}
+        refreshing={refreshing} // 👈 dùng state
+        onRefresh={handleRefresh} // 👈 hàm kéo để refresh
       />
     </View>
   );

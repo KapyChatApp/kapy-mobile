@@ -229,6 +229,7 @@ const CreateGroupForm = ({ isVisible, onClose }: any) => {
                 }}
                 key={index}
                 {...item}
+                isDisable={false}
               />
             )):handleSearch().map((item, index) => (
               <SelectFriendBox
@@ -240,6 +241,7 @@ const CreateGroupForm = ({ isVisible, onClose }: any) => {
                 }}
                 key={index}
                 {...item}
+                isDisable={false}
               />
             ))}
           </ScrollView>

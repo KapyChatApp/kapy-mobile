@@ -43,8 +43,8 @@ export const createComment = async (
     goOn();
     return response.data;
   } catch (error) {
-    console.error("Error creating comment:", error);
-    throw error;
+    // console.error("Error creating comment:", error);
+    // throw error;
   }
 };
 
