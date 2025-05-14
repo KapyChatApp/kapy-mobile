@@ -11,17 +11,20 @@ export interface FriendBoxProps{
     localUserId?:string;
 }
 
-export interface SelectFriendBoxProps{
-    _id:string;
-    avatar?:string;
-    firstName?:string;
-    lastName?:string;
-    mutualFriends?:ShortUserProps[];
-    onlineTime?:string;    
-    relation?:string;
-    onSelect?:(data:FriendBoxProps)=>void;
-    onUnSelect:(data:FriendBoxProps)=>void;
-    isDisable?:boolean;
+export interface SelectFriendBoxProps {
+  _id: string;
+  avatar?: string;
+  firstName?: string;
+  lastName?: string;
+  mutualFriends?: ShortUserProps[];
+  onlineTime?: string;
+  relation?: string;
+  onSelect?: (data: FriendBoxProps) => void;
+  onUnSelect: (data: FriendBoxProps) => void;
+  isDisable?: boolean;
+
+  // ✅ Thêm dòng này:
+  isSelected?: boolean;
 }
 
 export interface RequestedProps{

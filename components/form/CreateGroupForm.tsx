@@ -11,26 +11,40 @@ import {
   ScrollView,
   TextInput,
   Image,
-  Alert,
 } from "react-native";
 import { useClickOutside } from "react-native-click-outside";
 import CustomButton from "../ui/CustomButton";
-import { getMyFriends } from "@/lib/my-friends";
 import { FriendBoxProps } from "@/types/friend";
 import SelectFriendBox from "../shared/friend/SelectFriendBox";
 import Icon from "../ui/Icon";
 import { IconURL } from "@/constants/IconURL";
-import UserAvatar from "../ui/UserAvatar";
 import { singlePickMedia } from "@/utils/GalleryPicker";
 import { createGroup } from "@/lib/message";
-import { getLocalAuth } from "@/lib/local";
-import { create } from "tailwind-rn";
 import { useRouter } from "expo-router";
-import { MessageBoxProps, ReceiverProps } from "@/types/message";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import LoadingSpinner from "../ui/LoadingSpinner";
 import Search from "../shared/function/Search";
 import { getFromAsyncStorage } from "@/utils/Device";
+
+// ✅ SelectedFriendBox hiển thị đúng layout
+const SelectedFriendBox = ({
+  onRemove,
+  ...friend
+}: {
+  onRemove: (friend: FriendBoxProps) => void;
+} & FriendBoxProps) => {
+  return (
+    <TouchableOpacity
+      onPress={() => onRemove(friend)}
+      style={styles.selectedBox}
+      activeOpacity={0.7}
+    >
+      <Image source={{ uri: friend.avatar }} style={styles.avatar} />
+      <Text style={styles.name}>{friend.lastName}</Text>
+      <Icon iconURL={IconURL.close} size={16} />
+    </TouchableOpacity>
+  );
+};
 
 const CreateGroupForm = ({ isVisible, onClose }: any) => {
   const router = useRouter();
@@ -42,11 +56,13 @@ const CreateGroupForm = ({ isVisible, onClose }: any) => {
     { uri: string; type: string; name: string | null | undefined }[]
   >([]);
   const [groupName, setGroupName] = useState("");
-  const [q,setQ] = useState("");
+  const [q, setQ] = useState("");
+
   const handleGalleryPicker = async () => {
     const media = await singlePickMedia();
     setSelectedMedia(media);
   };
+
   const translateY = useRef(new Animated.Value(0)).current;
   const panResponder = useRef(
     PanResponder.create({
@@ -69,68 +85,35 @@ const CreateGroupForm = ({ isVisible, onClose }: any) => {
     })
   ).current;
 
-  const convertToReceiverProps = async (receiverIds: string[]) => {
-    const user = await AsyncStorage.getItem("user");
-    const userData = await JSON.parse(user!);
-    const localReceiver: ReceiverProps = {
-      _id: userData._id,
-      firstName: userData.firstName,
-      lastName: userData.lastName,
-      avatar: userData.avatar,
-      phoneNumber: userData.phoneNumber,
-    };
-    const receivers: ReceiverProps[] = [localReceiver];
-    for (const receiverId of receiverIds) {
-      const friend = await AsyncStorage.getItem(`friend-${receiverId}`);
-      const friendData = await JSON.parse(friend!);
-      const receiver: ReceiverProps = {
-        _id: friendData._id,
-        firstName: friendData.firstName,
-        lastName: friendData.lastName,
-        avatar: friendData.avatar,
-        phoneNumber: friendData.phoneNumber,
-      };
-      receivers.push(receiver);
-    }
-    return receivers;
-  };
-
   const handleCreateGroup = async () => {
     setLoading(true);
-    const memberIds: string[] = [];
-    for (const friend of selected) {
-      memberIds.push(friend._id);
-    }
+    const memberIds = selected.map((friend) => friend._id);
     const newGroup = await createGroup(memberIds, groupName, selectedMedia[0]);
-       const chatboxes = await getFromAsyncStorage("ChatBoxes");
-       const updatedChatBoxes = [...chatboxes, newGroup];
-       await AsyncStorage.setItem("ChatBoxes", JSON.stringify(updatedChatBoxes));
+    const chatboxes = await getFromAsyncStorage("ChatBoxes");
+    const updatedChatBoxes = [...chatboxes, newGroup];
+    await AsyncStorage.setItem("ChatBoxes", JSON.stringify(updatedChatBoxes));
     await AsyncStorage.setItem(`box-${newGroup._id}`, JSON.stringify(newGroup));
     onClose();
     setLoading(false);
-       router.push({
-         pathname: "/chatbox/[messageId]",
-         params:{messageId:newGroup._id}
-       })
-      
+    router.push({
+      pathname: "/chatbox/[messageId]",
+      params: { messageId: newGroup._id },
+    });
   };
 
-  
-  const handleSearch = ()=>{
+  const handleSearch = () => {
     const lowerCaseQuery = q.toLowerCase();
-
     return friends.filter((friend) => {
       const fullName = `${friend.firstName} ${friend.lastName}`.toLowerCase();
       const reverseFullName = `${friend.lastName} ${friend.firstName}`.toLowerCase();
-  
       return (
-        friend.firstName?.toLowerCase().includes(lowerCaseQuery) || 
+        friend.firstName?.toLowerCase().includes(lowerCaseQuery) ||
         friend.lastName?.toLowerCase().includes(lowerCaseQuery) ||
-        fullName.includes(lowerCaseQuery) || 
+        fullName.includes(lowerCaseQuery) ||
         reverseFullName.includes(lowerCaseQuery)
       );
     });
-  }
+  };
 
   useEffect(() => {
     const getMyFriendsFUNC = async () => {
@@ -156,10 +139,8 @@ const CreateGroupForm = ({ isVisible, onClose }: any) => {
           ref={ref}
         >
           <View style={styles.dragHandle} />
-          <View className=" px-[20px] w-full flex  flex-row items-center justify-between">
-            <Text
-              className={`text-18 font-helvetica-bold ${textLight0Dark500} text-cardinal`}
-            >
+          <View className="px-[20px] w-full flex flex-row items-center justify-between">
+            <Text className={`text-18 font-helvetica-bold ${textLight0Dark500}`}>
               Create group
             </Text>
             <CustomButton
@@ -177,7 +158,7 @@ const CreateGroupForm = ({ isVisible, onClose }: any) => {
               className="flex items-center justify-center w-[70px] h-[70px] rounded-full bg-light-300"
               onPress={handleGalleryPicker}
             >
-              {selectedMedia.length != 0 ? (
+              {selectedMedia.length !== 0 ? (
                 <Image
                   className="rounded-full"
                   source={{ uri: selectedMedia[0].uri }}
@@ -194,59 +175,37 @@ const CreateGroupForm = ({ isVisible, onClose }: any) => {
               onChangeText={setGroupName}
             />
           </View>
-          <Search onChangeText={setQ}/>
-          <View
-            className="flex flex-row flex-wrap px-[20px] w-full"
-            style={{ rowGap: 4, columnGap: 10 }}
-          >
+
+          <Search onChangeText={setQ} />
+
+          <View style={styles.selectedContainer}>
             {selected.map((item, index) => (
-              <View
+              <SelectedFriendBox
                 key={index}
-                className="flex flex-row items-center justify-center bg-light-340 dark:bg-dark-20 p-[4px] rounded-xl
-            "
-                style={{ columnGap: 2 }}
-              >
-                <UserAvatar avatarURL={{ uri: item.avatar }} size={24} />
-                <Text
-                  className={`${textLight0Dark500} text-14 font-helvetica-bold`}
-                >
-                  {item.lastName}
-                </Text>
-              </View>
+                {...item}
+                onRemove={(friend) =>
+                  setSelected((prev) => prev.filter((f) => f._id !== friend._id))
+                }
+              />
             ))}
           </View>
-          <ScrollView
-            className="flex-1 pb-[10px] h-3/4"
-            contentContainerStyle={{ paddingBottom: 10 }}
-          >
-            {q===""? friends.map((item, index) => (
+
+          <ScrollView className="flex-1 w-full pb-[10px] h-3/4">
+            {(q === "" ? friends : handleSearch()).map((item, index) => (
               <SelectFriendBox
-                onSelect={(data) => setSelected((prev) => [...prev, data])}
-                onUnSelect={(data) => {
-                  setSelected((prev) =>
-                    prev.filter((item) => item._id !== data._id)
-                  );
-                }}
                 key={index}
                 {...item}
                 isDisable={false}
-              />
-            )):handleSearch().map((item, index) => (
-              <SelectFriendBox
+                isSelected={selected.some((s) => s._id === item._id)}
                 onSelect={(data) => setSelected((prev) => [...prev, data])}
-                onUnSelect={(data) => {
-                  setSelected((prev) =>
-                    prev.filter((item) => item._id !== data._id)
-                  );
-                }}
-                key={index}
-                {...item}
-                isDisable={false}
+                onUnSelect={(data) =>
+                  setSelected((prev) => prev.filter((f) => f._id !== data._id))
+                }
               />
             ))}
           </ScrollView>
         </Animated.View>
-        {loading ? <LoadingSpinner loading={loading} />:null}
+        {loading ? <LoadingSpinner loading={loading} /> : null}
       </View>
     </Modal>
   );
@@ -258,13 +217,6 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(0, 0, 0, 0.5)",
     justifyContent: "flex-end",
   },
-  modalContent: {
-    backgroundColor: "white",
-    borderTopLeftRadius: 15,
-    borderTopRightRadius: 15,
-    padding: 10,
-    alignItems: "center",
-  },
   dragHandle: {
     width: 40,
     height: 5,
@@ -272,25 +224,34 @@ const styles = StyleSheet.create({
     borderRadius: 2.5,
     marginVertical: 10,
   },
-  title: {
-    fontSize: 18,
-    fontWeight: "bold",
-    marginBottom: 10,
-  },
-  button: {
-    backgroundColor: "blue",
-    padding: 10,
-    borderRadius: 5,
-    marginTop: 10,
+  selectedContainer: {
+    flexDirection: "row",
+    rowGap: 8,
+    columnGap: 10,
+    paddingHorizontal: 20,
     width: "100%",
+  },
+  selectedBox: {
+    flexDirection: "row",
     alignItems: "center",
+    backgroundColor: "#EDEDED",
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 20,
+    minWidth: 80,
+    maxWidth: "48%",
+    flexShrink: 0,
+    gap: 4,
   },
-  cancelButton: {
-    backgroundColor: "red",
+  avatar: {
+    width: 24,
+    height: 24,
+    borderRadius: 12,
   },
-  buttonText: {
-    color: "white",
-    fontWeight: "bold",
+  name: {
+    fontSize: 14,
+    fontFamily: "Helvetica-Bold",
+    color: "#000",
   },
 });
 
