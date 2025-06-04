@@ -35,47 +35,47 @@ const ChatBoxHeader = (props: MessageBoxProps) => {
   useEffect(() => {
     const getHeaderData = async () => {
       console.log("head-data: ", props);
-      if(props.groupName===""){
-      if (props.receiverIds?.[0] && props.receiverIds?.[1]) {
-        const receiverIds = props.receiverIds ?? [];
-        const receiver = receiverIds[0];
-        const otherReceiver = receiverIds[1];
-        const avatarURL = props.groupAva
-          ? props.groupAva
-          : receiver && receiver._id === props.localUserId
-          ? otherReceiver?.avatar
-          : receiver?.avatar;
-        setAvatarURL(avatarURL);
-        const fullName = props.groupName
-          ? props.groupName
-          : receiver?._id === props.localUserId
-          ? `${otherReceiver?.firstName} ${otherReceiver?.lastName}`
-          : `${receiver?.firstName} ${receiver?.lastName}`;
-        setFullName(fullName);
-        const id =
-          receiver?._id === props.localUserId
-            ? otherReceiver?._id
-            : receiver._id;
-        setUserId(id);
-        const realtime = await getRealtimeOfUser(id);
-        setUpdateTime(realtime.updateTime);
-        setIsOnline(realtime.isOnline);
-        pusherClient.subscribe(`private-${id}`);
-        pusherClient.bind("online-status", (data: any) => {
-          setIsOnline(data.online);
-          setUpdateTime(data.updateTime);
-        });
-        pusherClient.bind("offline-status", (data: any) => {
-          setIsOnline(data.online);
-          setUpdateTime(data.updateTime);
-        });
+      if (props.groupName === "") {
+        if (props.receiverIds?.[0] && props.receiverIds?.[1]) {
+          const receiverIds = props.receiverIds ?? [];
+          const receiver = receiverIds[0];
+          const otherReceiver = receiverIds[1];
+          const avatarURL = props.groupAva
+            ? props.groupAva
+            : receiver && receiver._id === props.localUserId
+            ? otherReceiver?.avatar
+            : receiver?.avatar;
+          setAvatarURL(avatarURL);
+          const fullName = props.groupName
+            ? props.groupName
+            : receiver?._id === props.localUserId
+            ? `${otherReceiver?.firstName} ${otherReceiver?.lastName}`
+            : `${receiver?.firstName} ${receiver?.lastName}`;
+          setFullName(fullName);
+          const id =
+            receiver?._id === props.localUserId
+              ? otherReceiver?._id
+              : receiver._id;
+          setUserId(id);
+          const realtime = await getRealtimeOfUser(id);
+          setUpdateTime(realtime.updateTime);
+          setIsOnline(realtime.isOnline);
+          pusherClient.subscribe(`private-${id}`);
+          pusherClient.bind("online-status", (data: any) => {
+            setIsOnline(data.online);
+            setUpdateTime(data.updateTime);
+          });
+          pusherClient.bind("offline-status", (data: any) => {
+            setIsOnline(data.online);
+            setUpdateTime(data.updateTime);
+          });
+        }
+      } else {
+        const box = await AsyncStorage.getItem(`box-${props._id}`);
+        const boxData = await JSON.parse(box!);
+        setGroupAva(boxData.groupAva);
+        setGroupName(boxData.groupName);
       }
-    }else{
-       const box = await AsyncStorage.getItem(`box-${props._id}`);
-       const boxData = await JSON.parse(box!);
-       setGroupAva(boxData.groupAva);
-       setGroupName(boxData.groupName);
-    }
     };
     getHeaderData();
   }, [props]);
@@ -84,14 +84,21 @@ const ChatBoxHeader = (props: MessageBoxProps) => {
       className={`bg-light-500 dark:bg-dark-0 w-full h-[82px] flex flex-row items-center justify-between  px-[16px]`}
     >
       <View className="flex flex-row items-center" style={{ columnGap: 12 }}>
-        <Previous navigation={navigation} isAbsolute={false} specialAction={checkOutMessageBox}/>
+        <Previous
+          navigation={navigation}
+          isAbsolute={false}
+          specialAction={checkOutMessageBox}
+        />
         <View className="flex flex-row items-center" style={{ columnGap: 8 }}>
           {props.groupName ? (
-            <UserAvatar size={46} avatarURL={{ uri: groupName===""? avatarURL:groupAva }} />
+            <UserAvatar
+              size={46}
+              avatarURL={{ uri: groupName === "" ? avatarURL : groupAva }}
+            />
           ) : (
             <UserAvatarLink
               avatarURL={{
-                uri:groupName===""? avatarURL:groupAva,
+                uri: groupName === "" ? avatarURL : groupAva,
               }}
               size={46}
               userId={userId}
@@ -103,11 +110,26 @@ const ChatBoxHeader = (props: MessageBoxProps) => {
               <Text
                 className={`font-helvetica-bold ${textLight0Dark500} text-14 `}
               >
-                {groupName===""? fullName:groupName}
+                {groupName === "" ? fullName : groupName}
               </Text>
-              {props.groupName===""?
-              (isOnline? <View className="flex flex-row items-center" style={{columnGap:4}}><Text className="text-12 font-helvetica-bold text-cardinal">Online</Text> <View className="w-[8px] h-[8px] bg-cardinal rounded-full"/></View>:<Text className="text-12 text-cardinal font-helvetica-normal">Online {updateTime!=""? formatDateDistance(updateTime):null}</Text>):null}
-          
+              {props.groupName === "" ? (
+                isOnline ? (
+                  <View
+                    className="flex flex-row items-center"
+                    style={{ columnGap: 4 }}
+                  >
+                    <Text className="text-12 font-helvetica-bold text-cardinal">
+                      Online
+                    </Text>{" "}
+                    <View className="w-[8px] h-[8px] bg-cardinal rounded-full" />
+                  </View>
+                ) : (
+                  <Text className="text-12 text-cardinal font-helvetica-normal">
+                    Online{" "}
+                    {updateTime != "" ? formatDateDistance(updateTime) : null}
+                  </Text>
+                )
+              ) : null}
             </View>
           ) : (
             <View className="flex h-fit">
@@ -116,7 +138,22 @@ const ChatBoxHeader = (props: MessageBoxProps) => {
               >
                 {fullName}
               </Text>
-              {isOnline? <View className="flex flex-row items-center" style={{columnGap:4}}><Text className="text-12 font-helvetica-bold text-cardinal">Online</Text> <View className="w-[8px] h-[8px] bg-cardinal rounded-full"/></View>:<Text className="text-12 text-cardinal font-helvetica-normal">Online {updateTime!=""? formatDateDistance(updateTime):null}</Text>}
+              {isOnline ? (
+                <View
+                  className="flex flex-row items-center"
+                  style={{ columnGap: 4 }}
+                >
+                  <Text className="text-12 font-helvetica-bold text-cardinal">
+                    Online
+                  </Text>{" "}
+                  <View className="w-[8px] h-[8px] bg-cardinal rounded-full" />
+                </View>
+              ) : (
+                <Text className="text-12 text-cardinal font-helvetica-normal">
+                  Online{" "}
+                  {updateTime != "" ? formatDateDistance(updateTime) : null}
+                </Text>
+              )}
             </View>
           )}
         </View>
@@ -125,12 +162,33 @@ const ChatBoxHeader = (props: MessageBoxProps) => {
         className="flex flex-row items-center justify-center"
         style={{ columnGap: 10 }}
       >
-        {/* <TouchableOpacity>
+        <TouchableOpacity
+          onPress={() =>
+            router.push({
+              pathname: "/chatbox/audio-call/[userId]",
+              params: { userId: userId },
+            })
+          }
+        >
           <Icon iconURL={IconURL.call} size={30}></Icon>
         </TouchableOpacity>
-        <TouchableOpacity onPress={()=>router.push("/chatbox/call")}>
-          <Icon iconURL={IconURL.video_call} size={30} ></Icon>
-        </TouchableOpacity> */}
+        <TouchableOpacity
+          onPress={() => {
+            if (groupName === "") {
+              router.push({
+                pathname: "/chatbox/video-call/[userId]",
+                params: { userId: userId },
+              });
+            } else {
+              router.push({
+                pathname: "/chatbox/group-call/[groupId]",
+                params: { groupId: props._id },
+              });
+            }
+          }}
+        >
+          <Icon iconURL={IconURL.video_call} size={30}></Icon>
+        </TouchableOpacity>
         <TouchableOpacity
           onPress={() => {
             if (props._id) {

@@ -32,12 +32,12 @@ const ExpoCamera = ({
   acceptSelectedMedia,
 }: {
   onClose: () => void;
-  isSendNow?:boolean,
+  isSendNow?: boolean;
   onSend?: () => void;
-  setSelectedMedia: (uri: string, type: string, name:string) => void;
-  removeSelectedMedia?:()=>void;
-  type?:"video"|"picture";
-  acceptSelectedMedia?:()=>void;
+  setSelectedMedia: (uri: string, type: string, name: string) => void;
+  removeSelectedMedia?: () => void;
+  type?: "video" | "picture";
+  acceptSelectedMedia?: () => void;
 }) => {
   const [facing, setFacing] = useState<CameraType>("back");
   const [permission, requestPermission] = useCameraPermissions();
@@ -50,6 +50,8 @@ const ExpoCamera = ({
   const [timerInterval, setTimerInterval] = useState<NodeJS.Timeout | null>(
     null
   );
+
+  const [mode, setMode] = useState("picture");
 
   if (!permission) {
     return <View />;
@@ -80,13 +82,18 @@ const ExpoCamera = ({
   const takePicture = async () => {
     try {
       if (cameraRef.current) {
-        // Ensure camera is ready before taking a picture
+        // Reduce quality and disable base64 to save memory
         const photo = await cameraRef.current.takePictureAsync({
-          base64: true, // Optional: Get the base64 encoded image
+          quality: 0.1,        // Reduce quality to save memory
+          base64: false,       // Don't use base64 encoding (major memory saver)
+          skipProcessing: true // Skip additional processing if possible
         });
-        setPhotoUri(photo?.uri);
-        setSelectedMedia(photo?.uri!, "image",generateRandomNumberString(10)!);
-        console.log("Photo taken: ", photo?.uri);
+        
+        if (photo?.uri) {
+          setPhotoUri(photo.uri);
+          setSelectedMedia(photo.uri, "image", generateRandomNumberString(10)!);
+          console.log("Photo taken: ", photo.uri);
+        }
       }
     } catch (error) {
       console.error("Error taking picture: ", error);
@@ -94,6 +101,7 @@ const ExpoCamera = ({
   };
 
   const startRecording = async () => {
+    setMode("video");
     if (cameraRef.current) {
       try {
         setIsRecording(true);
@@ -148,72 +156,83 @@ const ExpoCamera = ({
   return (
     <View className="flex-1 w-screen h-screen fixed ">
       {photoUri === "" && videoUri === "" ? (
-       <CameraView
-       style={styles.camera}
-       facing={facing}
-       ref={cameraRef}
-       mode={type? type:"video"}
-     >
-       <View className=" flex-1 flex justify-between items-center pb-[100px] ">
-         <View className="flex-1 w-full flex flex-row justify-between item-center p-[20px] mt-[20px]">
-           <TouchableOpacity onPress={onClose}>
-             <Icon iconURL={IconURL.close_single} size={30} />
-           </TouchableOpacity>
-           <TouchableOpacity onPress={toggleCameraFacing}>
-             <Icon size={30} iconURL={IconURL.change_cam} />
-           </TouchableOpacity>l
-         </View>
-         <View
-           className="flex items-center justify-between "
-           style={{ rowGap: 10 }}
-         >
-           {isRecording && (
-             <View className=" w-full flex items-center">
-               <Text className="text-white text-lg">
-                 {Math.floor(recordingTime / 60)}:
-                 {(recordingTime % 60).toString().padStart(2, "0")}
-               </Text>
-             </View>
-           )}
-           <TouchableOpacity
-             className="w-[80px] h-[80px] bg-cardinal rounded-full"
-             onPress={handlePress}
-             onLongPress={type==="picture"? ()=>{}:handleLongPress}
-           />
-         </View>
-       </View>
-     </CameraView>
-      ) : ( <View className="flex items-center justify-center">
-        {videoUri === "" ? (
-          <Image className="w-full h-full fixed" source={{ uri: photoUri }} />
-        ) : (
-          <View className="fixed w-full h-full flex items-center justify-center">
-            <VideoPlayer videoSource={videoUri!} />
+        <CameraView
+          style={styles.camera}
+          facing={facing}
+          ref={cameraRef}
+          mode="picture"
+        >
+          <View className=" flex-1 flex justify-between items-center pb-[100px] ">
+            <View className="flex-1 w-full flex flex-row justify-between item-center p-[20px] mt-[20px]">
+              <TouchableOpacity onPress={onClose}>
+                <Icon iconURL={IconURL.close_single} size={30} />
+              </TouchableOpacity>
+              <TouchableOpacity onPress={toggleCameraFacing}>
+                <Icon size={30} iconURL={IconURL.change_cam} />
+              </TouchableOpacity>
+              l
+            </View>
+            <View
+              className="flex items-center justify-between "
+              style={{ rowGap: 10 }}
+            >
+              {isRecording && (
+                <View className=" w-full flex items-center">
+                  <Text className="text-white text-lg">
+                    {Math.floor(recordingTime / 60)}:
+                    {(recordingTime % 60).toString().padStart(2, "0")}
+                  </Text>
+                </View>
+              )}
+              <TouchableOpacity
+                className="w-[80px] h-[80px] bg-cardinal rounded-full"
+                onPress={handlePress}
+                onLongPress={type === "picture" ? () => {} : handleLongPress}
+              />
+            </View>
           </View>
-        )}
-        <View className="absolute top-[20px] left-[20px] mt-[20px]">
-          <TouchableOpacity
-            onPress={() => {
-              setPhotoUri("");
-              setVideoUri("");
-            }}
-          >
-            <Icon iconURL={IconURL.previous} size={30} />
-          </TouchableOpacity>
+        </CameraView>
+      ) : (
+        <View className="flex items-center justify-center">
+          {videoUri === "" ? (
+            <Image className="w-full h-full fixed" source={{ uri: photoUri }} />
+          ) : (
+            <View className="fixed w-full h-full flex items-center justify-center">
+              <VideoPlayer videoSource={videoUri!} />
+            </View>
+          )}
+          <View className="absolute top-[20px] left-[20px] mt-[20px]">
+            <TouchableOpacity
+              onPress={() => {
+                setPhotoUri("");
+                setVideoUri("");
+              }}
+            >
+              <Icon iconURL={IconURL.previous} size={30} />
+            </TouchableOpacity>
+          </View>
+          <View className="absolute bottom-[90px] right-[20px]">
+            {isSendNow ? (
+              <TouchableOpacity
+                onPress={() => {
+                  onSend?.();
+                  onClose();
+                }}
+              >
+                <Icon size={40} iconURL={IconURL.send} />
+              </TouchableOpacity>
+            ) : (
+              <TouchableOpacity
+                onPress={() => {
+                  onClose();
+                  acceptSelectedMedia?.();
+                }}
+              >
+                <Icon iconURL={IconURL.tick} size={40} />
+              </TouchableOpacity>
+            )}
+          </View>
         </View>
-        <View className="absolute bottom-[90px] right-[20px]">
-          {isSendNow?<TouchableOpacity
-            onPress={() => {
-              onSend?.();
-             onClose();
-            }}
-          >
-            <Icon size={40} iconURL={IconURL.send} />
-          </TouchableOpacity> :<TouchableOpacity onPress={()=>{onClose(); acceptSelectedMedia?.()}}><Icon iconURL={IconURL.tick} size={40}/></TouchableOpacity>}
-          
-        </View>
-      </View>
-        
       )}
     </View>
   );

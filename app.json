@@ -13,7 +13,6 @@
     "scheme": "myapp",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
-    "reactNativeStrictMode": false,
     "splash": {
       "image": "./assets/images/splash.png",
       "resizeMode": "contain",
@@ -94,10 +93,6 @@
       "eas": {
         "projectId": "d60d3ab1-07e9-4e7e-af08-3996d196dd15"
       }
-    },
-    "notifications": {
-      "icon": "./assets/images/icon.png",
-      "color": "#000000"
     }
   }
 }

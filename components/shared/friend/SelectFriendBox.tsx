@@ -1,51 +1,49 @@
-import { View, Text } from "react-native";
-import React, { useState } from "react";
-import { useRouter } from "expo-router";
-import { TouchableOpacity } from "react-native-gesture-handler";
+import { View, Text, TouchableOpacity } from "react-native";
+import React from "react";
 import UserAvatar from "@/components/ui/UserAvatar";
 import { bgLight510Dark20, textLight0Dark500 } from "@/styles/theme";
-import { FriendBoxProps, SelectFriendBoxProps } from "@/types/friend";
+import { SelectFriendBoxProps } from "@/types/friend";
 import Icon from "@/components/ui/Icon";
 import { IconURL } from "@/constants/IconURL";
+
 const SelectFriendBox = (props: SelectFriendBoxProps) => {
-  const [isSelected, setIsSelected] = useState(false);
-  const [pressTime, setPressTime] = useState(0);
+  const { isSelected, onSelect, onUnSelect, isDisable } = props;
+
+  const handlePress = () => {
+    if (isDisable) return;
+    if (isSelected) {
+      onUnSelect?.(props);
+    } else {
+      onSelect?.(props);
+    }
+  };
+
   return (
     <TouchableOpacity
-    activeOpacity={props.isDisable? 1:0.7}
-      onPress={
-        props.isDisable
-          ? () => {}
-          : (pressTime + 1) % 2 != 0
-          ? () => {
-              setIsSelected(true);
-              props.onSelect?.(props);
-
-              setPressTime(pressTime + 1);
-            }
-          : () => {
-              setIsSelected(false);
-              props.onUnSelect?.(props);
-              setPressTime(pressTime + 1);
-            }
-      }
-      className={`flex flex-row items-center p-[12px] px-[20px] w-full ${bgLight510Dark20}`}
+      activeOpacity={isDisable ? 1 : 0.7}
+      onPress={handlePress}
+      className={`w-full ${bgLight510Dark20} px-[20px] py-[12px]`}
     >
-      <View className="flex flex-row items-center">
-        <UserAvatar avatarURL={{ uri: props.avatar }} size={40}></UserAvatar>
-        <View className="flex ml-[9px] flex-1">
+      <View className="flex flex-row items-center justify-between gap-[10px]">
+        {/* Avatar + Name */}
+        <View className="flex flex-row items-center gap-[10px] flex-1">
+          <UserAvatar avatarURL={{ uri: props.avatar }} size={40} />
           <Text className={`font-helvetica-bold text-14 ${textLight0Dark500}`}>
             {props.firstName + " " + props.lastName}
           </Text>
         </View>
-        {props.isDisable ? (
-          <Icon iconURL={IconURL.selected} size={20} />
-        ) : (
-          <Icon
-            iconURL={isSelected ? IconURL.selected : IconURL.non_select}
-            size={20}
-          />
-        )}
+
+        {/* Icon chọn */}
+        <Icon
+          iconURL={
+            isDisable
+              ? IconURL.selected
+              : isSelected
+              ? IconURL.selected
+              : IconURL.non_select
+          }
+          size={20}
+        />
       </View>
     </TouchableOpacity>
   );
