@@ -1,3 +1,5 @@
+import { ReceiverProps } from "./message";
+
 export type SocketUser = {
   userId: string;
   socketId: string;
@@ -20,3 +22,18 @@ export type PeerData = {
   stream: MediaStream | undefined;
   participantUser: SocketUser;
 };
+
+
+export type GroupDetails ={
+  _id: string;
+  name: string;
+  avatar: string;
+  members: ReceiverProps[];
+}
+
+export type ParticipantsGroup ={
+  caller: SocketUser;
+  callees: SocketUser[];
+  currentJoiners: SocketUser[];
+  groupDetails: GroupDetails;
+}

@@ -32,7 +32,8 @@ export const uploadAvatar = async (
   setIsLoading: any,
   setEndLoading: any,
   setNotIsLoading: any,
-  setReload: any
+  setReload: any,
+  isCreatePost:boolean
 ) => {
   const formData = new FormData();
 
@@ -56,7 +57,8 @@ export const uploadAvatar = async (
           "Content-Type": "multipart/form-data",
           Authorization: `${token}`,
         },
-      }
+        params:{isCreatePost:isCreatePost}
+      },
     );
 
     if (response.status == 200 || response.status == 201) {
@@ -80,7 +82,8 @@ export const uploadBackground = async (
   setIsLoading: any,
   setEndLoading: any,
   setNotIsLoading: any,
-  setReload: any
+  setReload: any,
+  isCreatePost:boolean
 ) => {
   const formData = new FormData();
 
@@ -104,6 +107,7 @@ export const uploadBackground = async (
           "Content-Type": "multipart/form-data",
           Authorization: `${token}`,
         },
+        params:{isCreatePost:isCreatePost}
       }
     );
 

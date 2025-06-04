@@ -15,12 +15,12 @@ const HeaderProfileEditor = (props: HeaderProfileEditorProps) => {
 
   const handleUploadAvatarFromGallery = async ()=>{
     const avatar = await singlePickMedia();
-    await uploadAvatar(avatar[0].uri, props.setStartLoading,props.setIsLoading, props.setEndLoading, props.setNotIsLoading, props.setReload);
+    await uploadAvatar(avatar[0].uri, props.setStartLoading,props.setIsLoading, props.setEndLoading, props.setNotIsLoading, props.setReload, true);
   }
 
   const handleUploadBackgroundFromGallery = async ()=>{
     const background = await singlePickMedia();
-    await uploadBackground(background[0].uri, props.setStartLoading,props.setIsLoading, props.setEndLoading, props.setNotIsLoading, props.setReload);
+    await uploadBackground(background[0].uri, props.setStartLoading,props.setIsLoading, props.setEndLoading, props.setNotIsLoading, props.setReload, true);
   }
 
   const onPressAvatar = () => {

@@ -57,6 +57,10 @@ export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
         setIsConnected(true);
       });
 
+      s.on("connect_error", (err) => {
+        console.log("❌ Socket connect error:", err.message);
+      });
+
       s.on("getUsers", (data) => {
         console.log("🟢 Online users:", data);
         setOnlineUsers(data);
@@ -71,7 +75,9 @@ export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
 
         Alert.alert(
           "Cuộc gọi đến",
-          `Bạn có một cuộc gọi ${isVideoCall ? "video" : "âm thanh"} từ ${participants.sender.profile.name}`
+          `Bạn có một cuộc gọi ${isVideoCall ? "video" : "âm thanh"} từ ${
+            participants.sender.profile.name
+          }`
         );
       });
 

@@ -18,6 +18,7 @@ import { MessageBoxProvider } from "@/context/MessageBoxContext";
 import { registerForPushNotificationsAsync } from "@/lib/local";
 import { SocketProvider } from "@/context/SocketContext";
 import GlobalModals from "@/components/shared/call/GlobalModal";
+import { VideoGroupCallProvider } from "@/context/VideoGroupCallContext";
 SplashScreen.preventAutoHideAsync();
 export default function RootLayout() {
   const [fontsLoaded, error] = useFonts({
@@ -67,94 +68,96 @@ export default function RootLayout() {
     <GestureHandlerRootView className="flex-1 bg-white dark:bg-black">
       <EventProvider>
         <SocketProvider>
-          <ThemeProvider>
-            <CameraProvider>
-              <SafeAreaView className="flex-1">
-                <MarkReadProvider>
-                  <MessageBoxProvider>
-                    <ClickOutsideProvider>
-                      <ActionSheetProvider>
-                        <Host>
-                          <Stack>
-                            <Stack.Screen
-                              name="index"
-                              options={{ headerShown: false }}
-                            />
-                            <Stack.Screen
-                              name="(auth)"
-                              options={{ headerShown: false }}
-                            />
-                            <Stack.Screen
-                              name="(tabs)"
-                              options={{
-                                headerShown: false,
-                                headerTitle: (props) => (
-                                  <MainHeader></MainHeader>
-                                ),
-                              }}
-                            />
-                            <Stack.Screen
-                              name="chatbox"
-                              options={{ headerShown: false }}
-                            />
-                            <Stack.Screen
-                              name="(mine)/my-multimedia"
-                              options={{ headerShown: false }}
-                            />
-                            <Stack.Screen
-                              name="(mine)/my-wall"
-                              options={{ headerShown: false }}
-                            />
-                            <Stack.Screen
-                              name="(mine)/blocked-list"
-                              options={{ headerShown: false }}
-                            />
-                            <Stack.Screen
-                              name="(mine)/bff-list"
-                              options={{ headerShown: false }}
-                            />
-                            <Stack.Screen
-                              name="(mine)/my-groups"
-                              options={{ headerShown: false }}
-                            />
-                            <Stack.Screen
-                              name="(mine)/all-rate"
-                              options={{ headerShown: false }}
-                            />
-                            <Stack.Screen
-                              name="(mine)/notification"
-                              options={{ headerShown: false }}
-                            />
-                            <Stack.Screen
-                              name="community"
-                              options={{ headerShown: false }}
-                            />
-                            <Stack.Screen
-                              name="(error)/not-found"
-                              options={{ headerShown: false }}
-                            />
-                            <Stack.Screen
-                              name="report"
-                              options={{ headerShown: false }}
-                            />
-                            <Stack.Screen
-                              name="friend"
-                              options={{ headerShown: false }}
-                            />
-                            <Stack.Screen
-                              name="status"
-                              options={{ headerShown: false }}
-                            />
-                          </Stack>
-                          <GlobalModals/>
-                        </Host>
-                      </ActionSheetProvider>
-                    </ClickOutsideProvider>
-                  </MessageBoxProvider>
-                </MarkReadProvider>
-              </SafeAreaView>
-            </CameraProvider>
-          </ThemeProvider>
+          <VideoGroupCallProvider>
+            <ThemeProvider>
+              <CameraProvider>
+                <SafeAreaView className="flex-1">
+                  <MarkReadProvider>
+                    <MessageBoxProvider>
+                      <ClickOutsideProvider>
+                        <ActionSheetProvider>
+                          <Host>
+                            <Stack>
+                              <Stack.Screen
+                                name="index"
+                                options={{ headerShown: false }}
+                              />
+                              <Stack.Screen
+                                name="(auth)"
+                                options={{ headerShown: false }}
+                              />
+                              <Stack.Screen
+                                name="(tabs)"
+                                options={{
+                                  headerShown: false,
+                                  headerTitle: (props) => (
+                                    <MainHeader></MainHeader>
+                                  ),
+                                }}
+                              />
+                              <Stack.Screen
+                                name="chatbox"
+                                options={{ headerShown: false }}
+                              />
+                              <Stack.Screen
+                                name="(mine)/my-multimedia"
+                                options={{ headerShown: false }}
+                              />
+                              <Stack.Screen
+                                name="(mine)/my-wall"
+                                options={{ headerShown: false }}
+                              />
+                              <Stack.Screen
+                                name="(mine)/blocked-list"
+                                options={{ headerShown: false }}
+                              />
+                              <Stack.Screen
+                                name="(mine)/bff-list"
+                                options={{ headerShown: false }}
+                              />
+                              <Stack.Screen
+                                name="(mine)/my-groups"
+                                options={{ headerShown: false }}
+                              />
+                              <Stack.Screen
+                                name="(mine)/all-rate"
+                                options={{ headerShown: false }}
+                              />
+                              <Stack.Screen
+                                name="(mine)/notification"
+                                options={{ headerShown: false }}
+                              />
+                              <Stack.Screen
+                                name="community"
+                                options={{ headerShown: false }}
+                              />
+                              <Stack.Screen
+                                name="(error)/not-found"
+                                options={{ headerShown: false }}
+                              />
+                              <Stack.Screen
+                                name="report"
+                                options={{ headerShown: false }}
+                              />
+                              <Stack.Screen
+                                name="friend"
+                                options={{ headerShown: false }}
+                              />
+                              <Stack.Screen
+                                name="status"
+                                options={{ headerShown: false }}
+                              />
+                            </Stack>
+                            <GlobalModals />
+                          </Host>
+                        </ActionSheetProvider>
+                      </ClickOutsideProvider>
+                    </MessageBoxProvider>
+                  </MarkReadProvider>
+                </SafeAreaView>
+              </CameraProvider>
+            </ThemeProvider>
+            </VideoGroupCallProvider>
         </SocketProvider>
       </EventProvider>
     </GestureHandlerRootView>
